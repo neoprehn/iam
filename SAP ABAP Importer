@@ -1,0 +1,161 @@
+//##0 Delete All
+//Constraints and indexes
+// Delete all nodes and relationships
+CALL apoc.schema.assert({},{},true);
+CALL apoc.periodic.iterate(
+  'MATCH (n) RETURN n',
+  'DETACH DELETE n',
+  { batchSize:500 }
+);
+
+//##1 Import USR02
+CREATE CONSTRAINT userIdConstraint IF NOT EXISTS ON (u:User) ASSERT u.id IS UNIQUE;
+CALL apoc.load.json ("file:///usr02.json")
+YIELD value as data
+UNWIND data.USR02 as usr
+MERGE (u:User {id: usr.BNAME})
+ ON CREATE SET  u.sap_mandant = usr.MANDT,
+                u.gueltig_von = date(left(usr.GLTGV,10)),
+                u.gueltig_bis = date(left(usr.GLTGB,10)),
+                u.last_logon = date(left(usr.TRDAT,10)),
+                u.user_gruppe = usr.USTYP,
+                u.sperre = usr.UFLAG,
+                u.import_date = timestamp()
+MERGE (g:User_Gruppe {name: usr.CLASS})
+MERGE (u)-[:IS_PART_OF]->(g)
+return count (g) as USER_GROUP_COUNT, count (u) as USER_COUNT;
+
+//##2 Update User mit V_USERNAME
+CALL apoc.load.json ("file:///V_USERNAME.json")
+YIELD value as data
+UNWIND data.V_USERNAME as user
+MERGE (u:User {id: user.BNAME})
+    ON MATCH SET u.personalnummer = apoc.convert.toInteger(user.PERSNUMBER),
+                u.name = user.NAME_TEXT,
+                u.name_last = user.NAME_LAST,
+                u.update_date = timestamp();
+
+//##3 Import Rollenset mit AGR_DEFINE
+CREATE CONSTRAINT roleIdConstraint IF NOT EXISTS ON (r:Rolle) ASSERT r.id IS UNIQUE;
+CALL apoc.load.json ("file:///AGR_DEFINE.json")
+YIELD value as data
+UNWIND data.AGR_DEFINE as role
+MERGE (r:Rolle {id: role.AGR_NAME}) 
+ ON CREATE SET  r.sap_mandant = role.MANDT,
+                r.import_date = timestamp()
+ ON MATCH SET   r.sap_mandant = role.MANDT,
+                r.import_date = timestamp()
+MERGE (c:Rolle {id: role.PARENT_AGR})
+ ON CREATE SET  c.sap_mandant = role.MANDT,
+                c.import_date = timestamp()
+ ON MATCH SET   c.sap_mandant = role.MANDT,
+                c.import_date = timestamp()
+WITH role, role.AGR_NAME as rolle, role.PARENT_AGR as parent
+Where parent <>""
+    MERGE (r:Rolle {id: role.AGR_NAME})
+    on Match set r.parent_id = role.PARENT_AGR
+    MERGE (c:Rolle {id: role.PARENT_AGR})
+    on MATCH SET c.info = "Parent_Rolle"
+    MERGE (c) - [:IS_PARENT_OF] - > (r);
+
+//##4 Update Einzel/Sammelrolle mit AGR_AGRS
+CALL apoc.load.json ("file:///AGR_AGRS.json")
+YIELD value as data
+UNWIND data.AGR_AGRS as role
+MATCH (r:Rolle), (c:Rolle)
+    Where r.id = role.CHILD_AGR and c.id = role.AGR_NAME
+    Merge (c)-[:IS_COMPOSITE_OF]->(r)
+WITH c, r, role
+where role.ATTRIBUTES ="X"
+    Merge (c)-[rel:IS_COMPOSITE_OF]->(r)
+    on CREATE SET rel.attr = "X";
+
+//##5 Zuordnung USER-Rolle mit AGR_USERS
+CALL apoc.load.json ("file:///AGR_USERS.json")
+YIELD value as data
+UNWIND data.AGR_USERS as role
+MATCH (u:User), (r:Rolle)
+    WHERE u.id = role.UNAME and r.id = role.AGR_NAME
+    MERGE (u)-[rela:HAS_ROLE]->(r)
+        ON CREATE SET rela.gueltig_von = date(left(role.FROM_DAT,10)),
+                     rela.gueltig_bis = date(left(role.To_DAT,10));
+
+//##6 Import Profile über USR11
+CREATE CONSTRAINT profilIdConstraint IF NOT EXISTS ON (p:Profil) ASSERT p.id IS UNIQUE;
+CALL apoc.load.json ("file:///USR11.json")
+YIELD value as data
+UNWIND data.USR11 as profil
+Merge (p:Profil {id: profil.PROFN})
+    ON CREATE SET p.sprache = profil.LANGU,
+                 p.text = profil.PTEXT,
+				 p.sprache = profil.LANGU,
+                 p.active = profil.AKTPS,
+                 p.import_date = timestamp ();
+
+//##7 Import Sammelprofile über UST10C
+CREATE CONSTRAINT sammelprofilIdConstraint IF NOT EXISTS ON (s:Sammelprofil) ASSERT s.id IS UNIQUE;
+CALL apoc.load.json ("file:///UST10C.json")
+YIELD value as data
+UNWIND data.UST10C as sprofil
+MERGE (s:Sammelprofil {id: sprofil.PROFN})
+Merge (sub:Sammelprofil {id: sprofil.SUBPROF})
+MERGE (sub) - [rela:IS_SUBPROFIL] -> (s)
+    on CREATE SET rela.active = sprofil.AKTPS;
+
+//#7.1 Profile und Sammelprofile verbinden
+match (p:Profil), (s:Sammelprofil)
+where p.id = s.id
+Merge (p)-[r:IS_COMPOSITE_PROFILE]->(s)
+    on CREATE SET r.active = p.active;
+
+//##8 Import Berechtigungsnamen mit UST10S + update mit B_Objekten
+CREATE CONSTRAINT bObjNameIdConstraint IF NOT EXISTS ON (s:B_Name) ASSERT s.id IS UNIQUE;
+CALL apoc.load.json ("file:///UST10S.json")
+YIELD value as data
+UNWIND data.UST10S as auth
+merge (p:Profil {id: auth.PROFN})
+merge (b:B_Name {id: auth.AUTH})
+    ON CREATE SET b.import_date = timestamp()	  
+merge (p) -[r:HAS_B_NAME] -> (b)
+    on CREATE SET r.active = auth.AKTPS,
+                  r.import_date = timestamp()
+With DISTINCT auth.AUTH as auth, COLLECT(DISTINCT auth.OBJCT) as Objekte
+merge (b:B_Name {id:auth})
+    on MATCH SET b.list = Objekte;
+
+//##9 Import Profile zu Usern UST04
+CALL apoc.load.json ("file:///UST04.json")
+YIELD value as data
+UNWIND data.UST04 as auth
+MERGE (u:User {id:auth.BNAME}) 
+MERGE (p:Profil {id:auth.PROFILE})
+MERGE (u) - [r:HAS_PROFIL] -> (p)
+    ON CREATE SET r.import_date = timestamp();
+
+//##10 ImportReferenz-Nutzer USREFUS
+CALL apoc.load.json ("file:///USREFUS.json")
+YIELD value as data
+UNWIND data.USREFUS as ruser
+merge (u:User {id: ruser.BNAME})
+merge (r:User {id: ruser.REFUSER})
+merge (r) - [:IS_REF_USER_OF] -> (u);
+match (u:User {id:""}) detach delete u;
+
+
+//#11 Aufbau der Beziehungen zwischen Rollen und Profile AGR_1016B
+CALL apoc.load.json ("file:///AGR_1016B.json")
+YIELD value as data
+UNWIND data.AGR_1016B as auth
+MERGE (p:Profil {id: auth.PROFILE}) 
+MERGE (r:Rolle {id: auth.AGR_NAME})
+Merge (p) - [rel:RELATED_TO] -> (r)
+    ON CREATE SET rel.import_date = timestamp();
+
+//#12 Dokumentation der Rollen AGR_TEXTS
+CALL apoc.load.json ("file:///AGR_TEXTS.json")
+YIELD value as data
+UNWIND data.AGR_TEXTS as rolle
+WITH rolle.AGR_NAME as role,  Collect (DISTINCT rolle.TEXT) as line, rolle
+merge (r:Rolle {id: role})
+    ON MATCH SET r.text = apoc.text.join(line, " "),
+                 r.sprache = rolle.SPRAS
