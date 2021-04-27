@@ -1,6 +1,9 @@
+//Importer für SAP Berechtigungen, welche in JSON vorliegen
+//Neo4J muss mutiple Commandos zulassen
+
 //##0 Delete All
 //Constraints and indexes
-// Delete all nodes and relationships
+//Delete all nodes and relationships
 CALL apoc.schema.assert({},{},true);
 CALL apoc.periodic.iterate(
   'MATCH (n) RETURN n',
@@ -11,8 +14,8 @@ CALL apoc.periodic.iterate(
 //##1 Import USR02
 CREATE CONSTRAINT userIdConstraint IF NOT EXISTS ON (u:User) ASSERT u.id IS UNIQUE;
 CALL apoc.load.json ("file:///usr02.json")
-YIELD value as data
-UNWIND data.USR02 as usr
+YIELD value AS data
+UNWIND data.USR02 AS usr
 MERGE (u:User {id: usr.BNAME})
  ON CREATE SET  u.sap_mandant = usr.MANDT,
                 u.gueltig_von = date(left(usr.GLTGV,10)),
@@ -22,13 +25,12 @@ MERGE (u:User {id: usr.BNAME})
                 u.sperre = usr.UFLAG,
                 u.import_date = timestamp()
 MERGE (g:User_Gruppe {name: usr.CLASS})
-MERGE (u)-[:IS_PART_OF]->(g)
-return count (g) as USER_GROUP_COUNT, count (u) as USER_COUNT;
+MERGE (u)-[:IS_PART_OF]->(g);
 
 //##2 Update User mit V_USERNAME
 CALL apoc.load.json ("file:///V_USERNAME.json")
-YIELD value as data
-UNWIND data.V_USERNAME as user
+YIELD value AS data
+UNWIND data.V_USERNAME AS user
 MERGE (u:User {id: user.BNAME})
     ON MATCH SET u.personalnummer = apoc.convert.toInteger(user.PERSNUMBER),
                 u.name = user.NAME_TEXT,
@@ -60,22 +62,22 @@ Where parent <>""
 
 //##4 Update Einzel/Sammelrolle mit AGR_AGRS
 CALL apoc.load.json ("file:///AGR_AGRS.json")
-YIELD value as data
-UNWIND data.AGR_AGRS as role
+YIELD value AS data
+UNWIND data.AGR_AGRS AS role
 MATCH (r:Rolle), (c:Rolle)
-    Where r.id = role.CHILD_AGR and c.id = role.AGR_NAME
-    Merge (c)-[:IS_COMPOSITE_OF]->(r)
+    WHERE r.id = role.CHILD_AGR AND c.id = role.AGR_NAME
+    MERGE (c)-[:IS_COMPOSITE_OF]->(r)
 WITH c, r, role
-where role.ATTRIBUTES ="X"
-    Merge (c)-[rel:IS_COMPOSITE_OF]->(r)
-    on CREATE SET rel.attr = "X";
+WHERE role.ATTRIBUTES ="X"
+    MERGE (c)-[rel:IS_COMPOSITE_OF]->(r)
+    ON CREATE SET rel.attr = "X";
 
 //##5 Zuordnung USER-Rolle mit AGR_USERS
 CALL apoc.load.json ("file:///AGR_USERS.json")
-YIELD value as data
-UNWIND data.AGR_USERS as role
+YIELD value AS data
+UNWIND data.AGR_USERS AS role
 MATCH (u:User), (r:Rolle)
-    WHERE u.id = role.UNAME and r.id = role.AGR_NAME
+    WHERE u.id = role.UNAME AND r.id = role.AGR_NAME
     MERGE (u)-[rela:HAS_ROLE]->(r)
         ON CREATE SET rela.gueltig_von = date(left(role.FROM_DAT,10)),
                      rela.gueltig_bis = date(left(role.To_DAT,10));
@@ -83,7 +85,7 @@ MATCH (u:User), (r:Rolle)
 //##6 Import Profile über USR11
 CREATE CONSTRAINT profilIdConstraint IF NOT EXISTS ON (p:Profil) ASSERT p.id IS UNIQUE;
 CALL apoc.load.json ("file:///USR11.json")
-YIELD value as data
+YIELD value AS data
 UNWIND data.USR11 as profil
 Merge (p:Profil {id: profil.PROFN})
     ON CREATE SET p.sprache = profil.LANGU,
