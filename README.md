@@ -44,7 +44,8 @@ versteht sie nicht).
 
 ```
 iam/
-├─ docker-compose.yml   # Neo4j + NeoDash, Versionen gepinnt, APOC
+├─ docker-compose.yml   # Neo4j + NeoDash + migrations, Versionen gepinnt, APOC
+├─ docker/              # Dockerfile(s), z. B. neo4j-migrations-CLI (gepinnt)
 ├─ migrations/          # neo4j-migrations: Constraints, Indizes
 ├─ load/               # LOAD CSV-Skripte (Daten liegen lokal)
 ├─ rules/              # Regelkatalog (sod_matrix.csv)

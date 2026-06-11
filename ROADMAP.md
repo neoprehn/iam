@@ -87,15 +87,18 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 ### Phase 1 — Datenmodell
 **Ziel:** Festgelegtes Schema (Labels, Relationship-Typen, Property-Keys) als Migrationen.
 
-- [ ] Kern-Knoten definieren: `User`, `Role`, `Profile`, `Authorization`, `AuthObject`, `Transaction`.
-- [ ] Erweiterungen nach Bedarf: `AuthField`, `ObjectClass`, `OrgValue` (nur falls Pivot nötig), `Service`/`FioriTile` (S/4).
-- [ ] Label-Schichtung festlegen: Primärlabel + Subtyp (`Role:Composite|Single|Derived`, `Profile:Single|Collective|Critical`, `User:Dialog|System|Communication`, `User:Active|Locked`) + Regelwerks-Markierung (`Transaction:Critical`, `AuthObject:Critical`).
-- [ ] Kantentypen: `ASSIGNED_TO` (User→Role, mit Gültigkeit), `CONTAINS` (Composite→Single), `DERIVED_FROM` (Derived→Master), `HAS_PROFILE` (User/Role→Profile), `HAS_AUTH` (Role/Profile→Authorization), `FOR_OBJECT` (Authorization→AuthObject), `CHECKS` (Transaction→AuthObject, aus SU24).
-- [ ] `V001__constraints.cypher`: Node-Key-/Unique-Constraints (User, Role, Profile, AuthObject, Transaction).
-- [ ] `V002__indexes.cypher`: u. a. Range-Index auf `ASSIGNED_TO(validFrom, validTo)` und weitere gültigkeitstragende Kanten.
-- [ ] Modell dokumentieren (`docs/datamodel.md` + Diagramm).
+- [x] Kern-Knoten definieren: `User`, `Role`, `Profile`, `Authorization`, `AuthObject`, `Transaction` (+ `Dataset`-Registry).
+- [ ] Erweiterungen nach Bedarf: `AuthField`, `ObjectClass`, `OrgValue` (nur falls Pivot nötig), `Service`/`FioriTile` (S/4). — *zurückgestellt, bei Bedarf als `V003__…`.*
+- [x] Label-Schichtung festlegen: Primärlabel + Subtyp (`Role:Composite|Single|Derived`, `Profile:Single|Collective|Critical`, `User:Dialog|System|Communication`, `User:Active|Locked`) + Regelwerks-Markierung (`Transaction:Critical`, `AuthObject:Critical`).
+- [x] Kantentypen: `ASSIGNED_TO` (User→Role, mit Gültigkeit), `CONTAINS` (Composite→Single), `DERIVED_FROM` (Derived→Master), `HAS_PROFILE` (User/Role→Profile), `HAS_AUTH` (Role/Profile→Authorization), `FOR_OBJECT` (Authorization→AuthObject), `CHECKS` (Transaction→AuthObject, aus SU24).
+- [x] `V001__constraints.cypher`: Unique-Constraints (Dataset, User, Role, Profile, AuthObject, Transaction; Community-tauglich via synthetischem `key`, da `dataset` Teil des Schlüssels ist).
+- [x] `V002__indexes.cypher`: Composite-Lookups `(dataset, id)` + Range-Index auf `ASSIGNED_TO(validFrom, validTo)`.
+- [x] Modell dokumentieren (`docs/datamodel.md`). *Diagramm später ergänzen.*
+- [x] **Versions-/Vergleichsdimension** `dataset` ins Schlüsseldesign aufgenommen (2025- vs. 2026-Stand in einer DB vergleichbar); mehrere Mandanten dagegen über getrennte Instanzen.
+- [x] **Migrations-Tooling** als gepinnter Container (`docker/neo4j-migrations.Dockerfile`, Compose-Service `migrations`, profile `tools`) — AE-02/AE-15.
+- [x] Phase in der Doku dokumentiert (`docs/phasen/phase-1.md`) — Dokumentations-DoD.
 
-**DoD:** `neo4j-migrations apply` stellt das vollständige Schema reproduzierbar her.
+**DoD:** `neo4j-migrations apply` stellt das vollständige Schema reproduzierbar her. ✓ verifiziert (`Database migrated to version 002.`).
 
 ---
 

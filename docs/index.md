@@ -21,6 +21,14 @@ Mandantendaten. SAP-Extrakte und das DB-Volume bleiben lokal (`data/`, gitignore
 :caption: Phasen
 
 phasen/phase-0
+phasen/phase-1
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Referenz
+
+datamodel
 ```
 
 ## Weiterführend

@@ -32,3 +32,21 @@ services:
       neo4j:
         condition: service_healthy
     restart: unless-stopped
+
+  # Schema-Migrationen (AE-02). Startet NICHT bei `docker compose up` (profile: tools).
+  # Anwenden:  docker compose run --rm migrations
+  # Status:    docker compose run --rm migrations info
+  migrations:
+    build:
+      context: ./docker
+      dockerfile: neo4j-migrations.Dockerfile
+    image: iam-neo4j-migrations:4.1.0
+    container_name: iam-migrations
+    profiles: ["tools"]
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    environment:
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+    volumes:
+      - ./migrations:/migrations
