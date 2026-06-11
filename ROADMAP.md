@@ -107,14 +107,18 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 
 Relevante Quelltabellen: `USR02` (Benutzer), `USR04`/`UST04` (Direktprofile), `USR10`/`UST10*` (Profile), `USR11` (Profiltexte), `UST12`/`USR12` (manuelle Feldwerte), `AGR_DEFINE` (Rollen, inkl. `PARENT_AGR`), `AGR_USERS` (Zuordnung+Gültigkeit), `AGR_AGRS` (Sammel→Einzel), `AGR_PROF` (Rolle→Profil), `AGR_1251` (Berechtigungsdaten), `AGR_1252` (Org-Ebenen), `AGR_TCODES`, `TOBJ`/`TOBC`, `TACT`/`TACTZ`, `TSTC`/`TSTCA`, `USOBT_C`/`USOBX_C` (SU24-Brücke TCode→Objekt).
 
-- [ ] Extraktionsleitfaden dokumentieren (welche Tabellen, welche Felder, Format CSV).
-- [ ] `load/`-Skripte je Tabelle (`LOAD CSV`) → Knoten und Kanten. CSV-Dateien auf dem Host nach `./data/import` legen und in Cypher als `file:///01_users.csv` referenzieren — **keine** Windows-Absolutpfade (`C:\…`), die der Linux-Container nicht versteht.
-- [ ] Gültigkeiten typisieren (Date-Konvertierung, `99991231`-Handling) — siehe AE-07.
-- [ ] `*`/unbeschränkt als Property speichern; Normalisierung erfolgt in der Abfragelogik (AE-06).
-- [ ] Sammelrollen-Auflösung und abgeleitete Rollen als Kanten abbilden.
-- [ ] Importvalidierung (Zähler je Knoten-/Kantentyp gegen Quell-Rowcounts).
+- [x] Extraktionsleitfaden dokumentieren (welche Tabellen, welche Felder, Format CSV) — `docs/extraktionsleitfaden.md`.
+- [x] `load/`-Skripte je Tabelle (`LOAD CSV`) → Knoten und Kanten. CSV-Dateien auf dem Host nach `./data/import` legen und in Cypher als `file:///01_users.csv` referenzieren — **keine** Windows-Absolutpfade (`C:\…`), die der Linux-Container nicht versteht.
+- [x] Gültigkeiten typisieren (Date-Konvertierung) — Format hier `DD.MM.YYYY`, `31.12.9999`→`9999-12-31`, `00.00.0000`→`null` (AE-07).
+- [x] `*`/unbeschränkt als Property speichern; Normalisierung erfolgt in der Abfragelogik (AE-06).
+- [x] Sammelrollen-Auflösung (`CONTAINS` aus AGR_AGRS). *Abgeleitete Rollen (`DERIVED_FROM`) zurückgestellt — keine Quelle im Extrakt (`PARENT_AGR`=Sammelrolle).*
+- [x] Importvalidierung (Zähler je Knoten-/Kantentyp) — `load/99_validate.cypher`.
+- [x] SE16-Konverter `load/Convert-Se16Export.ps1` (unkonvertiert → UTF-8/Tab/CSV); container-only via cypher-shell + APOC (kein Python).
+- [x] Phase in der Doku dokumentiert (`docs/phasen/phase-2.md`) — Dokumentations-DoD.
 
-**DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar.
+**DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar. ✓ verifiziert am dataset `sachsenenergie` (90.700 Authorizations, 72.109 `ASSIGNED_TO`, 63.088 `HAS_PROFILE`, 192.230 `CHECKS`).
+
+> **Hinweis:** `08_authorizations` (AGR_1251) ist der zeitintensivste Schritt; Performance-Optimierung (Zwei-Pass) als Folgearbeit offen.
 
 ---
 

@@ -22,6 +22,7 @@ Mandantendaten. SAP-Extrakte und das DB-Volume bleiben lokal (`data/`, gitignore
 
 phasen/phase-0
 phasen/phase-1
+phasen/phase-2
 ```
 
 ```{toctree}
