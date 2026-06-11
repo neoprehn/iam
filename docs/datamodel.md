@@ -76,6 +76,32 @@ Knoten, dessen Feldwerte als **Properties** anliegen. Identität entsteht über 
 **Invariante:** Kanten verlaufen immer *innerhalb* eines `dataset` (beide Endpunkte teilen
 denselben `dataset`-Wert). Ein Extrakt ist self-contained.
 
+## Diagramm
+
+```{mermaid}
+graph LR
+  User(("User"))
+  Role(("Role"))
+  Profile(("Profile"))
+  Auth(("Authorization"))
+  AuthObject(("AuthObject"))
+  Transaction(("Transaction"))
+
+  User -- "ASSIGNED_TO (validFrom/validTo)" --> Role
+  Role -- "CONTAINS" --> Role
+  Role -- "DERIVED_FROM" --> Role
+  User -- "HAS_PROFILE" --> Profile
+  Role -- "HAS_PROFILE" --> Profile
+  Role -- "HAS_AUTH" --> Auth
+  Profile -- "HAS_AUTH" --> Auth
+  Auth -- "FOR_OBJECT" --> AuthObject
+  Transaction -- "CHECKS" --> AuthObject
+```
+
+*Jeder Knoten trägt zusätzlich `dataset` (+ synthetischen `key`); der `Dataset`-Registry-Knoten
+steht ohne Kanten daneben. Can-Do verläuft `User → Role/Profile → Authorization → AuthObject`;
+`Transaction → AuthObject` (SU24) ist der Anknüpfungspunkt für Did-Do (AE-12).*
+
 ## Gültigkeit über den Pfad (AE-08)
 
 Auswertungen sind stichtagsbezogen (parametrisiert). Bei verschachtelten Sammelrollen muss

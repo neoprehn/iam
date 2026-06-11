@@ -10,6 +10,7 @@ language = "de"
 
 extensions = [
     "myst_parser",
+    "sphinxcontrib.mermaid",
 ]
 
 # MyST-Erweiterungen: Doppelpunkt-Fences (```{note}), Definitionslisten
