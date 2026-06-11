@@ -29,6 +29,7 @@ phasen/phase-1
 :caption: Referenz
 
 datamodel
+extraktionsleitfaden
 ```
 
 ## Weiterführend
