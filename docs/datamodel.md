@@ -72,6 +72,9 @@ Knoten, dessen Feldwerte als **Properties** anliegen. Identität entsteht über 
 | `HAS_AUTH` | `Role`/`Profile` → `Authorization` | AGR_1251 | — |
 | `FOR_OBJECT` | `Authorization` → `AuthObject` | AGR_1251 | — |
 | `CHECKS` | `Transaction` → `AuthObject` | USOBT_C/USOBX_C (SU24) | — |
+| `CONTAINS` | `Profile`(Collective) → `Profile`(Single) | UST10C | — |
+| `HAS_REFERENCE` | `User` → `User` (Referenzbenutzer) | USREFUS | — |
+| `HAS_MENU` | `Role` → `Transaction` (Rollenmenü, informativ) | AGR_TCODES | — |
 
 **Invariante:** Kanten verlaufen immer *innerhalb* eines `dataset` (beide Endpunkte teilen
 denselben `dataset`-Wert). Ein Extrakt ist self-contained.

@@ -8,3 +8,12 @@ RETURN count(*) AS composite;
 MATCH (r:Role {dataset:$dataset}) WHERE NOT (r)-[:CONTAINS]->()
 CALL apoc.create.addLabels(r, ['Single']) YIELD node
 RETURN count(*) AS single;
+
+// Profil-Subtypen: Collective = enthält Subprofile (UST10C), sonst Single
+MATCH (p:Profile {dataset:$dataset}) WHERE (p)-[:CONTAINS]->()
+CALL apoc.create.addLabels(p, ['Collective']) YIELD node
+RETURN count(*) AS coll_profile;
+
+MATCH (p:Profile {dataset:$dataset}) WHERE NOT (p)-[:CONTAINS]->()
+CALL apoc.create.addLabels(p, ['Single']) YIELD node
+RETURN count(*) AS single_profile;

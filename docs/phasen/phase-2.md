@@ -112,6 +112,23 @@ Beide Pfade sind abgebildet: **rollenbasiert** (`User -ASSIGNED_TO-> Role -HAS_A
 Authorization -FOR_OBJECT-> AuthObject`) und **direkt** (`User -HAS_PROFILE-> Profile`).
 Datensparsamkeit: aus USR02 wurden **keine** Passwort-/Hash-Felder geladen.
 
+## Erweiterte Quellen (Skripte 12–17)
+
+Zusätzlich zum Kern eingebunden:
+
+| Skript | Quelle | Ergebnis |
+| --- | --- | --- |
+| 12 | V_USERNAME | `:User.name/.nameLast/.persNumber` (personenbezogen, lokal) |
+| 13 | TOBJT | `:AuthObject.text` (Objekt-Texte, DE) |
+| 14 | USREFUS | `(:User)-[:HAS_REFERENCE]->(:User)` — im Datensatz `sachsenenergie` **0** (keine Referenzbenutzer gepflegt) |
+| 15 | UST10C | `(:Profile)-[:CONTAINS]->(:Profile)` (Sammelprofile, + `:Collective`) |
+| 16 | AGR_1252 | `:Role.org_<VARBL>` (Org-Ebenen abgeleiteter Rollen) |
+| 17 | AGR_TCODES | `(:Role)-[:HAS_MENU]->(:Transaction)` (Rollenmenü, informativ) |
+
+**Noch offen (schwer):** Profil-Eigenwerte aus **UST10S + UST12** (`(:Profile)-[:HAS_AUTH]->
+(:Authorization)` mit Feldwerten) — wie AGR_1251 ein zeitintensiver Lauf (UST12 ≈ 483k Zeilen).
+`USR13` (Auth-Texte) gehört dort dazu.
+
 ## Weitere Stände (z. B. 2026)
 
 Denselben Skriptsatz mit anderem `dataset` (= neuer Ordner unter `data/import/`) laufen lassen.
