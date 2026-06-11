@@ -3,6 +3,9 @@
 .env
 *.dump
 
+# Sphinx-Doku-Build
+docs/_build/
+
 # OS / Editor
 Thumbs.db
 .DS_Store

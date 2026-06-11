@@ -11,6 +11,8 @@
 
 Diese Datei ist als lebendes Dokument für die Weiterarbeit gedacht. Empfehlung: als `ROADMAP.md` ins Repo-Root committen. Eine Claude-Code-Sitzung kann phasenweise abarbeiten — die Checklisten (`[ ]`) als Fortschrittsanker nutzen, abgeschlossene Punkte auf `[x]` setzen. Die **Architektur-Entscheidungen** weiter unten sind verbindlich und sollten nicht ohne bewussten Grund verworfen werden; sie sichern die prüferische Belastbarkeit und die Vertraulichkeit.
 
+**Dokumentations-DoD (gilt für jede Phase).** Zur „Definition of Done" jeder Phase gehört, dass sie in der projektbegleitenden Doku (`docs/`, Sphinx + MyST, veröffentlicht über Read the Docs) so dokumentiert ist, dass die Schritte auf einem frischen Rechner nachvollziehbar sind. Pro Phase eine Seite unter `docs/phasen/`. Build-Konfiguration: `.readthedocs.yaml` + `docs/conf.py` + `docs/requirements.txt`. Die Doku enthält ausschließlich Logik/Vorgehen — niemals Mandantendaten.
+
 ---
 
 ## Leitprinzip: die Vertrauensgrenze
@@ -76,6 +78,7 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
   ```
 - [x] `docker compose up` testen; Neo4j Browser (`:7474`) und NeoDash (`:5005`) erreichbar.
 - [x] `cypher-shell` über den Container aufrufbar (nicht lokal installiert — siehe Windows-Spezifika).
+- [x] Doku-Setup (Sphinx + MyST, `.readthedocs.yaml`) und Phase 0 dokumentiert (`docs/phasen/phase-0.md`) — Dokumentations-DoD.
 
 **DoD:** Frisch geklontes Repo bringt mit wenigen Befehlen eine leere, lauffähige Umgebung hoch.
 

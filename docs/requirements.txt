@@ -1,0 +1,5 @@
+# Doku-Toolchain (gepinnt, AE-14). Wird von Read the Docs und beim lokalen
+# Container-Build installiert.
+sphinx==8.1.3
+myst-parser==4.0.1
+furo==2024.8.6
