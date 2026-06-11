@@ -1,0 +1,9 @@
+# Mandantendaten, Secrets, Dumps — niemals ins Repo (AE-01)
+/data/
+.env
+*.dump
+
+# OS / Editor
+Thumbs.db
+.DS_Store
+.idea/

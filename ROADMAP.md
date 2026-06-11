@@ -65,10 +65,10 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 **Ziel:** Lauffähige lokale Neo4j-Umgebung und Repo-Gerüst.
 
 - [ ] **Docker Desktop mit WSL2-Backend** installieren. Dadurch keine lokale Neo4j-/Java-Installation nötig (AE-15).
-- [ ] `docker-compose.yml`: Neo4j Community + NeoDash, Versionen gepinnt, APOC-Plugin, Volumes für DB und Import (`./data/import` → `/var/lib/neo4j/import`). Relative Pfade mit Vorwärts-Slashes (`./data/db:/data`).
-- [ ] Repo-Struktur in `iam` anlegen (siehe Zielstruktur unten).
-- [ ] `.gitignore` (`/data`, `.env`, `*.dump`) und `.env.example` (Vorlage ohne echte Secrets).
-- [ ] **`.gitattributes`** anlegen (Zeilenenden für den Linux-Container erzwingen — sonst CRLF-Fehler):
+- [x] `docker-compose.yml`: Neo4j Community + NeoDash, Versionen gepinnt, APOC-Plugin, Volumes für DB und Import (`./data/import` → `/var/lib/neo4j/import`). Relative Pfade mit Vorwärts-Slashes (`./data/db:/data`).
+- [x] Repo-Struktur in `iam` anlegen (siehe Zielstruktur unten).
+- [x] `.gitignore` (`/data`, `.env`, `*.dump`) und `.env.example` (Vorlage ohne echte Secrets).
+- [x] **`.gitattributes`** anlegen (Zeilenenden für den Linux-Container erzwingen — sonst CRLF-Fehler):
   ```
   *.cypher text eol=lf
   *.sh     text eol=lf

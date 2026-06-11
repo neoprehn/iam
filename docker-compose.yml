@@ -1,0 +1,34 @@
+services:
+  neo4j:
+    image: neo4j:5.26.27-community
+    container_name: iam-neo4j
+    ports:
+      - "7474:7474"   # Neo4j Browser (HTTP)
+      - "7687:7687"   # Bolt
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_apoc_import_file_enabled: "true"
+      NEO4J_apoc_import_file_use__neo4j__config: "true"
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+    volumes:
+      - ./data/db:/data
+      - ./data/import:/var/lib/neo4j/import   # file:///<name>.csv (AE-15)
+      - ./data/logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+    restart: unless-stopped
+
+  neodash:
+    image: neo4jlabs/neodash:2.4.11
+    container_name: iam-neodash
+    ports:
+      - "5005:5005"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: unless-stopped

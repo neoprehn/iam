@@ -1,0 +1,4 @@
+# Zeilenenden für den Linux-Container erzwingen (AE-15) — sonst CRLF-Fehler im Container
+*.cypher text eol=lf
+*.sh     text eol=lf
+*.ps1    text eol=crlf
