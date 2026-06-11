@@ -64,7 +64,7 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 ### Phase 0 — Fundament & Umgebung
 **Ziel:** Lauffähige lokale Neo4j-Umgebung und Repo-Gerüst.
 
-- [ ] **Docker Desktop mit WSL2-Backend** installieren. Dadurch keine lokale Neo4j-/Java-Installation nötig (AE-15).
+- [x] **Docker Desktop mit WSL2-Backend** installieren. Dadurch keine lokale Neo4j-/Java-Installation nötig (AE-15).
 - [x] `docker-compose.yml`: Neo4j Community + NeoDash, Versionen gepinnt, APOC-Plugin, Volumes für DB und Import (`./data/import` → `/var/lib/neo4j/import`). Relative Pfade mit Vorwärts-Slashes (`./data/db:/data`).
 - [x] Repo-Struktur in `iam` anlegen (siehe Zielstruktur unten).
 - [x] `.gitignore` (`/data`, `.env`, `*.dump`) und `.env.example` (Vorlage ohne echte Secrets).
@@ -74,8 +74,8 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
   *.sh     text eol=lf
   *.ps1    text eol=crlf
   ```
-- [ ] `docker compose up` testen; Neo4j Browser (`:7474`) und NeoDash (`:5005`) erreichbar.
-- [ ] `cypher-shell` über den Container aufrufbar (nicht lokal installiert — siehe Windows-Spezifika).
+- [x] `docker compose up` testen; Neo4j Browser (`:7474`) und NeoDash (`:5005`) erreichbar.
+- [x] `cypher-shell` über den Container aufrufbar (nicht lokal installiert — siehe Windows-Spezifika).
 
 **DoD:** Frisch geklontes Repo bringt mit wenigen Befehlen eine leere, lauffähige Umgebung hoch.
 
