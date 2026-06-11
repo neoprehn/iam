@@ -1,4 +1,8 @@
 # Zeilenenden für den Linux-Container erzwingen (AE-15) — sonst CRLF-Fehler im Container
-*.cypher text eol=lf
-*.sh     text eol=lf
-*.ps1    text eol=crlf
+*.cypher     text eol=lf
+*.sh         text eol=lf
+*.ps1        text eol=crlf
+
+# Container-Build-Dateien laufen im Linux-Container -> LF erzwingen
+*.Dockerfile text eol=lf
+Dockerfile   text eol=lf
