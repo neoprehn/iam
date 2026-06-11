@@ -124,10 +124,18 @@ Zusätzlich zum Kern eingebunden:
 | 15 | UST10C | `(:Profile)-[:CONTAINS]->(:Profile)` (Sammelprofile, + `:Collective`) |
 | 16 | AGR_1252 | `:Role.org_<VARBL>` (Org-Ebenen abgeleiteter Rollen) |
 | 17 | AGR_TCODES | `(:Role)-[:HAS_MENU]->(:Transaction)` (Rollenmenü, informativ) |
+| 18 | UST10S | `(:Profile)-[:HAS_AUTH]->(:Authorization{scope:'profile'})-[:FOR_OBJECT]->…` (Struktur) |
+| 19 | UST12 | Feldwerte `f_<FELD>` an den Profil-Templates (**verlustfrei, alle Profile**) |
+| 20 | USR13 | `:Authorization.authText` (Berechtigungs-Texte) |
 
-**Noch offen (schwer):** Profil-Eigenwerte aus **UST10S + UST12** (`(:Profile)-[:HAS_AUTH]->
-(:Authorization)` mit Feldwerten) — wie AGR_1251 ein zeitintensiver Lauf (UST12 ≈ 483k Zeilen).
-`USR13` (Auth-Texte) gehört dort dazu.
+:::{admonition} Verlustfrei by construction
+:class: important
+Skript 19 lädt die Profil-Feldwerte **ohne** annahmebasierte Eingrenzung — jedes Profil
+erhält seine tatsächlichen Werte aus der Quelle, auch wenn sie (bei diesem Konzept) den
+Rollen-Auths gleichen. Andere Berechtigungskonzepte können abweichen; der Import darf sich
+darauf nicht verlassen. Performance wird strukturell gelöst, **nie** durch Weglassen von Daten.
+Ebenso sind Sprach-/Textfilter robust (DE bevorzugt, sonst Fallback), nicht hart auf eine Sprache.
+:::
 
 ## Weitere Stände (z. B. 2026)
 
