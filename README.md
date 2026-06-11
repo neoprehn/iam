@@ -1,5 +1,9 @@
 # IAM — SAP-Berechtigungsanalyse mit Neo4j
 
+[![Documentation Status](https://readthedocs.org/projects/iam-iam/badge/?version=latest)](https://iam-iam.readthedocs.io/de/latest/)
+
+📖 **Doku:** <https://iam-iam.readthedocs.io/de/latest/>
+
 Graphbasierte Auswertung von SAP-Berechtigungen (R/3 und S/4HANA): Can-Do (Berechtigung)
 und Did-Do (Nutzung), inklusive SoD-Konfliktanalyse. Die Auswertung läuft **container-only**
 über Docker Desktop/WSL2 — keine lokale Neo4j- oder Java-Installation nötig.
