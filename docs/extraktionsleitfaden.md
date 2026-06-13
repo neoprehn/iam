@@ -31,6 +31,7 @@ vor dem Produktivlauf einmal gegen das konkrete SAP-System verifizieren (SE11/SE
 | --- | --- | --- |
 | `01_usr02.csv` | USR02 | Benutzer (Stammsatz, Typ, Sperre, Gültigkeit) |
 | `02_agr_define.csv` | AGR_DEFINE | Rollen (+ übergeordnete/Ableitungs-Rolle) |
+| `agr_texts.csv` | AGR_TEXTS | Rollentexte, **sprachabhängig** (Loader `21`, `$lang`-Schalter) |
 | `03_agr_agrs.csv` | AGR_AGRS | Sammelrolle → Einzelrolle |
 | `04_agr_users.csv` | AGR_USERS | User → Rolle (mit Gültigkeit) |
 | `05_agr_prof.csv` | AGR_PROF | Rolle → (generiertes) Profil |
@@ -77,6 +78,17 @@ Subtyp `Composite`/`Single` wird **abgeleitet**: Composite = tritt in `AGR_AGRS`
 `DERIVED_FROM` (abgeleitete Rolle → Master) haben in den aktuell extrahierten Tabellen **keine
 bestätigte Quelle** (`PARENT_AGR` = Sammelrolle, nicht Ableitungsvorlage) → **zurückgestellt**,
 bis die Ableitungs-Information vorliegt.
+
+### 21 — AGR_TEXTS (Rollentexte) → `:Role.text`
+| Spalte | Verwendung |
+| --- | --- |
+| `AGR_NAME` | Rollenname (Join auf `:Role`) |
+| `SPRAS` *(bzw. `SPRSL`)* | Sprachschlüssel → `$lang`-Schalter; Loader liest robust beide |
+| `TEXT` | Rollenbeschreibung → `r.text` |
+
+Kanonische, **sprachabhängige** Quelle für Rollentexte (`AGR_DEFINE.TEXT` in `02` ist
+einsprachig und lückenhaft). Läuft nach `02`: bevorzugte Sprache aus `$lang` überschreibt,
+sonst bleibt der erste vorhandene Text. Siehe `load/21_role_texts.cypher`.
 
 ### 03 — AGR_AGRS (Rollenhierarchie) → `CONTAINS`
 | Spalte | Verwendung |
