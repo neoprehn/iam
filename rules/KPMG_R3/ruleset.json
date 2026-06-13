@@ -6,6 +6,15 @@
   "model": "query-based (Queries = Funktionsbausteine; SoD-Regeln = boolesche Ausdruecke ueber Query-Variablen)",
   "source": "rules/_archive/KPMG/*.xlsx (5 Tabellen)",
   "generatedAt": "2026-06-13",
+  "combinationSemantics": {
+    "valuesWithinField": "AND wenn andLogic=true, sonst OR (Spalte G der Excel)",
+    "fieldsWithinObject": "AND",
+    "objectsWithinQuery": "AND",
+    "transactions": "OR (mehrere TCodes); tcode '*' = beliebig -> TCode-Teil trivial erfuellt",
+    "authVsTransaction": "AND (User braucht passenden TCode UND die Berechtigungsobjekte); fehlt ein Teil ganz, zaehlt nur der vorhandene",
+    "type": "SCOPE-Filter (welche Queries laufen), KEIN Operator: JAP=Jahresabschluss, AO=optional, TEST=Test",
+    "_note": "Vom Mandanten bestaetigtes Auswerte-Modell (Basis fuer den Phase-3-Evaluator). Beispiel 1003: (SNRO OR SNUM) AND (S_NUMBER.ACTVT=11|13) AND (S_NUMBER.NROBJ=*)."
+  },
   "counts": {
     "queries": 604,
     "queriesWithAuthorizations": 595,

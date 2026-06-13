@@ -6,7 +6,7 @@
     "M",
     "V"
   ],
-  "queryTypes": {
+  "queryTypes_toolLegend": {
     "AO": "Undefined",
     "AR": "Authorization and transaction",
     "ARQ": "Authorization (regardless transaction)",
@@ -17,6 +17,11 @@
     "TEST": "",
     "XO": "",
     "XR": ""
+  },
+  "typeUsage": {
+    "JAP": "Jahresabschluss-relevant (Pflicht-Scope)",
+    "AO": "optionale Query",
+    "TEST": "Test-Query"
   },
   "reasonCodes": [
     "A_A1+",
@@ -65,5 +70,5 @@
     "(QA OR QB OR QC) AND QD",
     "(QA OR QB OR QC) AND (QD OR QE)"
   ],
-  "_note": "soxClassificationScale/queryTypes etc. aus den ValueList_Helper-Blaettern der Excel-Vorlagen (Wertelegenden)."
+  "_note": "typeUsage = fachliche Bedeutung der genutzten type-Codes (vom Mandanten geklaert): type ist ein SCOPE-/Auswahl-Filter, KEIN Verknuepfungsoperator. queryTypes_toolLegend = Original-Text aus den ValueList_Helper-Blaettern (weicht ab, nur als Referenz)."
 }

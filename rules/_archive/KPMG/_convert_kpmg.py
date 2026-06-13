@@ -154,10 +154,17 @@ expr_templates = [s(r[1]) for r in dh if len(r) > 1 and r[1] is not None]
 
 legends = {
     "soxClassificationScale": [x for x in sox_scale if x],
-    "queryTypes": {k: v for k, v in types.items() if k},
+    "queryTypes_toolLegend": {k: v for k, v in types.items() if k},
+    "typeUsage": {
+        "JAP": "Jahresabschluss-relevant (Pflicht-Scope)",
+        "AO": "optionale Query",
+        "TEST": "Test-Query",
+    },
     "reasonCodes": [x for x in reason_codes if x],
     "expressionTemplates": [x for x in expr_templates if x],
-    "_note": "soxClassificationScale/queryTypes etc. aus den ValueList_Helper-Blaettern der Excel-Vorlagen (Wertelegenden).",
+    "_note": "typeUsage = fachliche Bedeutung der genutzten type-Codes (vom Mandanten geklaert): type ist ein "
+             "SCOPE-/Auswahl-Filter, KEIN Verknuepfungsoperator. queryTypes_toolLegend = Original-Text aus den "
+             "ValueList_Helper-Blaettern (weicht ab, nur als Referenz).",
 }
 
 ruleset = {
@@ -168,6 +175,15 @@ ruleset = {
     "model": "query-based (Queries = Funktionsbausteine; SoD-Regeln = boolesche Ausdruecke ueber Query-Variablen)",
     "source": "rules/_archive/KPMG/*.xlsx (5 Tabellen)",
     "generatedAt": datetime.date.today().isoformat(),
+    "combinationSemantics": {
+        "valuesWithinField": "AND wenn andLogic=true, sonst OR (Spalte G der Excel)",
+        "fieldsWithinObject": "AND",
+        "objectsWithinQuery": "AND",
+        "transactions": "OR (mehrere TCodes); tcode '*' = beliebig -> TCode-Teil trivial erfuellt",
+        "authVsTransaction": "AND (User braucht passenden TCode UND die Berechtigungsobjekte); fehlt ein Teil ganz, zaehlt nur der vorhandene",
+        "type": "SCOPE-Filter (welche Queries laufen), KEIN Operator: JAP=Jahresabschluss, AO=optional, TEST=Test",
+        "_note": "Vom Mandanten bestaetigtes Auswerte-Modell (Basis fuer den Phase-3-Evaluator). Beispiel 1003: (SNRO OR SNUM) AND (S_NUMBER.ACTVT=11|13) AND (S_NUMBER.NROBJ=*).",
+    },
     "counts": {
         "queries": len(queries_list),
         "queriesWithAuthorizations": sum(1 for q in queries_list if q["authorizations"]),
