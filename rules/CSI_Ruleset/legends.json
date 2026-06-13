@@ -1,0 +1,275 @@
+{
+  "queryTypes": {
+    "AO": "Audit - Optional",
+    "AR": "Audit - Required",
+    "ARQ": "Audit - Required Quick Scan",
+    "MO": "Monitoring - Optional",
+    "MR": "Monitoring - Required",
+    "XO": "Audit & Monitoring - Optional",
+    "XR": "Audit & Monitoring - Required",
+    "BUILD": "Not all parts maintained",
+    "TEST": "Query needs to be tested",
+    "DISP": "Display Only"
+  },
+  "soxClassification": {
+    "SOX_06": "",
+    "SOX_07": "",
+    "SOX_08": "",
+    "SOX_09": "",
+    "SOX_10": "",
+    "SOX_C": "Critical",
+    "SOX_H": "High",
+    "SOX_L": "Low",
+    "SOX_M": "Medium",
+    "SOX_V": "Very Critical",
+    "SOX_": ""
+  },
+  "gdprClassification": {
+    "L": "Low",
+    "M": "Medium",
+    "H": "High",
+    "C": "Critical",
+    "V": "Very Critical"
+  },
+  "sodReasonCodes": {
+    "A_A1+": "SOX : The integrity of AA master data is the basis for the integrity of the AA transactional data based on this master data.",
+    "A_A3+": "SOX : No user should have access to two consecutive stages within the AA flow.",
+    "A_F1+": "SOX : The integrity of FI master data is the basis for the integrity of the FI transactional data based on this master data.",
+    "A_F3+": "SOX : No user should have access to two consecutive stages within the FI flow.",
+    "A_F2+": "SOX : The payment functionality should be segregated from the other transactional data (postings, goods receipts, etc.).",
+    "A_M1+": "SOX : The integrity of MM master data is the basis for the integrity of all transactional data based on it.",
+    "A_M3+": "SOX : No user should have access to two consecutive stages within the MM flow.",
+    "A_P1+": "SOX : The integrity of HR master data is the basis for the integrity of the HR transactional data based on it.",
+    "A_P3+": "SOX : No user should have access to two consecutive stages within the HR flow.",
+    "A_V1+": "SOX : The integrity of SD master data is the basis for the integrity of all transactional data based on it.",
+    "A_V3+": "SOX : No user should have access to two consecutive stages within the SD flow.",
+    "A_X1+": "SOX : The registration of the logistical flows should be segregated from the registration of purely financial flows.",
+    "B_A1+": "SOX axt : The integrity of AA master data is the basis for the integrity of the AA transactional data based on this master data.",
+    "B_A3+": "SOX axt : No user should have access to two consecutive stages within the AA flow.",
+    "B_F1+": "SOX axt : The integrity of FI master data is the basis for the integrity of the FI transactional data based on this master data.",
+    "B_F3+": "SOX axt : No user should have access to two consecutive stages within the FI flow.",
+    "B_F2+": "SOX axt : The payment functionality should be segregated from the other transactional data (postings, goods receipts, etc.).",
+    "B_K1+": "SOX axt : The integrity of CO master data is the basis for the integrity of all transactional data based on it.",
+    "B_K3+": "SOX axt : No user should have access to two consecutive stages within the CO flow.",
+    "B_M1+": "SOX axt : The integrity of MM master data is the basis for the integrity of all transactional data based on it.",
+    "B_M3+": "SOX axt : No user should have access to two consecutive stages within the MM flow.",
+    "B_P1+": "SOX axt : The integrity of HR master data is the basis for the integrity of the HR transactional data based on it.",
+    "B_P3+": "SOX axt : No user should have access to two consecutive stages within the HR flow.",
+    "B_S": "axt: System access should be restricted",
+    "B_S_C": "axt : Customizer should never have access to other functionality",
+    "B_V1+": "SOX axt : The integrity of SD master data is the basis for the integrity of all transactional data based on it.",
+    "B_V3+": "SOX axt : No user should have access to two consecutive stages within the SD flow.",
+    "B_X1+": "SOX axt : The registration of the logistical flows should be segregated from the registration of purely financial flows.",
+    "B_X3+": "SOX axt : You need a separate group for maintaining HR functionality.",
+    "C_A4-": "axt : In some companies it can be a requirement that the master data within the AA module is further segregated.",
+    "C_C4-": "axt : In some companies it can be a requirement that the master data within the PP module is further segregated.",
+    "C_F4-": "axt : In some companies it can be a requirement that the master data within the FI module is further segregated.",
+    "C_F3-": "axt : No user should have access to two consecutive stages within the FI flow (nice to have).",
+    "C_F2-": "axt : The check information in the payment run may be altered or deleted to conceal illegitimate payments in the payment run.",
+    "C_F5-": "axt : A/R, A/P, G/L and Asset Accounting functionality should be segregated from one another.",
+    "C_K4-": "axt : In some companies it can be a requirement that the master data within the CO module is further segregated.",
+    "C_M4-": "axt : In some companies it can be a requirement that the master data within the MM module is further segregated.",
+    "C_M3-": "axt : No user should have access to two consecutive stages within the MM flow (nice to have).",
+    "C_P4-": "axt : In some companies it can be a requirement that the master data within the HR module is further segregated.",
+    "C_P3-": "axt : No user should have access to two consecutive stages within the HR flow (nice to have).",
+    "C_V4-": "axt : In some companies it can be a requirement that the master data within the SD module is further segregated.",
+    "C_V3-": "axt : No user should have access to two consecutive stages within the SD flow (nice to have).",
+    "C_X1+": "axt : The registration of the logistical flows should be segregated from the registration of purely financial flows.",
+    "C_X4-": "axt : The flow of incoming goods should be segregated from the flow of outgoing goods.",
+    "C_X3+": "axt : You need a separate group for maintaining HR functionality.",
+    "C_X9-": "axt : In ideal situations you would like another person to review the changes and activate the changes after approval.",
+    "C_X5-": "axt : In some companies it can be a requirement that the customer - vendor and material master data is further segregated.",
+    "C_X6-": "axt : In some companies it can be a requirement that the inventory management and sales flows are further segregated",
+    "C_X7-": "axt :In some companies it can be a requirement that the master data and PP flows are further segregated",
+    "C_X8-": "axt: In some companies it can be a requirement that the PP flow and the MM flows are futher segregated",
+    "O_F3+": "Optional : No user should have access to two consecutive stages within the FI flow. (workflow implemented)",
+    "B_C1+": "SOX axt : The integrity of PP master data is the basis for the integrity of the PP transactional data based on this master data.",
+    "B_C3+": "SOX axt : No user should have access to two consecutive stages within the PP flow.",
+    "C_A2-": "axt : In some companies it can be a requirement that the master data within the AA module is further segregated.",
+    "C_A3-": "axt : No user should have access to two consecutive stages within the AA flow (nice to have).",
+    "C_C2-": "axt : In some companies it can be a requirement that the master data within the PP module is further segregated.",
+    "C_C3-": "axt : No user should have access to two consecutive stages within the PP flow (nice to have).",
+    "C_K2-": "axt : In some companies it can be a requirement that the master data within the CO module is further segregated.",
+    "C_K3-": "axt : No user should have access to two consecutive stages within the CO flow (nice to have).",
+    "C_M2-": "axt : In some companies it can be a requirement that the master data within the MM module is further segregated.",
+    "C_P2-": "axt : In some companies it can be a requirement that the master data within the HR module is further segregated.",
+    "C_V2-": "axt : In some companies it can be a requirement that the master data within the SD module is further segregated.",
+    "C_X2-": "axt : The flow of incoming goods should be segregated from the flow of outgoing goods.",
+    "ZZ": ""
+  },
+  "sodDefinitions": [
+    {
+      "name": "#TEMPL001",
+      "alias": "Uni (U)",
+      "expression": "QA",
+      "description": "Returns the users from Query A"
+    },
+    {
+      "name": "#TEMPL002",
+      "alias": "Bi (B2)",
+      "expression": "QA AND QB",
+      "description": "Returns the users common in Query A and Query B"
+    },
+    {
+      "name": "#TEMPL003",
+      "alias": "Multi (M3)",
+      "expression": "QA AND QB AND QC",
+      "description": "Returns the users common in Query A and Query B and Query C"
+    },
+    {
+      "name": "#TEMPL004",
+      "alias": "Multi (M4)",
+      "expression": "QA AND QB AND QC AND QD",
+      "description": "Returns the users common in Query A and Query B and Query C and Query D"
+    },
+    {
+      "name": "#TEMPL017",
+      "alias": "Multi 017",
+      "expression": "(QA OR QB) AND QC AND QD",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL006",
+      "alias": "Bi (B2O) (OR)",
+      "expression": "QA OR QB",
+      "description": "Returns the users common in Query A or Query B"
+    },
+    {
+      "name": "#TEMPL007",
+      "alias": "Multi 3 (M3O) (OR)",
+      "expression": "QA OR QB OR QC",
+      "description": "Returns the users common in Query A or Query B or Query C"
+    },
+    {
+      "name": "#TEMPL008",
+      "alias": "Multi 008",
+      "expression": "(QA AND QB AND QC) AND (QD OR QE OR QF)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL009",
+      "alias": "Bi (B2O)+Bi(B2)",
+      "expression": "(QA OR QB) AND QC",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL019",
+      "alias": "Bi (B2O) + Bi (B2O)",
+      "expression": "(QA OR QB) AND (QC OR QD)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL011",
+      "alias": "Multi 011",
+      "expression": "(QA OR QB) AND (QC OR QD OR QE OR QF)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL012",
+      "alias": "Multi 012",
+      "expression": "(QA OR QB OR QC) AND (QD OR QE OR QF OR QG)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL013",
+      "alias": "Multi 013",
+      "expression": "(QA OR QB OR QC OR QD) AND QE",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL014",
+      "alias": "Bi(B2) + Bi (B2O)",
+      "expression": "QA AND (QB OR QC)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL015",
+      "alias": "Multi 015",
+      "expression": "QA AND (QB OR QC) AND QD",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL016",
+      "alias": "Multi 016",
+      "expression": "QA AND QB AND (QC OR QD)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL018",
+      "alias": "Multi 018",
+      "expression": "(QA OR QB) AND QC AND (QD OR QE)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL020",
+      "alias": "Multi (M5)",
+      "expression": "QA AND QB AND QC AND QD AND QE",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL021",
+      "alias": "Multi (M6)",
+      "expression": "QA AND QB AND QC AND QD AND QE AND QF",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL022",
+      "alias": "Multi (M7)",
+      "expression": "QA AND QB AND QC AND QD AND QE AND QF AND QG",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL023",
+      "alias": "Multi (M8)",
+      "expression": "QA AND QB AND QC AND QD AND QE AND QF AND QG AND QH",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL024",
+      "alias": "Multi (M9)",
+      "expression": "QA AND QB AND QC AND QD AND QE AND QF AND QG AND QH AND QI",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL025",
+      "alias": "Multi 025",
+      "expression": "QA AND QB AND QC AND (QD OR QE)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL026",
+      "alias": "Multi 026",
+      "expression": "QA AND QB AND QC AND QD AND (QE OR QF)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL027",
+      "alias": "Multi 027",
+      "expression": "QA AND QB AND QC AND QD AND (QE OR QF) AND (QG OR QH)",
+      "description": "Returns the users based on the expression."
+    },
+    {
+      "name": "#TEMPL028",
+      "alias": "Multi 028",
+      "expression": "QA AND (QB OR QC) AND QD AND QE",
+      "description": "Returns the users based on the expression."
+    }
+  ],
+  "riskLevels": [
+    "Extreme",
+    "High",
+    "Low",
+    "Medium"
+  ],
+  "riskTypes": [
+    "Detection risk",
+    "Inherent risk",
+    "Internal control risk"
+  ],
+  "riskStatuses": [
+    "Mitigated",
+    "Not assessed",
+    "Not mitigated",
+    "Partly mitigated"
+  ]
+}

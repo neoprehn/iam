@@ -1,0 +1,25 @@
+{
+  "ruleset": "csi_bi",
+  "name": "CSI SoD-Ruleset BI/BW",
+  "note": "CSI-tools-Vorlage fuer BI/BW (mit Control-Katalog).",
+  "model": "query-based (CSI tools QuerySet) — identisch zu KPMG_R3, nativ + reicher (Risk-Objekte, DisregardTCode)",
+  "source": "rules/_archive/CSI_BI/ (CSI QuerySet-XML)",
+  "generatedAt": "2026-06-13",
+  "combinationSemantics": {
+    "valuesWithinField": "AND wenn andLogic=true, sonst OR (AndLogicForValues)",
+    "fieldsWithinObject": "AND",
+    "objectsWithinQuery": "AND",
+    "transactions": "OR (mehrere TCodes); tcode '*' = beliebig",
+    "authVsTransaction": "AND (TCode UND Berechtigungsobjekte); bei query.disregardTcode=true nur Auth",
+    "type": "SCOPE-Filter (queryType, siehe legends.queryTypes), KEIN Operator",
+    "_note": "Identisch zum bestaetigten KPMG_R3-Modell; CSI hat DisregardTCode explizit je Query."
+  },
+  "counts": {
+    "queries": 735,
+    "queriesWithAuthorizations": 727,
+    "queriesWithTransactions": 702,
+    "sodRules": 455,
+    "variableMappings": 1132,
+    "risks": 440
+  }
+}

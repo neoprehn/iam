@@ -1,0 +1,3962 @@
+[
+  {
+    "risk": "Depreciation done on fictitious asset",
+    "alias": "ITD_MT_B2_0001",
+    "description": "User is able to create a fictitious asset and execute a depreciation run on the fictitious asset",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Process invoices on fictitious asset",
+    "alias": "ITD_MT_B2_0002",
+    "description": "User is able to create a fictitious asset and process an invoice on the fictitious asset",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Reevalutation done on fictitious asset",
+    "alias": "ITD_MT_B2_0003",
+    "description": "User is able to create a fictitious asset and post a revaluation document on the fictitious asset",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scrapping/Sales done on fictitious asset",
+    "alias": "ITD_MT_B2_0004",
+    "description": "Unauthorized or inappropriate changes to Asset MD can lead to incorrect or fraudulent Asset removals",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting a faudulent invoice & Depreciation run",
+    "alias": "ITD_TT_B2_0001",
+    "description": "User is able to post or change wrong invoices and execute a depreciation run",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Depreciation & Revalution acitivites",
+    "alias": "ITD_TT_B2_0002",
+    "description": "Depreciation & Revalution acitivites",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Asset Sales - Scrapping & Revaluation activities",
+    "alias": "ITD_TT_B2_0003",
+    "description": "Asset Sales - Scrapping & Revaluation activities",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a vendor invoice",
+    "alias": "FIN_MT_B2_0001",
+    "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post/Clear a vendor invoice",
+    "alias": "FIN_MT_B2_0002",
+    "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a parked vendor invoice",
+    "alias": "FIN_MT_B2_0003",
+    "description": "User is able to open an accounting period and post or change an A/P parked document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a recurring vendor inv",
+    "alias": "FIN_MT_B2_0005",
+    "description": "User is able to open an accounting period and post or change an A/P recurring document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a customer invoice",
+    "alias": "FIN_MT_B2_0006",
+    "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post/Clear a customer invoice",
+    "alias": "FIN_MT_B2_0007",
+    "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a parked customer inv.",
+    "alias": "FIN_MT_B2_0008",
+    "description": "User is able to open an accounting period and post or change an A/R parked document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a customer payment",
+    "alias": "FIN_MT_B2_0009",
+    "description": "User is able to open an accounting period and post an incoming payment in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a recurring customer inv",
+    "alias": "FIN_MT_B2_0010",
+    "description": "User is able to open an accounting period and post or change an A/R recurring document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Mass reverse FI documents",
+    "alias": "FIN_MT_B2_0011",
+    "description": "User is able to open an accounting period and make a mass reversal of posting documents in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a G/L document",
+    "alias": "FIN_MT_B2_0012",
+    "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post/Clear a G/L document",
+    "alias": "FIN_MT_B2_0013",
+    "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a parked G/L document",
+    "alias": "FIN_MT_B2_0014",
+    "description": "User is able to open an accounting period and post or change an G/L parked document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a recurring G/L document",
+    "alias": "FIN_MT_B2_0015",
+    "description": "User is able to open an accounting period and post or change an G/L recurring document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting Bank statement on fictitious customers",
+    "alias": "FIN_MT_B2_0016",
+    "description": "User is able to create and change a fictitious customers and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Payment advice on fictitious customer",
+    "alias": "FIN_MT_B2_0017",
+    "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks.\nUser is able to make pay fictitious customer and post/hide wrong payment advice.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & A/P postings",
+    "alias": "FIN_MT_B2_0018",
+    "description": "Unauthorized or wrong A/P postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & A/P postings & clearing",
+    "alias": "FIN_MT_B2_0019",
+    "description": "Unauthorized or wrong A/P postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & Payment run",
+    "alias": "FIN_MT_B2_0020",
+    "description": "Unauthorized or wrong A/P payment runs may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & Outgoing Payment",
+    "alias": "FIN_MT_B2_0021",
+    "description": "Unauthorized or wrong outgoing payments may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & A/R postings",
+    "alias": "FIN_MT_B2_0022",
+    "description": "Unauthorized or wrong A/R postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & A/R postings & clearing",
+    "alias": "FIN_MT_B2_0023",
+    "description": "Unauthorized or wrong A/R postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & Incoming Payment",
+    "alias": "FIN_MT_B2_0024",
+    "description": "Unauthorized or wrong incoming payments may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & G/L postings",
+    "alias": "FIN_MT_B2_0025",
+    "description": "Unauthorized or wrong G/L postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account COA & G/L postings & clearing",
+    "alias": "FIN_MT_B2_0026",
+    "description": "Unauthorized or wrong G/L postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & Inv. verification",
+    "alias": "FIN_MT_B2_0027",
+    "description": "Unauthorized or wrong A/P postings of invoices may not be detected during the invoice verification process as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & A/P postings",
+    "alias": "FIN_MT_B2_0028",
+    "description": "Unauthorized or wrong A/P postings may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & A/P postings/clearing",
+    "alias": "FIN_MT_B2_0029",
+    "description": "Unauthorized or wrong A/P postings may not be detected as the user can create/change fictitious G/L accounts in a company code and post and clear an invcoice, credit memo, outgoing payment and incoming payment.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & Payment run",
+    "alias": "FIN_MT_B2_0030",
+    "description": "Unauthorized or wrong A/P payment runs may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & Outgoing Payment",
+    "alias": "FIN_MT_B2_0031",
+    "description": "Unauthorized or wrong outgoing payments may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & A/R postings",
+    "alias": "FIN_MT_B2_0032",
+    "description": "Unauthorized or wrong A/R postings may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & A/R postings/clearing",
+    "alias": "FIN_MT_B2_0033",
+    "description": "Unauthorized or wrong A/R postings may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & A/R Payment run",
+    "alias": "FIN_MT_B2_0034",
+    "description": "Unauthorized or wrong A/R payment runs may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & Incoming Payment",
+    "alias": "FIN_MT_B2_0035",
+    "description": "Unauthorized or wrong incoming payments may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Maintain G/L account CyCo & G/L postings",
+    "alias": "FIN_MT_B2_0036",
+    "description": "Unauthorized or wrong G/L postings may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Mass Maintain G/L account CyCo & Payment run",
+    "alias": "FIN_MT_B2_0037",
+    "description": "Unauthorized or wrong A/P payment runs may not be detected as the user can mass create and mass change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Mass Maintain G/L account CyCo & Incoming Payment",
+    "alias": "FIN_MT_B2_0038",
+    "description": "Unauthorized or wrong incoming payments may not be detected as the user can mass create and mass change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting fraudulent credit note on fictitious cust.",
+    "alias": "FIN_MT_B2_0039",
+    "description": "User is able to create and change a fictitious customer and post and clear a fraudulent credit note",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting bank statement on fictitious customers (S)",
+    "alias": "FIN_MT_B2_0040",
+    "description": "User is able to create and change a fictitious customers and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting payment advice on fictitious customers",
+    "alias": "FIN_MT_B2_0041",
+    "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks.\n\nUser is able to make pay fictitious customer and post/hide wrong payment advice.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Hiding G/L posting on fictitious customers",
+    "alias": "FIN_MT_B2_0042",
+    "description": "User is able to create or change a fictitious customers with wrong reconciliation account and make wrong posting with clearing in GL",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Post/cl fraudulent credit note on fictitious cust.",
+    "alias": "FIN_MT_B2_0043",
+    "description": "User is able to create and change a fictitious customer and post and clear a fraudulent credit note",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting bank statement on fictitious customers (C)",
+    "alias": "FIN_MT_B2_0044",
+    "description": "User is able to create and change a fictitious customers and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Posting payment advice on fictitious customers (C)",
+    "alias": "FIN_MT_B2_0045",
+    "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks.\n\nUser is able to make pay fictitious customer and post/hide wrong payment advice.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Hiding G/L posting on fictitious customers (C)",
+    "alias": "FIN_MT_B2_0046",
+    "description": "User is able to create or change a fictitious customers with wrong reconciliation account and make wrong posting with clearing in GL",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Hiding G/L posting on fictitious vendors",
+    "alias": "FIN_MT_B2_0047",
+    "description": "User is able to create fictitious vendor with wrong reconciliation account and make G/L postings with clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a vendor invoice (2)",
+    "alias": "FIN_MT_B2_0048",
+    "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a parked vendor inv. (2)",
+    "alias": "FIN_MT_B2_0049",
+    "description": "User is able to open an accounting period and post or change an A/P parked document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a recurring vend inv (2",
+    "alias": "FIN_MT_B2_0051",
+    "description": "User is able to open an accounting period and post or change an A/P recurring document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a customer invoice (2)",
+    "alias": "FIN_MT_B2_0052",
+    "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post/Clear a customer inv (2)",
+    "alias": "FIN_MT_B2_0053",
+    "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a parked cust. inv. (2)",
+    "alias": "FIN_MT_B2_0054",
+    "description": "User is able to open an accounting period and post or change an A/R parked document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a customer payment (2)",
+    "alias": "FIN_MT_B2_0055",
+    "description": "User is able to open an accounting period and post an incoming payment in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a recurring cust. inv.(2",
+    "alias": "FIN_MT_B2_0056",
+    "description": "User is able to open an accounting period and post or change an A/R recurring document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Mass reverse FI documents (2)",
+    "alias": "FIN_MT_B2_0057",
+    "description": "User is able to open an accounting period and make a mass reversal of posting documents in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a G/L document (2)",
+    "alias": "FIN_MT_B2_0058",
+    "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post/Clear a G/L document (2)",
+    "alias": "FIN_MT_B2_0059",
+    "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a parked G/L document(2)",
+    "alias": "FIN_MT_B2_0060",
+    "description": "User is able to open an accounting period and post or change an G/L parked document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a recurring G/L doc. (2)",
+    "alias": "FIN_MT_B2_0061",
+    "description": "User is able to open an accounting period and post or change an G/L recurring document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a vendor invoice (3)",
+    "alias": "FIN_MT_B2_0062",
+    "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "FI-SL Plan Period AND Special Ledger",
+    "alias": "FIN_MT_B2_0063",
+    "description": "",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "FI Posting Periods (Open/Close) AND Asset Manual P",
+    "alias": "ITD_MT_B2_0005",
+    "description": "User is able to open an accounting period and post or change an AM document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(G/L M.D. on CoA level or Mass) AND Asset Manual P",
+    "alias": "ITD_MT_B2_0006",
+    "description": "Unauthorized or wrong AM postings may not be detected as the user can create and change fictitious G/L accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "G/L M.D. on Company Code level AND Asset Manual Po",
+    "alias": "ITD_MT_B2_0007",
+    "description": "Unauthorized or wrong AM postings may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a Asset Mgt document",
+    "alias": "ITD_MT_B2_0008",
+    "description": "User is able to open an accounting period and post or change an AM document in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND A/P Postings wi",
+    "alias": "OTC_MT_B2_0001",
+    "description": "User is able to create and change a fictitious customer and post and clear a fraudulent credit note",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND Credit Managemt",
+    "alias": "OTC_MT_B2_0002",
+    "description": "User is able to create a fictitious customer or to change an existing customer (unblock) and to broaden the credit limits for that customer. Then unwanted sales orders could be registered again for that customer.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND A/R Manual Post",
+    "alias": "OTC_MT_B2_0003",
+    "description": "User is able to create and change a fictitious customer and post a fraudulent invoice or credit memo on the fictitious customer",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND A/R Payment Adv",
+    "alias": "OTC_MT_B2_0004",
+    "description": "User is able to create and change a fictitious customer and post wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND A/R Postings wi",
+    "alias": "OTC_MT_B2_0005",
+    "description": "User is able to create and change a fictitious customer and post and clear a fraudulent invoice or credit memo on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND A/R Parked Doc.",
+    "alias": "OTC_MT_B2_0006",
+    "description": "User is able to create and change a fictitious customer and post a parked invoice or credit memo on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND A/R Incoming Pa",
+    "alias": "OTC_MT_B2_0007",
+    "description": "User is able to create and change a fictitious customer and post fictitious payments",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND G/L Postings wi",
+    "alias": "OTC_MT_B2_0008",
+    "description": "User is able to create or change a fictitious customers with wrong reconciliation account and make wrong posting with clearing in GL",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND MM Backorder Pr",
+    "alias": "OTC_MT_B2_0009",
+    "description": "User is able to create and change fictitious customers and maintain backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND SD Backorder Pr",
+    "alias": "OTC_MT_B2_0010",
+    "description": "User is able to create and change fictitious customers and maintain backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND Billing Process",
+    "alias": "OTC_MT_B2_0011",
+    "description": "User is able to create and change fictitious customers and create billing documents on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND (Contracts and",
+    "alias": "OTC_MT_B2_0012",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent contracts on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND Deliveries",
+    "alias": "OTC_MT_B2_0013",
+    "description": "User is able to create and change fictitious customers and create fraudulent deliveries on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND Release Orders",
+    "alias": "OTC_MT_B2_0014",
+    "description": "User is able to create and change fictitious customers and release fraudulent sales orders for billing on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND Scheduling agre",
+    "alias": "OTC_MT_B2_0015",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent scheduling agreements on the fictitious customer accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Fin.) or Mass) AND (Sales Orders o",
+    "alias": "OTC_MT_B2_0016",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent sales orders on the fictitious customers",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) Or Mass) AND Credit Managem",
+    "alias": "OTC_MT_B2_0022",
+    "description": "User is able to create a fictitious customer or to change an existing customer (unblock) and to broaden the credit limits for that customer. Then unwanted sales orders could be registered again for that customer.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) Or Mass) AND A/R Manual Pos",
+    "alias": "OTC_MT_B2_0023",
+    "description": "User is able to create and change a fictitious customer and post a fraudulent invoice or credit memo on the fictitious customer",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) Or Mass) AND A/R Payment Ad",
+    "alias": "OTC_MT_B2_0024",
+    "description": "User is able to create and change a fictitious customer and post wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) Or Mass) AND A/R Postings w",
+    "alias": "OTC_MT_B2_0025",
+    "description": "User is able to create and change a fictitious customer and post and clear a fraudulent invoice or credit memo on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) Or Mass) AND A/R Incoming P",
+    "alias": "OTC_MT_B2_0026",
+    "description": "User is able to create and change a fictitious customer and post fictitious payments",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND Credit Ma",
+    "alias": "OTC_MT_B2_0035",
+    "description": "User is able to create a fictitious customer or to change an existing customer (unblock) and to broaden the credit limits for that customer. Then unwanted sales orders could be registered again for that customer.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND A/R Manua",
+    "alias": "OTC_MT_B2_0036",
+    "description": "User is able to create and change a fictitious customer and post a fraudulent invoice or credit memo on the fictitious customer",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND A/R Payme",
+    "alias": "OTC_MT_B2_0037",
+    "description": "User is able to create and change a fictitious customer and post wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND A/R Posti",
+    "alias": "OTC_MT_B2_0038",
+    "description": "User is able to create and change a fictitious customer and post and clear a fraudulent invoice or credit memo on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND A/R Incom",
+    "alias": "OTC_MT_B2_0039",
+    "description": "User is able to create and change a fictitious customer and post fictitious payments",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND (Vendor M.D. (Fin) OR Mass)",
+    "alias": "PTP_MT_B2_0001",
+    "description": "User is able to subsequently create and change G/L recurring document and create and change A/P recurring document",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND (Vendor M.D. (Purch) OR Mas",
+    "alias": "PTP_MT_B2_0002",
+    "description": "User is able to create and change fraudulent recurring invoices and credit memos on vendor accounts and create and change wrong service entry sheets",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND (Vendor M.D. (Centrally) OR",
+    "alias": "PTP_MT_B2_0003",
+    "description": "User is able to create and change fraudulent recurring invoices and credit memos on vendor accounts and create and change wrong service entry sheets",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND Vendor Downpaymen",
+    "alias": "PTP_MT_B2_0004",
+    "description": "User is able to release a fraudulent downpayment for an invoice by changing bank account number of an existing vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND Inv. Verification",
+    "alias": "PTP_MT_B2_0005",
+    "description": "User is able to create a fictitous vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND Release Blocked I",
+    "alias": "PTP_MT_B2_0006",
+    "description": "User is able to enter a fraudulent bank account number on an invoice the user is releasing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND A/P Manual Postin",
+    "alias": "PTP_MT_B2_0007",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND A/P Postings with",
+    "alias": "PTP_MT_B2_0008",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting and clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND A/P Parked Doc. P",
+    "alias": "PTP_MT_B2_0009",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND A/P Payment Run",
+    "alias": "PTP_MT_B2_0010",
+    "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND A/P Outgoing Paym",
+    "alias": "PTP_MT_B2_0011",
+    "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND Release for Payme",
+    "alias": "PTP_MT_B2_0012",
+    "description": "User is able to enter a fraudulent bank account number in the vendor and release an invoice for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND Check Managemt",
+    "alias": "PTP_MT_B2_0013",
+    "description": "User is able to enter a fraudulent bank account number / change critical data in the vendor and initiate payment by check",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND G/L Postings with",
+    "alias": "PTP_MT_B2_0014",
+    "description": "User is able to create fictitious vendor with wrong reconciliation account and make G/L postings with clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) Or Mass) AND Goods Receipts fo",
+    "alias": "PTP_MT_B2_0015",
+    "description": "User is able to create or change a fictitious or unapproved vendor and post goods receipts on purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Fin.) or Mass) AND (Purchase Orders",
+    "alias": "PTP_MT_B2_0016",
+    "description": "User is able to create or change a fictitious or unapproved vendor and create purchase orders on this vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass)  AND Vendor Downpay",
+    "alias": "PTP_MT_B2_0018",
+    "description": "User is able to release a fraudulent downpayment for an invoice by changing bank account number of an existing vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass)  AND Inv. Verificat",
+    "alias": "PTP_MT_B2_0019",
+    "description": "User is able to create a fictitous vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND Release Blocked",
+    "alias": "PTP_MT_B2_0020",
+    "description": "User is able to enter a fraudulent bank account number on an invoice the user is releasing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND A/P Manual Post",
+    "alias": "PTP_MT_B2_0021",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass)  AND A/P Postings w",
+    "alias": "PTP_MT_B2_0022",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting and clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND A/P Parked Doc.",
+    "alias": "PTP_MT_B2_0023",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass)  AND A/P Payment Ru",
+    "alias": "PTP_MT_B2_0024",
+    "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass)  AND A/P Outgoing P",
+    "alias": "PTP_MT_B2_0025",
+    "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND Release for Pay",
+    "alias": "PTP_MT_B2_0026",
+    "description": "User is able to enter a fraudulent bank account number in the vendor and release an invoice for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND Check Managemt",
+    "alias": "PTP_MT_B2_0027",
+    "description": "User is able to enter a fraudulent bank account number in the vendor and initiate payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND G/L Postings wi",
+    "alias": "PTP_MT_B2_0028",
+    "description": "User is able to create fictitious vendor with wrong reconciliation account and make G/L postings with clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND Vendor Downp",
+    "alias": "PTP_MT_B2_0031",
+    "description": "User is able to release a fraudulent downpayment for an invoice by changing bank account number of an existing vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND Inv. Verific",
+    "alias": "PTP_MT_B2_0032",
+    "description": "User is able to create a fictitous vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND Release Bloc",
+    "alias": "PTP_MT_B2_0033",
+    "description": "User is able to enter a fraudulent bank account number on an invoice the user is releasing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND A/P Manual P",
+    "alias": "PTP_MT_B2_0034",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND A/P Postings",
+    "alias": "PTP_MT_B2_0035",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting and clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND A/P Parked D",
+    "alias": "PTP_MT_B2_0036",
+    "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND A/P Payment",
+    "alias": "PTP_MT_B2_0037",
+    "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND A/P Outgoing",
+    "alias": "PTP_MT_B2_0038",
+    "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND Release for",
+    "alias": "PTP_MT_B2_0039",
+    "description": "User is able to enter a fraudulent bank account number in the vendor and release an invoice for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND Check Manage",
+    "alias": "PTP_MT_B2_0040",
+    "description": "User is able to enter a fraudulent bank account number / change critical data in the vendor and initiate payment by check",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) Or Mass) AND Goods Receip",
+    "alias": "PTP_MT_B2_0041",
+    "description": "User is able to create or change a fictitious or unapproved vendor and post goods receipts on purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND A/R Payment Advice",
+    "alias": "FIN_TT_B2_0001",
+    "description": "User is able to post a vendor downpayment request and post payment advice in account receivable",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND A/R Postings with C",
+    "alias": "FIN_TT_B2_0002",
+    "description": "User is able to post and clear a fraudulent customen credit memo and post a request for downpayment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND A/R Incoming Paymen",
+    "alias": "FIN_TT_B2_0003",
+    "description": "User is able to maintain payment in accounts payable and accounts receivable",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND Bank Statements",
+    "alias": "FIN_TT_B2_0004",
+    "description": "User is able to subsequently post downpayment requets and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND Cash Managemt",
+    "alias": "FIN_TT_B2_0005",
+    "description": "User is able to create Vendor advanced payments without supporting postings or documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND Check Managemt",
+    "alias": "FIN_TT_B2_0006",
+    "description": "User is able to create Vendor advanced payments without supporting postings or documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND G/L Postings with C",
+    "alias": "FIN_TT_B2_0007",
+    "description": "User is able to subsequently post downpayment requets and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Inv. Verification AND G/L Postings with Clearing",
+    "alias": "FIN_TT_B2_0008",
+    "description": "User is able to subsequently post vendor invoices or credit memos and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Inv. AND G/L Postings with Clearin",
+    "alias": "FIN_TT_B2_0009",
+    "description": "User is able to subsequently release vendor invoices or credit memos and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Manual Postings AND Check Managemt",
+    "alias": "FIN_TT_B2_0010",
+    "description": "Unauthorized or inappropriate creation of vendor invoices (directly in FI module) / changes to Invoice posting functionality resulting incorrect of unjustified payments of invoices (by check) and increases fraud vulnerability.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Manual Postings AND G/L Postings with Clearing",
+    "alias": "FIN_TT_B2_0011",
+    "description": "User is able to subsequently post a vendor invoice or credit memo and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Postings with Clearing AND A/R Manual Postings",
+    "alias": "FIN_TT_B2_0012",
+    "description": "User is able to post and clear vendor invoices or credit memos and create and change invoices and credit memos on customer accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Postings with Clearing AND A/R Parked Doc. Pos",
+    "alias": "FIN_TT_B2_0013",
+    "description": "User is able to subsequently post and clear a vendor invoice or credit memo and create or change parked credit memos and customer invoices in A/R",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Parked Doc. Postings AND Check Managemt",
+    "alias": "FIN_TT_B2_0014",
+    "description": "Material errors or misstatements in the financial statement en management reporting due to incomplete recording of assets and liabilities,  increased fraud vulnerability or recording of transactions in the wrong accounting periods.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND Check Managemt",
+    "alias": "FIN_TT_B2_0016",
+    "description": "Release a non bona-fide purchase order and initiate payment for the order by entering invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release for Payments AND Check Managemt",
+    "alias": "FIN_TT_B2_0018",
+    "description": "User is able to issue a check and pay blocked invoices which the user has released (via workflow)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release for Payments AND G/L Postings with Clearin",
+    "alias": "FIN_TT_B2_0019",
+    "description": "User is able to subsequently release vendor invoices or credit memos and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Manual Postings AND Cash Managemt",
+    "alias": "FIN_TT_B2_0020",
+    "description": "User can initiate a payment by creating fictitious credit memos / can pay a frudulent credit memo by issuing checks",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Manual Postings AND G/L Postings with Clearing",
+    "alias": "FIN_TT_B2_0021",
+    "description": "User is able to subsequently post a customer invoice or credit memo and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Parked Doc. Postings AND Cash Managemt",
+    "alias": "FIN_TT_B2_0022",
+    "description": "Material errors or misstatements in the financial statement en management reporting due to incomplete recording of assets and liabilities,  increased fraud vulnerability or recording of transactions in the wrong accounting periods.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Postings with Clearing AND  G/L Manual Posting",
+    "alias": "FIN_TT_B2_0047",
+    "description": "User is able to subsequently post a vendor invoice or credit memo and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Manual Postings AND Electronic Check Deposits",
+    "alias": "FIN_TT_B2_0048",
+    "description": "Initiate a payment by creating fictitious credit memos",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Incoming Payment Postings AND A/R Manual Posti",
+    "alias": "OTC_TT_B2_0003",
+    "description": "User is able to post fraudulent customer invoices or credit memos and post nonexistent payments or reimbursements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/R Manual Postings",
+    "alias": "OTC_TT_B2_0016",
+    "description": "User is able to bypass sales process flow by creating a credit memo or invoice directly in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND A/P Postings with C",
+    "alias": "PTP_TT_B2_0001",
+    "description": "User is able to post and clear a fraudulent vendor invoice and post a request for downpayment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release po.inv. via FB02 instd of MR02 AND A/P Out",
+    "alias": "PTP_TT_B2_0002",
+    "description": "User is able to release invoices in MM and release an unwanted payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release po.inv. via FB02 instd of MR02 AND GR/IR C",
+    "alias": "PTP_TT_B2_0003",
+    "description": "User is able to subsequently create and change G/L recurring document and release vendors invoices or credit memos directly in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Inv. Verification AND A/P Postings with Clearing",
+    "alias": "PTP_TT_B2_0005",
+    "description": "User is able to bypass the MM module and book invoices directly in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Inv. Verification AND GR/IR Clearing Account",
+    "alias": "PTP_TT_B2_0009",
+    "description": "User is able to subsequently create and change G/L recurring document and create and change vendors invoices or credit memos",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Inv. AND A/P Postings with Clearin",
+    "alias": "PTP_TT_B2_0010",
+    "description": "User is able to release invoices in MM and post an invoice directly in Finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Inv. AND A/P Outgoing Payment Post",
+    "alias": "PTP_TT_B2_0012",
+    "description": "User is able to release a fraudulent payment for an invoice which the user has released",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Inv. AND Check Managemt",
+    "alias": "PTP_TT_B2_0013",
+    "description": "User is able to release a blocked invoice (with MR02) and pay that invoice by issuing check",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Manual Postings AND A/P Outgoing Payment Posti",
+    "alias": "PTP_TT_B2_0014",
+    "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Manual Postings AND GR/IR Clearing Account",
+    "alias": "PTP_TT_B2_0015",
+    "description": "User is able to subsequently create and change G/L recurring document and create and change vendors invoices or credit memos directly in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Postings with Clearing AND Release for Payment",
+    "alias": "PTP_TT_B2_0016",
+    "description": "User is able to post and clear fraudulent invoice and release the invoice for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Postings with Clearing AND GR/IR Clearing Acco",
+    "alias": "PTP_TT_B2_0017",
+    "description": "User is able to subsequently create and change G/L recurring document and create and change and clear vendors invoices or credit memos directly in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Outgoing Payment Postings AND GR/IR Clearing A",
+    "alias": "PTP_TT_B2_0022",
+    "description": "User is able to subsequently create and change G/L recurring document and create and change and make payment of vendors invoices or credit memos",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND A/P Payment Run",
+    "alias": "PTP_TT_B2_0023",
+    "description": "User is able to release a fraudulent payment and post a fraudulent recurring document",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND A/P Outgoing Payment Postin",
+    "alias": "PTP_TT_B2_0024",
+    "description": "User is able to release a fraudulent payment and post a fraudulent recurring document",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND GR/IR Clearing Account",
+    "alias": "PTP_TT_B2_0025",
+    "description": "User is able to subsequently create and change G/L recurring document and create and change A/P recurring document",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND Goods Receipts for Purchase",
+    "alias": "PTP_TT_B2_0026",
+    "description": "User is able to create fraudulent recurring invoices and credit memos on vendor accounts and enter wrong goods receipts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND GR/IR Clearing Accou",
+    "alias": "PTP_TT_B2_0067",
+    "description": "User is able to create fictitious purchase orders and maintain G/L recurring entries",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "FI Posting Periods (Open/Close) AND A/P Outgoing P",
+    "alias": "FIN_MT_B2_0004",
+    "description": "User is able to open an accounting period and post an outgoing payment in that previous period (circumvent month-end closing procedures)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Open closed period & Post a vendor payment",
+    "alias": "FIN_MT_B2_0050",
+    "description": "Unauthorized or wrong outgoing payments may not be detected as the user can open fictitious G/L accounts in a company code",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Payment Run AND G/L Parked Doc. Postings",
+    "alias": "FIN_TT_B2_0015",
+    "description": "User is able to release a fraudulent payment for a document and subsequently post G/L parked document",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release for Payments AND A/P Payment Run",
+    "alias": "FIN_TT_B2_0017",
+    "description": "User is able to perform a fraudulent payment for an invoice which the user has released",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Payment Advice AND A/R Manual Postings",
+    "alias": "OTC_TT_B2_0001",
+    "description": "User is able to create - change - cancel fictitious customer invoices - credit memos and subsquently post fictitious or wrong payment advices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Payment Advice AND A/R Parked Doc. Postings",
+    "alias": "OTC_TT_B2_0002",
+    "description": "User is able to create - change - cancel fictitious customer parked invoices - credit memos and subsquently post fictitious or wrong payment advices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/R Payment Run",
+    "alias": "OTC_TT_B2_0019",
+    "description": "User is able to create fraudulent credit memo and make unwanted A/R payment run",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND A/R Payment Run",
+    "alias": "OTC_TT_B2_0063",
+    "description": "User is able to create fraudulent sales orders and make unwanted A/R payment run",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Inv. Verification AND A/P Payment Run",
+    "alias": "PTP_TT_B2_0006",
+    "description": "User is able to release a fraudulent payment for an invoice which the user has posted",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Inv. Verification AND A/P Outgoing Payment Posting",
+    "alias": "PTP_TT_B2_0007",
+    "description": "User is able to release a fraudulent payment for an invoice which the user has posted",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Inv. Verification AND Check Managemt",
+    "alias": "PTP_TT_B2_0008",
+    "description": "Unauthorized or inappropriate creation of vendor invoices / changes to Invoice posting functionality resulting incorrect of unjustified payments of invoices (by check) and increases fraud vulnerability.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Inv. AND A/P Payment Run",
+    "alias": "PTP_TT_B2_0011",
+    "description": "User is able to release a fraudulent payment for an invoice which the user has posted",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Payment Run AND A/P Manual Postings",
+    "alias": "PTP_TT_B2_0019",
+    "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Payment Run AND A/P Postings with Clearing",
+    "alias": "PTP_TT_B2_0020",
+    "description": "User is able to release and clear a fraudulent payment for a document the user has posted or changed",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Payment Run AND A/P Parked Doc. Postings",
+    "alias": "PTP_TT_B2_0021",
+    "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND A/P Payment",
+    "alias": "PTP_TT_B2_0043",
+    "description": "User is able to enter goods receipts and make payments for the related invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND A/P Payment Run",
+    "alias": "PTP_TT_B2_0064",
+    "description": "User is able to create a fictitious or incorrect purchase order and release invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass)  AND A/P Outgoing Paymen",
+    "alias": "PTP_TT_B2_0065",
+    "description": "User is able to create a fictitious or incorrect purchase order and release invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Purchase Orders AND A/P Payment Run",
+    "alias": "PTP_TT_B2_0073",
+    "description": "User is able to release purchase orders and release invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Payment Run AND A/R Manual Postings",
+    "alias": "PTP_TT_B2_0079",
+    "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Outgoing Payment Postings AND Release Purch. O",
+    "alias": "PTP_TT_B2_0103",
+    "description": "User can enact payment for unauthorized purchased items",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Info Records or Mass) AND (Purch. Orders  or Mass",
+    "alias": "PTP_MT_B2_0017",
+    "description": "User is able to create fictitous info records and create purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass)  AND Goods Receipts",
+    "alias": "PTP_MT_B2_0029",
+    "description": "User is able to create or change a fictitious or unapproved vendor and post goods receipts on purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Purch.) or Mass) AND (Purchase Order",
+    "alias": "PTP_MT_B2_0030",
+    "description": "User is able to create or change a fictitious or unapproved vendor and create purchase orders on this vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Vendor M.D. (Centrally) or Mass) AND (Purchase Or",
+    "alias": "PTP_MT_B2_0042",
+    "description": "User is able to create or change a fictitious or unapproved vendor and create purchase orders on this vendor",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND Enter Inventory Count",
+    "alias": "OTC_TT_B2_0014",
+    "description": "User is able to maintain backorder processing for sales order and create - change - process inventory counts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Inv. via MRBR AND Goods Receipts f",
+    "alias": "PTP_TT_B2_0029",
+    "description": "User is able to create and change goods receipts and release invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Issues AND Enter Inventory Count with Docume",
+    "alias": "PTP_TT_B2_0030",
+    "description": "User is able to post incorrect goods issues and create inventory counts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Issues AND Process List of Differences",
+    "alias": "PTP_TT_B2_0031",
+    "description": "User is able to post incorrect goods issues and clear inventory differences",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Issues - Scrapping AND Enter Inventory Count",
+    "alias": "PTP_TT_B2_0032",
+    "description": "User is able to post incorrect goods issues and create inventory counts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Issues - Scrapping AND Process List of Diffe",
+    "alias": "PTP_TT_B2_0033",
+    "description": "User is able to post incorrect goods issues and clear inventory differences",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts Other AND Enter Inventory Count wit",
+    "alias": "PTP_TT_B2_0038",
+    "description": "User is able to post incorrect goods receipts and create inventory counts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts Other AND Process List of Differenc",
+    "alias": "PTP_TT_B2_0039",
+    "description": "User is able to post incorrect goods receipts and clear inventory differences",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND Enter Inven",
+    "alias": "PTP_TT_B2_0045",
+    "description": "User is able to post incorrect goods receipts and create inventory counts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND Process Lis",
+    "alias": "PTP_TT_B2_0046",
+    "description": "User is able to post incorrect goods receipts and clear inventory differences",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Production Orders AND Process L",
+    "alias": "PTP_TT_B2_0052",
+    "description": "User is able to post incorrect goods receipts and clear inventory differences",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Material Doc. AND Enter Inventory Count with Docum",
+    "alias": "PTP_TT_B2_0057",
+    "description": "User is able to change material documents on goods movements and create inventory counts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Material Doc. AND Process List of Differences",
+    "alias": "PTP_TT_B2_0058",
+    "description": "User is able to changematerial documents on goods movements and clear inventory differences in inventory",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Input Physical Inventory Count AND Post Physical I",
+    "alias": "PTP_TT_B2_0059",
+    "description": "User is able to enter incorrect inventory counts and clear differences.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Input Physical Inventory Count AND Process List of",
+    "alias": "PTP_TT_B2_0060",
+    "description": "User is able to enter incorrect inventory counts and clear differences.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Goods Receipts Other",
+    "alias": "PTP_TT_B2_0068",
+    "description": "User is able to create and change a fictitious or incorect purchase order and post goods receipts (other than on POs and production orders)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Goods Receipts for P",
+    "alias": "PTP_TT_B2_0070",
+    "description": "User is able to create and change a fictitious or incorect purchase order and post receipts linked to a production order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Material Doc.",
+    "alias": "PTP_TT_B2_0071",
+    "description": "User is able to enter fictitious or incorect purchase orders and change material documents (goods receipts) linked to that fictitious P.O.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Release Purchase Ord",
+    "alias": "PTP_TT_B2_0072",
+    "description": "User is able to create a fictitious or incorect purchase order and release that purchase order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Requisitions or Mass) AND (Purchase Orde",
+    "alias": "PTP_TT_B2_0074",
+    "description": "User is able to create a purchase requisition and subsequently the corresponding purchase order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Invent. Diff. Clearing AND WM Invent. Count",
+    "alias": "PTP_TT_B2_0075",
+    "description": "User is able to create a purchase requisition and subsequently the corresponding purchase order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Transfer Postings",
+    "alias": "PTP_TT_B2_0080",
+    "description": "Purch unauthorized items and enact payment for them",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Input Physical Inven",
+    "alias": "PTP_TT_B2_0081",
+    "description": "Purch unauth items and hide by not fully receiving order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Post Physical Invent",
+    "alias": "PTP_TT_B2_0082",
+    "description": "Purch unauth items and hide by not fully receiving order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND WM Invent. Count",
+    "alias": "PTP_TT_B2_0083",
+    "description": "Purch unauth items and hide by not fully receiving order",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Payroll Accounting Belgium",
+    "alias": "HTR_MT_B2_0001",
+    "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Payroll Configuration",
+    "alias": "HTR_MT_B2_0002",
+    "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Off-Cycle Workbench",
+    "alias": "HTR_MT_B2_0003",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Posting Runs",
+    "alias": "HTR_MT_B2_0004",
+    "description": "User is able to create and change a fictitious employee and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Delete Current Payroll Result",
+    "alias": "HTR_MT_B2_0005",
+    "description": "User is able to create and change a MD and maintain Payroll Results",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Payroll Run",
+    "alias": "HTR_MT_B2_0006",
+    "description": "User is able to create and change a fictitious employee and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Payroll Schemas,Calc. Rules,Feat.,Fct. an",
+    "alias": "HTR_MT_B2_0007",
+    "description": "User is able to create and change a Employee MD and maintain HR Master Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. AND Personnel Control Record",
+    "alias": "HTR_MT_B2_0008",
+    "description": "User is able to maintain his/her own personnel control record",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Payroll Accounting Belgium",
+    "alias": "HTR_MT_B2_0009",
+    "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Payroll Configuration",
+    "alias": "HTR_MT_B2_0010",
+    "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Off-Cycle Workbench",
+    "alias": "HTR_MT_B2_0011",
+    "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Posting Runs",
+    "alias": "HTR_MT_B2_0012",
+    "description": "User is able to create and change a fictitious employee and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Delete Current Payroll Result",
+    "alias": "HTR_MT_B2_0013",
+    "description": "User is able to create and change a MD and maintain Payroll Results",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Payroll Run",
+    "alias": "HTR_MT_B2_0014",
+    "description": "User is able to create and change a fictitious employee and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Payroll Schemas,Calc. Rules,Feat.,",
+    "alias": "HTR_MT_B2_0015",
+    "description": "User is able to create and change a Employee MD and maintain HR Master Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete M.D. AND Personnel Control Record",
+    "alias": "HTR_MT_B2_0016",
+    "description": "User is able to maintain his/her own personnel control record",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Payroll Accounting B",
+    "alias": "HTR_MT_B2_0017",
+    "description": "User is able to maintain own record and maintain payroll postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Payroll Configuratio",
+    "alias": "HTR_MT_B2_0018",
+    "description": "User is able to maintain own record and maintain payroll master data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Off-Cycle Workbench",
+    "alias": "HTR_MT_B2_0019",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Posting Runs",
+    "alias": "HTR_MT_B2_0020",
+    "description": "User is able to maintain own record and maintain payroll postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Delete Current Payro",
+    "alias": "HTR_MT_B2_0021",
+    "description": "User is able to maintain own record and to modify payroll runs",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Payroll Run",
+    "alias": "HTR_MT_B2_0022",
+    "description": "User is able to maintain own record and to modify payroll runs",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Payroll Schemas,Calc",
+    "alias": "HTR_MT_B2_0023",
+    "description": "User is able to maintain own record and maintain payroll master data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "M.D. for Own Personnel Nr AND Personnel Control Re",
+    "alias": "HTR_MT_B2_0024",
+    "description": "User is able to maintain his/her own personnel control record",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. element) AND Payroll Accountin",
+    "alias": "HTR_TT_B2_0001",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. element) AND Posting Runs",
+    "alias": "HTR_TT_B2_0002",
+    "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. element) AND Delete Current Pa",
+    "alias": "HTR_TT_B2_0003",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. element) AND Payroll Run",
+    "alias": "HTR_TT_B2_0004",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. element) AND Payroll Schemas,C",
+    "alias": "HTR_TT_B2_0005",
+    "description": "Payroll schemas, Calculation rules, etc. are high impact general settings influencing the payroll cycle and should be limited to Key Users Only.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. element) AND Personnel Control",
+    "alias": "HTR_TT_B2_0006",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. Plan) AND Payroll Accounting B",
+    "alias": "HTR_TT_B2_0007",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. Plan) AND Posting Runs",
+    "alias": "HTR_TT_B2_0008",
+    "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. Plan) AND Delete Current Payro",
+    "alias": "HTR_TT_B2_0009",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. Plan) AND Payroll Run",
+    "alias": "HTR_TT_B2_0010",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. Plan) AND Payroll Schemas,Calc",
+    "alias": "HTR_TT_B2_0011",
+    "description": "Payroll schemas, Calculation rules, etc. are high impact general settings influencing the payroll cycle and should be limited to Key Users Only.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Org. Managemt (Org. Plan) AND Personnel Control Re",
+    "alias": "HTR_TT_B2_0012",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete Current Payroll Result AND Payroll Accounti",
+    "alias": "HTR_TT_B2_0013",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete Current Payroll Result AND Posting Runs",
+    "alias": "HTR_TT_B2_0014",
+    "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete Current Payroll Result AND Payroll Run",
+    "alias": "HTR_TT_B2_0015",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete Current Payroll Result AND Payroll Schemas,",
+    "alias": "HTR_TT_B2_0016",
+    "description": "Payroll schemas, Calculation rules, etc. are high impact general settings influencing the payroll cycle and should be limited to Key Users Only.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Delete Current Payroll Result AND Personnel Contro",
+    "alias": "HTR_TT_B2_0017",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Payroll Schemas,Calc. Rules,Feat.,Fct. and Op. AND",
+    "alias": "HTR_TT_B2_0020",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Payroll Status AND Payroll Accounting Belgium",
+    "alias": "HTR_TT_B2_0021",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Payroll Status AND Posting Runs",
+    "alias": "HTR_TT_B2_0022",
+    "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Payroll Status AND Payroll Run",
+    "alias": "HTR_TT_B2_0023",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Personnel Control Record AND Payroll Accounting Be",
+    "alias": "HTR_TT_B2_0024",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Personnel Control Record AND Posting Runs",
+    "alias": "HTR_TT_B2_0025",
+    "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Personnel Control Record AND Payroll Run",
+    "alias": "HTR_TT_B2_0026",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Own Time Data AND Payroll Accounting Belgium",
+    "alias": "HTR_TT_B2_0027",
+    "description": "-",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Own Time Data AND Posting Runs",
+    "alias": "HTR_TT_B2_0028",
+    "description": "User is able to create and change his/her own Time data  and maintain HR Payroll Postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Own Time Data AND Delete Current Payroll Result",
+    "alias": "HTR_TT_B2_0029",
+    "description": "User is able to create and change his/her own Time data  and maintain HR Payroll Results",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Own Time Data AND Payroll Run",
+    "alias": "HTR_TT_B2_0030",
+    "description": "User is able to create and change his/her own Time data  and maintain HR Payroll Runs",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Own Time Data AND Payroll Schemas,Calc. Rules,Feat",
+    "alias": "HTR_TT_B2_0031",
+    "description": "User is able to create and change his/her own Time data  and maintain HR Master Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Own Time Data AND Personnel Control Record",
+    "alias": "HTR_TT_B2_0032",
+    "description": "User is able to create and change his/her own Time data  and maintain PCR",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Time Managemt AND Payroll Accounting Belgium",
+    "alias": "HTR_TT_B2_0033",
+    "description": "User is able to create and change Time data  and maintain HR Payroll Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Time Managemt AND Posting Runs",
+    "alias": "HTR_TT_B2_0034",
+    "description": "User is able to create and change Time data  and maintain HR Payroll Postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Time Managemt AND Delete Current Payroll Result",
+    "alias": "HTR_TT_B2_0035",
+    "description": "User is able to create and change Time data  and delete HR Payroll Results",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Time Managemt AND Payroll Run",
+    "alias": "HTR_TT_B2_0036",
+    "description": "User is able to create and change Time data  and maintain HR Payroll Runs",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Time Managemt AND Payroll Schemas,Calc. Rules,Feat",
+    "alias": "HTR_TT_B2_0037",
+    "description": "User is able to create and change Time data  and maintain HR Master Data",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Time Managemt AND Personnel Control Record",
+    "alias": "HTR_TT_B2_0038",
+    "description": "User is able to create and change Time data  and maintain PCR's",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "HR Nr Ranges AND Payroll Accounting Belgium",
+    "alias": "HTR_TT_B2_0039",
+    "description": "",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "HR Nr Ranges AND Posting Runs",
+    "alias": "HTR_TT_B2_0040",
+    "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "HR Nr Ranges AND Payroll Run",
+    "alias": "HTR_TT_B2_0041",
+    "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND Ban",
+    "alias": "FIN_TT_B2_0032",
+    "description": "User is able to create and change contracts and rebate agreements and post bank statements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND Cas",
+    "alias": "FIN_TT_B2_0033",
+    "description": "Cash out on unauthorized bank account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND G/L",
+    "alias": "FIN_TT_B2_0034",
+    "description": "User is able to create and change contracts and rebate agreement and post and clear G/L postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Conditions and Prices AND MM Backorder Proce",
+    "alias": "OTC_MT_B2_0017",
+    "description": "User is able to create and change sales conditions and prices and subsequently maintain backorder for purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Conditions and Prices AND SD Backorder Proce",
+    "alias": "OTC_MT_B2_0018",
+    "description": "User is able to create and change pricing conditions and subsequently maintain customers backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Conditions and Prices AND Billing Process",
+    "alias": "OTC_MT_B2_0019",
+    "description": "User is able to create and change pricing conditions and subsequently bill customers with wrong conditions",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Conditions and Prices AND Release Orders for",
+    "alias": "OTC_MT_B2_0020",
+    "description": "User is able to create and change pricing conditions and subsequently release orders for billing with wrong conditions",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Conditions and Prices AND (Sales Orders OR M",
+    "alias": "OTC_MT_B2_0021",
+    "description": "User is able to create and change pricing conditions and subsequently create and change sales orders to customers with wrong conditions",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND MM Backorder P",
+    "alias": "OTC_MT_B2_0027",
+    "description": "User is able to create and change fictitious customers and maintain backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND SD Backorder P",
+    "alias": "OTC_MT_B2_0028",
+    "description": "User is able to create and change fictitious customers and maintain backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND Billing Proces",
+    "alias": "OTC_MT_B2_0029",
+    "description": "User is able to create and change fictitious customers and create billing documents on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) or Mass) AND (Cont",
+    "alias": "OTC_MT_B2_0030",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent contracts on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND Deliveries",
+    "alias": "OTC_MT_B2_0031",
+    "description": "User is able to create and change fictitious customers and create fraudulent deliveries on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND Release Orders",
+    "alias": "OTC_MT_B2_0032",
+    "description": "User is able to create and change fictitious customers and release fraudulent sales orders for billing on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND Scheduling agr",
+    "alias": "OTC_MT_B2_0033",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent scheduling agreements on the fictitious customer accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Sales) or Mass) AND (Sales Orders",
+    "alias": "OTC_MT_B2_0034",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent sales orders on the fictitious customers",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND MM Backor",
+    "alias": "OTC_MT_B2_0040",
+    "description": "User is able to create and change fictitious customers and maintain backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND SD Backor",
+    "alias": "OTC_MT_B2_0041",
+    "description": "User is able to create and change fictitious customers and maintain backorders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND Billing P",
+    "alias": "OTC_MT_B2_0042",
+    "description": "User is able to create and change fictitious customers and create billing documents (invoice or credit memo) on the fictitious customer account.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass) AND (Contracts",
+    "alias": "OTC_MT_B2_0043",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent contracts on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND Deliverie",
+    "alias": "OTC_MT_B2_0044",
+    "description": "User is able to create and change fictitious customers and create fraudulent deliveries on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND Release O",
+    "alias": "OTC_MT_B2_0045",
+    "description": "User is able to create and change fictitious customers and release fraudulent sales orders for billing on the fictitious customer account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass)  AND Schedulin",
+    "alias": "OTC_MT_B2_0046",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent scheduling agreements on the fictitious customer accounts",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Customer M.D. (Centrally) or Mass) AND (Sales Ord",
+    "alias": "OTC_MT_B2_0047",
+    "description": "User is able to create and change fictitious customers and create or change fraudulent sales orders on the fictitious customers",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass) AND A/P",
+    "alias": "OTC_TT_B2_0023",
+    "description": "User is able to create and change contracts and rebate agreement and enter A/P postings with clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND Cre",
+    "alias": "OTC_TT_B2_0024",
+    "description": "User is able to reset credit limit of a customer and subsequently create and change contract or rebates agreements",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND A/R",
+    "alias": "OTC_TT_B2_0067",
+    "description": "Increased fraud vulnerability, e.g. dummy transactions to window dress order portfolio, unauthorized price modifications and or non timely deliveries, causes damage to the Client Service Relationships",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND MM",
+    "alias": "OTC_TT_B2_0028",
+    "description": "User is able to create and change fictitious contracts or rebates agreements and subsequently maintain backorders for purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND SD",
+    "alias": "OTC_TT_B2_0029",
+    "description": "User is able to create and change fictitious contracts or rebates agreements and subsequently maintain backorders for sales orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements or Mass)  AND Del",
+    "alias": "OTC_TT_B2_0030",
+    "description": "User is able to create and change fraudulent sales contracts or rebates agreements and create deliveries",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Contracts and Rebate Agreements  or Mass) AND (Sa",
+    "alias": "OTC_TT_B2_0031",
+    "description": "User is able to create and change fraudulent sales contracts or rebates agreements and subsequently create wrong sales orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND MM Backorder Processing",
+    "alias": "OTC_TT_B2_0021",
+    "description": "User is able to create and change fictitious customer invoices and subsequently maintain backorders for purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND SD Backorder Processing",
+    "alias": "OTC_TT_B2_0022",
+    "description": "User is able to maintain back orders and subsequently create and change fictitious customer invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Deals AND Billing Process",
+    "alias": "OTC_TT_B2_0032",
+    "description": "User is able to create and change fraudulent sales deals and create and change a customer invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Deals AND Release Orders for Billing",
+    "alias": "OTC_TT_B2_0033",
+    "description": "User is able to create and change sales deals and subsequently release orders for billing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND MM Backorder Processing",
+    "alias": "OTC_TT_B2_0039",
+    "description": "User is able to create and change fictitious deliveries to ship to party and subsequently maintain backorder for purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND SD Backorder Processing",
+    "alias": "OTC_TT_B2_0040",
+    "description": "User is able to create or change deliveries to include additional goods and subsequently maintain back orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND Billing Process",
+    "alias": "OTC_TT_B2_0041",
+    "description": "User is able to create or change deliveries to include additional goods and create and change a fraudulent or incorrect invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND Release Orders for Billing",
+    "alias": "OTC_TT_B2_0042",
+    "description": "User is able to create or change deliveries to include additional goods and subsequently release orders for billing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Promotions AND Billing Process",
+    "alias": "OTC_TT_B2_0047",
+    "description": "User is able to create and change fraudulent sales promotions and create and change a customer invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Promotions AND Release Orders for Billing",
+    "alias": "OTC_TT_B2_0048",
+    "description": "User is able to create and change sales promotions and subsequently release orders for billing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND MM Backorder Processing",
+    "alias": "OTC_TT_B2_0054",
+    "description": "User is able to create and change fictitious scheduling agreements and subsequently maintain backorders for purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND SD Backorder Processing",
+    "alias": "OTC_TT_B2_0055",
+    "description": "User is able to create and change fictitious scheduling agreements and subsequently maintain back orders for sales orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND Deliveries",
+    "alias": "OTC_TT_B2_0056",
+    "description": "User is able to create and change fictitious scheduling agreements and subsequently create and change deliveries",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND (Sales Orders OR Mass)",
+    "alias": "OTC_TT_B2_0057",
+    "description": "User is able to create and change fictitious scheduling agreements and subsequently create and change sales orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND Billing Process",
+    "alias": "OTC_TT_B2_0065",
+    "description": "User is able to create a fraudulent sales order or change a sales order and create and change a customer invoice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND Deliveries",
+    "alias": "OTC_TT_B2_0066",
+    "description": "User is able to create a fraudulent sales order or change a sales order and create and change deliveries to customer  - ship to party",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Bank Statements AND MM Backorder Processing",
+    "alias": "FIN_TT_B2_0023",
+    "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks .",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND Cash Managemt",
+    "alias": "FIN_TT_B2_0024",
+    "description": "User can create fictitious/incorrect delivery and enter payments against these, potentially misappropriating goods.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND G/L Postings with Clea",
+    "alias": "FIN_TT_B2_0025",
+    "description": "User is able to perform activities in purchasing flow and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND Bank Statements",
+    "alias": "FIN_TT_B2_0026",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND Cash Managemt",
+    "alias": "FIN_TT_B2_0027",
+    "description": "User can create fictitious/incorrect delivery and enter payments against these, potentially misappropriating goods.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND G/L Postings with Clea",
+    "alias": "FIN_TT_B2_0028",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND Bank Statements",
+    "alias": "FIN_TT_B2_0029",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND Cash Managemt",
+    "alias": "FIN_TT_B2_0030",
+    "description": "User can create fictitious/incorrect billing docs and initiate payments on these",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND G/L Postings with Clearing",
+    "alias": "FIN_TT_B2_0031",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND Bank Statements",
+    "alias": "FIN_TT_B2_0035",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND Cash Managemt",
+    "alias": "FIN_TT_B2_0036",
+    "description": "Unauthorized or inappropriate changes to Delivery document processing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND G/L Postings with Clearing",
+    "alias": "FIN_TT_B2_0037",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND Bank Statements",
+    "alias": "FIN_TT_B2_0038",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND Cash Managemt",
+    "alias": "FIN_TT_B2_0039",
+    "description": "User can release orders for billing and enter payments against these.",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND G/L Postings with C",
+    "alias": "FIN_TT_B2_0040",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND Bank Statements",
+    "alias": "FIN_TT_B2_0041",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND Cash Managemt",
+    "alias": "FIN_TT_B2_0042",
+    "description": "Cash out on unauthorized bank account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND G/L Postings with Cleari",
+    "alias": "FIN_TT_B2_0043",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND Bank Statements",
+    "alias": "FIN_TT_B2_0044",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND Cash Managemt",
+    "alias": "FIN_TT_B2_0045",
+    "description": "Cash out on unauthorized bank account",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND G/L Postings with Clea",
+    "alias": "FIN_TT_B2_0046",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/P Manual Postings",
+    "alias": "FIN_TT_B2_0049",
+    "description": "",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND Electronic Check Deposits",
+    "alias": "FIN_TT_B2_0050",
+    "description": "",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND A/P Postings with Clea",
+    "alias": "OTC_TT_B2_0004",
+    "description": "User is able to perform activities in purchasing flow and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND Credit Managemt",
+    "alias": "OTC_TT_B2_0005",
+    "description": "User is able to perform activities in purchasing flow and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0006",
+    "description": "User is able to perform activities in purchasing flow and post fictitious or wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND A/R Postings with Clea",
+    "alias": "OTC_TT_B2_0007",
+    "description": "User is able to perform activities in purchasing flow and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "MM Backorder Processing AND A/R Incoming Payment P",
+    "alias": "OTC_TT_B2_0008",
+    "description": "User is able to perform activities in purchasing flow and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND A/P Postings with Clea",
+    "alias": "OTC_TT_B2_0009",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND Credit Managemt",
+    "alias": "OTC_TT_B2_0010",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0011",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND A/R Postings with Clea",
+    "alias": "OTC_TT_B2_0012",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "SD Backorder Processing AND A/R Incoming Payment P",
+    "alias": "OTC_TT_B2_0013",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/P Postings with Clearing",
+    "alias": "OTC_TT_B2_0015",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0017",
+    "description": "User is able to enter billing documents and post fictitious or wrong payment advices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/R Postings with Clearing",
+    "alias": "OTC_TT_B2_0018",
+    "description": "User is able to bypass sales process flow by creating and clearing a credit memo or invoice directly in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Billing Process AND A/R Incoming Payment Postings",
+    "alias": "OTC_TT_B2_0020",
+    "description": "User is able to create fraudulent credit memo and make unwanted payments",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND A/P Postings with Clearing",
+    "alias": "OTC_TT_B2_0034",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND A/R Manual Postings",
+    "alias": "OTC_TT_B2_0035",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0036",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND A/R Postings with Clearing",
+    "alias": "OTC_TT_B2_0037",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND A/R Incoming Payment Postings",
+    "alias": "OTC_TT_B2_0038",
+    "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND A/P Postings with C",
+    "alias": "OTC_TT_B2_0043",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0044",
+    "description": "User is able to perform activities in sales flows - billing process and post fictitious or wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND A/R Postings with C",
+    "alias": "OTC_TT_B2_0045",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Orders for Billing AND A/R Incoming Paymen",
+    "alias": "OTC_TT_B2_0046",
+    "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND A/P Postings with Cleari",
+    "alias": "OTC_TT_B2_0049",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND Credit Managemt",
+    "alias": "OTC_TT_B2_0050",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0051",
+    "description": "User is able to perform activities in sales flows and post fictitious or wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND A/R Postings with Cleari",
+    "alias": "OTC_TT_B2_0052",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Scheduling agreements AND A/R Incoming Payment Pos",
+    "alias": "OTC_TT_B2_0053",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND A/P Postings with Clea",
+    "alias": "OTC_TT_B2_0058",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND Credit Managemt",
+    "alias": "OTC_TT_B2_0059",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND A/R Manual Postings",
+    "alias": "OTC_TT_B2_0060",
+    "description": "User is able to create a fraudulent sales order or change a sales order and create and change a credit memo or invoice to the customer",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND A/R Payment Advice",
+    "alias": "OTC_TT_B2_0061",
+    "description": "User is able to perform activities in sales flows and post fictitious or wrong payment advice",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND A/R Postings with Clea",
+    "alias": "OTC_TT_B2_0062",
+    "description": "User is able to create a fraudulent sales order or change a sales order and create and change and clear a credit memo or invoice to the customer",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Sales Orders or Mass)  AND A/R Incoming Payment P",
+    "alias": "OTC_TT_B2_0064",
+    "description": "User is able to perform activities in sales flows and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release po.inv. via FB02 instd of MR02 AND Service",
+    "alias": "PTP_TT_B2_0004",
+    "description": "User is able to create and change wrong service entry sheet and release an invoice in Finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Parked Doc. Postings AND Service Entry Sheets",
+    "alias": "PTP_TT_B2_0018",
+    "description": "User is able to perform activities in purchasing flow and pure financial flows",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND (Purch. Orders OR Mass)",
+    "alias": "PTP_TT_B2_0027",
+    "description": "User is able to create fraudulent recurring invoices and credit memos on vendor account and create wrong purchase orders",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Recurring Doc. AND Service Entry Sheets",
+    "alias": "PTP_TT_B2_0028",
+    "description": "User is able to create and change fraudulent recurring invoices and credit memos on vendor accounts and create and change wrong service entry sheets",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts Other AND Inv. Verification",
+    "alias": "PTP_TT_B2_0034",
+    "description": "User is able to post incorrect goods receipts and post incorrect invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts Other AND Release Blocked Inv.",
+    "alias": "PTP_TT_B2_0035",
+    "description": "User is able to post incorrect goods receipts and release incorrect invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts Other AND A/P Manual Postings",
+    "alias": "PTP_TT_B2_0036",
+    "description": "User is able to post incorrect goods receipts and post incorrect invoices in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts Other AND Release for Payments",
+    "alias": "PTP_TT_B2_0037",
+    "description": "User is able to post incorrect goods receipts and release incorrect invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND Inv. Verifi",
+    "alias": "PTP_TT_B2_0040",
+    "description": "User is able to post incorrect goods receipts and post incorrect invoices (3-way match)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND Release Blo",
+    "alias": "PTP_TT_B2_0041",
+    "description": "User is able to post incorrect goods receipts and release incorrect invoices (3-way match)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND A/P Manual",
+    "alias": "PTP_TT_B2_0042",
+    "description": "User is able to post incorrect goods receipts and post incorrect invoices in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND Release for",
+    "alias": "PTP_TT_B2_0044",
+    "description": "User is able to post incorrect goods receipts and release incorrect invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Production Orders AND Inv. Veri",
+    "alias": "PTP_TT_B2_0047",
+    "description": "User is able to post incorrect goods receipts and post incorrect invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Production Orders AND Release B",
+    "alias": "PTP_TT_B2_0048",
+    "description": "User is able to post incorrect goods receipts and release incorrect invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Production Orders AND A/P Manua",
+    "alias": "PTP_TT_B2_0049",
+    "description": "User is able to post incorrect goods receipts and post incorrect invoices in finance",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Production Orders AND A/P Parke",
+    "alias": "PTP_TT_B2_0050",
+    "description": "User is able to post incorrect goods receipt and post - parked document",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Production Orders AND Release f",
+    "alias": "PTP_TT_B2_0051",
+    "description": "User is able to post incorrect goods receipts and release incorrect invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Material Doc. AND Inv. Verification",
+    "alias": "PTP_TT_B2_0053",
+    "description": "User is able to change material documents (goods receipts) and post fraudulent invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Material Doc. AND Release Blocked Inv.",
+    "alias": "PTP_TT_B2_0054",
+    "description": "User is able to change material documents (goods receipts) and release blocked invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Material Doc. AND A/P Manual Postings",
+    "alias": "PTP_TT_B2_0055",
+    "description": "User is able to change material documents (goods receipts) and post fraudulent invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Material Doc. AND Release for Payments",
+    "alias": "PTP_TT_B2_0056",
+    "description": "User is able to change material documents (goods receipts) and release invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Inv. Verification",
+    "alias": "PTP_TT_B2_0061",
+    "description": "User is able to create fictitious or incorrect purchase orders and create fraudulent invoices (3-way match)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Release Blocked Inv.",
+    "alias": "PTP_TT_B2_0062",
+    "description": "User is able to create fictitious or incorrect purchase orders and release fraudulent invoices (3-way match)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND A/P Manual Postings",
+    "alias": "PTP_TT_B2_0063",
+    "description": "User is able to enter fictitious or incorrect purchase orders and post fraudulent invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "(Purchase Orders or Mass) AND Release for Payments",
+    "alias": "PTP_TT_B2_0066",
+    "description": "User is able to enter fictitious or incorrect purchase orders and release invoices for payment",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Manual Postings AND Release Purchase Orders",
+    "alias": "PTP_TT_B2_0084",
+    "description": "PO is released. The invoice is directly posted in FI, the 3-way match is bypassed",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Conditions and Prices AND Sales Orders AND R",
+    "alias": "OTC_MTT_M3_0001",
+    "description": "Sales Conditions and Prices AND Sales Orders AND Release Orders for Billing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/R Manual Postings AND A/R Incoming Payment Posti",
+    "alias": "OTC_TTM_M3_0001",
+    "description": "A/R Manual Postings AND A/R Incoming Payment Postings AND Customer M.D. (Centrally)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Deliveries AND A/R Incoming Payment Postings AND C",
+    "alias": "OTC_TTM_M3_0002",
+    "description": "Deliveries AND A/R Incoming Payment Postings AND Customer M.D. (Centrally)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Orders AND Deliveries AND A/R Incoming Payme",
+    "alias": "OTC_TTT_M3_0001",
+    "description": "Sales Orders AND Deliveries AND A/R Incoming Payment Postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Orders AND Release Orders for Billing AND A/",
+    "alias": "OTC_TTT_M3_0002",
+    "description": "Sales Orders AND Release Orders for Billing AND A/R Manual Postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Sales Orders AND Release Orders for Billing AND De",
+    "alias": "OTC_TTT_M3_0003",
+    "description": "Sales Orders AND Release Orders for Billing AND Deliveries",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Proposal Run AND A/P Payment Run AND Vendor Ma",
+    "alias": "PTP_TTM_M3_0002",
+    "description": "A/P Proposal Run AND A/P Payment Run AND Vendor Master Data (Fin.)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Purchase Orders AND MM Prices AND Vendor Master Da",
+    "alias": "PTP_TTM_M3_0004",
+    "description": "Purchase Orders AND MM Prices AND Vendor Master Data (Fin.)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Invoice Verification AND Release Blocked Invoices",
+    "alias": "PTP_TTTT_M4_0001",
+    "description": "Invoice Verification AND Release Blocked Invoices AND A/P Proposal Run AND A/P Payment Run",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Manual Postings AND A/P Payment Run AND  Vendo",
+    "alias": "PTP_TTM_M3_0007",
+    "description": "A/P Manual Postings AND A/P Payment Run AND  Vendor M.D. (Centrally)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Purch. Orders AND Goods Receipts for Purch. Orders",
+    "alias": "PTP_TTT_M3_0006",
+    "description": "Purch. Orders AND Goods Receipts for Purch. Orders AND Inv. Verification",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Release Blocked Invoices AND A/P Payment Run AND",
+    "alias": "PTP_TTM_M3_0009",
+    "description": "Release Blocked Invoices AND A/P Payment Run AND  Vendor M.D. (Centrally)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor Downpayment Request AND A/P Outgoing Paymen",
+    "alias": "PTP_TTT_M3_0007",
+    "description": "Vendor Downpayment Request AND A/P Outgoing Payment Postings AND A/P Postings with Clearing",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Invoice Verification AND A/P Payment Run AND Vendo",
+    "alias": "PTP_TTM_M3_0011",
+    "description": "Invoice Verification AND A/P Payment Run AND Vendor Master Data (Centrally)",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor M.D. (Centrally) AND Release Purchase Invoi",
+    "alias": "PTP_TTM_M3_0012",
+    "description": "Vendor M.D. (Centrally) AND Release Purchase Invoices via FB02 AND A/P Payment Run",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Vendor M.D. (Centrally) AND Release Blocked Invoic",
+    "alias": "PTP_TTM_M3_0013",
+    "description": "Vendor M.D. (Centrally) AND Release Blocked Invoices via MRBR AND A/P Payment Run",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Proposal Run AND A/P Payment Run AND A/P Manua",
+    "alias": "PTP_TTT_M3_0001",
+    "description": "A/P Proposal Run AND A/P Payment Run AND A/P Manual Postings",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "A/P Proposal Run AND A/P Payment Run AND Invoice V",
+    "alias": "PTP_TTT_M3_0002",
+    "description": "A/P Proposal Run AND A/P Payment Run AND Invoice Verification",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  },
+  {
+    "risk": "Goods Receipts for Purchase Orders AND Invoice Ver",
+    "alias": "PTP_TTT_M3_0003",
+    "description": "Goods Receipts for Purchase Orders AND Invoice Verification AND Release Blocked Invoices",
+    "comment": "",
+    "riskType": "Detection risk",
+    "riskLevel": "Extreme",
+    "riskStatus": "Not mitigated"
+  }
+]
