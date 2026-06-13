@@ -31,8 +31,12 @@
 
 .PARAMETER RequiredTables
   Minimalset an Tabellen (ohne .txt), das fuer die Weiterverarbeitung (Load) vorhanden sein
-  MUSS. Fehlt eine davon, bricht das Skript VOR der Konvertierung ab. Default = Kern-Pfad
-  (User/Rollen/Profile/Berechtigungen/SU24).
+  MUSS. Fehlt eine davon, bricht das Skript VOR der Konvertierung ab. Ohne Angabe wird die
+  Liste aus -RequiredTablesConfig gelesen (zentrale Quelle).
+
+.PARAMETER RequiredTablesConfig
+  Pfad zur zentralen Tabellenliste (JSON mit 'required'/'optional'). Default:
+  config/required_tables.json relativ zu diesem Skript.
 
 .PARAMETER SkipRequiredCheck
   Ueberspringt die Minimalset-Pruefung (fuer ad-hoc Teilkonvertierung einzelner Tabellen).
@@ -46,7 +50,8 @@ param(
     [string[]] $Tables,
     [string] $OutDelimiter = "`t",
     [string[]] $DropColumnsLike = @('BCODE*', 'BCDA*', 'OCOD*', 'CODV*', 'PASSCODE', 'PWDSALTEDHASH', 'PWDHISTORY'),
-    [string[]] $RequiredTables = @('USR02', 'AGR_DEFINE', 'AGR_AGRS', 'AGR_USERS', 'ARG_PROF', 'UST04', 'AGR_1251', 'TSTCT', 'USOBT_C', 'UST10S', 'UST12'),
+    [string[]] $RequiredTables,
+    [string] $RequiredTablesConfig = (Join-Path $PSScriptRoot '..\config\required_tables.json'),
     [switch] $SkipRequiredCheck
 )
 
@@ -54,6 +59,20 @@ $src = [System.Text.Encoding]::GetEncoding(1252)
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
 if (-not (Test-Path -LiteralPath $Folder)) { throw "Ordner nicht gefunden: $Folder" }
+
+# Tabellenliste aus zentraler Config laden (falls nicht explizit per -RequiredTables uebergeben).
+$optionalTables = @()
+if (-not $RequiredTables -or $RequiredTables.Count -eq 0) {
+    if (Test-Path -LiteralPath $RequiredTablesConfig) {
+        $cfg = Get-Content -LiteralPath $RequiredTablesConfig -Raw -Encoding UTF8 | ConvertFrom-Json
+        $RequiredTables = @($cfg.required)
+        $optionalTables = @($cfg.optional)
+    }
+    else {
+        Write-Warning "Config nicht gefunden: $RequiredTablesConfig - verwende eingebauten Fallback."
+        $RequiredTables = @('USR02', 'AGR_DEFINE', 'AGR_AGRS', 'AGR_USERS', 'ARG_PROF', 'UST04', 'AGR_1251', 'TSTCT', 'USOBT_C', 'UST10S', 'UST12')
+    }
+}
 
 # Pflicht-Tabellen pruefen, BEVOR konvertiert wird (sonst scheitert spaeter der Load).
 if (-not $SkipRequiredCheck) {
@@ -63,6 +82,12 @@ if (-not $SkipRequiredCheck) {
             ($missing -join ', ') + ". Export vervollstaendigen oder -SkipRequiredCheck fuer Teilkonvertierung.")
     }
     Write-Output ("Minimalset vollstaendig: {0}/{0} Pflicht-Tabellen vorhanden." -f $RequiredTables.Count)
+    if ($optionalTables.Count -gt 0) {
+        $missOpt = @($optionalTables | Where-Object { -not (Test-Path (Join-Path $Folder "$_.txt")) })
+        if ($missOpt.Count -gt 0) {
+            Write-Output ("Hinweis: optionale Tabellen fehlen (Anreicherung entfaellt): " + ($missOpt -join ', '))
+        }
+    }
 }
 
 if (-not $Tables -or $Tables.Count -eq 0) {

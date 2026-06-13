@@ -1,3 +1,14 @@
+# Konfiguration
+
+Dieser Ordner bündelt zentrale, versionierte Steuerdateien:
+
+- **`required_tables.json`** — Minimalset (`required`) + Anreicherung (`optional`) der erwarteten
+  SE16-Tabellen. Zentrale Quelle für den Konverter (`load/Convert-Se16Export.ps1` prüft das
+  Minimalset vor der Umwandlung) und den künftigen Runner. Tabellennamen = `.txt`-Basisnamen.
+- **`analysis_profiles.json`** — Auswertungs-Profile (Org-Modi/Filter), siehe unten.
+
+---
+
 # Auswertungs-Profile (`analysis_profiles.json`)
 
 Die **dritte Achse** der SoD-Auswertung neben dem konstanten **Ruleset** und dem variablen

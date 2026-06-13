@@ -1,0 +1,28 @@
+{
+  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt).",
+  "required": [
+    "USR02",
+    "AGR_DEFINE",
+    "AGR_AGRS",
+    "AGR_USERS",
+    "ARG_PROF",
+    "UST04",
+    "AGR_1251",
+    "TSTCT",
+    "USOBT_C",
+    "UST10S",
+    "UST12"
+  ],
+  "optional": [
+    "USR11",
+    "USR13",
+    "TOBJT",
+    "AGR_TEXTS",
+    "V_USERNAME",
+    "USREFUS",
+    "UST10C",
+    "AGR_1252",
+    "AGR_TCODES",
+    "AGR_1016B"
+  ]
+}
