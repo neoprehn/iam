@@ -23,6 +23,7 @@ services:
       - ./data/import:/var/lib/neo4j/import   # file:///<name>.csv (AE-15)
       - ./data/logs:/logs
       - ./load:/load:ro                       # Load-Skripte für cypher-shell -f /load/...
+      - ./cypher:/cypher:ro                    # Checks/SoD-Abfragen für cypher-shell -f /cypher/...
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
       interval: 15s
