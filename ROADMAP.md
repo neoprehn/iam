@@ -142,7 +142,7 @@ Ruleset-Aufbereitung (abgeschlossen):
 Bau (offen):
 - [ ] **Ruleset-Loader**: `(:Query)`/`(:SoDRule)`/`(:Risk)` aus den JSON, idempotent (MERGE auf `(ruleset,…)`); SoD-Ausdruck beim Laden in CNF-Klauseln zerlegen (UND-von-ODER).
 - [ ] **Generischer Evaluator** (one-fits-all, parametrisiert `$ruleset`×`$dataset`×Org-Profil×Scope-Profil×Stichtag): (1) Query-Matching pro User nach `combinationSemantics` + AE-06; (2) SoD = jede Klausel ≥1 erfüllte Query → Finding.
-- [x] **Einzelberechtigungs-Checks** (`cypher/checks/`) — erster Test: *wer hat `SAP_ALL`* (39 User, davon 18 aktive Dialog-User; `SAP*`/`DDIC` aktiv). *(noch nicht als Datei abgelegt)*
+- [x] **Einzelberechtigungs-Checks** (`cypher/checks/`) — erster: `cypher/checks/sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade, stichtagsparametrisiert `$dataset`/`$asOf`). Ergebnis `sachsenenergie`: 39 User, davon 18 aktive Dialog-User; `SAP*`/`DDIC` aktiv.
 - [ ] Kritische TCodes/Objekte mit `:Critical` taggen (Einstiegspunkte) — bzw. direkt aus dem Ruleset-Scope ableiten.
 - [ ] Pfad-Gültigkeitsschnittmenge (AE-08), `*`-Normalisierung (AE-06), Intra- vs. Inter-Rollen-Konflikt (AE-11).
 - [ ] Findings in die Snapshot-Schicht: `(:SoDConflict {sodRule, ruleset, asOf, runId})` mit `VIOLATED_BY`/`VIA_ROLE`/`BASED_ON_RULE`; `DETACH DELETE` der Snapshot-Schicht vor jedem Lauf (AE-10).
