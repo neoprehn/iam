@@ -68,6 +68,11 @@ möglich (Summe der Bits, z. B. `192` = `64`+`128`). Gespeichert als Property `l
 weiteren Passwort-/Hash-Felder. Klartextname/Adressdaten (USR21/ADRP) sind für Can-Do nicht
 nötig — optional und separat (Did-Do-Phase: Pseudonymisierung beachten).
 
+> **Defense in Depth:** Falls diese Spalten doch mitexportiert wurden, verwirft sie der
+> Konverter (`Convert-Se16Export.ps1`, Parameter `-DropColumnsLike`) bereits bei der
+> Umwandlung — sie landen in keiner CSV. Die Load-Skripte lesen ohnehin nur die benötigten
+> Spalten, sodass Passwort-/Hash-Daten den Graphen nie erreichen.
+
 ### 02 — AGR_DEFINE (Rollen) → `:Role`
 | Spalte | Verwendung |
 | --- | --- |

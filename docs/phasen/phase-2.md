@@ -70,9 +70,10 @@ Python, kein lokales Java** (AE-15):
 # 1. SE16-Tabellen exportieren ("unkonvertiert"), .txt nach data/import/<dataset>/ legen
 #    (Ordnername = dataset, z. B. data/import/sachsenenergie/)
 
-# 2. In CSV konvertieren
-.\load\Convert-Se16Export.ps1 -Folder data\import\sachsenenergie `
-   -Tables USR02,AGR_DEFINE,AGR_AGRS,AGR_USERS,ARG_PROF,UST04,USR11,AGR_1251,USOBT_C,TSTCT
+# 2. In CSV konvertieren — ALLE Tabellen des Ordners; sensible Credential-Spalten
+#    (PWDSALTEDHASH, BCODE, PASSCODE, OCOD*/BCDA*/CODV* ...) werden dabei automatisch
+#    verworfen (-DropColumnsLike), landen also in keiner CSV.
+.\load\Convert-Se16Export.ps1 -Folder data\import\sachsenenergie
 
 # 3. Schema sicherstellen (Phase 1)
 docker compose run --rm migrations
