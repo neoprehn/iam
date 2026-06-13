@@ -32,6 +32,7 @@ vor dem Produktivlauf einmal gegen das konkrete SAP-System verifizieren (SE11/SE
 | `01_usr02.csv` | USR02 | Benutzer (Stammsatz, Typ, Sperre, Gültigkeit) |
 | `02_agr_define.csv` | AGR_DEFINE | Rollen (+ übergeordnete/Ableitungs-Rolle) |
 | `agr_texts.csv` | AGR_TEXTS | Rollentexte, **sprachabhängig** (Loader `21`, `$lang`-Schalter) |
+| `agr_1016b.csv` | AGR_1016B | Generierungs-Status der Rollenprofile (Loader `22` → `:Role.profileGenerated`/`profileState`) |
 | `03_agr_agrs.csv` | AGR_AGRS | Sammelrolle → Einzelrolle |
 | `04_agr_users.csv` | AGR_USERS | User → Rolle (mit Gültigkeit) |
 | `05_agr_prof.csv` | AGR_PROF | Rolle → (generiertes) Profil |
@@ -89,6 +90,19 @@ bis die Ableitungs-Information vorliegt.
 Kanonische, **sprachabhängige** Quelle für Rollentexte (`AGR_DEFINE.TEXT` in `02` ist
 einsprachig und lückenhaft). Läuft nach `02`: bevorzugte Sprache aus `$lang` überschreibt,
 sonst bleibt der erste vorhandene Text. Siehe `load/21_role_texts.cypher`.
+
+### 22 — AGR_1016B (Profil-Generierungsstatus) → `:Role`-Properties
+| Spalte | Verwendung |
+| --- | --- |
+| `AGR_NAME` | Rollenname (Join auf `:Role`) |
+| `GENERATED` | `'X'` = Profil generiert → `r.profileGenerated` (true, wenn **alle** Profile der Rolle) |
+| `PSTATE` | Profilstatus (roh, ohne Interpretation) → `r.profileState` (Liste distinct) |
+
+Verlustfrei/konzeptunabhängig: hält fest, ob die generierten Profile einer Rolle vorhanden/aktiv
+sind. In Konzepten mit nicht generierten/veralteten Rollen sind deren AGR_1251-Berechtigungen
+zur Laufzeit nicht (vollständig) aktiv — das **Finding** dazu (betroffene Rollen) gehört in die
+Auswertung (Phase 3, AE-10), hier nur das Rohfaktum. Eine Rolle kann mehrere Profile haben
+(`COUNTER`>1, Split bei >150 Objekten) → Aggregation je Rolle. Siehe `load/22_role_profile_status.cypher`.
 
 ### 03 — AGR_AGRS (Rollenhierarchie) → `CONTAINS`
 | Spalte | Verwendung |
