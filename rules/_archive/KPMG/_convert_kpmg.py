@@ -76,11 +76,12 @@ for row in sheet_rows("Query authorizations overview.xlsx"):
     name = s(row.get("Query name"))
     if not name:
         continue
+    # Object-/Field-Texte bewusst NICHT uebernommen: Objekttexte stehen im Graph
+    # (AuthObject.text aus TOBJT/13), Feldtexte sind SAP-Metadaten (kein Ruleset-Logikinhalt).
+    # Konsistent zu den CSI-Rulesets, die diese Beschreibungen ebenfalls nicht fuehren.
     ensure(name, s(row.get("Query description")))["authorizations"].append({
         "object": s(row.get("Object")),
-        "objectDescription": s(row.get("Object description")),
         "field": s(row.get("Field")),
-        "fieldDescription": s(row.get("Field description")),
         "andLogic": b(row.get("And-logic")),
         "values": split_values(row.get("Values")),
         "audit": b(row.get("Audit")),
@@ -90,9 +91,9 @@ for row in sheet_rows("Query transaction relation.xlsx"):
     name = s(row.get("Query name"))
     if not name:
         continue
+    # TCode-Text bewusst NICHT uebernommen: steht im Graph (Transaction.text aus TSTCT/09).
     ensure(name, s(row.get("Query description")))["transactions"].append({
         "tcode": s(row.get("Transaction")),
-        "tcodeDescription": s(row.get("TCode description")),
         "audit": b(row.get("Audit")),
         "stad": b(row.get("STAD")),
     })
