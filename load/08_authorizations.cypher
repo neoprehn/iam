@@ -2,22 +2,27 @@
 // Ein Authorization-Knoten je (AGR_NAME, OBJECT, AUTH). Feldwerte als Properties f_<FELD> (Liste),
 // Bereiche als 'LOW..HIGH', '*' bleibt erhalten (AE-06). DELETED='X' wird gefiltert. Parameter: $dataset
 //
-// HINWEIS: schwerster Schritt (726k Zeilen, dynamische f_<FELD>-Properties). Eine getestete
-// "aggregate-first"-Variante war hier NICHT schneller (die dynamischen Property-Writes dominieren).
-// Eine echte Optimierung (Zwei-Pass: distinct Knoten/Kanten, dann je Auth eine Bulk-Property-
-// Setzung mit apoc.create.setProperties) ist als Folgearbeit offen.
+// ZWEI-PASS / Aggregate-First (analog 19): je Auth ZUERST alle Feldwerte sammeln (collect DISTINCT
+// -> Map), dann den Knoten EINMAL mergen und alle f_-Properties in einem `SET a += props` setzen.
+// Ersetzt das frühere pro-Zeile coalesce+toSet+setProperty (O(n^2)-Array-Append, eskalierende
+// Batchzeiten). Schnell nur MIT dem Key-Index aus Migration V003 (sonst Full-Scan je MERGE).
+// AGR_1251 ist die alleinige Quelle der f_-Werte der Rollen-Auths -> Overwrite ist verlustfrei
+// und idempotent.
 CALL apoc.periodic.iterate(
-  "LOAD CSV WITH HEADERS FROM $url AS row FIELDTERMINATOR '\t' RETURN row",
-  "WITH row WHERE coalesce(row.DELETED,'') <> 'X' AND coalesce(row.AUTH,'') <> '' AND coalesce(row.FIELD,'') <> ''
-   MERGE (a:Authorization {key: $dataset + '|' + row.AGR_NAME + '|' + row.OBJECT + '|' + row.AUTH})
-     ON CREATE SET a.dataset=$dataset, a.role=row.AGR_NAME, a.object=row.OBJECT, a.auth=row.AUTH
-   MERGE (r:Role {key: $dataset + '|' + row.AGR_NAME}) ON CREATE SET r.dataset=$dataset, r.id=row.AGR_NAME
-   MERGE (r)-[:HAS_AUTH]->(a)
-   MERGE (o:AuthObject {key: $dataset + '|' + row.OBJECT}) ON CREATE SET o.dataset=$dataset, o.id=row.OBJECT
-   MERGE (a)-[:FOR_OBJECT]->(o)
-   WITH a, 'f_' + row.FIELD AS fkey,
+  "LOAD CSV WITH HEADERS FROM $url AS row FIELDTERMINATOR '\t'
+   WITH row WHERE coalesce(row.DELETED,'') <> 'X' AND coalesce(row.AUTH,'') <> '' AND coalesce(row.FIELD,'') <> ''
+   WITH row.AGR_NAME AS agr, row.OBJECT AS obj, row.AUTH AS auth, 'f_' + row.FIELD AS fkey,
         CASE WHEN coalesce(row.HIGH,'') = '' THEN coalesce(row.LOW,'') ELSE row.LOW + '..' + row.HIGH END AS val
-   CALL apoc.create.setProperty(a, fkey, apoc.coll.toSet(coalesce(apoc.any.property(a, fkey), []) + val)) YIELD node
+   WITH agr, obj, auth, fkey, collect(DISTINCT val) AS vals
+   WITH agr, obj, auth, collect([fkey, vals]) AS pairs
+   RETURN agr, obj, auth, apoc.map.fromPairs(pairs) AS props",
+  "MERGE (a:Authorization {key: $dataset + '|' + agr + '|' + obj + '|' + auth})
+     ON CREATE SET a.dataset=$dataset, a.role=agr, a.object=obj, a.auth=auth
+   SET a += props
+   MERGE (r:Role {key: $dataset + '|' + agr}) ON CREATE SET r.dataset=$dataset, r.id=agr
+   MERGE (r)-[:HAS_AUTH]->(a)
+   MERGE (o:AuthObject {key: $dataset + '|' + obj}) ON CREATE SET o.dataset=$dataset, o.id=obj
+   MERGE (a)-[:FOR_OBJECT]->(o)
    RETURN count(*)",
-  {batchSize:10000, parallel:false, params:{url:'file:///'+$dataset+'/agr_1251.csv', dataset:$dataset}}
+  {batchSize:5000, parallel:false, params:{url:'file:///'+$dataset+'/agr_1251.csv', dataset:$dataset}}
 );
