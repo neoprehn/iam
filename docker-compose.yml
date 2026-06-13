@@ -11,8 +11,15 @@ services:
       NEO4J_apoc_import_file_enabled: "true"
       NEO4J_apoc_import_file_use__neo4j__config: "true"
       NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      # Speicher: Default (512MiB Pagecache, kein Heap-Limit) ist für die Importmengen
+      # viel zu klein -> Plattenthrashing. Großzügig dimensionieren (Host hat reichlich RAM).
+      NEO4J_server_memory_heap_initial__size: "4G"
+      NEO4J_server_memory_heap_max__size: "4G"
+      NEO4J_server_memory_pagecache_size: "6G"
     volumes:
-      - ./data/db:/data
+      # DB als Named Volume (schnelle ext4-Platte IN der Docker-VM) — NICHT als Bind-Mount auf
+      # den OneDrive-Pfad: dort ist DB-I/O (fsync) extrem langsam + OneDrive synchronisiert mit.
+      - iam_neo4j_db:/data
       - ./data/import:/var/lib/neo4j/import   # file:///<name>.csv (AE-15)
       - ./data/logs:/logs
       - ./load:/load:ro                       # Load-Skripte für cypher-shell -f /load/...
@@ -51,3 +58,6 @@ services:
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
     volumes:
       - ./migrations:/migrations
+
+volumes:
+  iam_neo4j_db:   # DB-Speicher (schnell, in der Docker-VM; ersetzt den OneDrive-Bind-Mount)

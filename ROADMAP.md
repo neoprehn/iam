@@ -93,6 +93,7 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 - [x] Kantentypen: `ASSIGNED_TO` (User→Role, mit Gültigkeit), `CONTAINS` (Composite→Single), `DERIVED_FROM` (Derived→Master), `HAS_PROFILE` (User/Role→Profile), `HAS_AUTH` (Role/Profile→Authorization), `FOR_OBJECT` (Authorization→AuthObject), `CHECKS` (Transaction→AuthObject, aus SU24).
 - [x] `V001__constraints.cypher`: Unique-Constraints (Dataset, User, Role, Profile, AuthObject, Transaction; Community-tauglich via synthetischem `key`, da `dataset` Teil des Schlüssels ist).
 - [x] `V002__indexes.cypher`: Composite-Lookups `(dataset, id)` + Range-Index auf `ASSIGNED_TO(validFrom, validTo)`.
+- [x] `V003__authorization_key.cypher`: Unique-Constraint auf `Authorization.key` (Korrektur — V001/V002 hatten Authorization bewusst ausgelassen, aber die Loader MERGE/MATCH-en darauf; ohne Index Full-Scans → stundenlange Importe). **Performance-Hauptursache, behoben.**
 - [x] Modell dokumentieren (`docs/datamodel.md` + Mermaid-Diagramm).
 - [x] **Versions-/Vergleichsdimension** `dataset` ins Schlüsseldesign aufgenommen (2025- vs. 2026-Stand in einer DB vergleichbar); mehrere Mandanten dagegen über getrennte Instanzen.
 - [x] **Migrations-Tooling** als gepinnter Container (`docker/neo4j-migrations.Dockerfile`, Compose-Service `migrations`, profile `tools`) — AE-02/AE-15.
@@ -116,9 +117,9 @@ Relevante Quelltabellen: `USR02` (Benutzer), `USR04`/`UST04` (Direktprofile), `U
 - [x] SE16-Konverter `load/Convert-Se16Export.ps1` (unkonvertiert → UTF-8/Tab/CSV); container-only via cypher-shell + APOC (kein Python).
 - [x] Phase in der Doku dokumentiert (`docs/phasen/phase-2.md`) — Dokumentations-DoD.
 
-**DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar. ✓ verifiziert am dataset `sachsenenergie` (90.700 Authorizations, 72.109 `ASSIGNED_TO`, 63.088 `HAS_PROFILE`, 192.230 `CHECKS`).
+**DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar. ✓ verifiziert am dataset `sachsenenergie`: 182.170 Authorizations (Rollen- **und** Profilpfad inkl. Feldwerte), 131.145 Transactions, 72.109 `ASSIGNED_TO`, 63.088 `HAS_PROFILE`, 192.230 `CHECKS`, 103.165 `HAS_MENU`.
 
-> **Hinweis:** `08_authorizations` (AGR_1251) ist der zeitintensivste Schritt; Performance-Optimierung (Zwei-Pass) als Folgearbeit offen.
+> **Performance (gelöst):** Die langsamen Importe (`08`/`18`/`19`/`20`, teils Stunden) hatten zwei Ursachen: (1) **fehlender Index auf `Authorization.key`** → Full-Label-Scan bei jedem MERGE/MATCH (Hauptursache, behoben via `V003`); (2) O(n²)-Read-Modify-Write beim `f_<FELD>`-Array-Append in `19` (UST12) → behoben durch **Zwei-Pass/Aggregate-First** (`collect DISTINCT` je Auth/Feld, dann einmal setzen). `08` (AGR_1251) und `19` (UST12) wurden auf Aggregate-First umgestellt; `18`/`20` profitieren allein vom Key-Index (kein O(n²), nur Lookups). Ergebnis end-to-end (verifiziert, byte-identische Daten): `08` ~3 h → **7 s**, `18` 88 min → **3 s**, `19` 4,6 h → **9 s**, `20` >33 min → **3 s**. Die gesamte Import-Pipeline läuft jetzt in unter einer Minute.
 
 ---
 
