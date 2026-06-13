@@ -64,7 +64,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AAMDPA",
@@ -115,7 +117,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AAMISA",
@@ -150,7 +154,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "AAMMDD",
@@ -211,7 +217,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "AAMMPA",
@@ -612,7 +620,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "AAMPCA",
@@ -761,7 +771,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "AAMRPD",
@@ -861,7 +873,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "AAMRVA",
@@ -939,7 +953,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AAMSPA",
@@ -1113,7 +1129,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "AAMTRA",
@@ -1157,7 +1175,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "AASCLA",
@@ -1202,7 +1222,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AASMCA",
@@ -1254,7 +1276,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "AASSEA",
@@ -1346,7 +1370,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AASSEU",
@@ -1385,7 +1411,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AASSGA",
@@ -1438,7 +1466,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "AASSGU",
@@ -1468,7 +1498,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "ACSTMA",
@@ -2197,7 +2229,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "CBACKA",
@@ -2342,7 +2376,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CBOMMA",
@@ -2417,7 +2453,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CBOMXA",
@@ -2548,7 +2586,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CBOMXD",
@@ -2624,7 +2664,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CBOMXH",
@@ -2648,7 +2690,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "CBOMXM",
@@ -2701,7 +2745,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "CCAPPA",
@@ -2790,7 +2836,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CCENFA",
@@ -2900,7 +2948,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CCENFD",
@@ -2985,7 +3035,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CCHARA",
@@ -3030,7 +3082,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CCHARD",
@@ -3075,7 +3129,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CCLMCA",
@@ -3110,7 +3166,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CCSTMA",
@@ -4569,7 +4627,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CPRORA",
@@ -4661,7 +4721,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CPRORC",
@@ -4748,7 +4810,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CPRORR",
@@ -4801,7 +4865,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CPSORA",
@@ -4917,7 +4983,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CPSORC",
@@ -4992,7 +5060,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CPSORR",
@@ -5049,7 +5119,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CREPMA",
@@ -5085,7 +5157,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CROUTA",
@@ -5169,7 +5243,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "CSOPLA",
@@ -5294,7 +5370,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "CWRKCA",
@@ -5418,7 +5496,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DBUDGA",
@@ -5557,7 +5637,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DCSTMA",
@@ -5651,7 +5733,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "DISPSD",
@@ -5836,7 +5920,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "DMASSA",
@@ -5878,7 +5964,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DMFRPA",
@@ -5969,7 +6057,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DNWMSA",
@@ -6109,7 +6199,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DNWMSC",
@@ -6210,7 +6302,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DPRSAA",
@@ -6285,7 +6379,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DPRSPA",
@@ -6330,7 +6426,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DPSPLA",
@@ -6465,7 +6563,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DPSPLD",
@@ -6559,7 +6659,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "DPSTAA",
@@ -6603,7 +6705,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWBSTA",
@@ -6756,7 +6860,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWBSSA",
@@ -6836,7 +6942,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWFPLA",
@@ -6879,7 +6987,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FACREA",
@@ -7061,7 +7171,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "FAPDPA",
@@ -7132,7 +7244,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPDPK",
@@ -7299,7 +7413,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPDUA",
@@ -7347,7 +7463,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPIMA",
@@ -7401,7 +7519,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIV2",
@@ -7449,7 +7569,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIVA",
@@ -7621,7 +7743,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIVF",
@@ -7719,7 +7843,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIVM",
@@ -7767,7 +7893,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIVR",
@@ -7815,7 +7943,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPMPA",
@@ -8123,7 +8253,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPPCA",
@@ -8301,7 +8433,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPPDA",
@@ -8397,7 +8531,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPPPA",
@@ -8452,7 +8588,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPPRA",
@@ -8525,7 +8663,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPPYA",
@@ -8738,7 +8878,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPRDA",
@@ -8837,7 +8979,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FAPRPA",
@@ -8903,7 +9047,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FARCMA",
@@ -8995,7 +9141,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARDPK",
@@ -9157,7 +9305,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARDUA",
@@ -9205,7 +9355,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAREPA",
@@ -9463,7 +9615,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARMPA",
@@ -9756,7 +9910,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARPAA",
@@ -9809,7 +9965,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARPCA",
@@ -9982,7 +10140,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FARPDA",
@@ -10088,7 +10248,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARPRA",
@@ -10151,7 +10313,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FARPYA",
@@ -10364,7 +10528,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARRDA",
@@ -10468,7 +10634,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FBANKA",
@@ -10520,7 +10688,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBAPLA",
@@ -10564,7 +10734,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBASTA",
@@ -10649,7 +10821,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FBOLEA",
@@ -10719,7 +10893,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FBOLMA",
@@ -10776,7 +10952,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCAACA",
@@ -10817,7 +10995,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCACPA",
@@ -10878,7 +11058,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCAMPA",
@@ -10991,7 +11173,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCASHA",
@@ -11047,7 +11231,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCHCKA",
@@ -11172,7 +11358,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCLOSA",
@@ -11276,7 +11464,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCLOSB",
@@ -11325,7 +11515,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCSTMA",
@@ -14355,7 +14547,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FCSTMB",
@@ -14403,7 +14597,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FCURRA",
@@ -14472,7 +14668,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSMA",
@@ -14580,7 +14778,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSTA",
@@ -14714,7 +14914,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSTB",
@@ -14798,7 +15000,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSTC",
@@ -14887,7 +15091,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSTN",
@@ -14971,7 +15177,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSTU",
@@ -15070,7 +15278,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSTX",
@@ -15154,7 +15364,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUTRA",
@@ -15202,7 +15414,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FDTPKA",
@@ -15226,7 +15440,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FELCDA",
@@ -15277,7 +15493,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FFICLA",
@@ -15612,7 +15830,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FFIDCA",
@@ -15660,7 +15880,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FFIDPK",
@@ -15842,7 +16064,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FFIMRA",
@@ -15917,7 +16141,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FFIPDA",
@@ -16023,7 +16249,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FFMCTA",
@@ -16153,7 +16381,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FGLDPK",
@@ -16314,7 +16544,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FGLMAA",
@@ -16428,7 +16660,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FGLMCA",
@@ -16537,7 +16771,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FGLMMA",
@@ -16618,7 +16854,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FGLMPA",
@@ -16901,7 +17139,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FGLPCA",
@@ -17085,7 +17325,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FGLPDA",
@@ -17200,7 +17442,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FGLRDA",
@@ -17294,7 +17538,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FGRIRA",
@@ -17357,7 +17603,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FHBNKA",
@@ -17397,7 +17645,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FINTRA",
@@ -17456,7 +17706,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBOMCA",
@@ -17504,7 +17756,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FMPDBA",
@@ -17545,7 +17799,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FOTCOA",
@@ -17651,7 +17907,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FPAPPA",
@@ -17675,7 +17933,9 @@
         "audit": false
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FPTCAA",
@@ -17708,7 +17968,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FSLCLA",
@@ -17772,7 +18034,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FSPGLA",
@@ -18042,7 +18306,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FVENDA",
@@ -18171,7 +18437,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FVENDB",
@@ -18255,7 +18523,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FVENDC",
@@ -18344,7 +18614,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FVENDN",
@@ -18428,7 +18700,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FVENDU",
@@ -18522,7 +18796,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FVENDX",
@@ -18606,7 +18882,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FVENMA",
@@ -18714,7 +18992,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "IBOMEA",
@@ -18833,7 +19113,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "IBOMTA",
@@ -18952,7 +19234,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "ICSTMA",
@@ -19006,7 +19290,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "IEQUIA",
@@ -19238,7 +19524,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "IFULOA",
@@ -19471,7 +19759,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "IMAPLA",
@@ -19639,7 +19929,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "IMEDOA",
@@ -19729,7 +20021,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "IMEPOA",
@@ -19800,7 +20094,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "INOTIA",
@@ -19963,7 +20259,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "IPMORA",
@@ -20198,7 +20496,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "IPMORC",
@@ -20267,7 +20567,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "ISENOA",
@@ -20388,7 +20690,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "ISEORA",
@@ -20463,7 +20767,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "ITASKA",
@@ -20675,7 +20981,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KATHIA",
@@ -20711,7 +21019,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KATMDA",
@@ -20758,7 +21068,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KCCADA",
@@ -20819,7 +21131,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KCCADE",
@@ -20869,7 +21183,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KCCHIA",
@@ -20916,7 +21232,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KCCMDA",
@@ -21008,7 +21326,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KCCMFA",
@@ -21078,7 +21398,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KCCMPA",
@@ -21238,7 +21560,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KCCPLA",
@@ -21343,7 +21667,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KCEPLD",
@@ -21499,7 +21825,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "KCOEHA",
@@ -21550,7 +21878,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KCOELA",
@@ -21601,7 +21931,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KCSTMA",
@@ -21895,7 +22227,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "KIOCLA",
@@ -21976,7 +22310,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KIOHIA",
@@ -22016,7 +22352,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KIOMDA",
@@ -22105,7 +22443,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KIOMPA",
@@ -22202,7 +22542,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KPARPE",
@@ -22242,7 +22584,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "KPCADA",
@@ -22307,7 +22651,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KPCADE",
@@ -22351,7 +22697,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KPCCLA",
@@ -22393,7 +22741,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KPCHIA",
@@ -22474,7 +22824,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KPCMDA",
@@ -22540,7 +22892,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KPCTPA",
@@ -22595,7 +22949,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KPDCCA",
@@ -22780,7 +23136,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KPDCLA",
@@ -22872,7 +23230,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "KPDPLA",
@@ -22936,7 +23296,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "KPRORA",
@@ -23000,7 +23362,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LBSSTA",
@@ -23045,7 +23409,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINCLA",
@@ -23091,7 +23457,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LCSTMA",
@@ -23191,7 +23559,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LHMATA",
@@ -23227,7 +23597,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINVCA",
@@ -23311,7 +23683,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LPISTA",
@@ -23379,7 +23753,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LPOCNA",
@@ -23424,7 +23800,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LPRSUA",
@@ -23460,7 +23838,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LREPLA",
@@ -23510,7 +23890,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRORA",
@@ -23687,7 +24069,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRPOA",
@@ -23735,7 +24119,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRRQA",
@@ -23780,7 +24166,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LWMMDA",
@@ -23900,7 +24288,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MBAORA",
@@ -23930,7 +24320,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MBLINA",
@@ -23969,7 +24361,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MCLOSA",
@@ -24008,7 +24402,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MCONDA",
@@ -24298,7 +24694,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MCONTA",
@@ -24352,7 +24750,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MCSTMA",
@@ -26131,7 +26531,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MGIALA",
@@ -26227,7 +26629,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MGISCA",
@@ -26297,7 +26701,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MGROTA",
@@ -26401,7 +26807,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MGRPOA",
@@ -26486,7 +26894,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MGRPRA",
@@ -26537,7 +26947,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MGTRNA",
@@ -26690,7 +27102,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MINREA",
@@ -26774,7 +27188,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MINREX",
@@ -26827,7 +27243,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MINRMA",
@@ -26895,7 +27313,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MMABAA",
@@ -26975,7 +27395,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MMADOA",
@@ -27034,7 +27456,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MMMMSA",
@@ -27054,7 +27478,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MMRPLA",
@@ -27143,7 +27569,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MMRPSA",
@@ -27408,7 +27836,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MMRPSD",
@@ -27585,7 +28015,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MOUAGA",
@@ -27696,7 +28128,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MOUAGR",
@@ -27754,7 +28188,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MOUAMA",
@@ -27835,7 +28271,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MPHICA",
@@ -27876,7 +28314,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPHICN",
@@ -27911,7 +28351,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPHIDA",
@@ -27975,7 +28417,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MPHIDN",
@@ -28005,7 +28449,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPHIDP",
@@ -28041,7 +28487,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPHIPA",
@@ -28108,7 +28556,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPHIPN",
@@ -28143,7 +28593,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPHIPX",
@@ -28173,7 +28625,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPIREA",
@@ -28245,7 +28699,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MPRICA",
@@ -28280,7 +28736,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MPUOMA",
@@ -28350,7 +28808,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPUORA",
@@ -28476,7 +28936,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPUORN",
@@ -28538,7 +29000,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPUORR",
@@ -28618,7 +29082,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPURCR",
@@ -28713,7 +29179,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPUREA",
@@ -28804,7 +29272,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPURMA",
@@ -28874,7 +29344,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MPURWR",
@@ -28960,7 +29432,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MQUOTA",
@@ -29030,7 +29504,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MQUOTD",
@@ -29096,7 +29572,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MRFQSA",
@@ -29167,7 +29645,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MRFQSD",
@@ -29224,7 +29704,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MRFQSR",
@@ -29272,7 +29754,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MRLBSA",
@@ -29340,7 +29824,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MSEMDA",
@@ -29395,7 +29881,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MSESHA",
@@ -29466,7 +29954,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MSESHR",
@@ -29552,7 +30042,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MSRCLA",
@@ -29603,7 +30095,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MSTTOA",
@@ -29684,7 +30178,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "MVALUA",
@@ -29789,7 +30285,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MVENCA",
@@ -29819,7 +30317,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MVENDA",
@@ -30023,7 +30523,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MVENDB",
@@ -30107,7 +30609,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MVENDN",
@@ -30271,7 +30775,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MVENDU",
@@ -30355,7 +30861,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MVENDX",
@@ -30439,7 +30947,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MVENMA",
@@ -30547,7 +31057,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PCMCPA",
@@ -30710,7 +31222,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PCSTMA",
@@ -30869,7 +31383,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PCSTOA",
@@ -30943,7 +31459,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PDPPDA",
@@ -31080,7 +31598,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PETABA",
@@ -31383,7 +31903,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PETBGA",
@@ -31536,7 +32058,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PETBLA",
@@ -31674,7 +32198,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PETMDA",
@@ -31922,7 +32448,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PMDMDX",
@@ -31988,7 +32516,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PMDPEA",
@@ -32057,7 +32587,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PORGEA",
@@ -32323,7 +32855,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PORGPA",
@@ -32514,7 +33048,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAAVC",
@@ -32627,7 +33163,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAAVE",
@@ -32740,7 +33278,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPACCA",
@@ -32955,7 +33495,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDA",
@@ -33063,7 +33605,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDD",
@@ -33251,7 +33795,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDX",
@@ -33349,7 +33895,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAPIA",
@@ -33418,7 +33966,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAPID",
@@ -33561,7 +34111,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPASVS",
@@ -33674,7 +34226,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPCONA",
@@ -33722,7 +34276,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPRESX",
@@ -33761,7 +34317,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPRUNA",
@@ -33800,7 +34358,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPSTSA",
@@ -33889,7 +34449,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPTSPA",
@@ -34102,7 +34664,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PRCAMA",
@@ -34167,7 +34731,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PRCAMD",
@@ -34202,7 +34768,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PABAP1",
@@ -34226,7 +34794,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PABAP2",
@@ -34250,7 +34820,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PRICLA",
@@ -34323,7 +34895,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PSTRUA",
@@ -34404,7 +34978,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PSTRUD",
@@ -34459,7 +35035,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTDATA",
@@ -34617,7 +35195,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTMDEA",
@@ -34686,7 +35266,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTMDIA",
@@ -34754,7 +35336,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTMXID",
@@ -34808,7 +35392,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTMXXD",
@@ -34926,7 +35512,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTVMGA",
@@ -35036,7 +35624,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PVTROA",
@@ -35145,7 +35735,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PWRKSA",
@@ -35233,7 +35825,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PYOCWA",
@@ -35291,7 +35885,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PYPRNA",
@@ -35390,7 +35986,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PYSCFA",
@@ -35489,7 +36087,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PYTLSA",
@@ -35521,7 +36121,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "QCATAA",
@@ -35581,7 +36183,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "QINLTA",
@@ -35635,7 +36239,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "QWRKLA",
@@ -35686,7 +36292,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "S$SEU1",
@@ -35746,7 +36354,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "S$SEU2",
@@ -35904,7 +36514,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SABAPA",
@@ -36114,7 +36726,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SABAPB",
@@ -36138,7 +36752,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SABAPC",
@@ -36193,7 +36809,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SABTCA",
@@ -36228,7 +36846,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SABVAA",
@@ -36252,7 +36872,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SADRSA",
@@ -36293,7 +36915,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SALLPD",
@@ -36317,7 +36941,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SALOGX",
@@ -36367,7 +36993,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SAONLA",
@@ -36402,7 +37030,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SARCHA",
@@ -37258,7 +37888,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SARCLA",
@@ -37475,7 +38107,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SAUDAA",
@@ -37510,7 +38144,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SAUOBA",
@@ -37584,7 +38220,9 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SBJOBA",
@@ -37658,7 +38296,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SBJOBD",
@@ -37695,7 +38335,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SBJOBN",
@@ -37750,7 +38392,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SBJOBR",
@@ -37785,7 +38429,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SBJOBX",
@@ -37820,7 +38466,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCACHA",
@@ -37857,7 +38505,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCALLC",
@@ -37881,7 +38531,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCALLO",
@@ -37905,7 +38557,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCALLP",
@@ -37930,7 +38584,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCATTA",
@@ -38005,7 +38661,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCDOCA",
@@ -38030,7 +38688,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCDOCX",
@@ -38054,7 +38714,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCLNTA",
@@ -38102,7 +38764,9 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCOBLA",
@@ -38137,7 +38801,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCOBLD",
@@ -38172,7 +38838,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCPICA",
@@ -38196,7 +38864,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SCTDTA",
@@ -38269,7 +38939,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SDBASA",
@@ -38540,7 +39212,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SDCFAA",
@@ -38581,7 +39255,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SDEBUA",
@@ -38615,7 +39291,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SDEBUD",
@@ -38649,7 +39327,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SDELEA",
@@ -38684,7 +39364,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SDEVLA",
@@ -38893,7 +39575,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SEXMIA",
@@ -38944,7 +39628,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SEXTCA",
@@ -38984,7 +39670,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SEXTCE",
@@ -39037,7 +39725,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SFACAA",
@@ -39087,7 +39777,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SFREEA",
@@ -39122,7 +39814,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SFUMOE",
@@ -39172,7 +39866,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SFUSPA",
@@ -39248,7 +39944,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SIDOCA",
@@ -39667,7 +40365,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SIDPPA",
@@ -39707,7 +40407,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SIMG_A",
@@ -39820,7 +40522,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SINSTA",
@@ -39869,7 +40573,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SLAYOA",
@@ -39893,7 +40599,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "SLAYRA",
@@ -39917,7 +40625,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "SLCK_A",
@@ -39952,7 +40662,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SLOCKA",
@@ -39984,7 +40696,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SLOCLD",
@@ -40009,7 +40723,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SLSMWA",
@@ -40082,7 +40798,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SMASSA",
@@ -40132,7 +40850,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SMESSA",
@@ -40162,7 +40882,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SMONIA",
@@ -40577,7 +41299,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNADMA",
@@ -40667,7 +41391,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRHRA",
@@ -40769,7 +41495,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRSDA",
@@ -40893,7 +41621,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRXXA",
@@ -41060,7 +41790,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOFFIA",
@@ -41185,7 +41917,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SOSFRD",
@@ -41246,7 +41980,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOSFWA",
@@ -41302,7 +42038,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOSSLA",
@@ -41351,7 +42089,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SPADMA",
@@ -41461,7 +42201,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SPFCGA",
@@ -41545,7 +42287,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SPROFA",
@@ -41699,7 +42443,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SPSE_A",
@@ -41761,7 +42507,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SQUERA",
@@ -41836,7 +42584,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SQUERD",
@@ -41876,7 +42626,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SQUERU",
@@ -41936,7 +42688,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SREOGA",
@@ -41971,7 +42725,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SRFCAA",
@@ -42004,7 +42760,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SRFCTD",
@@ -42055,7 +42813,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SRFCTE",
@@ -42079,7 +42839,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SRSETA",
@@ -42164,7 +42926,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSA38A",
@@ -42209,7 +42973,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSCO_A",
@@ -42258,7 +43024,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSCPLA",
@@ -42290,7 +43058,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSCPLP",
@@ -42320,7 +43090,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSCRPX_ALL",
@@ -42397,7 +43169,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSCUMA",
@@ -42454,7 +43228,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSDMOA",
@@ -42474,7 +43250,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSE16D",
@@ -42519,7 +43297,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSICMA",
@@ -42549,7 +43329,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSLOGA",
@@ -42589,7 +43371,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSM30D",
@@ -42644,7 +43428,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSM35A",
@@ -42705,7 +43491,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSM35B",
@@ -42784,7 +43572,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSM35D",
@@ -42819,7 +43609,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSNCTA",
@@ -42886,7 +43678,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSNCUA",
@@ -42939,7 +43733,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSOSTA",
@@ -42996,7 +43792,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSPARA",
@@ -43026,7 +43824,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSPOOA",
@@ -43130,7 +43930,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSPOOD",
@@ -43219,7 +44021,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSSOCA",
@@ -43296,7 +44100,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSTCDA",
@@ -43330,7 +44136,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSTCRA",
@@ -43354,7 +44162,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSU24A",
@@ -43428,7 +44238,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSYCSA",
@@ -43481,7 +44293,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSYNCA",
@@ -43505,7 +44319,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSYSMA",
@@ -43645,7 +44461,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSYSTA",
@@ -43735,7 +44553,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STABLA",
@@ -43975,7 +44795,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STABLX",
@@ -44224,7 +45046,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STCODA",
@@ -44369,7 +45193,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STCODZ",
@@ -44514,7 +45340,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STEMSD",
@@ -44568,7 +45396,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "STLCKA",
@@ -44598,7 +45428,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STREQA",
@@ -44681,7 +45513,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STREQR",
@@ -44759,7 +45593,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STTMSA",
@@ -44853,7 +45689,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STTSKA",
@@ -44931,7 +45769,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STTSKR",
@@ -45005,7 +45845,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUADMA",
@@ -45035,7 +45877,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUNIXA",
@@ -45088,7 +45932,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSERA",
@@ -45160,7 +46006,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSERB",
@@ -45337,7 +46185,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSERL",
@@ -45392,7 +46242,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSERP",
@@ -45462,7 +46314,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSERQ",
@@ -45512,7 +46366,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSERX",
@@ -45538,7 +46394,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SUSRBL",
@@ -45613,7 +46471,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SWRKFA",
@@ -45808,7 +46668,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "VBAORA",
@@ -45854,7 +46716,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VBDILA",
@@ -45967,7 +46831,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONDA",
@@ -46298,7 +47164,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONDD",
@@ -46372,7 +47240,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONDU",
@@ -46506,7 +47376,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONTA",
@@ -46560,7 +47432,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCORAA",
@@ -46626,7 +47500,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCORMA",
@@ -46676,7 +47552,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCSTMA",
@@ -48405,7 +49283,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCUSMA",
@@ -48525,7 +49405,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSTA",
@@ -48711,7 +49593,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSTB",
@@ -48804,7 +49688,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSTU",
@@ -48902,7 +49788,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSTX",
@@ -48995,7 +49883,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VDEALA",
@@ -49060,7 +49950,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VDLVRA",
@@ -49227,7 +50119,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VINQUA",
@@ -49275,7 +50169,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VORBIR",
@@ -49315,7 +50211,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VPICKA",
@@ -49371,7 +50269,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VPROMA",
@@ -49498,7 +50398,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VQUOMA",
@@ -49550,7 +50452,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VQUOTA",
@@ -49608,7 +50512,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VRVRCA",
@@ -49664,7 +50570,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSCAGA",
@@ -49710,7 +50618,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VSDMAA",
@@ -49749,7 +50659,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VSHCOA",
@@ -49785,7 +50697,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHCSA",
@@ -49871,7 +50785,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHIPA",
@@ -49947,7 +50863,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VSORDA",
@@ -50018,7 +50936,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSORDR",
@@ -50077,7 +50997,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSORMA",
@@ -50127,7 +51049,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "XCUHIA",
@@ -50165,7 +51089,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XCUSAA",
@@ -50258,7 +51184,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XCUSMA",
@@ -50381,7 +51309,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XCUSTA",
@@ -50534,7 +51464,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XMASTX",
@@ -50582,7 +51514,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XMATMA",
@@ -50698,7 +51632,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XMATXA",
@@ -50954,7 +51890,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XMATXL",
@@ -50994,7 +51932,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XMATXN",
@@ -51186,7 +52126,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XMATXX",
@@ -51284,7 +52226,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XVENAA",
@@ -51377,7 +52321,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XVENDA",
@@ -51583,7 +52529,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "XVENMA",
@@ -51703,7 +52651,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "CDOINA",
@@ -51758,7 +52708,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FFITRA",
@@ -51795,7 +52747,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "LHAUNA",
@@ -51892,7 +52846,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "QUSGDA",
@@ -51982,7 +52938,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "QCERTA",
@@ -52083,7 +53041,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VITPRA",
@@ -52138,7 +53098,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "MDLVIA",
@@ -52199,7 +53161,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VOUTPA",
@@ -52314,7 +53278,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VEXPOA",
@@ -52484,7 +53450,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "STABLA_ALL",
@@ -52733,7 +53701,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSE16D_ALL",
@@ -52787,7 +53757,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SSPOOA_ALL",
@@ -52890,7 +53862,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SDEVLA_ALL",
@@ -53097,7 +54071,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SABAPA_ALL",
@@ -53316,7 +54292,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SRFCFA_ALL",
@@ -53359,7 +54337,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSYSTA_ALL",
@@ -53383,7 +54363,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "KMICEA",
@@ -53439,7 +54421,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "CPRMCA",
@@ -53496,7 +54480,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VFTWLA",
@@ -53557,7 +54543,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FFMCAA",
@@ -53599,7 +54587,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FIMPLA",
@@ -53713,7 +54703,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SMASSA_ALL",
@@ -53763,7 +54755,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSM35A_ALL",
@@ -53808,7 +54802,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0000",
@@ -53916,7 +54912,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDA_0001",
@@ -54024,7 +55022,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0002",
@@ -54132,7 +55132,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0003",
@@ -54240,7 +55242,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDA_0006",
@@ -54348,7 +55352,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDA_0007",
@@ -54456,7 +55462,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDA_0009",
@@ -54564,7 +55572,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0011",
@@ -54672,7 +55682,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDA_0014",
@@ -54780,7 +55792,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDA_0015",
@@ -54888,7 +55902,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDA_0016",
@@ -54996,7 +56012,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0021",
@@ -55104,7 +56122,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0022",
@@ -55212,7 +56232,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDA_0027",
@@ -55320,7 +56342,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDA_0031",
@@ -55428,7 +56452,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDA_0041",
@@ -55536,7 +56562,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0050",
@@ -55644,7 +56672,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0057",
@@ -55752,7 +56782,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDA_0100",
@@ -55860,7 +56892,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDA_0101",
@@ -55968,7 +57002,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDA_0107",
@@ -56076,7 +57112,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0109",
@@ -56184,7 +57222,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0125",
@@ -56292,7 +57332,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDA_0302",
@@ -56400,7 +57442,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDA_0315",
@@ -56508,7 +57552,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDA_0415",
@@ -56616,7 +57662,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0439",
@@ -56724,7 +57772,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0442",
@@ -56832,7 +57882,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDA_0735",
@@ -56940,7 +57992,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PTDATA_2006",
@@ -57098,7 +58152,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTDATA_2007",
@@ -57260,7 +58316,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTDATA_2011",
@@ -57418,7 +58476,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTDATA_2012",
@@ -57576,7 +58636,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTDATD_2012",
@@ -57819,7 +58881,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTDATA_2013",
@@ -57977,7 +59041,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0008",
@@ -58165,7 +59231,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0009",
@@ -58353,7 +59421,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PPAMDD_0011",
@@ -58541,7 +59611,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDD_0014",
@@ -58729,7 +59801,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDD_0015",
@@ -58917,7 +59991,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDD_0057",
@@ -59105,7 +60181,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0100",
@@ -59293,7 +60371,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0101",
@@ -59481,7 +60561,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0107",
@@ -59669,7 +60751,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0125",
@@ -59857,7 +60941,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0442",
@@ -60045,7 +61131,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PPAMDD_0735",
@@ -60233,7 +61321,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "SS16ND",
@@ -60278,7 +61368,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SS16ND_ALL",
@@ -60332,7 +61424,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "STABNA",
@@ -60562,7 +61656,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STABNA_ALL",
@@ -60801,7 +61897,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDA_0008",
@@ -60909,7 +62007,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PPAMDD_0016",
@@ -61017,7 +62117,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDD_0021",
@@ -61125,7 +62227,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "PPAMDD_0022",
@@ -61313,7 +62417,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PABAPD",
@@ -61346,7 +62452,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SOABTA",
@@ -61381,7 +62489,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOANAA",
@@ -61416,7 +62526,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOAONA",
@@ -61451,7 +62563,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SODELA",
@@ -61486,7 +62600,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOEXPA",
@@ -61521,7 +62637,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOFREA",
@@ -61556,7 +62674,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SOLOCA",
@@ -61591,7 +62711,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SFUMOE_ALL",
@@ -61641,7 +62763,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SEXTCP",
@@ -61874,7 +62998,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SBJOBU",
@@ -61910,7 +63036,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FSEPAA",
@@ -61963,7 +63091,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SAUDEA",
@@ -61994,7 +63124,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSYCLA",
@@ -62389,7 +63521,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FGLSKA",
@@ -62449,7 +63583,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FGLRUA",
@@ -62514,7 +63650,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FGLMIA",
@@ -62649,7 +63787,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FTRACA",
@@ -62684,7 +63824,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SNRFIA",
@@ -62790,7 +63932,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRMMA",
@@ -62939,7 +64083,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRCOA",
@@ -62986,7 +64132,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRPPA",
@@ -63087,7 +64235,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SNRPMA",
@@ -63182,7 +64332,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FRESVA",
@@ -63227,7 +64379,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "MCVMDA",
@@ -63252,7 +64406,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "PBENIM",
@@ -63331,7 +64487,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "PCATSA",
@@ -63380,7 +64538,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PMGRDA",
@@ -63410,7 +64570,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "PTAPPA",
@@ -63469,7 +64631,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SCALLX",
@@ -63527,7 +64691,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SDATAM",
@@ -63576,7 +64742,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSICFA",
@@ -63627,7 +64795,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SSLICA",
@@ -63681,7 +64851,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SSSONA",
@@ -63701,7 +64873,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SBUWPA",
@@ -63745,7 +64919,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VSPCAA",
@@ -63775,7 +64951,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "WISRTA",
@@ -63829,7 +65007,9 @@
         "audit": false,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DMASSX",
@@ -63865,7 +65045,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DNWMSD",
@@ -63969,7 +65151,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DNWMSU",
@@ -64074,7 +65258,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWBSTC",
@@ -64151,7 +65337,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWBSTU",
@@ -64259,7 +65447,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWBSSC",
@@ -64325,7 +65515,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWBSSU",
@@ -64391,7 +65583,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "DWFPLU",
@@ -64432,7 +65626,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "DWFPLX",
@@ -64481,7 +65677,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPIMC",
@@ -64529,7 +65727,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIMD",
@@ -64577,7 +65777,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FAPIMU",
@@ -64625,7 +65827,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBANKC",
@@ -64665,7 +65869,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBANKD",
@@ -64695,7 +65901,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBANKU",
@@ -64725,7 +65933,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBANKX",
@@ -64755,7 +65965,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FBOLEC",
@@ -64803,7 +66015,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FBOLMC",
@@ -64851,7 +66065,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCAACC",
@@ -64890,7 +66106,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCAACU",
@@ -64929,7 +66147,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCACPC",
@@ -64986,7 +66206,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCASHC",
@@ -65030,7 +66252,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCASHU",
@@ -65074,7 +66298,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FCUSMC",
@@ -65167,7 +66393,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSMU",
@@ -65260,7 +66488,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FCUSMX",
@@ -65353,7 +66583,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FGLSDA",
@@ -65478,7 +66710,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAPSDA",
@@ -65603,7 +66837,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FARSDA",
@@ -65728,7 +66964,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "FAASDA",
@@ -65853,7 +67091,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "IMASNA",
@@ -65970,7 +67210,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LBSSTC",
@@ -66000,7 +67242,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LBSSTD",
@@ -66039,7 +67283,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LBSSTU",
@@ -66078,7 +67324,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINCLC",
@@ -66113,7 +67361,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LHAUNC",
@@ -66183,7 +67433,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LHAUND",
@@ -66248,7 +67500,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LHAUNU",
@@ -66323,7 +67577,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LHMATC",
@@ -66353,7 +67609,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LHMATD",
@@ -66383,7 +67641,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LHMATU",
@@ -66413,7 +67673,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINVCC",
@@ -66467,7 +67729,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINVCD",
@@ -66515,7 +67779,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINVCU",
@@ -66563,7 +67829,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LPISTC",
@@ -66626,7 +67894,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LPOCNC",
@@ -66665,7 +67935,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LPOCND",
@@ -66704,7 +67976,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LPOCNU",
@@ -66743,7 +68017,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LPRSUC",
@@ -66773,7 +68049,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LPRSUD",
@@ -66803,7 +68081,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LPRSUU",
@@ -66833,7 +68113,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LREPLC",
@@ -66872,7 +68154,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LREPLU",
@@ -66911,7 +68195,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRORC",
@@ -66998,7 +68284,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRORD",
@@ -67070,7 +68358,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRORU",
@@ -67161,7 +68451,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRRQC",
@@ -67200,7 +68492,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRRQD",
@@ -67230,7 +68524,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LTRRQU",
@@ -67260,7 +68556,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "LWMMDC",
@@ -67296,7 +68594,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LWMMDD",
@@ -67332,7 +68632,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LWMMDU",
@@ -67435,7 +68737,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VBAORC",
@@ -67474,7 +68778,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VBAORD",
@@ -67528,7 +68834,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VBAORU",
@@ -67572,7 +68880,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VBDILC",
@@ -67646,7 +68956,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VBDILD",
@@ -67710,7 +69022,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VBDILU",
@@ -67789,7 +69103,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONDC",
@@ -67993,7 +69309,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONTC",
@@ -68041,7 +69359,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONTD",
@@ -68089,7 +69409,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCONTU",
@@ -68137,7 +69459,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCORAC",
@@ -68191,7 +69515,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCORAD",
@@ -68265,7 +69591,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCORAU",
@@ -68309,7 +69637,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCORMC",
@@ -68357,7 +69687,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCORMU",
@@ -68405,7 +69737,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VCUSMC",
@@ -68507,7 +69841,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSMU",
@@ -68609,7 +69945,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSTC",
@@ -68762,7 +70100,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VCUSTD",
@@ -68860,7 +70200,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VDEALC",
@@ -68890,7 +70232,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VDEALD",
@@ -68925,7 +70269,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VDEALU",
@@ -68982,7 +70328,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VDLVRC",
@@ -69027,7 +70375,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VDLVRD",
@@ -69247,7 +70597,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VDLVRU",
@@ -69308,7 +70660,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VEXPOC",
@@ -69390,7 +70744,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VEXPOD",
@@ -69509,7 +70865,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VEXPOU",
@@ -69630,7 +70988,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VINQUC",
@@ -69669,7 +71029,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VINQUD",
@@ -69718,7 +71080,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VINQUU",
@@ -69757,7 +71121,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VITPRC",
@@ -69805,7 +71171,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VITPRD",
@@ -69858,7 +71226,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VITPRU",
@@ -69906,7 +71276,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VOUTPC",
@@ -69984,7 +71356,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VOUTPD",
@@ -70062,7 +71436,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VOUTPU",
@@ -70140,7 +71516,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VPICKC",
@@ -70190,7 +71568,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VPICKD",
@@ -70230,7 +71610,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VPICKU",
@@ -70265,7 +71647,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VPROMC",
@@ -70354,7 +71738,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VPROMD",
@@ -70453,7 +71839,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VPROMU",
@@ -70545,7 +71933,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VQUOMC",
@@ -70593,7 +71983,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VQUOMU",
@@ -70641,7 +72033,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VQUOTC",
@@ -70685,7 +72079,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VQUOTD",
@@ -70724,7 +72120,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VQUOTU",
@@ -70768,7 +72166,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VRVRCC",
@@ -70812,7 +72212,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VRVRCD",
@@ -70851,7 +72253,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VRVRCU",
@@ -70895,7 +72299,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSCAGC",
@@ -70934,7 +72340,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VSCAGD",
@@ -70973,7 +72381,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VSCAGU",
@@ -71012,7 +72422,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "VSHCOC",
@@ -71042,7 +72454,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHCOD",
@@ -71072,7 +72486,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHCOU",
@@ -71102,7 +72518,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHCSC",
@@ -71155,7 +72573,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHCSD",
@@ -71203,7 +72623,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHCSU",
@@ -71256,7 +72678,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSHIPC",
@@ -71309,7 +72733,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VSHIPD",
@@ -71387,7 +72813,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VSHIPU",
@@ -71440,7 +72868,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1
   },
   {
     "query": "VSORDC",
@@ -71489,7 +72919,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSORDD",
@@ -71538,7 +72970,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSORDU",
@@ -71577,7 +73011,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSORMC",
@@ -71625,7 +73061,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "VSORMU",
@@ -71673,7 +73111,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "LINVCX",
@@ -71703,7 +73143,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "query": "FGLCCA",
@@ -71761,7 +73203,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "FARPPA",
@@ -71816,7 +73260,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "SABTCN",
@@ -71860,7 +73306,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "FCURRB",
@@ -71891,7 +73339,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "query": "SMONID",
@@ -72351,7 +73801,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "STRIMA",
@@ -72402,7 +73854,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SRFCFA",
@@ -72436,7 +73890,9 @@
         "audit": true
       }
     ],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "SRFCTA",
@@ -72473,7 +73929,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "query": "S4SE16A",
@@ -72521,7 +73979,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "S4SE16D",
@@ -72595,7 +74055,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "S4SE16E",
@@ -72661,7 +74123,9 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   },
   {
     "query": "S4SE16R",
@@ -72709,6 +74173,8 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2
   }
 ]

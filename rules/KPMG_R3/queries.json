@@ -37,7 +37,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "1001_BC-SEC",
@@ -91,7 +95,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1002_BC-SEC",
@@ -121,7 +129,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "1003_BC-SEC",
@@ -166,7 +178,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1004_BC-SEC",
@@ -202,7 +218,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1005_BC-SEC",
@@ -232,7 +252,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1006_BC-SEC",
@@ -302,7 +326,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1007_BC-SEC",
@@ -372,7 +400,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1008_BC-SEC",
@@ -421,7 +453,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1009_BC-SEC",
@@ -483,7 +519,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1010_BC-SEC",
@@ -513,7 +553,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1011_BC-SEC",
@@ -543,7 +587,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1012_BC-SEC",
@@ -607,7 +655,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1013_BC-SEC",
@@ -656,7 +708,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1014_BC-SEC",
@@ -695,7 +751,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1015_BC-SEC",
@@ -725,7 +785,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1016_BC-SEC",
@@ -755,7 +819,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "1017_BC-SEC",
@@ -809,7 +877,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "1100_BC-DEV",
@@ -861,7 +933,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1101_BC-DEV",
@@ -903,7 +979,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1102_BC-DEV",
@@ -987,7 +1067,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1103_BC-DEV",
@@ -1029,7 +1113,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1104_BC-DEV",
@@ -1071,7 +1159,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1105_BC-DEV",
@@ -1165,7 +1257,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1106_BC-DEV",
@@ -1206,7 +1302,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1107_BC-DEV",
@@ -1265,7 +1365,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1108_BC-DEV",
@@ -1333,7 +1437,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1109_BC-DEV",
@@ -1392,7 +1500,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1110_BC-DEV",
@@ -1451,7 +1563,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1111_BC-DEV",
@@ -1517,7 +1633,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1112_BC-DEV",
@@ -1593,7 +1713,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1113_BC-DEV",
@@ -1650,7 +1774,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1114_BC-DEV",
@@ -1707,7 +1835,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1115_BC-DEV",
@@ -1743,7 +1875,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1200_BC-USR",
@@ -1858,7 +1994,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1201_BC-USR",
@@ -1983,7 +2123,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1202_BC-USR",
@@ -2108,7 +2252,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1203_BC-USR",
@@ -2233,7 +2381,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1204_BC-USR",
@@ -2369,7 +2521,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1205_BC-USR",
@@ -2508,7 +2664,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1206_BC-USR",
@@ -2547,7 +2707,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1207_BC-USR",
@@ -2577,7 +2741,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1208_BC-USR",
@@ -2645,7 +2813,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1209_BC-USR",
@@ -2713,7 +2885,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1210_BC-USR",
@@ -2750,7 +2926,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1211_BC-USR",
@@ -2790,7 +2970,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1212_BC-USR",
@@ -2822,7 +3006,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1213_BC-USR",
@@ -2868,7 +3056,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "very-high",
+    "criticalityRank": 5,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1214_BC-USR",
@@ -2898,7 +3090,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1300_BC-CTS",
@@ -2928,7 +3124,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1301_BC-CTS",
@@ -2960,7 +3160,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1302_BC-CTS",
@@ -3000,7 +3204,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1303_BC-CTS",
@@ -3040,7 +3248,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1304_BC-SRV",
@@ -3070,7 +3282,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1305_BC-CTS",
@@ -3110,7 +3326,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1306_BC-CTS",
@@ -3150,7 +3370,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1307_BC-CTS",
@@ -3190,7 +3414,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1400_BC-SRV",
@@ -3220,7 +3448,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1401_BC-SRV",
@@ -3250,7 +3482,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1402_BC-SRV",
@@ -3280,7 +3516,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1403_BC-SRV",
@@ -3310,7 +3550,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1404_BC-SRV",
@@ -3340,7 +3584,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1405_BC-SRV",
@@ -3370,7 +3618,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1406_BC-SRV",
@@ -3400,7 +3652,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1407_BC-SRV",
@@ -3430,7 +3686,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1408_BC-SRV",
@@ -3462,7 +3722,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1409_BC-SRV",
@@ -3492,7 +3756,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1410_BC-SRV",
@@ -3522,7 +3790,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1411_BC-SRV",
@@ -3570,7 +3842,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1420_BC-SRV",
@@ -3601,7 +3877,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1421_BC-SRV",
@@ -3641,7 +3921,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1422_BC-SRV",
@@ -3671,7 +3955,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1423_BC-SRV",
@@ -3701,7 +3989,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1424_BC-SRV",
@@ -3731,7 +4023,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1425_BC-SRV",
@@ -3770,7 +4066,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1426_BC-SRV",
@@ -3800,7 +4100,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "low",
+    "criticalityRank": 1,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1427_BC-SRV",
@@ -3830,7 +4134,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1428_BC-SRV",
@@ -3869,7 +4177,11 @@
         "audit": false,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "1429_BC-SRV",
@@ -3915,7 +4227,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1430_BC-SRV",
@@ -3979,7 +4295,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1431_BC-SRV",
@@ -4041,7 +4361,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1432_BC-SRV",
@@ -4083,7 +4407,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "1433_BC-SRV",
@@ -4114,7 +4442,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2000_FI-GL",
@@ -4174,7 +4506,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2001_FI-GL",
@@ -4269,7 +4605,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2002_FI-GL",
@@ -4364,7 +4704,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2003_FI-GL",
@@ -4453,7 +4797,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2004_FI-GL",
@@ -4653,7 +5001,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2005_FI-GL",
@@ -4782,7 +5134,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2006_FI-GL",
@@ -4845,7 +5201,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2007_FI-GL",
@@ -4965,7 +5325,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2008_FI-GL",
@@ -5085,7 +5449,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2009_FI-GL",
@@ -5134,7 +5502,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2010_FI-GL",
@@ -5198,7 +5570,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2011_FI-GL",
@@ -5267,7 +5643,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2012_FI-GL",
@@ -5311,7 +5691,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2013_FI-GL",
@@ -5395,7 +5779,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2014_FI-GL",
@@ -5547,7 +5935,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2100_FI-AR",
@@ -5663,7 +6055,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2101_FI-AR",
@@ -5779,7 +6175,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2102_FI-AR",
@@ -5890,7 +6290,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2103_FI-AR",
@@ -6139,7 +6543,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2104_FI-AR",
@@ -6283,7 +6691,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2105_FI-AR",
@@ -6427,7 +6839,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2106_FI-AR",
@@ -6567,7 +6983,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2107_FI-AR",
@@ -6624,7 +7044,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2108_FI-AR",
@@ -6681,7 +7105,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2109_FI-AR",
@@ -6788,7 +7216,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2110_FI-AR",
@@ -6890,7 +7322,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2111_FI-AR",
@@ -6984,7 +7420,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2200_FI-AP",
@@ -7100,7 +7540,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2201_FI-AP",
@@ -7216,7 +7660,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2202_FI-AP",
@@ -7327,7 +7775,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2203_FI-AP",
@@ -7438,7 +7890,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2204_FI-AP",
@@ -7672,7 +8128,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2205_FI-AP",
@@ -7816,7 +8276,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2206_FI-AP",
@@ -7960,7 +8424,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2207_FI-AP",
@@ -8099,7 +8567,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2208_FI-AP",
@@ -8243,7 +8715,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2209_FI-AP",
@@ -8392,7 +8868,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2210_FI-AP",
@@ -8517,7 +8997,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2211_FI-AP",
@@ -8619,7 +9103,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2300_FI-AA",
@@ -8721,7 +9209,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2301_FI-AA",
@@ -8823,7 +9315,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2302_FI-AA",
@@ -8925,7 +9421,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2303_FI-AA",
@@ -9027,7 +9527,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2304_FI-AA",
@@ -9134,7 +9638,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2305_FI-AA",
@@ -9200,7 +9708,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2306_FI-AA",
@@ -9307,7 +9819,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2307_FI-AA",
@@ -9409,7 +9925,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2308_FI-AA",
@@ -9480,7 +10000,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2309_FI-AA",
@@ -9546,7 +10070,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2310_FI-AA",
@@ -9630,7 +10158,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2311_FI-AA",
@@ -9714,7 +10246,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Asset Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2312_FI-AA",
@@ -9768,7 +10304,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2400_FI-CM",
@@ -9885,7 +10425,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2401_FI-CM",
@@ -10002,7 +10546,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2402_FI-CM",
@@ -10114,7 +10662,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2403_FI-CM",
@@ -10178,7 +10730,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2404_FI-CM",
@@ -10237,7 +10793,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2405_FI-CM",
@@ -10296,7 +10856,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2406_FI-CM",
@@ -10355,7 +10919,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2407_FI-CM",
@@ -10414,7 +10982,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2500_TR-LO",
@@ -10539,7 +11111,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2501_TR-LO",
@@ -10664,7 +11240,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2502_TR-LO",
@@ -10789,7 +11369,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2503_TR-LO",
@@ -10914,7 +11498,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2504_TR-LO",
@@ -11070,7 +11658,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2505_TR-LO",
@@ -11226,7 +11818,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "2506_TR-LO",
@@ -11325,7 +11921,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2507_TR-LO",
@@ -11436,7 +12036,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2508_TR-LO",
@@ -11565,7 +12169,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2509_TR-LO",
@@ -11631,7 +12239,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2510_TR-LO",
@@ -11697,7 +12309,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2511_TR-LO",
@@ -11774,7 +12390,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2512_TR-LO",
@@ -11851,7 +12471,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2513_TR-LO",
@@ -11926,7 +12550,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2514_TR-LO",
@@ -12037,7 +12665,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2600_TR-TM",
@@ -12216,7 +12848,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2601_TR-TM",
@@ -12395,7 +13031,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2602_TR-TM",
@@ -12574,7 +13214,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2603_TR-TM",
@@ -12749,7 +13393,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2604_TR-TM",
@@ -12933,7 +13581,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2605_TR-TM",
@@ -13112,7 +13764,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2606_TR-TM",
@@ -13291,7 +13947,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2607_TR-TM",
@@ -13470,7 +14130,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2608_TR-TM",
@@ -13645,7 +14309,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2609_TR-TM",
@@ -13828,7 +14496,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2610_TR-TM",
@@ -13948,7 +14620,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2611_TR-TM",
@@ -14113,7 +14789,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2612_TR-TM",
@@ -14287,7 +14967,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "2613_TR-TM",
@@ -14461,7 +15145,11 @@
         "audit": false,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "3000_MM-PUR",
@@ -14523,7 +15211,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3001_MM-PUR",
@@ -14585,7 +15277,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3002_MM-PUR",
@@ -14642,7 +15338,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3003_MM-PUR",
@@ -14717,7 +15417,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3004_MM-PUR",
@@ -14792,7 +15496,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3005_MM-PUR",
@@ -14894,7 +15602,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3006_MM-PUR",
@@ -14996,7 +15708,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3007_MM-PUR",
@@ -15184,7 +15900,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3008_MM-PUR",
@@ -15382,7 +16102,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3009_MM-PUR",
@@ -15560,7 +16284,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3010_MM-PUR",
@@ -15658,7 +16386,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3011_MM-PUR",
@@ -15756,7 +16488,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3012_MM-PUR",
@@ -15886,7 +16622,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3013_MM-PUR",
@@ -15979,7 +16719,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3014_MM-PUR",
@@ -16072,7 +16816,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3015_MM-PUR",
@@ -16166,7 +16914,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3016_MM-PUR",
@@ -16279,7 +17031,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3017_MM-PUR",
@@ -16377,7 +17133,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3018_MM-PUR",
@@ -16493,7 +17253,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3019_MM-PUR",
@@ -16591,7 +17355,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3020_MM-PUR",
@@ -16689,7 +17457,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3021_MM-PUR",
@@ -16728,7 +17500,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3100_MM-IM",
@@ -16831,7 +17607,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3101_MM-IM",
@@ -16948,7 +17728,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3102_MM-IM",
@@ -17073,7 +17857,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3103_MM-IM",
@@ -17144,7 +17932,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3104_MM-IM",
@@ -17207,7 +17999,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3105_MM-IM",
@@ -17270,7 +18066,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3106_MM-IM",
@@ -17332,7 +18132,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3107_MM-IM",
@@ -17389,7 +18193,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3108_MM-IM",
@@ -17428,7 +18236,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3109_MM-IM",
@@ -17467,7 +18279,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3110_MM-IM",
@@ -17511,7 +18327,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3111_MM-IM",
@@ -17550,7 +18370,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3112_MM-IM",
@@ -17617,7 +18441,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3200_MM-IV",
@@ -17688,7 +18516,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3201_MM-IV",
@@ -17779,7 +18611,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3202_MM-IV",
@@ -17859,7 +18695,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3203_MM-IV",
@@ -17898,7 +18738,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3204_MM-IV",
@@ -17996,7 +18840,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3300_MM-CBP",
@@ -18044,7 +18892,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3301_MM-CBP",
@@ -18092,7 +18944,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3302_MM-CBP",
@@ -18132,7 +18988,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3400_MM-MD",
@@ -18324,7 +19184,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3401_MM-MD",
@@ -18507,7 +19371,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3402_MM-MD",
@@ -18693,7 +19561,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3403_MM-MD",
@@ -18756,7 +19628,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3404_MM-MD",
@@ -18819,7 +19695,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3405_MM-MD",
@@ -18882,7 +19762,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Materials Management",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3406_MM-MD",
@@ -19026,7 +19910,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "3407_MM-MD",
@@ -19169,7 +20057,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4000_SD-MD",
@@ -19249,7 +20141,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4001_SD-MD",
@@ -19329,7 +20225,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4002_SD-MD",
@@ -19422,7 +20322,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4003_SD-MD",
@@ -19479,7 +20383,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4004_SD-MD",
@@ -19564,7 +20472,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4005_SD-MD",
@@ -19644,7 +20556,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4006_SD-MD",
@@ -19706,7 +20622,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4007_SD-MD",
@@ -19763,7 +20683,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4008_SD-MD",
@@ -19838,7 +20762,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Financial Accounting",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4009_SD-MD",
@@ -19886,7 +20814,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4010_SD-MD",
@@ -19952,7 +20884,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4011_SD-MD",
@@ -20011,7 +20947,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4100_SD-SLS",
@@ -20122,7 +21062,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4101_SD-SLS",
@@ -20233,7 +21177,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4102_SD-SLS",
@@ -20313,7 +21261,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4103_SD-SLS",
@@ -20388,7 +21340,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4104_SD-SLS",
@@ -20463,7 +21419,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4105_SD-SLS",
@@ -20538,7 +21498,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4106_SD-SLS",
@@ -20578,7 +21542,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4107_SD-SLS",
@@ -20658,7 +21626,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4108_SD-SLS",
@@ -20697,7 +21669,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4109_SD-SLS",
@@ -20783,7 +21759,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4200_SD-BIL",
@@ -20892,7 +21872,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4201_SD-BIL",
@@ -20949,7 +21933,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4202_SD-BIL",
@@ -21006,7 +21994,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4203_SD-BIL",
@@ -21081,7 +22073,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4204_SD-BIL",
@@ -21138,7 +22134,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4205_SD-BIL",
@@ -21213,7 +22213,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4206_SD-BIL",
@@ -21272,7 +22276,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4207_SD-BIL",
@@ -21331,7 +22339,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Sales & Distribution",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "4208_SD-BIL",
@@ -21390,7 +22402,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5000_CO-OM",
@@ -21443,7 +22459,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5001_CO-OM",
@@ -21491,7 +22511,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5002_CO-OM",
@@ -21580,7 +22604,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5003_CO-OM",
@@ -21669,7 +22697,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5004_CO-OM",
@@ -21731,7 +22763,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5005_CO-OM",
@@ -21770,7 +22806,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5006_CO-OM",
@@ -21809,7 +22849,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5007_CO-OM",
@@ -21857,7 +22901,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5008_CO-OM",
@@ -21896,7 +22944,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5009_CO-OM",
@@ -21944,7 +22996,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5010_CO-OM",
@@ -21983,7 +23039,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5011_CO-OM",
@@ -22022,7 +23082,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5012_CO-OM",
@@ -22066,7 +23130,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5013_CO-OM",
@@ -22105,7 +23173,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5014_CO-OM",
@@ -22144,7 +23216,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5015_CO-OM",
@@ -22273,7 +23349,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5016_CO-OM",
@@ -22402,7 +23482,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5017_CO-OM",
@@ -22531,7 +23615,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5018_CO-OM",
@@ -22656,7 +23744,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5019_CO-OM",
@@ -22781,7 +23873,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5020_CO-OM",
@@ -22892,7 +23988,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5021_CO-OM",
@@ -22958,7 +24058,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5022_CO-OM",
@@ -23025,7 +24129,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5023_CO-OM",
@@ -23107,7 +24215,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5024_CO-OM",
@@ -23189,7 +24301,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5025_CO-OM",
@@ -23243,7 +24359,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5026_CO-OM",
@@ -23314,7 +24434,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5027_CO-OM",
@@ -23362,7 +24486,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5028_CO-OM",
@@ -23433,7 +24561,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5029_CO-OM",
@@ -23472,7 +24604,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5030_CO-OM",
@@ -23538,7 +24674,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5031_CO-OM",
@@ -23587,7 +24727,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5032_CO-OM",
@@ -23635,7 +24779,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5033_CO-OM",
@@ -23683,7 +24831,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5034_CO-OM",
@@ -23731,7 +24883,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5035_CO-OM",
@@ -23784,7 +24940,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5036_CO-OM",
@@ -23832,7 +24992,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5037_CO-OM",
@@ -23881,7 +25045,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5038_CO-OM",
@@ -23929,7 +25097,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5039_CO-OM",
@@ -23968,7 +25140,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Controlling",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5100_CO-PA",
@@ -23998,7 +25174,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5101_CO-PA",
@@ -24038,7 +25218,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5102_CO-PA",
@@ -24131,7 +25315,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "5500_PS-PM",
@@ -24170,7 +25358,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5501_PS-PM",
@@ -24209,7 +25401,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5502_PS-PM",
@@ -24266,7 +25462,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5503_PS-PM",
@@ -24323,7 +25523,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5504_PS-PM",
@@ -24399,7 +25603,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5505_PS-PM",
@@ -24484,7 +25692,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5506_PS-PM",
@@ -24550,7 +25762,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5507_PS-PM",
@@ -24616,7 +25832,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5508_PS-PM",
@@ -24752,7 +25972,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5509_PS-PM",
@@ -24863,7 +26087,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5510_PS-PM",
@@ -24974,7 +26202,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5511_PS-PM",
@@ -25045,7 +26277,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5512_PS-PM",
@@ -25152,7 +26388,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5513_PS-PM",
@@ -25245,7 +26485,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "5514_PS-PM",
@@ -25338,7 +26582,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Project Systems",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6000_HR-P_ORGIN",
@@ -25421,7 +26669,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6001_HR-P_ORGIN",
@@ -25504,7 +26756,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6002_HR-P_ORGIN",
@@ -25587,7 +26843,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6003_HR-P_ORGIN",
@@ -25670,7 +26930,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6004_HR-P_ORGIN",
@@ -25758,7 +27022,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6005_HR-P_ORGIN",
@@ -25846,7 +27114,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6006_HR-P_ORGIN",
@@ -25934,7 +27206,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6007_HR-P_ORGIN",
@@ -26019,7 +27295,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6008_HR-P_ORGIN",
@@ -26104,7 +27384,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6009_HR-P_ORGIN",
@@ -26215,7 +27499,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6010_HR-P_ORGIN",
@@ -26331,7 +27619,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6011_HR-P_ORGIN",
@@ -26447,7 +27739,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6012_HR-P_ORGIN",
@@ -26563,7 +27859,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6013_HR-P_ORGIN",
@@ -26672,7 +27972,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6014_HR-P_ORGIN",
@@ -26766,7 +28070,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6015_HR-P_TCODE",
@@ -26851,7 +28159,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6016_HR-P_ORGIN",
@@ -26935,7 +28247,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6017_HR-P_ORGIN",
@@ -27067,7 +28383,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6018_HR-P_ORGIN",
@@ -27175,7 +28495,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6019_HR-P_ORGIN",
@@ -27272,7 +28596,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6020_HR-P_ORGIN",
@@ -27371,7 +28699,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6021_HR-P_ORGIN",
@@ -27476,7 +28808,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6022_HR-P_ORGIN",
@@ -27533,7 +28869,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6200_HR-P_ORGINCON",
@@ -27616,7 +28956,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6201_HR-P_ORGINCON",
@@ -27699,7 +29043,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6202_HR-P_ORGINCON",
@@ -27782,7 +29130,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6203_HR-P_ORGINCON",
@@ -27865,7 +29217,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6204-HR-P_ORGINCON",
@@ -27953,7 +29309,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6205_HR-P_ORGINCON",
@@ -28041,7 +29401,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6206_HR-P_ORGINCON",
@@ -28129,7 +29493,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6207_HR-P_ORGINCON",
@@ -28214,7 +29582,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6208_HR-P_ORGINCON",
@@ -28299,7 +29671,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6209_HR-P_ORGINCON",
@@ -28344,7 +29720,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6210_HR-P_ORGINCON",
@@ -28460,7 +29840,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6211_HR-P_ORGINCON",
@@ -28576,7 +29960,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6212_HR-P_ORGINCON",
@@ -28692,7 +30080,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6213_HR-P_ORGINCON",
@@ -28801,7 +30193,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6214_HR-P_ORGINCON",
@@ -28895,7 +30291,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6215_HR-P_ORGINCON",
@@ -28980,7 +30380,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6216_HR-P_ORGINCON",
@@ -29064,7 +30468,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6217_HR-P_ORGINCON",
@@ -29196,7 +30604,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6218_HR-P_ORGINCON",
@@ -29304,7 +30716,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6219_HR-P_ORGINCON",
@@ -29401,7 +30817,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6220_HR-P_ORGINCON",
@@ -29500,7 +30920,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6221_HR-P_ORGINCON",
@@ -29605,7 +31029,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6222_HR-P_ORGINCON",
@@ -29662,7 +31090,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6400_HR-HR",
@@ -29736,7 +31168,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6401_HR-HR",
@@ -29815,7 +31251,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6402_HR-HR",
@@ -29894,7 +31334,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6403_HR-HR",
@@ -29973,7 +31417,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6404_HR-HR",
@@ -30021,7 +31469,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6405_HR-HR",
@@ -30051,7 +31503,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6406_HR-HR",
@@ -30081,7 +31537,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6407_HR-HR",
@@ -30111,7 +31571,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6408_HR-HR",
@@ -30141,7 +31605,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6409_HR-HR",
@@ -30235,7 +31703,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6410_HR-HR",
@@ -30338,7 +31810,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6411_HR-HR",
@@ -30379,7 +31855,11 @@
         "audit": false,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6600_HR-SEC",
@@ -30433,7 +31913,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6601_HR-SEC",
@@ -30487,7 +31971,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6602_HR-SEC",
@@ -30541,7 +32029,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6603_HR-SEC",
@@ -30571,7 +32063,11 @@
         "audit": false,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "6604_HR-SEC",
@@ -30616,7 +32112,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6605_HR-SEC",
@@ -30661,7 +32161,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "medium",
+    "criticalityRank": 2,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6606_HR-SEC",
@@ -30703,7 +32207,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "6607_HR-SEC",
@@ -30745,7 +32253,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7000_RE-RE",
@@ -30823,7 +32335,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7001_RE-RE",
@@ -30901,7 +32417,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7002_RE-RE",
@@ -30979,7 +32499,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7003_RE-RE",
@@ -31057,7 +32581,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7004_RE-RE",
@@ -31135,7 +32663,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7005_RE-RE",
@@ -31213,7 +32745,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7006_RE-RE",
@@ -31291,7 +32827,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7007_RE-RE",
@@ -31369,7 +32909,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7008_RE-RE",
@@ -31447,7 +32991,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7009_RE-RE",
@@ -31557,7 +33105,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7010_RE-RE",
@@ -31667,7 +33219,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7011_RE-RE",
@@ -31777,7 +33333,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7012_RE-RE",
@@ -31855,7 +33415,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7013_RE-RE",
@@ -31933,7 +33497,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7014_RE-RE",
@@ -31995,7 +33563,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7015_RE-RE",
@@ -32057,7 +33629,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7016_RE-RE",
@@ -32119,7 +33695,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7017_RE-RE",
@@ -32224,7 +33804,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7018_RE-RE",
@@ -32261,7 +33845,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7019_RE-RE",
@@ -32300,7 +33888,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7020_RE-RE",
@@ -32320,7 +33912,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7021_RE-RE",
@@ -32340,7 +33936,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7022_RE-RE",
@@ -32360,7 +33960,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7100_RE-BIL",
@@ -32470,7 +34074,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7101_RE-BIL",
@@ -32700,7 +34308,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7102_RE-BIL",
@@ -32840,7 +34452,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7103_RE-BIL",
@@ -32935,7 +34551,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7104_RE-BIL",
@@ -33045,7 +34665,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7105_RE-BIL",
@@ -33175,7 +34799,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7106_RE-BIL",
@@ -33289,7 +34917,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7107_RE-BIL",
@@ -33400,7 +35032,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7108_RE-BIL",
@@ -33476,7 +35112,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7109_RE-BIL",
@@ -33579,7 +35219,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7110_RE-BIL",
@@ -33869,7 +35513,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7200_RE-NBK",
@@ -33958,7 +35606,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7201_RE-NBK",
@@ -34048,7 +35700,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7202_RE-NBK",
@@ -34119,7 +35775,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7203_RE-NBK",
@@ -34206,7 +35866,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7204_RE-NBK",
@@ -34312,7 +35976,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7205_RE-NBK",
@@ -34383,7 +36051,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7206_RE-NBK",
@@ -34490,7 +36162,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7207_RE-NBK",
@@ -34598,7 +36274,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7208_RE-NBK",
@@ -34687,7 +36367,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7209_RE-NBK",
@@ -34768,7 +36452,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7210_RE-NBK",
@@ -34846,7 +36534,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7211_RE-NBK",
@@ -34927,7 +36619,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "7212_RE-NBK",
@@ -34947,7 +36643,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8000_IS-U",
@@ -35041,7 +36741,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8001_IS-U",
@@ -35135,7 +36839,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8002_IS-U",
@@ -35238,7 +36946,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8003_IS-U",
@@ -35341,7 +37053,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8004_IS-U",
@@ -35389,7 +37105,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8005_IS-U",
@@ -35437,7 +37157,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8100_IS-U",
@@ -35495,7 +37219,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8101_IS-U",
@@ -35553,7 +37281,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8102_IS-U",
@@ -35611,7 +37343,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8103_IS-U",
@@ -35669,7 +37405,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8104_IS-U",
@@ -35736,7 +37476,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8105_IS-U",
@@ -35803,7 +37547,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8106_IS-U",
@@ -35842,7 +37590,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8107_IS-U",
@@ -35881,7 +37633,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8108_IS-U",
@@ -35948,7 +37704,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8109_IS-U",
@@ -36015,7 +37775,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8110_IS-U",
@@ -36082,7 +37846,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8111_IS-U",
@@ -36149,7 +37917,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8112_IS-U",
@@ -36190,7 +37962,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8113_IS-U",
@@ -36231,7 +38007,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8114_IS-U",
@@ -36261,7 +38041,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "high",
+    "criticalityRank": 3,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8200_IS-U",
@@ -36414,7 +38198,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8201_IS-U",
@@ -36472,7 +38260,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8202_IS-U",
@@ -36527,7 +38319,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8203_IS-U",
@@ -36632,7 +38428,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8204_IS-U",
@@ -36757,7 +38557,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8205_IS-U",
@@ -36864,7 +38668,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8206_IS-U",
@@ -36971,7 +38779,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8300_IS-U",
@@ -37019,7 +38831,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8301_IS-U",
@@ -37067,7 +38883,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8302_IS-U",
@@ -37124,7 +38944,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8303_IS-U",
@@ -37181,7 +39005,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8304_IS-U",
@@ -37303,7 +39131,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8305_IS-U",
@@ -37415,7 +39247,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8306_IS-U",
@@ -37435,7 +39271,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8307_IS-U",
@@ -37598,7 +39438,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8308_IS-U",
@@ -37637,7 +39481,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8400_IS-U",
@@ -37750,7 +39598,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8401_IS-U",
@@ -37825,7 +39677,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8402_IS-U",
@@ -37900,7 +39756,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8403_IS-U",
@@ -38028,7 +39888,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8404_IS-U",
@@ -38093,7 +39957,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8405_IS-U",
@@ -38251,7 +40119,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8500_IS-U",
@@ -38290,7 +40162,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8501_IS-U",
@@ -38329,7 +40205,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8502_IS-U",
@@ -38413,7 +40293,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "8503_IS-U",
@@ -38479,7 +40363,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8504_IS-U",
@@ -38572,7 +40460,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8505_IS-U",
@@ -38668,7 +40560,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8506_IS-U",
@@ -38761,7 +40657,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "8507_IS-U",
@@ -38863,7 +40763,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9000_FS-ICM",
@@ -38893,7 +40797,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9001_FS-ICM",
@@ -38932,7 +40840,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9002_FS-ICM",
@@ -38973,7 +40885,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9003_FS-ICM",
@@ -39026,7 +40942,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9004_FS-ICM",
@@ -39117,7 +41037,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9005_FS-ICM",
@@ -39222,7 +41146,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9006_FS-ICM",
@@ -39302,7 +41230,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9007_FS-ICM",
@@ -39396,7 +41328,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9008_FS-ICM",
@@ -39495,7 +41431,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9009_FS-ICM",
@@ -39583,7 +41523,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9010_FS-ICM",
@@ -39636,7 +41580,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9011_FS-ICM",
@@ -39695,7 +41643,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9012_FS-ICM",
@@ -39774,7 +41726,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9013_FS-ICM",
@@ -39860,7 +41816,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9014_FS-ICM",
@@ -39947,7 +41907,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9015_FS-ICM",
@@ -40016,7 +41980,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9016_FS-ICM",
@@ -40078,7 +42046,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9017_FS-ICM",
@@ -40167,7 +42139,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Human Resources",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9018_FS-ICM",
@@ -40234,7 +42210,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9019_FS-ICM",
@@ -40301,7 +42281,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9020_FS-ICM",
@@ -40368,7 +42352,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9021_FS-ICM",
@@ -40435,7 +42423,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9022_FS-ICM",
@@ -40502,7 +42494,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9023_FS-ICM",
@@ -40569,7 +42565,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9024_FS-ICM",
@@ -40636,7 +42636,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9025_FS-ICM",
@@ -40703,7 +42707,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9026_FS-ICM",
@@ -40770,7 +42778,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9027_FS-ICM",
@@ -40809,7 +42821,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9028_FS-ICM",
@@ -40887,7 +42903,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Basis Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9029_FS-ICM",
@@ -40968,7 +42988,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9030_FS-ICM",
@@ -41113,7 +43137,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9031_FS-ICM",
@@ -41161,7 +43189,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9500_FS-CD",
@@ -41245,7 +43277,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9501_FS-CD",
@@ -41311,7 +43347,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9502_FS-CD",
@@ -41352,7 +43392,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9503_FS-CD",
@@ -41393,7 +43437,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9504_FS-CD",
@@ -41432,7 +43480,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9505_FS-CD",
@@ -41489,7 +43541,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9506_FS-CD",
@@ -41528,7 +43584,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9507_FS-CD",
@@ -41567,7 +43627,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9508_FS-CD",
@@ -41606,7 +43670,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9509_FS-CD",
@@ -41663,7 +43731,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9510_FS-CD",
@@ -41702,7 +43774,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9511_FS-CD",
@@ -41741,7 +43817,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9512_FS-CD",
@@ -41780,7 +43860,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9513_FS-CD",
@@ -41819,7 +43903,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9514_FS-CD",
@@ -41858,7 +43946,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9515_FS-CD",
@@ -41897,7 +43989,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9516_FS-CD",
@@ -41938,7 +44034,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9517_FS-CD",
@@ -41977,7 +44077,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9518_FS-CD",
@@ -42016,7 +44120,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9519_FS-CD",
@@ -42055,7 +44163,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9520_FS-CD",
@@ -42094,7 +44206,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9521_FS-CD",
@@ -42133,7 +44249,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9522_FS-CD",
@@ -42172,7 +44292,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9523_FS-CD",
@@ -42211,7 +44335,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9524_FS-CD",
@@ -42250,7 +44378,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9525_FS-CD",
@@ -42307,7 +44439,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9526_FS-CD",
@@ -42346,7 +44482,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9527_FS-CD",
@@ -42403,7 +44543,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9528_FS-CD",
@@ -42442,7 +44586,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9529_FS-CD",
@@ -42499,7 +44647,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9530_FS-CD",
@@ -42538,7 +44690,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9531_FS-CD",
@@ -42577,7 +44733,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9532_FS-CD",
@@ -42625,7 +44785,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9533_FS-CD",
@@ -42664,7 +44828,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9534_FS-CD",
@@ -42703,7 +44871,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9535_FS-CD",
@@ -42742,7 +44914,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9536_FS-CD",
@@ -42781,7 +44957,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9537_FS-CD",
@@ -42820,7 +45000,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9538_FS-CD",
@@ -42859,7 +45043,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9539_FS-CD",
@@ -42898,7 +45086,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9540_FS-CD",
@@ -42937,7 +45129,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "Module",
+    "moduleSource": "csi-tcode"
   },
   {
     "query": "9541_FS-CD",
@@ -42994,7 +45190,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9542_FS-CD",
@@ -43033,7 +45233,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9543_FS-CD",
@@ -43072,7 +45276,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9544_FS-CD",
@@ -43111,7 +45319,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9545_FS-CD",
@@ -43150,7 +45362,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9546_FS-CD",
@@ -43198,7 +45414,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9547_FS-CD",
@@ -43228,7 +45448,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9548_FS-CD",
@@ -43276,7 +45500,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9549_FS-CD",
@@ -43324,7 +45552,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9550_FS-CD",
@@ -43372,7 +45604,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9552_FS-CD",
@@ -43402,7 +45638,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9553_FS-CD",
@@ -43432,7 +45672,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9554_FS-CD",
@@ -43471,7 +45715,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9555_FS-CD",
@@ -43762,7 +46010,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9556_FS-CD",
@@ -43972,7 +46224,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9557_FS-CD",
@@ -44128,7 +46384,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9558_FS-CD",
@@ -44284,7 +46544,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9559_FS-CD",
@@ -44440,7 +46704,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9560_FS-CD",
@@ -44515,7 +46783,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9561_FS-CD",
@@ -44572,7 +46844,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9562_FS-CD",
@@ -44629,7 +46905,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9563_FS-CD",
@@ -44668,7 +46948,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9564_FS-CD",
@@ -44743,7 +47027,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9565_FS-CD",
@@ -44818,7 +47106,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9566_FS-CD",
@@ -44893,7 +47185,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9567_FS-CD",
@@ -44924,7 +47220,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9568_FS-CD",
@@ -44999,7 +47299,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9569_FS-CD",
@@ -45074,7 +47378,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9570_FS-CD",
@@ -45167,7 +47475,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9571_FS-CD",
@@ -45242,7 +47554,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9572_FS-CD",
@@ -45272,7 +47588,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9573_FS-CD",
@@ -45311,7 +47631,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9574_FS-CD",
@@ -45350,7 +47674,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9575_FS-CD",
@@ -45389,7 +47717,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9576_FS-CD",
@@ -45428,7 +47760,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9577_FS-CD",
@@ -45467,7 +47803,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9578_FS-CD",
@@ -45511,7 +47851,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9579_FS-CD",
@@ -45555,7 +47899,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9580_FS-CD",
@@ -45599,7 +47947,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9581_FS-CD",
@@ -45656,7 +48008,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9582_FS-CD",
@@ -45704,7 +48060,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9583_FS-CD",
@@ -45743,7 +48103,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9584_FS-CD",
@@ -45782,7 +48146,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9585_FS-CD",
@@ -45821,7 +48189,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9586_FS-CD",
@@ -45860,7 +48232,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9587_FS-CD",
@@ -45899,7 +48275,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9588_FS-CD",
@@ -45938,7 +48318,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9589_FS-CD",
@@ -45986,7 +48370,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9590_FS-CD",
@@ -46034,7 +48422,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9591_FS-CD",
@@ -46131,7 +48523,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9592_FS-CD",
@@ -46170,7 +48566,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "9951_FS-CD",
@@ -46200,7 +48600,11 @@
         "audit": true,
         "stad": true
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "A1000_BW-SEC",
@@ -46220,7 +48624,11 @@
         "audit": true,
         "stad": false
       }
-    ]
+    ],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "REFX-PERIODISCHES_BUCHEN:_VERTRÄGE",
@@ -46234,7 +48642,11 @@
     "disregardTcode": false,
     "auditSave": "Undefined",
     "authorizations": [],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   },
   {
     "query": "REFX-VERTRAGSBUCHUNGEN_STORNIEREN",
@@ -46248,6 +48660,10 @@
     "disregardTcode": false,
     "auditSave": "Undefined",
     "authorizations": [],
-    "transactions": []
+    "transactions": [],
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "module": "",
+    "moduleSource": ""
   }
 ]

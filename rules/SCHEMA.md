@@ -20,13 +20,21 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 
 **Query** (`queries.json[]`):
 - `query` (str, ID) · `description` · `queryType` (Scope-Filter, **nicht** Operator)
-- `soxClassification` · `gdprClassification` · `disregardTcode` (bool) · `multipleRun` (bool)
+- `soxClassification` (roh) · `criticality` (**normalisiert**) · `criticalityRank` (int 5..1)
+- `module` (Prozessbereich, CSI-Vokabular; bei KPMG via CSI-TCode abgeleitet, teils leer)
+- `gdprClassification` · `disregardTcode` (bool) · `multipleRun` (bool)
 - `authorizations[]`: `{ object, field, andLogic (bool), values (str[]), audit (bool) }`
 - `transactions[]`: `{ tcode, audit (bool), stad (bool) }`
 
 **SoD-Regel** (`sod_rules.json[]`):
 - `sodRule` (str, ID) · `description` · `expression` (z. B. `"(QA OR QB) AND QC"`)
 - `reasonCode` · `variables` (`{ "QA": "<queryId>", … }`, Wert = **str**)
+- `criticality` (**normalisiert**) · `criticalityRank` — bei KPMG aus `reasonCode`-Suffix;
+  **CSI fuehrt keine native SoD-Schwere** (reasonCode = Template) → `null`.
+
+**Normalisierte Kritikalitaet (einheitlich, ruleset-uebergreifend):**
+`very-high`(5) › `critical`(4) › `high`(3) › `medium`(2) › `low`(1). Damit „Very Critical" o. ae.
+ohne ruleset-spezifisches Springen ansprechbar (z. B. `criticalityRank >= 4`).
 
 ## Optionale Extras (ruleset-spezifisch — Loader ignoriert oder übernimmt generisch)
 

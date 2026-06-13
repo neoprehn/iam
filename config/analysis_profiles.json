@@ -43,6 +43,24 @@
     }
   ],
 
+  "scopeProfiles": [
+    { "name": "all", "description": "alle Queries/Regeln (keine Einschraenkung)." },
+    { "name": "fi-only", "description": "nur Financial Accounting (+ angrenzende FI-Bereiche).",
+      "modules": ["Financial Accounting", "Asset Accounting", "Controlling"] },
+    { "name": "very-critical", "description": "nur hoechste Kritikalitaet (very-high + critical).",
+      "minCriticalityRank": 4 },
+    { "name": "audit-required", "description": "nur Audit-Pflicht-Queries (queryType).",
+      "queryTypes": ["AR", "XR"] }
+  ],
+
+  "_scopeSelectors": {
+    "modules": "Liste von module-Werten (CSI-Vokabular); leer = alle.",
+    "minCriticalityRank": "min. normalisierter Rang (5=very-high .. 1=low); 4 = critical+aufwaerts.",
+    "queryTypes": "Liste queryType-Codes (Audit/Monitoring-Scope).",
+    "queries": "explizite Query-IDs (Einzelfilter).",
+    "sodRules": "explizite SoD-Regel-IDs.",
+    "_note": "Selektoren UND-verknuepft ueber Dimensionen, ODER innerhalb einer Liste. Orthogonal zum org-Profil: ein Lauf waehlt EIN scopeProfile UND EIN org-Profil."
+  },
   "_orgModes": {
     "ignoreOrg": "Org-Felder nicht einschraenken (Standardauswertung).",
     "wildcardOnly": "nur Auths, deren Org-Feld echtes '*'/Vollbereich ist (AE-06).",

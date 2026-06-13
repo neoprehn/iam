@@ -12,7 +12,9 @@
     },
     "risks": [
       "Open closed period & Post a vendor invoice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0002",
@@ -27,7 +29,9 @@
     },
     "risks": [
       "Open closed period & Post/Clear a vendor invoice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0003",
@@ -42,7 +46,9 @@
     },
     "risks": [
       "Open closed period & Post a parked vendor invoice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0004",
@@ -57,7 +63,9 @@
     },
     "risks": [
       "FI Posting Periods (Open/Close) AND A/P Outgoing P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0005",
@@ -72,7 +80,9 @@
     },
     "risks": [
       "Open closed period & Post a recurring vendor inv"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0006",
@@ -87,7 +97,9 @@
     },
     "risks": [
       "Open closed period & Post a customer invoice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0007",
@@ -102,7 +114,9 @@
     },
     "risks": [
       "Open closed period & Post/Clear a customer invoice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0008",
@@ -117,7 +131,9 @@
     },
     "risks": [
       "Open closed period & Post a parked customer inv."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0009",
@@ -132,7 +148,9 @@
     },
     "risks": [
       "Open closed period & Post a customer payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0010",
@@ -147,7 +165,9 @@
     },
     "risks": [
       "Open closed period & Post a recurring customer inv"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0011",
@@ -162,7 +182,9 @@
     },
     "risks": [
       "Open closed period & Mass reverse FI documents"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0012",
@@ -177,7 +199,9 @@
     },
     "risks": [
       "Open closed period & Post a G/L document"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0013",
@@ -192,7 +216,9 @@
     },
     "risks": [
       "Open closed period & Post/Clear a G/L document"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0014",
@@ -207,7 +233,9 @@
     },
     "risks": [
       "Open closed period & Post a parked G/L document"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0015",
@@ -222,7 +250,9 @@
     },
     "risks": [
       "Open closed period & Post a recurring G/L document"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0016",
@@ -239,7 +269,9 @@
     },
     "risks": [
       "Posting Bank statement on fictitious customers"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0017",
@@ -256,7 +288,9 @@
     },
     "risks": [
       "Payment advice on fictitious customer"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0018",
@@ -272,7 +306,9 @@
     },
     "risks": [
       "Maintain G/L account COA & A/P postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0019",
@@ -288,7 +324,9 @@
     },
     "risks": [
       "Maintain G/L account COA & A/P postings & clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0020",
@@ -304,7 +342,9 @@
     },
     "risks": [
       "Maintain G/L account COA & Payment run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0021",
@@ -320,7 +360,9 @@
     },
     "risks": [
       "Maintain G/L account COA & Outgoing Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0022",
@@ -336,7 +378,9 @@
     },
     "risks": [
       "Maintain G/L account COA & A/R postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0023",
@@ -352,7 +396,9 @@
     },
     "risks": [
       "Maintain G/L account COA & A/R postings & clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0024",
@@ -368,7 +414,9 @@
     },
     "risks": [
       "Maintain G/L account COA & Incoming Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0025",
@@ -384,7 +432,9 @@
     },
     "risks": [
       "Maintain G/L account COA & G/L postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0026",
@@ -400,7 +450,9 @@
     },
     "risks": [
       "Maintain G/L account COA & G/L postings & clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0027",
@@ -415,7 +467,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & Inv. verification"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0028",
@@ -430,7 +484,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & A/P postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0029",
@@ -445,7 +501,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & A/P postings/clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0030",
@@ -460,7 +518,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & Payment run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0031",
@@ -475,7 +535,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & Outgoing Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0032",
@@ -490,7 +552,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & A/R postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0033",
@@ -505,7 +569,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & A/R postings/clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0034",
@@ -520,7 +586,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & A/R Payment run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0035",
@@ -535,7 +603,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & Incoming Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0036",
@@ -550,7 +620,9 @@
     },
     "risks": [
       "Maintain G/L account CyCo & G/L postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0037",
@@ -565,7 +637,9 @@
     },
     "risks": [
       "Mass Maintain G/L account CyCo & Payment run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0038",
@@ -580,7 +654,9 @@
     },
     "risks": [
       "Mass Maintain G/L account CyCo & Incoming Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0039",
@@ -596,7 +672,9 @@
     },
     "risks": [
       "Posting fraudulent credit note on fictitious cust."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0040",
@@ -612,7 +690,9 @@
     },
     "risks": [
       "Posting bank statement on fictitious customers (S)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0041",
@@ -628,7 +708,9 @@
     },
     "risks": [
       "Posting payment advice on fictitious customers"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0042",
@@ -644,7 +726,9 @@
     },
     "risks": [
       "Hiding G/L posting on fictitious customers"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0043",
@@ -660,7 +744,9 @@
     },
     "risks": [
       "Post/cl fraudulent credit note on fictitious cust."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0044",
@@ -676,7 +762,9 @@
     },
     "risks": [
       "Posting bank statement on fictitious customers (C)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0045",
@@ -692,7 +780,9 @@
     },
     "risks": [
       "Posting payment advice on fictitious customers (C)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0046",
@@ -708,7 +798,9 @@
     },
     "risks": [
       "Hiding G/L posting on fictitious customers (C)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0047",
@@ -724,7 +816,9 @@
     },
     "risks": [
       "Hiding G/L posting on fictitious vendors"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0048",
@@ -739,7 +833,9 @@
     },
     "risks": [
       "Open closed period & Post a vendor invoice (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0049",
@@ -754,7 +850,9 @@
     },
     "risks": [
       "Open closed period & Post a parked vendor inv. (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0050",
@@ -769,7 +867,9 @@
     },
     "risks": [
       "Open closed period & Post a vendor payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0051",
@@ -784,7 +884,9 @@
     },
     "risks": [
       "Open closed period & Post a recurring vend inv (2"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0052",
@@ -799,7 +901,9 @@
     },
     "risks": [
       "Open closed period & Post a customer invoice (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0053",
@@ -814,7 +918,9 @@
     },
     "risks": [
       "Open closed period & Post/Clear a customer inv (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0054",
@@ -829,7 +935,9 @@
     },
     "risks": [
       "Open closed period & Post a parked cust. inv. (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0055",
@@ -844,7 +952,9 @@
     },
     "risks": [
       "Open closed period & Post a customer payment (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0056",
@@ -859,7 +969,9 @@
     },
     "risks": [
       "Open closed period & Post a recurring cust. inv.(2"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0057",
@@ -874,7 +986,9 @@
     },
     "risks": [
       "Open closed period & Mass reverse FI documents (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0058",
@@ -889,7 +1003,9 @@
     },
     "risks": [
       "Open closed period & Post a G/L document (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0059",
@@ -904,7 +1020,9 @@
     },
     "risks": [
       "Open closed period & Post/Clear a G/L document (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0060",
@@ -919,7 +1037,9 @@
     },
     "risks": [
       "Open closed period & Post a parked G/L document(2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0061",
@@ -934,7 +1054,9 @@
     },
     "risks": [
       "Open closed period & Post a recurring G/L doc. (2)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0062",
@@ -949,7 +1071,9 @@
     },
     "risks": [
       "Open closed period & Post a vendor invoice (3)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_MT_B2_0063",
@@ -964,7 +1088,9 @@
     },
     "risks": [
       "FI-SL Plan Period AND Special Ledger"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0001",
@@ -979,7 +1105,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0002",
@@ -994,7 +1122,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND A/R Postings with C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0003",
@@ -1009,7 +1139,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND A/R Incoming Paymen"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0004",
@@ -1024,7 +1156,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0005",
@@ -1039,7 +1173,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0006",
@@ -1054,7 +1190,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0007",
@@ -1069,7 +1207,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND G/L Postings with C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0008",
@@ -1084,7 +1224,9 @@
     },
     "risks": [
       "Inv. Verification AND G/L Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0009",
@@ -1099,7 +1241,9 @@
     },
     "risks": [
       "Release Blocked Inv. AND G/L Postings with Clearin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0010",
@@ -1114,7 +1258,9 @@
     },
     "risks": [
       "A/P Manual Postings AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0011",
@@ -1129,7 +1275,9 @@
     },
     "risks": [
       "A/P Manual Postings AND G/L Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0012",
@@ -1144,7 +1292,9 @@
     },
     "risks": [
       "A/P Postings with Clearing AND A/R Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0013",
@@ -1159,7 +1309,9 @@
     },
     "risks": [
       "A/P Postings with Clearing AND A/R Parked Doc. Pos"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0014",
@@ -1174,7 +1326,9 @@
     },
     "risks": [
       "A/P Parked Doc. Postings AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0015",
@@ -1189,7 +1343,9 @@
     },
     "risks": [
       "A/P Payment Run AND G/L Parked Doc. Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0016",
@@ -1204,7 +1360,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0017",
@@ -1219,7 +1377,9 @@
     },
     "risks": [
       "Release for Payments AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0018",
@@ -1234,7 +1394,9 @@
     },
     "risks": [
       "Release for Payments AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0019",
@@ -1249,7 +1411,9 @@
     },
     "risks": [
       "Release for Payments AND G/L Postings with Clearin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0020",
@@ -1264,7 +1428,9 @@
     },
     "risks": [
       "A/R Manual Postings AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0021",
@@ -1279,7 +1445,9 @@
     },
     "risks": [
       "A/R Manual Postings AND G/L Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0022",
@@ -1294,7 +1462,9 @@
     },
     "risks": [
       "A/R Parked Doc. Postings AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0023",
@@ -1309,7 +1479,9 @@
     },
     "risks": [
       "Bank Statements AND MM Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0024",
@@ -1324,7 +1496,9 @@
     },
     "risks": [
       "MM Backorder Processing AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0025",
@@ -1339,7 +1513,9 @@
     },
     "risks": [
       "MM Backorder Processing AND G/L Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0026",
@@ -1354,7 +1530,9 @@
     },
     "risks": [
       "SD Backorder Processing AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0027",
@@ -1369,7 +1547,9 @@
     },
     "risks": [
       "SD Backorder Processing AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0028",
@@ -1384,7 +1564,9 @@
     },
     "risks": [
       "SD Backorder Processing AND G/L Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0029",
@@ -1399,7 +1581,9 @@
     },
     "risks": [
       "Billing Process AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0030",
@@ -1414,7 +1598,9 @@
     },
     "risks": [
       "Billing Process AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0031",
@@ -1429,7 +1615,9 @@
     },
     "risks": [
       "Billing Process AND G/L Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0032",
@@ -1445,7 +1633,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND Ban"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0033",
@@ -1461,7 +1651,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND Cas"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0034",
@@ -1477,7 +1669,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND G/L"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0035",
@@ -1492,7 +1686,9 @@
     },
     "risks": [
       "Deliveries AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0036",
@@ -1507,7 +1703,9 @@
     },
     "risks": [
       "Deliveries AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0037",
@@ -1522,7 +1720,9 @@
     },
     "risks": [
       "Deliveries AND G/L Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0038",
@@ -1537,7 +1737,9 @@
     },
     "risks": [
       "Release Orders for Billing AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0039",
@@ -1552,7 +1754,9 @@
     },
     "risks": [
       "Release Orders for Billing AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0040",
@@ -1567,7 +1771,9 @@
     },
     "risks": [
       "Release Orders for Billing AND G/L Postings with C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0041",
@@ -1582,7 +1788,9 @@
     },
     "risks": [
       "Scheduling agreements AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0042",
@@ -1597,7 +1805,9 @@
     },
     "risks": [
       "Scheduling agreements AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0043",
@@ -1612,7 +1822,9 @@
     },
     "risks": [
       "Scheduling agreements AND G/L Postings with Cleari"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0044",
@@ -1628,7 +1840,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND Bank Statements"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0045",
@@ -1644,7 +1858,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND Cash Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0046",
@@ -1660,7 +1876,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND G/L Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0047",
@@ -1675,7 +1893,9 @@
     },
     "risks": [
       "A/P Postings with Clearing AND  G/L Manual Posting"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0048",
@@ -1690,7 +1910,9 @@
     },
     "risks": [
       "A/R Manual Postings AND Electronic Check Deposits"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0049",
@@ -1705,7 +1927,9 @@
     },
     "risks": [
       "Billing Process AND A/P Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "FIN_TT_B2_0050",
@@ -1720,7 +1944,9 @@
     },
     "risks": [
       "Billing Process AND Electronic Check Deposits"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0001",
@@ -1735,7 +1961,9 @@
     },
     "risks": [
       "M.D. AND Payroll Accounting Belgium"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0002",
@@ -1750,7 +1978,9 @@
     },
     "risks": [
       "M.D. AND Payroll Configuration"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0003",
@@ -1765,7 +1995,9 @@
     },
     "risks": [
       "M.D. AND Off-Cycle Workbench"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0004",
@@ -1780,7 +2012,9 @@
     },
     "risks": [
       "M.D. AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0005",
@@ -1795,7 +2029,9 @@
     },
     "risks": [
       "M.D. AND Delete Current Payroll Result"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0006",
@@ -1810,7 +2046,9 @@
     },
     "risks": [
       "M.D. AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0007",
@@ -1825,7 +2063,9 @@
     },
     "risks": [
       "M.D. AND Payroll Schemas,Calc. Rules,Feat.,Fct. an"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0008",
@@ -1840,7 +2080,9 @@
     },
     "risks": [
       "M.D. AND Personnel Control Record"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0009",
@@ -1855,7 +2097,9 @@
     },
     "risks": [
       "Delete M.D. AND Payroll Accounting Belgium"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0010",
@@ -1870,7 +2114,9 @@
     },
     "risks": [
       "Delete M.D. AND Payroll Configuration"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0011",
@@ -1885,7 +2131,9 @@
     },
     "risks": [
       "Delete M.D. AND Off-Cycle Workbench"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0012",
@@ -1900,7 +2148,9 @@
     },
     "risks": [
       "Delete M.D. AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0013",
@@ -1915,7 +2165,9 @@
     },
     "risks": [
       "Delete M.D. AND Delete Current Payroll Result"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0014",
@@ -1930,7 +2182,9 @@
     },
     "risks": [
       "Delete M.D. AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0015",
@@ -1945,7 +2199,9 @@
     },
     "risks": [
       "Delete M.D. AND Payroll Schemas,Calc. Rules,Feat.,"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0016",
@@ -1960,7 +2216,9 @@
     },
     "risks": [
       "Delete M.D. AND Personnel Control Record"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0017",
@@ -1975,7 +2233,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Payroll Accounting B"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0018",
@@ -1990,7 +2250,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Payroll Configuratio"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0019",
@@ -2005,7 +2267,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Off-Cycle Workbench"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0020",
@@ -2020,7 +2284,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0021",
@@ -2035,7 +2301,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Delete Current Payro"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0022",
@@ -2050,7 +2318,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0023",
@@ -2065,7 +2335,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Payroll Schemas,Calc"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_MT_B2_0024",
@@ -2080,7 +2352,9 @@
     },
     "risks": [
       "M.D. for Own Personnel Nr AND Personnel Control Re"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0001",
@@ -2095,7 +2369,9 @@
     },
     "risks": [
       "Org. Managemt (Org. element) AND Payroll Accountin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0002",
@@ -2110,7 +2386,9 @@
     },
     "risks": [
       "Org. Managemt (Org. element) AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0003",
@@ -2125,7 +2403,9 @@
     },
     "risks": [
       "Org. Managemt (Org. element) AND Delete Current Pa"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0004",
@@ -2140,7 +2420,9 @@
     },
     "risks": [
       "Org. Managemt (Org. element) AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0005",
@@ -2155,7 +2437,9 @@
     },
     "risks": [
       "Org. Managemt (Org. element) AND Payroll Schemas,C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0006",
@@ -2170,7 +2454,9 @@
     },
     "risks": [
       "Org. Managemt (Org. element) AND Personnel Control"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0007",
@@ -2185,7 +2471,9 @@
     },
     "risks": [
       "Org. Managemt (Org. Plan) AND Payroll Accounting B"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0008",
@@ -2200,7 +2488,9 @@
     },
     "risks": [
       "Org. Managemt (Org. Plan) AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0009",
@@ -2215,7 +2505,9 @@
     },
     "risks": [
       "Org. Managemt (Org. Plan) AND Delete Current Payro"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0010",
@@ -2230,7 +2522,9 @@
     },
     "risks": [
       "Org. Managemt (Org. Plan) AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0011",
@@ -2245,7 +2539,9 @@
     },
     "risks": [
       "Org. Managemt (Org. Plan) AND Payroll Schemas,Calc"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0012",
@@ -2260,7 +2556,9 @@
     },
     "risks": [
       "Org. Managemt (Org. Plan) AND Personnel Control Re"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0013",
@@ -2275,7 +2573,9 @@
     },
     "risks": [
       "Delete Current Payroll Result AND Payroll Accounti"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0014",
@@ -2290,7 +2590,9 @@
     },
     "risks": [
       "Delete Current Payroll Result AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0015",
@@ -2305,7 +2607,9 @@
     },
     "risks": [
       "Delete Current Payroll Result AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0016",
@@ -2320,7 +2624,9 @@
     },
     "risks": [
       "Delete Current Payroll Result AND Payroll Schemas,"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0017",
@@ -2335,7 +2641,9 @@
     },
     "risks": [
       "Delete Current Payroll Result AND Personnel Contro"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0018",
@@ -2350,7 +2658,9 @@
     },
     "risks": [
       "Payroll Schemas,Calc. Rules,Feat.,Fct. and Op. AND"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0019",
@@ -2365,7 +2675,9 @@
     },
     "risks": [
       "Payroll Schemas,Calc. Rules,Feat.,Fct. and Op. AND"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0020",
@@ -2380,7 +2692,9 @@
     },
     "risks": [
       "Payroll Schemas,Calc. Rules,Feat.,Fct. and Op. AND"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0021",
@@ -2395,7 +2709,9 @@
     },
     "risks": [
       "Payroll Status AND Payroll Accounting Belgium"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0022",
@@ -2410,7 +2726,9 @@
     },
     "risks": [
       "Payroll Status AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0023",
@@ -2425,7 +2743,9 @@
     },
     "risks": [
       "Payroll Status AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0024",
@@ -2440,7 +2760,9 @@
     },
     "risks": [
       "Personnel Control Record AND Payroll Accounting Be"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0025",
@@ -2455,7 +2777,9 @@
     },
     "risks": [
       "Personnel Control Record AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0026",
@@ -2470,7 +2794,9 @@
     },
     "risks": [
       "Personnel Control Record AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0027",
@@ -2485,7 +2811,9 @@
     },
     "risks": [
       "Own Time Data AND Payroll Accounting Belgium"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0028",
@@ -2500,7 +2828,9 @@
     },
     "risks": [
       "Own Time Data AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0029",
@@ -2515,7 +2845,9 @@
     },
     "risks": [
       "Own Time Data AND Delete Current Payroll Result"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0030",
@@ -2530,7 +2862,9 @@
     },
     "risks": [
       "Own Time Data AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0031",
@@ -2545,7 +2879,9 @@
     },
     "risks": [
       "Own Time Data AND Payroll Schemas,Calc. Rules,Feat"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0032",
@@ -2560,7 +2896,9 @@
     },
     "risks": [
       "Own Time Data AND Personnel Control Record"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0033",
@@ -2575,7 +2913,9 @@
     },
     "risks": [
       "Time Managemt AND Payroll Accounting Belgium"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0034",
@@ -2590,7 +2930,9 @@
     },
     "risks": [
       "Time Managemt AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0035",
@@ -2605,7 +2947,9 @@
     },
     "risks": [
       "Time Managemt AND Delete Current Payroll Result"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0036",
@@ -2620,7 +2964,9 @@
     },
     "risks": [
       "Time Managemt AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0037",
@@ -2635,7 +2981,9 @@
     },
     "risks": [
       "Time Managemt AND Payroll Schemas,Calc. Rules,Feat"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0038",
@@ -2650,7 +2998,9 @@
     },
     "risks": [
       "Time Managemt AND Personnel Control Record"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0039",
@@ -2665,7 +3015,9 @@
     },
     "risks": [
       "HR Nr Ranges AND Payroll Accounting Belgium"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0040",
@@ -2680,7 +3032,9 @@
     },
     "risks": [
       "HR Nr Ranges AND Posting Runs"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "HTR_TT_B2_0041",
@@ -2695,7 +3049,9 @@
     },
     "risks": [
       "HR Nr Ranges AND Payroll Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0001",
@@ -2710,7 +3066,9 @@
     },
     "risks": [
       "Depreciation done on fictitious asset"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0002",
@@ -2725,7 +3083,9 @@
     },
     "risks": [
       "Process invoices on fictitious asset"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0003",
@@ -2740,7 +3100,9 @@
     },
     "risks": [
       "Reevalutation done on fictitious asset"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0004",
@@ -2755,7 +3117,9 @@
     },
     "risks": [
       "Scrapping/Sales done on fictitious asset"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0005",
@@ -2770,7 +3134,9 @@
     },
     "risks": [
       "FI Posting Periods (Open/Close) AND Asset Manual P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0006",
@@ -2786,7 +3152,9 @@
     },
     "risks": [
       "(G/L M.D. on CoA level or Mass) AND Asset Manual P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0007",
@@ -2801,7 +3169,9 @@
     },
     "risks": [
       "G/L M.D. on Company Code level AND Asset Manual Po"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_MT_B2_0008",
@@ -2816,7 +3186,9 @@
     },
     "risks": [
       "Open closed period & Post a Asset Mgt document"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_TT_B2_0001",
@@ -2831,7 +3203,9 @@
     },
     "risks": [
       "Posting a faudulent invoice & Depreciation run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_TT_B2_0002",
@@ -2846,7 +3220,9 @@
     },
     "risks": [
       "Depreciation & Revalution acitivites"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "ITD_TT_B2_0003",
@@ -2861,7 +3237,9 @@
     },
     "risks": [
       "Asset Sales - Scrapping & Revaluation activities"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0014",
@@ -2876,7 +3254,9 @@
     },
     "risks": [
       "SD Backorder Processing AND Enter Inventory Count"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0002",
@@ -2891,7 +3271,9 @@
     },
     "risks": [
       "Release po.inv. via FB02 instd of MR02 AND A/P Out"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0012",
@@ -2906,7 +3288,9 @@
     },
     "risks": [
       "Release Blocked Inv. AND A/P Outgoing Payment Post"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0014",
@@ -2921,7 +3305,9 @@
     },
     "risks": [
       "A/P Manual Postings AND A/P Outgoing Payment Posti"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0022",
@@ -2936,7 +3322,9 @@
     },
     "risks": [
       "A/P Outgoing Payment Postings AND GR/IR Clearing A"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0024",
@@ -2951,7 +3339,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND A/P Outgoing Payment Postin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0001",
@@ -2968,7 +3358,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND (Vendor M.D. (Fin) OR Mass)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0002",
@@ -2984,7 +3376,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND (Vendor M.D. (Purch) OR Mas"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0003",
@@ -3000,7 +3394,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND (Vendor M.D. (Centrally) OR"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0004",
@@ -3017,7 +3413,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND Vendor Downpaymen"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0005",
@@ -3034,7 +3432,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND Inv. Verification"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0006",
@@ -3051,7 +3451,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND Release Blocked I"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0007",
@@ -3068,7 +3470,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND A/P Manual Postin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0008",
@@ -3085,7 +3489,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND A/P Postings with"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0009",
@@ -3102,7 +3508,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND A/P Parked Doc. P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0010",
@@ -3119,7 +3527,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0011",
@@ -3136,7 +3546,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND A/P Outgoing Paym"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0012",
@@ -3153,7 +3565,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND Release for Payme"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0013",
@@ -3170,7 +3584,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0014",
@@ -3187,7 +3603,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND G/L Postings with"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0015",
@@ -3204,7 +3622,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) Or Mass) AND Goods Receipts fo"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0016",
@@ -3221,7 +3641,9 @@
     },
     "risks": [
       "(Vendor M.D. (Fin.) or Mass) AND (Purchase Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0017",
@@ -3238,7 +3660,9 @@
     },
     "risks": [
       "(Info Records or Mass) AND (Purch. Orders  or Mass"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0018",
@@ -3254,7 +3678,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass)  AND Vendor Downpay"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0019",
@@ -3270,7 +3696,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass)  AND Inv. Verificat"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0020",
@@ -3286,7 +3714,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND Release Blocked"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0021",
@@ -3302,7 +3732,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND A/P Manual Post"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0022",
@@ -3318,7 +3750,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass)  AND A/P Postings w"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0023",
@@ -3334,7 +3768,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND A/P Parked Doc."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0024",
@@ -3350,7 +3786,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass)  AND A/P Payment Ru"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0025",
@@ -3366,7 +3804,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass)  AND A/P Outgoing P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0026",
@@ -3382,7 +3822,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND Release for Pay"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0027",
@@ -3398,7 +3840,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0001",
@@ -3415,7 +3859,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND A/P Postings wi"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0002",
@@ -3432,7 +3878,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND Credit Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0003",
@@ -3449,7 +3897,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND A/R Manual Post"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0004",
@@ -3466,7 +3916,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND A/R Payment Adv"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0005",
@@ -3483,7 +3935,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND A/R Postings wi"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0006",
@@ -3500,7 +3954,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND A/R Parked Doc."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0007",
@@ -3517,7 +3973,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND A/R Incoming Pa"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0008",
@@ -3534,7 +3992,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND G/L Postings wi"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0009",
@@ -3551,7 +4011,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND MM Backorder Pr"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0010",
@@ -3568,7 +4030,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND SD Backorder Pr"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0011",
@@ -3585,7 +4049,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND Billing Process"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0012",
@@ -3602,7 +4068,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND (Contracts and"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0013",
@@ -3619,7 +4087,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND Deliveries"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0014",
@@ -3636,7 +4106,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND Release Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0015",
@@ -3653,7 +4125,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND Scheduling agre"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0016",
@@ -3670,7 +4144,9 @@
     },
     "risks": [
       "(Customer M.D. (Fin.) or Mass) AND (Sales Orders o"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0017",
@@ -3685,7 +4161,9 @@
     },
     "risks": [
       "Sales Conditions and Prices AND MM Backorder Proce"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0018",
@@ -3700,7 +4178,9 @@
     },
     "risks": [
       "Sales Conditions and Prices AND SD Backorder Proce"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0019",
@@ -3715,7 +4195,9 @@
     },
     "risks": [
       "Sales Conditions and Prices AND Billing Process"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0020",
@@ -3730,7 +4212,9 @@
     },
     "risks": [
       "Sales Conditions and Prices AND Release Orders for"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0021",
@@ -3746,7 +4230,9 @@
     },
     "risks": [
       "Sales Conditions and Prices AND (Sales Orders OR M"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0022",
@@ -3762,7 +4248,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) Or Mass) AND Credit Managem"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0023",
@@ -3778,7 +4266,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) Or Mass) AND A/R Manual Pos"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0024",
@@ -3794,7 +4284,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) Or Mass) AND A/R Payment Ad"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0025",
@@ -3810,7 +4302,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) Or Mass) AND A/R Postings w"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0026",
@@ -3826,7 +4320,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) Or Mass) AND A/R Incoming P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0027",
@@ -3842,7 +4338,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND MM Backorder P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0028",
@@ -3858,7 +4356,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND SD Backorder P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0029",
@@ -3874,7 +4374,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND Billing Proces"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0030",
@@ -3891,7 +4393,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) or Mass) AND (Cont"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0031",
@@ -3907,7 +4411,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND Deliveries"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0032",
@@ -3923,7 +4429,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND Release Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0033",
@@ -3939,7 +4447,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND Scheduling agr"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0034",
@@ -3956,7 +4466,9 @@
     },
     "risks": [
       "(Customer M.D. (Sales) or Mass) AND (Sales Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0035",
@@ -3972,7 +4484,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND Credit Ma"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0036",
@@ -3988,7 +4502,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND A/R Manua"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0037",
@@ -4004,7 +4520,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND A/R Payme"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0038",
@@ -4020,7 +4538,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND A/R Posti"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0039",
@@ -4036,7 +4556,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND A/R Incom"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0040",
@@ -4052,7 +4574,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND MM Backor"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0041",
@@ -4068,7 +4592,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND SD Backor"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0042",
@@ -4084,7 +4610,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND Billing P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0043",
@@ -4101,7 +4629,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass) AND (Contracts"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0044",
@@ -4117,7 +4647,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND Deliverie"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0045",
@@ -4133,7 +4665,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND Release O"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0046",
@@ -4149,7 +4683,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass)  AND Schedulin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MT_B2_0047",
@@ -4166,7 +4702,9 @@
     },
     "risks": [
       "(Customer M.D. (Centrally) or Mass) AND (Sales Ord"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0001",
@@ -4181,7 +4719,9 @@
     },
     "risks": [
       "A/R Payment Advice AND A/R Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0002",
@@ -4196,7 +4736,9 @@
     },
     "risks": [
       "A/R Payment Advice AND A/R Parked Doc. Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0003",
@@ -4211,7 +4753,9 @@
     },
     "risks": [
       "A/R Incoming Payment Postings AND A/R Manual Posti"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0004",
@@ -4226,7 +4770,9 @@
     },
     "risks": [
       "MM Backorder Processing AND A/P Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0005",
@@ -4241,7 +4787,9 @@
     },
     "risks": [
       "MM Backorder Processing AND Credit Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0006",
@@ -4256,7 +4804,9 @@
     },
     "risks": [
       "MM Backorder Processing AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0007",
@@ -4271,7 +4821,9 @@
     },
     "risks": [
       "MM Backorder Processing AND A/R Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0008",
@@ -4286,7 +4838,9 @@
     },
     "risks": [
       "MM Backorder Processing AND A/R Incoming Payment P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0009",
@@ -4301,7 +4855,9 @@
     },
     "risks": [
       "SD Backorder Processing AND A/P Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0010",
@@ -4316,7 +4872,9 @@
     },
     "risks": [
       "SD Backorder Processing AND Credit Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0011",
@@ -4331,7 +4889,9 @@
     },
     "risks": [
       "SD Backorder Processing AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0012",
@@ -4346,7 +4906,9 @@
     },
     "risks": [
       "SD Backorder Processing AND A/R Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0013",
@@ -4361,7 +4923,9 @@
     },
     "risks": [
       "SD Backorder Processing AND A/R Incoming Payment P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0015",
@@ -4376,7 +4940,9 @@
     },
     "risks": [
       "Billing Process AND A/P Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0016",
@@ -4391,7 +4957,9 @@
     },
     "risks": [
       "Billing Process AND A/R Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0017",
@@ -4406,7 +4974,9 @@
     },
     "risks": [
       "Billing Process AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0018",
@@ -4421,7 +4991,9 @@
     },
     "risks": [
       "Billing Process AND A/R Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0019",
@@ -4436,7 +5008,9 @@
     },
     "risks": [
       "Billing Process AND A/R Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0020",
@@ -4451,7 +5025,9 @@
     },
     "risks": [
       "Billing Process AND A/R Incoming Payment Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0021",
@@ -4466,7 +5042,9 @@
     },
     "risks": [
       "Billing Process AND MM Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0022",
@@ -4481,7 +5059,9 @@
     },
     "risks": [
       "Billing Process AND SD Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0023",
@@ -4497,7 +5077,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass) AND A/P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0024",
@@ -4513,7 +5095,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND Cre"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0025",
@@ -4529,7 +5113,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND A/R"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0026",
@@ -4545,7 +5131,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND A/R"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0027",
@@ -4561,7 +5149,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND A/R"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0028",
@@ -4577,7 +5167,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND MM"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0029",
@@ -4593,7 +5185,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND SD"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0030",
@@ -4609,7 +5203,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND Del"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0031",
@@ -4626,7 +5222,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements  or Mass) AND (Sa"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0032",
@@ -4641,7 +5239,9 @@
     },
     "risks": [
       "Sales Deals AND Billing Process"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0033",
@@ -4656,7 +5256,9 @@
     },
     "risks": [
       "Sales Deals AND Release Orders for Billing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0034",
@@ -4671,7 +5273,9 @@
     },
     "risks": [
       "Deliveries AND A/P Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0035",
@@ -4686,7 +5290,9 @@
     },
     "risks": [
       "Deliveries AND A/R Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0036",
@@ -4701,7 +5307,9 @@
     },
     "risks": [
       "Deliveries AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0037",
@@ -4716,7 +5324,9 @@
     },
     "risks": [
       "Deliveries AND A/R Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0038",
@@ -4731,7 +5341,9 @@
     },
     "risks": [
       "Deliveries AND A/R Incoming Payment Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0039",
@@ -4746,7 +5358,9 @@
     },
     "risks": [
       "Deliveries AND MM Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0040",
@@ -4761,7 +5375,9 @@
     },
     "risks": [
       "Deliveries AND SD Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0041",
@@ -4776,7 +5392,9 @@
     },
     "risks": [
       "Deliveries AND Billing Process"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0042",
@@ -4791,7 +5409,9 @@
     },
     "risks": [
       "Deliveries AND Release Orders for Billing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0043",
@@ -4806,7 +5426,9 @@
     },
     "risks": [
       "Release Orders for Billing AND A/P Postings with C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0044",
@@ -4821,7 +5443,9 @@
     },
     "risks": [
       "Release Orders for Billing AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0045",
@@ -4836,7 +5460,9 @@
     },
     "risks": [
       "Release Orders for Billing AND A/R Postings with C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0046",
@@ -4851,7 +5477,9 @@
     },
     "risks": [
       "Release Orders for Billing AND A/R Incoming Paymen"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0047",
@@ -4866,7 +5494,9 @@
     },
     "risks": [
       "Sales Promotions AND Billing Process"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0048",
@@ -4881,7 +5511,9 @@
     },
     "risks": [
       "Sales Promotions AND Release Orders for Billing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0049",
@@ -4896,7 +5528,9 @@
     },
     "risks": [
       "Scheduling agreements AND A/P Postings with Cleari"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0050",
@@ -4911,7 +5545,9 @@
     },
     "risks": [
       "Scheduling agreements AND Credit Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0051",
@@ -4926,7 +5562,9 @@
     },
     "risks": [
       "Scheduling agreements AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0052",
@@ -4941,7 +5579,9 @@
     },
     "risks": [
       "Scheduling agreements AND A/R Postings with Cleari"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0053",
@@ -4956,7 +5596,9 @@
     },
     "risks": [
       "Scheduling agreements AND A/R Incoming Payment Pos"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0054",
@@ -4971,7 +5613,9 @@
     },
     "risks": [
       "Scheduling agreements AND MM Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0055",
@@ -4986,7 +5630,9 @@
     },
     "risks": [
       "Scheduling agreements AND SD Backorder Processing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0056",
@@ -5001,7 +5647,9 @@
     },
     "risks": [
       "Scheduling agreements AND Deliveries"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0057",
@@ -5017,7 +5665,9 @@
     },
     "risks": [
       "Scheduling agreements AND (Sales Orders OR Mass)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0058",
@@ -5033,7 +5683,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND A/P Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0059",
@@ -5049,7 +5701,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND Credit Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0060",
@@ -5065,7 +5719,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND A/R Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0061",
@@ -5081,7 +5737,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND A/R Payment Advice"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0062",
@@ -5097,7 +5755,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND A/R Postings with Clea"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0063",
@@ -5113,7 +5773,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND A/R Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0064",
@@ -5129,7 +5791,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND A/R Incoming Payment P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0065",
@@ -5145,7 +5809,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND Billing Process"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0066",
@@ -5161,7 +5827,9 @@
     },
     "risks": [
       "(Sales Orders or Mass)  AND Deliveries"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TT_B2_0067",
@@ -5177,7 +5845,9 @@
     },
     "risks": [
       "(Contracts and Rebate Agreements or Mass)  AND A/R"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0028",
@@ -5193,7 +5863,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND G/L Postings wi"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0029",
@@ -5209,7 +5881,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass)  AND Goods Receipts"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0030",
@@ -5226,7 +5900,9 @@
     },
     "risks": [
       "(Vendor M.D. (Purch.) or Mass) AND (Purchase Order"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0031",
@@ -5242,7 +5918,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND Vendor Downp"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0032",
@@ -5258,7 +5936,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND Inv. Verific"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0033",
@@ -5274,7 +5954,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND Release Bloc"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0034",
@@ -5290,7 +5972,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND A/P Manual P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0035",
@@ -5306,7 +5990,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND A/P Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0036",
@@ -5322,7 +6008,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND A/P Parked D"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0037",
@@ -5338,7 +6026,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND A/P Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0038",
@@ -5354,7 +6044,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND A/P Outgoing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0039",
@@ -5370,7 +6062,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND Release for"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0040",
@@ -5386,7 +6080,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND Check Manage"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0041",
@@ -5402,7 +6098,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) Or Mass) AND Goods Receip"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_MT_B2_0042",
@@ -5419,7 +6117,9 @@
     },
     "risks": [
       "(Vendor M.D. (Centrally) or Mass) AND (Purchase Or"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0001",
@@ -5434,7 +6134,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND A/P Postings with C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0003",
@@ -5449,7 +6151,9 @@
     },
     "risks": [
       "Release po.inv. via FB02 instd of MR02 AND GR/IR C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0004",
@@ -5464,7 +6168,9 @@
     },
     "risks": [
       "Release po.inv. via FB02 instd of MR02 AND Service"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0005",
@@ -5479,7 +6185,9 @@
     },
     "risks": [
       "Inv. Verification AND A/P Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0006",
@@ -5494,7 +6202,9 @@
     },
     "risks": [
       "Inv. Verification AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0007",
@@ -5509,7 +6219,9 @@
     },
     "risks": [
       "Inv. Verification AND A/P Outgoing Payment Posting"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0008",
@@ -5524,7 +6236,9 @@
     },
     "risks": [
       "Inv. Verification AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0009",
@@ -5539,7 +6253,9 @@
     },
     "risks": [
       "Inv. Verification AND GR/IR Clearing Account"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0010",
@@ -5554,7 +6270,9 @@
     },
     "risks": [
       "Release Blocked Inv. AND A/P Postings with Clearin"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0011",
@@ -5569,7 +6287,9 @@
     },
     "risks": [
       "Release Blocked Inv. AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0013",
@@ -5584,7 +6304,9 @@
     },
     "risks": [
       "Release Blocked Inv. AND Check Managemt"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0015",
@@ -5599,7 +6321,9 @@
     },
     "risks": [
       "A/P Manual Postings AND GR/IR Clearing Account"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0016",
@@ -5614,7 +6338,9 @@
     },
     "risks": [
       "A/P Postings with Clearing AND Release for Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0017",
@@ -5629,7 +6355,9 @@
     },
     "risks": [
       "A/P Postings with Clearing AND GR/IR Clearing Acco"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0018",
@@ -5644,7 +6372,9 @@
     },
     "risks": [
       "A/P Parked Doc. Postings AND Service Entry Sheets"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0019",
@@ -5659,7 +6389,9 @@
     },
     "risks": [
       "A/P Payment Run AND A/P Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0020",
@@ -5674,7 +6406,9 @@
     },
     "risks": [
       "A/P Payment Run AND A/P Postings with Clearing"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0021",
@@ -5689,7 +6423,9 @@
     },
     "risks": [
       "A/P Payment Run AND A/P Parked Doc. Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0023",
@@ -5704,7 +6440,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0025",
@@ -5719,7 +6457,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND GR/IR Clearing Account"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0026",
@@ -5734,7 +6474,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND Goods Receipts for Purchase"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0027",
@@ -5750,7 +6492,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND (Purch. Orders OR Mass)"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0028",
@@ -5765,7 +6509,9 @@
     },
     "risks": [
       "A/P Recurring Doc. AND Service Entry Sheets"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0029",
@@ -5780,7 +6526,9 @@
     },
     "risks": [
       "Release Blocked Inv. via MRBR AND Goods Receipts f"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0030",
@@ -5795,7 +6543,9 @@
     },
     "risks": [
       "Goods Issues AND Enter Inventory Count with Docume"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0031",
@@ -5810,7 +6560,9 @@
     },
     "risks": [
       "Goods Issues AND Process List of Differences"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0032",
@@ -5825,7 +6577,9 @@
     },
     "risks": [
       "Goods Issues - Scrapping AND Enter Inventory Count"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0033",
@@ -5840,7 +6594,9 @@
     },
     "risks": [
       "Goods Issues - Scrapping AND Process List of Diffe"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0034",
@@ -5855,7 +6611,9 @@
     },
     "risks": [
       "Goods Receipts Other AND Inv. Verification"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0035",
@@ -5870,7 +6628,9 @@
     },
     "risks": [
       "Goods Receipts Other AND Release Blocked Inv."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0036",
@@ -5885,7 +6645,9 @@
     },
     "risks": [
       "Goods Receipts Other AND A/P Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0037",
@@ -5900,7 +6662,9 @@
     },
     "risks": [
       "Goods Receipts Other AND Release for Payments"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0038",
@@ -5915,7 +6679,9 @@
     },
     "risks": [
       "Goods Receipts Other AND Enter Inventory Count wit"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0039",
@@ -5930,7 +6696,9 @@
     },
     "risks": [
       "Goods Receipts Other AND Process List of Differenc"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0040",
@@ -5945,7 +6713,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND Inv. Verifi"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0041",
@@ -5960,7 +6730,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND Release Blo"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0042",
@@ -5975,7 +6747,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND A/P Manual"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0043",
@@ -5990,7 +6764,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND A/P Payment"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0044",
@@ -6005,7 +6781,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND Release for"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0045",
@@ -6020,7 +6798,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND Enter Inven"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0046",
@@ -6035,7 +6815,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND Process Lis"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0047",
@@ -6050,7 +6832,9 @@
     },
     "risks": [
       "Goods Receipts for Production Orders AND Inv. Veri"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0048",
@@ -6065,7 +6849,9 @@
     },
     "risks": [
       "Goods Receipts for Production Orders AND Release B"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0049",
@@ -6080,7 +6866,9 @@
     },
     "risks": [
       "Goods Receipts for Production Orders AND A/P Manua"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0050",
@@ -6095,7 +6883,9 @@
     },
     "risks": [
       "Goods Receipts for Production Orders AND A/P Parke"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0051",
@@ -6110,7 +6900,9 @@
     },
     "risks": [
       "Goods Receipts for Production Orders AND Release f"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0052",
@@ -6125,7 +6917,9 @@
     },
     "risks": [
       "Goods Receipts for Production Orders AND Process L"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0053",
@@ -6140,7 +6934,9 @@
     },
     "risks": [
       "Material Doc. AND Inv. Verification"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0054",
@@ -6155,7 +6951,9 @@
     },
     "risks": [
       "Material Doc. AND Release Blocked Inv."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0055",
@@ -6170,7 +6968,9 @@
     },
     "risks": [
       "Material Doc. AND A/P Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0056",
@@ -6185,7 +6985,9 @@
     },
     "risks": [
       "Material Doc. AND Release for Payments"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0057",
@@ -6200,7 +7002,9 @@
     },
     "risks": [
       "Material Doc. AND Enter Inventory Count with Docum"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0058",
@@ -6215,7 +7019,9 @@
     },
     "risks": [
       "Material Doc. AND Process List of Differences"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0059",
@@ -6230,7 +7036,9 @@
     },
     "risks": [
       "Input Physical Inventory Count AND Post Physical I"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0060",
@@ -6245,7 +7053,9 @@
     },
     "risks": [
       "Input Physical Inventory Count AND Process List of"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0061",
@@ -6261,7 +7071,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Inv. Verification"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0062",
@@ -6277,7 +7089,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Release Blocked Inv."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0063",
@@ -6293,7 +7107,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND A/P Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0064",
@@ -6309,7 +7125,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0065",
@@ -6325,7 +7143,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass)  AND A/P Outgoing Paymen"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0066",
@@ -6341,7 +7161,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Release for Payments"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0067",
@@ -6357,7 +7179,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND GR/IR Clearing Accou"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0068",
@@ -6373,7 +7197,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Goods Receipts Other"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0069",
@@ -6389,7 +7215,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Goods Receipts for P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0070",
@@ -6405,7 +7233,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Goods Receipts for P"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0071",
@@ -6421,7 +7251,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Material Doc."
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0072",
@@ -6437,7 +7269,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Release Purchase Ord"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0073",
@@ -6452,7 +7286,9 @@
     },
     "risks": [
       "Release Purchase Orders AND A/P Payment Run"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0074",
@@ -6469,7 +7305,9 @@
     },
     "risks": [
       "(Purchase Requisitions or Mass) AND (Purchase Orde"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0075",
@@ -6484,7 +7322,9 @@
     },
     "risks": [
       "Invent. Diff. Clearing AND WM Invent. Count"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0079",
@@ -6499,7 +7339,9 @@
     },
     "risks": [
       "A/P Payment Run AND A/R Manual Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0080",
@@ -6515,7 +7357,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Transfer Postings"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0081",
@@ -6531,7 +7375,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Input Physical Inven"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0082",
@@ -6547,7 +7393,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND Post Physical Invent"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0083",
@@ -6563,7 +7411,9 @@
     },
     "risks": [
       "(Purchase Orders or Mass) AND WM Invent. Count"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0084",
@@ -6578,7 +7428,9 @@
     },
     "risks": [
       "A/P Manual Postings AND Release Purchase Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0103",
@@ -6593,7 +7445,9 @@
     },
     "risks": [
       "A/P Outgoing Payment Postings AND Release Purch. O"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TTM_M3_0001",
@@ -6609,7 +7463,9 @@
     },
     "risks": [
       "A/R Manual Postings AND A/R Incoming Payment Posti"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TTM_M3_0002",
@@ -6625,7 +7481,9 @@
     },
     "risks": [
       "Deliveries AND A/R Incoming Payment Postings AND C"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TTT_M3_0001",
@@ -6641,7 +7499,9 @@
     },
     "risks": [
       "Sales Orders AND Deliveries AND A/R Incoming Payme"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TTT_M3_0002",
@@ -6657,7 +7517,9 @@
     },
     "risks": [
       "Sales Orders AND Release Orders for Billing AND A/"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_TTT_M3_0003",
@@ -6673,7 +7535,9 @@
     },
     "risks": [
       "Sales Orders AND Release Orders for Billing AND De"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "OTC_MTT_M3_0001",
@@ -6689,7 +7553,9 @@
     },
     "risks": [
       "Sales Conditions and Prices AND Sales Orders AND R"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0001",
@@ -6705,7 +7571,9 @@
     },
     "risks": [
       "A/P Proposal Run AND A/P Payment Run AND Vendor Ma"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0002",
@@ -6722,7 +7590,9 @@
     },
     "risks": [
       "A/P Proposal Run AND A/P Payment Run AND Vendor Ma"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0003",
@@ -6738,7 +7608,9 @@
     },
     "risks": [
       "Purchase Orders AND MM Prices AND Vendor Master Da"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0004",
@@ -6755,7 +7627,9 @@
     },
     "risks": [
       "Purchase Orders AND MM Prices AND Vendor Master Da"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0005",
@@ -6771,7 +7645,9 @@
     },
     "risks": [
       "Invoice Verification AND Release Blocked Invoices"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0006",
@@ -6788,7 +7664,9 @@
     },
     "risks": [
       "Invoice Verification AND Release Blocked Invoices"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0007",
@@ -6804,7 +7682,9 @@
     },
     "risks": [
       "A/P Manual Postings AND A/P Payment Run AND  Vendo"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0008",
@@ -6820,7 +7700,9 @@
     },
     "risks": [
       "Purch. Orders AND Goods Receipts for Purch. Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0009",
@@ -6836,7 +7718,9 @@
     },
     "risks": [
       "Release Blocked Invoices AND A/P Payment Run AND"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0010",
@@ -6852,7 +7736,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND A/P Outgoing Paymen"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0011",
@@ -6868,7 +7754,9 @@
     },
     "risks": [
       "Invoice Verification AND A/P Payment Run AND Vendo"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0012",
@@ -6884,7 +7772,9 @@
     },
     "risks": [
       "Vendor M.D. (Centrally) AND Release Purchase Invoi"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTM_M3_0013",
@@ -6900,7 +7790,9 @@
     },
     "risks": [
       "Vendor M.D. (Centrally) AND Release Blocked Invoic"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0001",
@@ -6916,7 +7808,9 @@
     },
     "risks": [
       "A/P Proposal Run AND A/P Payment Run AND A/P Manua"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0002",
@@ -6932,7 +7826,9 @@
     },
     "risks": [
       "A/P Proposal Run AND A/P Payment Run AND Invoice V"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0003",
@@ -6948,7 +7844,9 @@
     },
     "risks": [
       "Goods Receipts for Purchase Orders AND Invoice Ver"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0004",
@@ -6964,7 +7862,9 @@
     },
     "risks": [
       "Invoice Verification AND Release Blocked Invoices"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0005",
@@ -6980,7 +7880,9 @@
     },
     "risks": [
       "Invoice Verification AND Release Blocked Invoices"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0006",
@@ -6996,7 +7898,9 @@
     },
     "risks": [
       "Purch. Orders AND Goods Receipts for Purch. Orders"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTT_M3_0007",
@@ -7012,7 +7916,9 @@
     },
     "risks": [
       "Vendor Downpayment Request AND A/P Outgoing Paymen"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TTTT_M4_0001",
@@ -7029,7 +7935,9 @@
     },
     "risks": [
       "Invoice Verification AND Release Blocked Invoices"
-    ]
+    ],
+    "criticality": null,
+    "criticalityRank": null
   },
   {
     "sodRule": "PTP_TT_B2_0085",
@@ -7042,6 +7950,8 @@
       "QA": "FAPPYA",
       "QB": "FAPPCA"
     },
-    "risks": []
+    "risks": [],
+    "criticality": null,
+    "criticalityRank": null
   }
 ]

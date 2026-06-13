@@ -12,7 +12,9 @@
       "QC": "1205_BC-USR",
       "QD": "1200_BC-USR",
       "QE": "1201_BC-USR"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "BCX_0002",
@@ -26,7 +28,9 @@
       "QB": "1103_BC-DEV",
       "QC": "1112_BC-DEV",
       "QD": "1111_BC-DEV"
-    }
+    },
+    "criticality": "very-high",
+    "criticalityRank": 5
   },
   {
     "sodRule": "BCX_0003",
@@ -39,7 +43,9 @@
       "QA": "1111_BC-DEV",
       "QB": "1112_BC-DEV",
       "QC": "1107_BC-DEV"
-    }
+    },
+    "criticality": "very-high",
+    "criticalityRank": 5
   },
   {
     "sodRule": "BCX_0004",
@@ -53,7 +59,9 @@
       "QB": "1409_BC-SRV",
       "QC": "1300_BC-CTS",
       "QD": "1301_BC-CTS"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "FIX_0001",
@@ -65,7 +73,9 @@
     "variables": {
       "QA": "2001_FI-GL",
       "QB": "2004_FI-GL"
-    }
+    },
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "sodRule": "FIX_0002",
@@ -77,7 +87,9 @@
     "variables": {
       "QA": "2010_FI-GL",
       "QB": "2004_FI-GL"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "OCX_0001",
@@ -91,7 +103,9 @@
       "QB": "4001_SD-MD",
       "QC": "2100_FI-AR",
       "QD": "2101_FI-AR"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "OCX_0002",
@@ -105,7 +119,9 @@
       "QB": "2101_FI-AR",
       "QC": "4102_SD-SLS",
       "QD": "4103_SD-SLS"
-    }
+    },
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "sodRule": "OCX_0003",
@@ -118,7 +134,9 @@
       "QA": "4102_SD-SLS",
       "QB": "4103_SD-SLS",
       "QC": "4107_SD-SLS"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "OCX_0004",
@@ -131,7 +149,9 @@
       "QA": "4103_SD-SLS",
       "QB": "4102_SD-SLS",
       "QC": "4008_SD-MD"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "OCX_0005",
@@ -144,7 +164,9 @@
       "QA": "2100_FI-AR",
       "QB": "2101_FI-AR",
       "QC": "4009_SD-MD"
-    }
+    },
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "sodRule": "OCX_0006",
@@ -158,7 +180,9 @@
       "QB": "2101_FI-AR",
       "QC": "4009_SD-MD",
       "QD": "4205_SD-BIL"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "PPX_0001",
@@ -172,7 +196,9 @@
       "QB": "3001_MM-PUR",
       "QC": "2200_FI-AP",
       "QD": "2201_FI-AP"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "PPX_0002",
@@ -184,7 +210,9 @@
     "variables": {
       "QA": "3010_MM-PUR",
       "QB": "3016_MM-PUR"
-    }
+    },
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "sodRule": "PPX_0003",
@@ -198,7 +226,9 @@
       "QB": "2201_FI-AP",
       "QC": "3016_MM-PUR",
       "QD": "3017_MM-PUR"
-    }
+    },
+    "criticality": "high",
+    "criticalityRank": 3
   },
   {
     "sodRule": "PPX_0004",
@@ -212,7 +242,9 @@
       "QB": "2201_FI-AP",
       "QC": "3200_MM-IV",
       "QD": "3201_MM-IV"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "PPX_0005",
@@ -226,7 +258,9 @@
       "QB": "3017_MM-PUR",
       "QC": "3200_MM-IV",
       "QD": "3201_MM-IV"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "PPX_0006",
@@ -239,7 +273,9 @@
       "QA": "3201_MM-IV",
       "QB": "3200_MM-IV",
       "QC": "2405_FI-CM"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "PPX_0007",
@@ -252,7 +288,9 @@
       "QA": "3016_MM-PUR",
       "QB": "3017_MM-PUR",
       "QC": "3100_MM-IM"
-    }
+    },
+    "criticality": "critical",
+    "criticalityRank": 4
   },
   {
     "sodRule": "PPX_0008",
@@ -267,7 +305,9 @@
       "QC": "3016_MM-PUR",
       "QD": "3017_MM-PUR",
       "QE": "3100_MM-IM"
-    }
+    },
+    "criticality": "very-high",
+    "criticalityRank": 5
   },
   {
     "sodRule": "PPX_0009",
@@ -284,7 +324,9 @@
       "QE": "3100_MM-IM",
       "QF": "3200_MM-IV",
       "QG": "3201_MM-IV"
-    }
+    },
+    "criticality": "very-high",
+    "criticalityRank": 5
   },
   {
     "sodRule": "PPX_0010",
@@ -297,6 +339,8 @@
       "QA": "2200_FI-AP",
       "QB": "2201_FI-AP",
       "QC": "2405_FI-CM"
-    }
+    },
+    "criticality": "very-high",
+    "criticalityRank": 5
   }
 ]
