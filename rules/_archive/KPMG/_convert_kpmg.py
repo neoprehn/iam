@@ -56,7 +56,7 @@ for row in sheet_rows("Table view Query.xlsx"):
         "useNaming": b(row.get("Use naming")),
         "soxClassification": s(row.get("Sox Classification")),
         "gdprClassification": s(row.get("Gdpr Classification")),
-        "type": s(row.get("Type")),
+        "queryType": s(row.get("Type")),   # Kern-Schema: gleicher Schluessel wie CSI (Scope-Filter)
         "multipleRun": b(row.get("Multiple run")),
         "disregardTcode": b(row.get("Disregard T-code")),
         "auditSave": s(row.get("Audit save")),
@@ -67,7 +67,7 @@ for row in sheet_rows("Table view Query.xlsx"):
 def ensure(name, desc=""):
     if name not in queries:
         queries[name] = {"query": name, "description": desc, "sortOrder": "", "useNaming": False,
-                         "soxClassification": "", "gdprClassification": "", "type": "",
+                         "soxClassification": "", "gdprClassification": "", "queryType": "",
                          "multipleRun": False, "disregardTcode": False, "auditSave": "",
                          "authorizations": [], "transactions": []}
     return queries[name]
@@ -113,8 +113,8 @@ for row in sheet_rows("Table view SoD rule.xlsx"):
         "definition": s(row.get("Definition")),
         "definitionDescription": s(row.get("Def. description")),
         "expression": s(row.get("Expression")),
-        "variables": {},                # Variable -> {query, description, type}
-    }
+        "variables": {},                # Variable -> query (string); wie CSI. queryDescription/
+    }                                   # queryType sind aus queries.json ableitbar -> nicht dupliziert
 
 for row in sheet_rows("Table view SoD rule detail with query info.xlsx"):
     rid = s(row.get("SoD rule"))
@@ -125,11 +125,7 @@ for row in sheet_rows("Table view SoD rule detail with query info.xlsx"):
                                "description": s(row.get("SoD description")), "definition": "",
                                "definitionDescription": "", "expression": s(row.get("Expression")),
                                "variables": {}})
-    r["variables"][var] = {
-        "query": s(row.get("Query")),
-        "queryDescription": s(row.get("Query description")),
-        "queryType": s(row.get("Query type")),
-    }
+    r["variables"][var] = s(row.get("Query"))
 
 rules_list = sorted(rules.values(), key=lambda r: r["sodRule"])
 

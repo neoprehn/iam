@@ -7,31 +7,11 @@
     "definitionDescription": "SoD von (QA OR QB OR QC) AND (QD OR QE)",
     "expression": "(QA OR QB OR QC) AND (QD OR QE)",
     "variables": {
-      "QA": {
-        "query": "1204_BC-USR",
-        "queryDescription": "BC-USR - Berechtigungszuweisung (SU01 - Rollen) (PFCG, SU01, SU10, OPCA, SU01_NAV, OVZ5, OTZ1, OPJ0, OP29, etc.)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "1206_BC-USR",
-        "queryDescription": "BC-USR - Berechtigungszuweisung (PFCG) (SU02, SU01, SU10, OPCA, SU01_NAV, OVZ5, OTZ1, OPJ0, OP29, etc.)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "1205_BC-USR",
-        "queryDescription": "BC-USR - Berechtigungszuweisung (SU01- Profile) (SU02, SU01, SU10, OPCA, SU01_NAV, OVZ5, OTZ1, OPJ0, OP29, etc.)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "1200_BC-USR",
-        "queryDescription": "BC-USR - Benutzer anlegen (SU01, SU10, OPCA, SU01_NAV, OVZ5, OTZ1, OPJ0, OP29, etc)",
-        "queryType": "JAP"
-      },
-      "QE": {
-        "query": "1201_BC-USR",
-        "queryDescription": "BC-USR - Benutzer ändern (SU01, SU10, OPCA, SU01_NAV, OVZ5, OTZ1, OPJ0, OP29, etc.)",
-        "queryType": "JAP"
-      }
+      "QA": "1204_BC-USR",
+      "QB": "1206_BC-USR",
+      "QC": "1205_BC-USR",
+      "QD": "1200_BC-USR",
+      "QE": "1201_BC-USR"
     }
   },
   {
@@ -42,26 +22,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC AND QD",
     "expression": "(QA OR QB) AND QC AND QD",
     "variables": {
-      "QA": {
-        "query": "1102_BC-DEV",
-        "queryDescription": "BC-DEV - ABAP/4 Entwicklung (SE38, SE38*)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "1103_BC-DEV",
-        "queryDescription": "BC-DEV - Funktionsbaustein Entwicklung (SE37)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "1112_BC-DEV",
-        "queryDescription": "BC-DEV - Mandantenpflege (T000) (SCC4, SM30, OY24)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "1111_BC-DEV",
-        "queryDescription": "BC-DEV - Systemänderbarkeit ändern (SE06, SE03, SA38, SE38, SE80, SE84)",
-        "queryType": "JAP"
-      }
+      "QA": "1102_BC-DEV",
+      "QB": "1103_BC-DEV",
+      "QC": "1112_BC-DEV",
+      "QD": "1111_BC-DEV"
     }
   },
   {
@@ -72,21 +36,9 @@
     "definitionDescription": "SoD von QA AND QB AND QC",
     "expression": "QA AND QB AND QC",
     "variables": {
-      "QA": {
-        "query": "1111_BC-DEV",
-        "queryDescription": "BC-DEV - Systemänderbarkeit ändern (SE06, SE03, SA38, SE38, SE80, SE84)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "1112_BC-DEV",
-        "queryDescription": "BC-DEV - Mandantenpflege (T000) (SCC4, SM30, OY24)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "1107_BC-DEV",
-        "queryDescription": "BC-DEV - Tabellenpflege uneingeschränkt (SE16, SM30, SM31, SE16N, N)",
-        "queryType": "JAP"
-      }
+      "QA": "1111_BC-DEV",
+      "QB": "1112_BC-DEV",
+      "QC": "1107_BC-DEV"
     }
   },
   {
@@ -97,26 +49,10 @@
     "definitionDescription": "SoD von QA AND QB AND ( QC OR QD)",
     "expression": "QA AND QB AND ( QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "1017_BC-SEC",
-        "queryDescription": "BC-SEC - Download/Upload von Daten (CG3Y, CG3Z)",
-        "queryType": "AO"
-      },
-      "QB": {
-        "query": "1409_BC-SRV",
-        "queryDescription": "BC-SRV - Anzeige SAP Directories (AL11)",
-        "queryType": "AO"
-      },
-      "QC": {
-        "query": "1300_BC-CTS",
-        "queryDescription": "BC-CTS - Transportmanagement Administration (STMS)",
-        "queryType": "AO"
-      },
-      "QD": {
-        "query": "1301_BC-CTS",
-        "queryDescription": "BC-CTS - Transportmanagement TPA-Import (STMS)",
-        "queryType": "JAP"
-      }
+      "QA": "1017_BC-SEC",
+      "QB": "1409_BC-SRV",
+      "QC": "1300_BC-CTS",
+      "QD": "1301_BC-CTS"
     }
   },
   {
@@ -127,16 +63,8 @@
     "definitionDescription": "SoD von Query A and Query B",
     "expression": "QA AND QB",
     "variables": {
-      "QA": {
-        "query": "2001_FI-GL",
-        "queryDescription": "FI-GL - Sachkontenstamm im Buchungskreis anlegen (FSS0, FS00, FS15, FS16, FSS1)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2004_FI-GL",
-        "queryDescription": "FI-GL - Sachk. Buchen (verschiedene Transaktionen wie F-02, F-06, F-07, FB01, FB50 etc.)",
-        "queryType": "JAP"
-      }
+      "QA": "2001_FI-GL",
+      "QB": "2004_FI-GL"
     }
   },
   {
@@ -147,16 +75,8 @@
     "definitionDescription": "SoD von Query A and Query B",
     "expression": "QA AND QB",
     "variables": {
-      "QA": {
-        "query": "2010_FI-GL",
-        "queryDescription": "FI-GL - Buchungsperioden öffnen und schließen (F-60, OB52, SM30, SM31)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2004_FI-GL",
-        "queryDescription": "FI-GL - Sachk. Buchen (verschiedene Transaktionen wie F-02, F-06, F-07, FB01, FB50 etc.)",
-        "queryType": "JAP"
-      }
+      "QA": "2010_FI-GL",
+      "QB": "2004_FI-GL"
     }
   },
   {
@@ -167,26 +87,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "4000_SD-MD",
-        "queryDescription": "SD-MD - Kundenstamm anlegen (V-Sicht) (VD01, XD01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "4001_SD-MD",
-        "queryDescription": "SD-MD - Kundenstamm ändern (V-Sicht) (VD02, XD02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "2100_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht) (FD01, XD01)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "2101_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht) (FD02, XD02)",
-        "queryType": "JAP"
-      }
+      "QA": "4000_SD-MD",
+      "QB": "4001_SD-MD",
+      "QC": "2100_FI-AR",
+      "QD": "2101_FI-AR"
     }
   },
   {
@@ -197,26 +101,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "2100_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht) (FD01, XD01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2101_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht) (FD02, XD02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "4102_SD-SLS",
-        "queryDescription": "SD-SLS - Auftrag anlegen (VA01, V-01)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "4103_SD-SLS",
-        "queryDescription": "SD-SLS - Auftrag ändern (VA02)",
-        "queryType": "JAP"
-      }
+      "QA": "2100_FI-AR",
+      "QB": "2101_FI-AR",
+      "QC": "4102_SD-SLS",
+      "QD": "4103_SD-SLS"
     }
   },
   {
@@ -227,21 +115,9 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC",
     "expression": "(QA OR QB) AND QC",
     "variables": {
-      "QA": {
-        "query": "4102_SD-SLS",
-        "queryDescription": "SD-SLS - Auftrag anlegen (VA01, V-01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "4103_SD-SLS",
-        "queryDescription": "SD-SLS - Auftrag ändern (VA02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "4107_SD-SLS",
-        "queryDescription": "SD-SLS - Auslieferung pflegen oder Warenausgang buchen (VL02, VL02N)",
-        "queryType": "JAP"
-      }
+      "QA": "4102_SD-SLS",
+      "QB": "4103_SD-SLS",
+      "QC": "4107_SD-SLS"
     }
   },
   {
@@ -252,21 +128,9 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC",
     "expression": "(QA OR QB) AND QC",
     "variables": {
-      "QA": {
-        "query": "4103_SD-SLS",
-        "queryDescription": "SD-SLS - Auftrag ändern (VA02)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "4102_SD-SLS",
-        "queryDescription": "SD-SLS - Auftrag anlegen (VA01, V-01)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "4008_SD-MD",
-        "queryDescription": "SD-MD - Kreditmanagement Stammdaten pflegen (FD32)",
-        "queryType": "JAP"
-      }
+      "QA": "4103_SD-SLS",
+      "QB": "4102_SD-SLS",
+      "QC": "4008_SD-MD"
     }
   },
   {
@@ -277,21 +141,9 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC",
     "expression": "(QA OR QB) AND QC",
     "variables": {
-      "QA": {
-        "query": "2100_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht) (FD01, XD01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2101_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht) (FD02, XD02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "4009_SD-MD",
-        "queryDescription": "SD-MD - Bonusabsprachen anlegen (VB01)",
-        "queryType": "JAP"
-      }
+      "QA": "2100_FI-AR",
+      "QB": "2101_FI-AR",
+      "QC": "4009_SD-MD"
     }
   },
   {
@@ -302,26 +154,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "2100_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht) (FD01, XD01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2101_FI-AR",
-        "queryDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht) (FD02, XD02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "4009_SD-MD",
-        "queryDescription": "SD-MD - Bonusabsprachen anlegen (VB01)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "4205_SD-BIL",
-        "queryDescription": "SD-BIL - Bonusabrechnung (VB(7)",
-        "queryType": "JAP"
-      }
+      "QA": "2100_FI-AR",
+      "QB": "2101_FI-AR",
+      "QC": "4009_SD-MD",
+      "QD": "4205_SD-BIL"
     }
   },
   {
@@ -332,26 +168,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "3000_MM-PUR",
-        "queryDescription": "MM-PUR - Lieferantenstamm anlegen (Einkaufssicht) (MK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "3001_MM-PUR",
-        "queryDescription": "MM-PUR - Lieferantenstamm ändern (Einkaufssicht) (MK02, XK02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "2200_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht) (FK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "2201_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht) (FK02, XK02)",
-        "queryType": "JAP"
-      }
+      "QA": "3000_MM-PUR",
+      "QB": "3001_MM-PUR",
+      "QC": "2200_FI-AP",
+      "QD": "2201_FI-AP"
     }
   },
   {
@@ -362,16 +182,8 @@
     "definitionDescription": "SoD von Query A and Query B",
     "expression": "QA AND QB",
     "variables": {
-      "QA": {
-        "query": "3010_MM-PUR",
-        "queryDescription": "MM-PUR - BANF anlegen oder hinzufügen (ME51, ME51N)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "3016_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung anlegen (ME21, ME21N, ME25, ME58, ME59)",
-        "queryType": "JAP"
-      }
+      "QA": "3010_MM-PUR",
+      "QB": "3016_MM-PUR"
     }
   },
   {
@@ -382,26 +194,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "2200_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht) (FK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2201_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht) (FK02, XK02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "3016_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung anlegen (ME21, ME21N, ME25, ME58, ME59)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "3017_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung ändern (ME22, ME22N)",
-        "queryType": "JAP"
-      }
+      "QA": "2200_FI-AP",
+      "QB": "2201_FI-AP",
+      "QC": "3016_MM-PUR",
+      "QD": "3017_MM-PUR"
     }
   },
   {
@@ -412,26 +208,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "2200_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht) (FK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2201_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht) (FK02, XK02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "3200_MM-IV",
-        "queryDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht) (MIRO, MIRA)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "3201_MM-IV",
-        "queryDescription": "MM-IV - Rechnung erfassen (FI-Sicht) (MRHR, MR44, MR08)",
-        "queryType": "JAP"
-      }
+      "QA": "2200_FI-AP",
+      "QB": "2201_FI-AP",
+      "QC": "3200_MM-IV",
+      "QD": "3201_MM-IV"
     }
   },
   {
@@ -442,26 +222,10 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD)",
     "expression": "(QA OR QB) AND (QC OR QD)",
     "variables": {
-      "QA": {
-        "query": "3016_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung anlegen (ME21, ME21N, ME25, ME58, ME59)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "3017_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung ändern (ME22, ME22N)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "3200_MM-IV",
-        "queryDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht) (MIRO, MIRA)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "3201_MM-IV",
-        "queryDescription": "MM-IV - Rechnung erfassen (FI-Sicht) (MRHR, MR44, MR08)",
-        "queryType": "JAP"
-      }
+      "QA": "3016_MM-PUR",
+      "QB": "3017_MM-PUR",
+      "QC": "3200_MM-IV",
+      "QD": "3201_MM-IV"
     }
   },
   {
@@ -472,21 +236,9 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC",
     "expression": "(QA OR QB) AND QC",
     "variables": {
-      "QA": {
-        "query": "3201_MM-IV",
-        "queryDescription": "MM-IV - Rechnung erfassen (FI-Sicht) (MRHR, MR44, MR08)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "3200_MM-IV",
-        "queryDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht) (MIRO, MIRA)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "2405_FI-CM",
-        "queryDescription": "FI-CM - Zahllauf (Kreditor) (F110)",
-        "queryType": "JAP"
-      }
+      "QA": "3201_MM-IV",
+      "QB": "3200_MM-IV",
+      "QC": "2405_FI-CM"
     }
   },
   {
@@ -497,21 +249,9 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC",
     "expression": "(QA OR QB) AND QC",
     "variables": {
-      "QA": {
-        "query": "3016_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung anlegen (ME21, ME21N, ME25, ME58, ME59)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "3017_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung ändern (ME22, ME22N)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "3100_MM-IM",
-        "queryDescription": "MM-IM - Wareneingang zur Bestellung (Bewegungsart BWART 101) (MIGO, MIGO_GR, MB01)",
-        "queryType": "JAP"
-      }
+      "QA": "3016_MM-PUR",
+      "QB": "3017_MM-PUR",
+      "QC": "3100_MM-IM"
     }
   },
   {
@@ -522,31 +262,11 @@
     "definitionDescription": "SoD von (QA OR QB) AND (QC OR QD) AND QE",
     "expression": "(QA OR QB) AND (QC OR QD) AND QE",
     "variables": {
-      "QA": {
-        "query": "2200_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht) (FK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2201_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht) (FK02, XK02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "3016_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung anlegen (ME21, ME21N, ME25, ME58, ME59)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "3017_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung ändern (ME22, ME22N)",
-        "queryType": "JAP"
-      },
-      "QE": {
-        "query": "3100_MM-IM",
-        "queryDescription": "MM-IM - Wareneingang zur Bestellung (Bewegungsart BWART 101) (MIGO, MIGO_GR, MB01)",
-        "queryType": "JAP"
-      }
+      "QA": "2200_FI-AP",
+      "QB": "2201_FI-AP",
+      "QC": "3016_MM-PUR",
+      "QD": "3017_MM-PUR",
+      "QE": "3100_MM-IM"
     }
   },
   {
@@ -557,41 +277,13 @@
     "definitionDescription": "SOD von (QA OR QB) AND (QC OR QD) AND QE AND (QF OR QG)",
     "expression": "(QA OR QB) AND (QC OR QD) AND QE AND (QF OR QG)",
     "variables": {
-      "QA": {
-        "query": "2200_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht) (FK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2201_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht) (FK02, XK02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "3016_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung anlegen (ME21, ME21N, ME25, ME58, ME59)",
-        "queryType": "JAP"
-      },
-      "QD": {
-        "query": "3017_MM-PUR",
-        "queryDescription": "MM-PUR - Bestellung ändern (ME22, ME22N)",
-        "queryType": "JAP"
-      },
-      "QE": {
-        "query": "3100_MM-IM",
-        "queryDescription": "MM-IM - Wareneingang zur Bestellung (Bewegungsart BWART 101) (MIGO, MIGO_GR, MB01)",
-        "queryType": "JAP"
-      },
-      "QF": {
-        "query": "3200_MM-IV",
-        "queryDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht) (MIRO, MIRA)",
-        "queryType": "JAP"
-      },
-      "QG": {
-        "query": "3201_MM-IV",
-        "queryDescription": "MM-IV - Rechnung erfassen (FI-Sicht) (MRHR, MR44, MR08)",
-        "queryType": "JAP"
-      }
+      "QA": "2200_FI-AP",
+      "QB": "2201_FI-AP",
+      "QC": "3016_MM-PUR",
+      "QD": "3017_MM-PUR",
+      "QE": "3100_MM-IM",
+      "QF": "3200_MM-IV",
+      "QG": "3201_MM-IV"
     }
   },
   {
@@ -602,21 +294,9 @@
     "definitionDescription": "SoD von (QA OR QB) AND QC",
     "expression": "(QA OR QB) AND QC",
     "variables": {
-      "QA": {
-        "query": "2200_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht) (FK01, XK01)",
-        "queryType": "JAP"
-      },
-      "QB": {
-        "query": "2201_FI-AP",
-        "queryDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht) (FK02, XK02)",
-        "queryType": "JAP"
-      },
-      "QC": {
-        "query": "2405_FI-CM",
-        "queryDescription": "FI-CM - Zahllauf (Kreditor) (F110)",
-        "queryType": "JAP"
-      }
+      "QA": "2200_FI-AP",
+      "QB": "2201_FI-AP",
+      "QC": "2405_FI-CM"
     }
   }
 ]
