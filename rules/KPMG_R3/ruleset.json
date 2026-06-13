@@ -1,0 +1,16 @@
+{
+  "ruleset": "kpmg_r3",
+  "name": "KPMG SoD-Ruleset (R/3)",
+  "platform": "R/3",
+  "note": "Noch nicht fuer S/4 geeignet (Fiori/OData-Ebene, geaenderte TCodes/Objekte fehlen).",
+  "model": "query-based (Queries = Funktionsbausteine; SoD-Regeln = boolesche Ausdruecke ueber Query-Variablen)",
+  "source": "rules/_archive/KPMG/*.xlsx (5 Tabellen)",
+  "generatedAt": "2026-06-13",
+  "counts": {
+    "queries": 604,
+    "queriesWithAuthorizations": 595,
+    "queriesWithTransactions": 602,
+    "sodRules": 22,
+    "variableMappings": 80
+  }
+}
