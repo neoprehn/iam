@@ -3,7 +3,7 @@
 **Projekt:** Graphbasierte Auswertung von SAP-Berechtigungen (R/3 und S/4HANA) — Can-Do (Berechtigung) und Did-Do (Nutzung), inklusive SoD-Konfliktanalyse.
 **Repository:** `neoprehn/iam` (aktuell einziger vorhandener Baustein).
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe Abschnitt „Windows-Spezifika").
-**Stand:** Initiale Roadmap, abgeleitet aus der Konzeptionsphase.
+**Stand:** Phasen 0–2 abgeschlossen (Umgebung, Datenmodell, Can-Do-Import beide Pfade, performant). Phase 3 (Auswertung/SoD) in Vorbereitung: 3 Rulesets aufbereitet, erster Einzel-Check (`SAP_ALL`) gelaufen; Ruleset-Loader + Evaluator stehen noch aus.
 
 ---
 
@@ -113,8 +113,12 @@ Relevante Quelltabellen: `USR02` (Benutzer), `USR04`/`UST04` (Direktprofile), `U
 - [x] Gültigkeiten typisieren (Date-Konvertierung) — Format hier `DD.MM.YYYY`, `31.12.9999`→`9999-12-31`, `00.00.0000`→`null` (AE-07).
 - [x] `*`/unbeschränkt als Property speichern; Normalisierung erfolgt in der Abfragelogik (AE-06).
 - [x] Sammelrollen-Auflösung (`CONTAINS` aus AGR_AGRS). *Abgeleitete Rollen (`DERIVED_FROM`) zurückgestellt — keine Quelle im Extrakt (`PARENT_AGR`=Sammelrolle).*
+- [x] **Beide Pfade vollständig:** Rollenpfad (`AGR_1251`→08, `CHECKS` aus `USOBT_C`→10) **und** Profilpfad (direkte Profile `UST04`→06; profilseitige Auths/Feldwerte `UST10S`→18/`UST12`→19; Sammelprofile `UST10C`→15).
+- [x] **Anreicherung:** Transaktions-/Objekt-/Auth-/Rollentexte (`TSTCT`→09, `TOBJT`→13, `USR13`→20, `AGR_TEXTS`→21), Rollenmenü (`AGR_TCODES`→17), Org-Ebenen (`AGR_1252`→16), Referenzuser (`USREFUS`→14), Benutzernamen (`V_USERNAME`→12), Subtyp-Labels (`90_finalize`).
+- [x] **Sprach-Schalter** `$lang`/`IMPORT_LANG` für sprachabhängige Texttabellen (Default `DE,DEU,D`).
+- [x] **Profil-Generierungsstatus** (`AGR_1016B`→22) als `:Role.profileGenerated`/`profileState` — erkennt Rollen mit Auth-Daten, aber ohne generiertes Profil (konzeptunabhängig).
 - [x] Importvalidierung (Zähler je Knoten-/Kantentyp) — `load/99_validate.cypher`.
-- [x] SE16-Konverter `load/Convert-Se16Export.ps1` (unkonvertiert → UTF-8/Tab/CSV); container-only via cypher-shell + APOC (kein Python).
+- [x] SE16-Konverter `load/Convert-Se16Export.ps1` (unkonvertiert → UTF-8/Tab/CSV; container-only, kein Python): konvertiert den **ganzen Ordner**, **prüft das Minimalset** vor dem Lauf (`config/required_tables.json`) und **verwirft Credential-Spalten** (Passwort-Hashes, Defense in Depth).
 - [x] Phase in der Doku dokumentiert (`docs/phasen/phase-2.md`) — Dokumentations-DoD.
 
 **DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar. ✓ verifiziert am dataset `sachsenenergie`: 182.170 Authorizations (Rollen- **und** Profilpfad inkl. Feldwerte), 131.145 Transactions, 72.109 `ASSIGNED_TO`, 63.088 `HAS_PROFILE`, 192.230 `CHECKS`, 103.165 `HAS_MENU`.
@@ -126,15 +130,24 @@ Relevante Quelltabellen: `USR02` (Benutzer), `USR04`/`UST04` (Direktprofile), `U
 ### Phase 3 — Auswertungslogik (Checks & SoD)
 **Ziel:** Einzelberechtigungs-Checks und SoD-Konfliktanalyse.
 
-- [ ] Excel-Regelkatalog nach `rules/sod_matrix.csv` überführen (Regel-ID → kritische TCode-/Objekt-Kombination → Risikobeschreibung).
-- [ ] Kritische TCodes/Objekte beim Import mit `:Critical` taggen (Einstiegspunkte).
-- [ ] `cypher/checks/`: Einzelberechtigungs-Checks, stichtagsparametrisiert.
-- [ ] `cypher/sod/`: SoD-Abfragen mit korrekter Pfad-Gültigkeitsschnittmenge (AE-08) und `*`-Normalisierung (AE-06).
-- [ ] Intra- vs. Inter-Rollen-Konflikt sauber unterscheiden (AE-11).
-- [ ] Findings in die Snapshot-Schicht schreiben: `(:SoDConflict {ruleId, asOf, runId})` mit `VIOLATED_BY`/`VIA_ROLE`/`BASED_ON_RULE`; Regelkatalog als `(:Rule)`-Knoten.
-- [ ] `DETACH DELETE` der Snapshot-Schicht vor jedem Lauf (AE-10).
+**Modell-Entscheidung:** Die Rulesets sind **query-/ausdrucksbasiert** (KPMG/CSI tools), nicht eine einfache TCode-Matrix. Eine Query = Funktionsbaustein (Berechtigungsobjekte + TCodes); eine SoD-Regel = boolescher Ausdruck über Query-Variablen. Drei Rulesets, konstant; Systeme (`dataset`) variabel; **ein Ruleset pro Lauf**.
 
-**DoD:** Reproduzierbarer SoD-Lauf zu einem frei wählbaren Stichtag mit vollständiger Nachweiskette (Regel, Pfade, Stichtag, Run).
+Ruleset-Aufbereitung (abgeschlossen):
+- [x] **3 Rulesets nach JSON normalisiert** unter `rules/<ruleset>/`: `kpmg_r3` (R/3, aus Excel), `csi`/`csi_bi` (CSI-tools-XML). Quellen + Konverter unter `rules/_archive/`.
+- [x] **Einheitliches Kern-Schema** über alle drei (`rules/SCHEMA.md`) → ein Loader/Evaluator genügt. SAP-Texte bewusst nicht im Ruleset (kommen aus dem Graphen).
+- [x] **Verknüpfungssemantik** je Ruleset in `ruleset.json → combinationSemantics` (Werte AND/OR per `andLogic`, Felder/Objekte UND, TCodes ODER, Auth↔TCode UND, `queryType`=Scope).
+- [x] **Kritikalität normalisiert** (`very-high>critical>high>medium>low` + Rank) ruleset-übergreifend; **Module** (CSI-Vokabular; KPMG zu 55 % via TCode-Match) + CSI-**Risk**-Objekte.
+- [x] **Auswertungs-Profile** `config/analysis_profiles.json`: Org-Modi (`ignoreOrg`/`wildcardOnly`/`filtered` mit `AND`/`OR`/`RANGE`, Org-Felder aus `USORG`) **und** Scope-Selektoren (`fi-only`, `very-critical`, …).
+
+Bau (offen):
+- [ ] **Ruleset-Loader**: `(:Query)`/`(:SoDRule)`/`(:Risk)` aus den JSON, idempotent (MERGE auf `(ruleset,…)`); SoD-Ausdruck beim Laden in CNF-Klauseln zerlegen (UND-von-ODER).
+- [ ] **Generischer Evaluator** (one-fits-all, parametrisiert `$ruleset`×`$dataset`×Org-Profil×Scope-Profil×Stichtag): (1) Query-Matching pro User nach `combinationSemantics` + AE-06; (2) SoD = jede Klausel ≥1 erfüllte Query → Finding.
+- [x] **Einzelberechtigungs-Checks** (`cypher/checks/`) — erster Test: *wer hat `SAP_ALL`* (39 User, davon 18 aktive Dialog-User; `SAP*`/`DDIC` aktiv). *(noch nicht als Datei abgelegt)*
+- [ ] Kritische TCodes/Objekte mit `:Critical` taggen (Einstiegspunkte) — bzw. direkt aus dem Ruleset-Scope ableiten.
+- [ ] Pfad-Gültigkeitsschnittmenge (AE-08), `*`-Normalisierung (AE-06), Intra- vs. Inter-Rollen-Konflikt (AE-11).
+- [ ] Findings in die Snapshot-Schicht: `(:SoDConflict {sodRule, ruleset, asOf, runId})` mit `VIOLATED_BY`/`VIA_ROLE`/`BASED_ON_RULE`; `DETACH DELETE` der Snapshot-Schicht vor jedem Lauf (AE-10).
+
+**DoD:** Reproduzierbarer SoD-Lauf zu frei wählbarem Stichtag, Ruleset und Profil, mit vollständiger Nachweiskette (Regel, Pfade, Stichtag, Run, Ruleset).
 
 ---
 
