@@ -1,0 +1,56 @@
+{
+  "_about": "Auswertungs-/Run-Profile fuer die SoD-Analyse (Phase 3). Konstante, wiederverwendbare Profile; die variablen Run-Parameter (dataset, asOf/Stichtag, runId) werden beim Start gebunden, NICHT hier gepflegt. Org-relevante Felder werden aus USORG abgeleitet (54 Felder, z. B. BUKRS/WERKS).",
+
+  "defaults": {
+    "ruleset": "kpmg_r3",
+    "_comment": "Default-Ruleset; pro Lauf ueberschreibbar. dataset/asOf/runId kommen zur Laufzeit (System aendert sich, Ruleset bleibt konstant)."
+  },
+
+  "profiles": [
+    {
+      "name": "standard",
+      "description": "Standardauswertung OHNE Org-Spezifika: Org-Felder bleiben unbeschraenkt (Frage: 'kann der User die Funktion ueberhaupt, egal in welchem Org-Bereich').",
+      "org": { "mode": "ignoreOrg" }
+    },
+    {
+      "name": "uebergreifend",
+      "description": "Nur UEBERGREIFENDE Berechtigungen: zaehlt nur, wenn das Org-Feld einen echten '*' / Vollbereich traegt (unbeschraenkt ueber alle Org-Einheiten).",
+      "org": { "mode": "wildcardOnly" }
+    },
+    {
+      "name": "bukrs-1000-und-2000",
+      "description": "Beispiel: Org-Scope BUKRS muss 1000 UND 2000 abdecken (beide).",
+      "org": {
+        "mode": "filtered",
+        "filters": { "BUKRS": { "op": "AND", "values": ["1000", "2000"] } }
+      }
+    },
+    {
+      "name": "bukrs-1000-oder-4000",
+      "description": "Beispiel: Org-Scope BUKRS = 1000 ODER 4000 (irgendeines davon).",
+      "org": {
+        "mode": "filtered",
+        "filters": { "BUKRS": { "op": "OR", "values": ["1000", "4000"] } }
+      }
+    },
+    {
+      "name": "bukrs-1000-bis-5000",
+      "description": "Beispiel: Org-Scope BUKRS im Bereich 1000-5000 (als ODER ueber das Intervall).",
+      "org": {
+        "mode": "filtered",
+        "filters": { "BUKRS": { "op": "RANGE", "from": "1000", "to": "5000" } }
+      }
+    }
+  ],
+
+  "_orgModes": {
+    "ignoreOrg": "Org-Felder nicht einschraenken (Standardauswertung).",
+    "wildcardOnly": "nur Auths, deren Org-Feld echtes '*'/Vollbereich ist (AE-06).",
+    "filtered": "je Org-Feld eine Bedingung mit op AND|OR|RANGE; nicht gelistete Org-Felder bleiben unbeschraenkt."
+  },
+  "_filterOps": {
+    "AND": "Auth-Wertemenge muss ALLE values abdecken (nach AE-06; '*' deckt alles).",
+    "OR": "Auth deckt MINDESTENS einen der values ab.",
+    "RANGE": "Auth deckt mindestens einen Wert im Intervall [from,to] ab (ODER ueber den Bereich)."
+  }
+}
