@@ -5,7 +5,7 @@
   "note": "Noch nicht fuer S/4 geeignet (Fiori/OData-Ebene, geaenderte TCodes/Objekte fehlen).",
   "model": "query-based (Queries = Funktionsbausteine; SoD-Regeln = boolesche Ausdruecke ueber Query-Variablen)",
   "source": "rules/_archive/KPMG/*.xlsx (5 Tabellen)",
-  "generatedAt": "2026-06-13",
+  "generatedAt": "2026-06-14",
   "combinationSemantics": {
     "valuesWithinField": "AND wenn andLogic=true, sonst OR (Spalte G der Excel)",
     "fieldsWithinObject": "AND",
