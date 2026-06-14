@@ -9,7 +9,8 @@ services:
       NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
       NEO4J_PLUGINS: '["apoc"]'
       NEO4J_apoc_import_file_enabled: "true"
-      NEO4J_apoc_import_file_use__neo4j__config: "true"
+      # false: apoc.load.json darf absolute Pfade lesen (rules unter /rules gemountet, read-only).
+      NEO4J_apoc_import_file_use__neo4j__config: "false"
       NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
       # Speicher: Default (512MiB Pagecache, kein Heap-Limit) ist für die Importmengen
       # viel zu klein -> Plattenthrashing. Großzügig dimensionieren (Host hat reichlich RAM).
@@ -24,6 +25,7 @@ services:
       - ./data/logs:/logs
       - ./load:/load:ro                       # Load-Skripte für cypher-shell -f /load/...
       - ./cypher:/cypher:ro                    # Checks/SoD-Abfragen für cypher-shell -f /cypher/...
+      - ./rules:/rules:ro                      # Rulesets (JSON) für apoc.load.json('file:///rules/...')
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
       interval: 15s

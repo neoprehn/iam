@@ -139,10 +139,11 @@ Ruleset-Aufbereitung (abgeschlossen):
 - [x] **Kritikalität normalisiert** (`very-high>critical>high>medium>low` + Rank) ruleset-übergreifend; **Module** (CSI-Vokabular; KPMG zu 55 % via TCode-Match) + CSI-**Risk**-Objekte.
 - [x] **Auswertungs-Profile** `config/analysis_profiles.json`: Org-Modi (`ignoreOrg`/`wildcardOnly`/`filtered` mit `AND`/`OR`/`RANGE`, Org-Felder aus `USORG`) **und** Scope-Selektoren (`fi-only`, `very-critical`, …).
 
-Bau (offen):
-- [ ] **Ruleset-Loader**: `(:Query)`/`(:SoDRule)`/`(:Risk)` aus den JSON, idempotent (MERGE auf `(ruleset,…)`); SoD-Ausdruck beim Laden in CNF-Klauseln zerlegen (UND-von-ODER).
-- [ ] **Generischer Evaluator** (one-fits-all, parametrisiert `$ruleset`×`$dataset`×Org-Profil×Scope-Profil×Stichtag): (1) Query-Matching pro User nach `combinationSemantics` + AE-06; (2) SoD = jede Klausel ≥1 erfüllte Query → Finding.
-- [x] **Einzelberechtigungs-Checks** (`cypher/checks/`) — erster: `cypher/checks/sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade, stichtagsparametrisiert `$dataset`/`$asOf`). Ergebnis `sachsenenergie`: 39 User, davon 18 aktive Dialog-User; `SAP*`/`DDIC` aktiv.
+Bau:
+- [x] **Ruleset-Loader** `cypher/ruleset/load_ruleset.cypher`: `(:Query)`/`(:AuthReq)`/`(:SoDRule)` aus den JSON (apoc.load.json), idempotent; Org-Felder `(:OrgField)` aus USORG (`load/23`).
+- [x] **Einzelberechtigungs-Matcher** `cypher/checks/query_match.cypher` (parametrisiert `$ruleset`/`$query`/`$dataset`/`$asOf`): Query-Matching pro User nach `combinationSemantics` + AE-06 (Werte AND/OR, Felder/Objekte UND, TCodes ODER, Auth↔TCode UND); **Org-Felder im Default „egal"** (wie `*`). Validiert an `kpmg_r3`/`sachsenenergie` (diskriminiert, 39…1022 Treffer je Query; 1000_BC-SEC = manueller Gegencheck ±Gültigkeit).
+- [ ] **SoD-Evaluator**: SoD-Ausdruck beim Laden in CNF-Klauseln (UND-von-ODER); je User: jede Klausel ≥1 erfüllte Query → Finding. Plus Org-Profil `filtered`-Modus (AND/OR/RANGE) und Scope-Profile als Parameter.
+- [x] **Einzel-Checks** (`cypher/checks/`) — `sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade): `sachsenenergie` 39 User, 18 aktive Dialog; `SAP*`/`DDIC` aktiv.
 - [ ] Kritische TCodes/Objekte mit `:Critical` taggen (Einstiegspunkte) — bzw. direkt aus dem Ruleset-Scope ableiten.
 - [ ] Pfad-Gültigkeitsschnittmenge (AE-08), `*`-Normalisierung (AE-06), Intra- vs. Inter-Rollen-Konflikt (AE-11).
 - [ ] Findings in die Snapshot-Schicht: `(:SoDConflict {sodRule, ruleset, asOf, runId})` mit `VIOLATED_BY`/`VIA_ROLE`/`BASED_ON_RULE`; `DETACH DELETE` der Snapshot-Schicht vor jedem Lauf (AE-10).
