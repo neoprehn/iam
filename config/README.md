@@ -48,7 +48,24 @@ werden **zur Laufzeit** gebunden (das System wechselt, das Ruleset bleibt).
 - Werte im Graphen liegen als `f_<FELD>`-Listen vor (Einzelwerte, `*`, oder `LOW..HIGH`-Bereiche);
   der Phase-3-Evaluator interpretiert sie gegen den Profil-Filter.
 
+## Weitere Auswertungs-Parameter
+
+Neben Org (`profiles`) und Scope (`scopeProfiles`) steuern zwei weitere Achsen die Auswertung —
+ebenfalls Parameter, nicht im Cypher verdrahtet:
+
+- **`userTypeProfiles`** → `$userTypes` (Subtyp-Labels): `[]` = alle · `['Dialog','Service']` (A/S)
+  · `['Dialog']`. Damit z. B. „SoD nur für anmeldefähige Personen" vs. „alle".
+- **`sleeping.sleepDays`** → `$sleepDays`: Tage ohne Anmeldung (bezogen auf `asOf`) → `userSleeping`.
+  Default 180, frei wählbar. **Stichtag muss zum Datenstand passen** (Snapshot, nicht „heute").
+
+Der vollständige Parametersatz (`ruleset`, `dataset`, `asOf`, `userTypes`, `sleepDays`,
+`orgFilters`) steht in `_runParameters`; Details siehe `docs/phasen/phase-3.md`.
+
+> **Org-Filter-Hinweis:** `orgFilters` deckt literale Org-Werte ab. Org-pflichtige (abgeleitete)
+> Rollen tragen Platzhalter (`$BUKRS`); deren Auflösung über AGR_1252 (`Role.org_$<Feld>`) ist
+> noch offen — bis dahin ist `filtered` nur für literale Werte vollständig.
+
 ## Erweiterung
 
-Neue Profile = weiterer Eintrag in `profiles[]`. Der Evaluator wird gegen diese Struktur
-**einmal** gebaut und über den Profilnamen angesteuert (analog `$ruleset`/`$dataset`).
+Neue Profile = weiterer Eintrag in `profiles[]`/`scopeProfiles[]`/`userTypeProfiles[]`. Der
+Evaluator wird gegen diese Struktur **einmal** gebaut und über den Profilnamen angesteuert.

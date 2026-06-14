@@ -53,6 +53,25 @@
       "queryTypes": ["AR", "XR"] }
   ],
 
+  "userTypeProfiles": [
+    { "name": "all", "userTypes": [], "description": "alle Benutzertypen." },
+    { "name": "dialog-service", "userTypes": ["Dialog", "Service"], "description": "Dialog + Service (A/S) — anmeldefaehige Personen." },
+    { "name": "dialog-only", "userTypes": ["Dialog"], "description": "nur Dialog (A)." }
+  ],
+
+  "sleeping": {
+    "sleepDays": 180,
+    "_note": "Tage ohne Anmeldung (bezogen auf den Stichtag asOf) -> Finding/Flag userSleeping. Frei anpassbar (z. B. 90, 365). Stichtag MUSS zum Datenstand passen (Snapshot-Datum, nicht heute)."
+  },
+
+  "_runParameters": {
+    "ruleset": "konstantes Ruleset (kpmg_r3/csi/csi_bi).",
+    "dataset": "variables System (Import-Ordner).",
+    "asOf": "Stichtag (Neo4j-date) — Rollen-Gueltigkeit + Sleeping; auf das Snapshot-Datum setzen.",
+    "userTypes": "Liste Subtyp-Labels (userTypeProfiles); [] = alle.",
+    "sleepDays": "Sleeping-Schwelle in Tagen (sleeping.sleepDays).",
+    "orgFilters": "Map je Org-Feld {op: AND|OR|RANGE, values/from/to}; {} = alle Org-Felder 'egal' (Default). Quelle = profiles[].org.filters. ACHTUNG: org-pflichtige (abgeleitete) Rollen tragen Platzhalter ($BUKRS); deren Aufloesung ueber AGR_1252 (Role.org_$<Feld>) ist noch offen."
+  },
   "_scopeSelectors": {
     "modules": "Liste von module-Werten (CSI-Vokabular); leer = alle.",
     "minCriticalityRank": "min. normalisierter Rang (5=very-high .. 1=low); 4 = critical+aufwaerts.",

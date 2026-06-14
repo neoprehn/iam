@@ -106,27 +106,16 @@ Datumsformat (**`DD.MM.YYYY`**, in diesem Datensatz). Der Sprachschlüssel ist d
 die Default-Liste deckt die deutschen Schreibweisen (`DE`/`DEU`/`D`) ab.
 :::
 
-## Ergebnis (dataset `sachsenenergie`)
+## Ergebnis / Validierung
 
-Importvalidierung (`99_validate.cypher`):
+`99_validate.cypher` zählt je **Knoten- und Kantentyp** (Transaction, Authorization, Role
+inkl. Single/Composite, Profile, AuthObject, User inkl. Subtypen; CHECKS, HAS_AUTH,
+FOR_OBJECT, ASSIGNED_TO, HAS_PROFILE, CONTAINS …) und macht den Import stichprobenartig gegen
+SAP nachvollziehbar.
 
-| Knoten | Anzahl |
-| --- | --- |
-| Transaction | 114.926 |
-| Authorization | 90.700 |
-| Role (Single/Composite) | 6.816 (6.447 / 369) |
-| Profile | 6.088 |
-| AuthObject | 5.113 |
-| User (Dialog/System/Service) | 1.378 (davon 71 `Locked`) |
-
-| Kante | Anzahl |
-| --- | --- |
-| CHECKS (Transaction→AuthObject) | 192.230 |
-| HAS_AUTH (Role→Authorization) | 90.700 |
-| FOR_OBJECT (Authorization→AuthObject) | 90.700 |
-| ASSIGNED_TO (User→Role) | 72.109 |
-| HAS_PROFILE (User/Role→Profile) | 63.088 |
-| CONTAINS (Composite→Single) | 4.656 |
+> **Keine konkreten Zahlen in dieser Doku.** Mengengerüste sind mandanten-/standspezifisch und
+> gehören nicht ins Repo (Vertrauensgrenze: Doku = nur Logik/Vorgehen). Die aktuellen Zähler
+> liefert `99_validate.cypher` auf dem jeweiligen `dataset`.
 
 Beide Pfade sind abgebildet: **rollenbasiert** (`User -ASSIGNED_TO-> Role -HAS_AUTH->
 Authorization -FOR_OBJECT-> AuthObject`) und **direkt** (`User -HAS_PROFILE-> Profile`).
@@ -140,7 +129,7 @@ Zusätzlich zum Kern eingebunden:
 | --- | --- | --- |
 | 12 | V_USERNAME | `:User.name/.nameLast/.persNumber` (personenbezogen, lokal) |
 | 13 | TOBJT | `:AuthObject.text` (Objekt-Texte, DE) |
-| 14 | USREFUS | `(:User)-[:HAS_REFERENCE]->(:User)` — im Datensatz `sachsenenergie` **0** (keine Referenzbenutzer gepflegt) |
+| 14 | USREFUS | `(:User)-[:HAS_REFERENCE]->(:User)` — Referenzbenutzer-Zuordnung (sofern im Mandanten gepflegt) |
 | 15 | UST10C | `(:Profile)-[:CONTAINS]->(:Profile)` (Sammelprofile, + `:Collective`) |
 | 16 | AGR_1252 | `:Role.org_<VARBL>` (Org-Ebenen abgeleiteter Rollen) |
 | 17 | AGR_TCODES | `(:Role)-[:HAS_MENU]->(:Transaction)` (Rollenmenü, informativ) |
