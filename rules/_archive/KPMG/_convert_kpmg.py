@@ -141,6 +141,56 @@ for q in queries_list:
 for r in rules_list:
     r["criticality"], r["criticalityRank"] = criticality(r.get("reasonCode"))
 
+# ---- CNF-Zerlegung des SoD-Ausdrucks: clauses = UND-von-ODER (Liste von ODER-Gruppen von
+# Query-IDs). Macht den SoD-Schritt zu reiner Mengenlogik: jede Klausel braucht >=1 erfuellte
+# Query. Die Ausdruecke sind CNF-foermig (AND von OR-Gruppen bzw. einzelnen Vars). -----------
+def _split_top(expr, op):
+    token = " " + op + " "; parts = []; depth = 0; cur = ""; i = 0
+    while i < len(expr):
+        c = expr[i]
+        if c == "(":
+            depth += 1; cur += c; i += 1
+        elif c == ")":
+            depth -= 1; cur += c; i += 1
+        elif depth == 0 and expr[i:i + len(token)] == token:
+            parts.append(cur); cur = ""; i += len(token)
+        else:
+            cur += c; i += 1
+    parts.append(cur)
+    return parts
+
+def _strip_outer(expr):
+    expr = expr.strip()
+    while expr.startswith("(") and expr.endswith(")"):
+        depth = 0; wraps = True
+        for j, c in enumerate(expr):
+            if c == "(":
+                depth += 1
+            elif c == ")":
+                depth -= 1
+                if depth == 0 and j != len(expr) - 1:
+                    wraps = False; break
+        if wraps:
+            expr = expr[1:-1].strip()
+        else:
+            break
+    return expr
+
+def to_cnf(expr):
+    expr = _strip_outer(expr)
+    ands = _split_top(expr, "AND")
+    if len(ands) > 1:
+        out = []
+        for a in ands:
+            out += to_cnf(a)
+        return out
+    ors = _split_top(expr, "OR")
+    return [[_strip_outer(o).strip() for o in ors]]
+
+for r in rules_list:
+    vmap = r.get("variables", {})
+    r["clauses"] = [[vmap.get(v, v) for v in clause] for clause in to_cnf(r.get("expression", ""))]
+
 # ---- Legenden aus den ValueList_Helper-Blaettern ----------------------------------
 def helper(path):
     wb = openpyxl.load_workbook(os.path.join(HERE, path), read_only=True, data_only=True)

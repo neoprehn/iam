@@ -6,6 +6,7 @@
 CREATE CONSTRAINT query_key   IF NOT EXISTS FOR (q:Query)   REQUIRE q.key IS UNIQUE;
 CREATE CONSTRAINT authreq_key IF NOT EXISTS FOR (r:AuthReq) REQUIRE r.key IS UNIQUE;
 CREATE CONSTRAINT sodrule_key IF NOT EXISTS FOR (s:SoDRule) REQUIRE s.key IS UNIQUE;
+CREATE CONSTRAINT clause_key  IF NOT EXISTS FOR (c:Clause)  REQUIRE c.key IS UNIQUE;
 
 // --- Queries (Funktionsbausteine) + AuthReq (Berechtigungsbedingungen) ---
 CALL apoc.load.json('file:///rules/' + $dir + '/queries.json') YIELD value AS q
@@ -34,3 +35,17 @@ WITH rule, s
 UNWIND keys(s.variables) AS var
 MATCH (q:Query {key: $ruleset + '|' + s.variables[var]})
 MERGE (rule)-[:USES {var: var}]->(q);
+
+// --- CNF-Klauseln: (:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query) ---
+// Ein User verletzt die Regel, wenn JEDE Klausel >=1 erfuellte (gematchte) Query enthaelt.
+CALL apoc.load.json('file:///rules/' + $dir + '/sod_rules.json') YIELD value AS s
+MATCH (rule:SoDRule {key: $ruleset + '|' + s.sodRule})
+WITH rule, coalesce(s.clauses, []) AS clauses
+UNWIND range(0, size(clauses) - 1) AS i
+MERGE (cl:Clause {key: rule.key + '|c' + toString(i)})
+  ON CREATE SET cl.ruleset = $ruleset, cl.idx = i
+MERGE (rule)-[:HAS_CLAUSE]->(cl)
+WITH cl, clauses[i] AS qids
+UNWIND qids AS qid
+MATCH (q:Query {key: $ruleset + '|' + qid})
+MERGE (cl)-[:NEEDS]->(q);

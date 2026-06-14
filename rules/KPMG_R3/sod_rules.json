@@ -14,7 +14,18 @@
       "QE": "1201_BC-USR"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "1204_BC-USR",
+        "1206_BC-USR",
+        "1205_BC-USR"
+      ],
+      [
+        "1200_BC-USR",
+        "1201_BC-USR"
+      ]
+    ]
   },
   {
     "sodRule": "BCX_0002",
@@ -30,7 +41,19 @@
       "QD": "1111_BC-DEV"
     },
     "criticality": "very-high",
-    "criticalityRank": 5
+    "criticalityRank": 5,
+    "clauses": [
+      [
+        "1102_BC-DEV",
+        "1103_BC-DEV"
+      ],
+      [
+        "1112_BC-DEV"
+      ],
+      [
+        "1111_BC-DEV"
+      ]
+    ]
   },
   {
     "sodRule": "BCX_0003",
@@ -45,7 +68,18 @@
       "QC": "1107_BC-DEV"
     },
     "criticality": "very-high",
-    "criticalityRank": 5
+    "criticalityRank": 5,
+    "clauses": [
+      [
+        "1111_BC-DEV"
+      ],
+      [
+        "1112_BC-DEV"
+      ],
+      [
+        "1107_BC-DEV"
+      ]
+    ]
   },
   {
     "sodRule": "BCX_0004",
@@ -61,7 +95,19 @@
       "QD": "1301_BC-CTS"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "1017_BC-SEC"
+      ],
+      [
+        "1409_BC-SRV"
+      ],
+      [
+        "1300_BC-CTS",
+        "1301_BC-CTS"
+      ]
+    ]
   },
   {
     "sodRule": "FIX_0001",
@@ -75,7 +121,15 @@
       "QB": "2004_FI-GL"
     },
     "criticality": "high",
-    "criticalityRank": 3
+    "criticalityRank": 3,
+    "clauses": [
+      [
+        "2001_FI-GL"
+      ],
+      [
+        "2004_FI-GL"
+      ]
+    ]
   },
   {
     "sodRule": "FIX_0002",
@@ -89,7 +143,15 @@
       "QB": "2004_FI-GL"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "2010_FI-GL"
+      ],
+      [
+        "2004_FI-GL"
+      ]
+    ]
   },
   {
     "sodRule": "OCX_0001",
@@ -105,7 +167,17 @@
       "QD": "2101_FI-AR"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "4000_SD-MD",
+        "4001_SD-MD"
+      ],
+      [
+        "2100_FI-AR",
+        "2101_FI-AR"
+      ]
+    ]
   },
   {
     "sodRule": "OCX_0002",
@@ -121,7 +193,17 @@
       "QD": "4103_SD-SLS"
     },
     "criticality": "high",
-    "criticalityRank": 3
+    "criticalityRank": 3,
+    "clauses": [
+      [
+        "2100_FI-AR",
+        "2101_FI-AR"
+      ],
+      [
+        "4102_SD-SLS",
+        "4103_SD-SLS"
+      ]
+    ]
   },
   {
     "sodRule": "OCX_0003",
@@ -136,7 +218,16 @@
       "QC": "4107_SD-SLS"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "4102_SD-SLS",
+        "4103_SD-SLS"
+      ],
+      [
+        "4107_SD-SLS"
+      ]
+    ]
   },
   {
     "sodRule": "OCX_0004",
@@ -151,7 +242,16 @@
       "QC": "4008_SD-MD"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "4103_SD-SLS",
+        "4102_SD-SLS"
+      ],
+      [
+        "4008_SD-MD"
+      ]
+    ]
   },
   {
     "sodRule": "OCX_0005",
@@ -166,7 +266,16 @@
       "QC": "4009_SD-MD"
     },
     "criticality": "high",
-    "criticalityRank": 3
+    "criticalityRank": 3,
+    "clauses": [
+      [
+        "2100_FI-AR",
+        "2101_FI-AR"
+      ],
+      [
+        "4009_SD-MD"
+      ]
+    ]
   },
   {
     "sodRule": "OCX_0006",
@@ -182,7 +291,17 @@
       "QD": "4205_SD-BIL"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "2100_FI-AR",
+        "2101_FI-AR"
+      ],
+      [
+        "4009_SD-MD",
+        "4205_SD-BIL"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0001",
@@ -198,7 +317,17 @@
       "QD": "2201_FI-AP"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "3000_MM-PUR",
+        "3001_MM-PUR"
+      ],
+      [
+        "2200_FI-AP",
+        "2201_FI-AP"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0002",
@@ -212,7 +341,15 @@
       "QB": "3016_MM-PUR"
     },
     "criticality": "high",
-    "criticalityRank": 3
+    "criticalityRank": 3,
+    "clauses": [
+      [
+        "3010_MM-PUR"
+      ],
+      [
+        "3016_MM-PUR"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0003",
@@ -228,7 +365,17 @@
       "QD": "3017_MM-PUR"
     },
     "criticality": "high",
-    "criticalityRank": 3
+    "criticalityRank": 3,
+    "clauses": [
+      [
+        "2200_FI-AP",
+        "2201_FI-AP"
+      ],
+      [
+        "3016_MM-PUR",
+        "3017_MM-PUR"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0004",
@@ -244,7 +391,17 @@
       "QD": "3201_MM-IV"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "2200_FI-AP",
+        "2201_FI-AP"
+      ],
+      [
+        "3200_MM-IV",
+        "3201_MM-IV"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0005",
@@ -260,7 +417,17 @@
       "QD": "3201_MM-IV"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "3016_MM-PUR",
+        "3017_MM-PUR"
+      ],
+      [
+        "3200_MM-IV",
+        "3201_MM-IV"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0006",
@@ -275,7 +442,16 @@
       "QC": "2405_FI-CM"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "3201_MM-IV",
+        "3200_MM-IV"
+      ],
+      [
+        "2405_FI-CM"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0007",
@@ -290,7 +466,16 @@
       "QC": "3100_MM-IM"
     },
     "criticality": "critical",
-    "criticalityRank": 4
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "3016_MM-PUR",
+        "3017_MM-PUR"
+      ],
+      [
+        "3100_MM-IM"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0008",
@@ -307,7 +492,20 @@
       "QE": "3100_MM-IM"
     },
     "criticality": "very-high",
-    "criticalityRank": 5
+    "criticalityRank": 5,
+    "clauses": [
+      [
+        "2200_FI-AP",
+        "2201_FI-AP"
+      ],
+      [
+        "3016_MM-PUR",
+        "3017_MM-PUR"
+      ],
+      [
+        "3100_MM-IM"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0009",
@@ -326,7 +524,24 @@
       "QG": "3201_MM-IV"
     },
     "criticality": "very-high",
-    "criticalityRank": 5
+    "criticalityRank": 5,
+    "clauses": [
+      [
+        "2200_FI-AP",
+        "2201_FI-AP"
+      ],
+      [
+        "3016_MM-PUR",
+        "3017_MM-PUR"
+      ],
+      [
+        "3100_MM-IM"
+      ],
+      [
+        "3200_MM-IV",
+        "3201_MM-IV"
+      ]
+    ]
   },
   {
     "sodRule": "PPX_0010",
@@ -341,6 +556,15 @@
       "QC": "2405_FI-CM"
     },
     "criticality": "very-high",
-    "criticalityRank": 5
+    "criticalityRank": 5,
+    "clauses": [
+      [
+        "2200_FI-AP",
+        "2201_FI-AP"
+      ],
+      [
+        "2405_FI-CM"
+      ]
+    ]
   }
 ]
