@@ -154,20 +154,13 @@ Bau:
 ---
 
 ### Phase 5 — Runner & Orchestrierung
-**Ziel:** Ein Befehl rechnet die gesamte Auswertung.
+**Ziel:** Wenige Befehle rechnen Import bzw. Auswertung — **zwei** Runner (statt einem `run_all`).
 
-- [ ] `run/run_all.ps1` (Windows, primär) und `run/run_all.sh` (Linux/macOS, optional für andere User).
-- [ ] Pipeline: `migrate` → `load` (lokale CSV) → `checks/sod` → `did-do` → Snapshot.
-- [ ] `cypher-shell` über den Container per Pipe aufrufen, z. B.:
-  ```powershell
-  Get-Content .\load\01_users.cypher | docker exec -i iam-neo4j cypher-shell -u neo4j -p "$env:NEO4J_PASSWORD"
-  ```
-  Runner = Schleife über die `load/`- und `cypher/`-Dateien nach diesem Muster.
-- [ ] Secrets aus `.env`/Umgebungsvariablen (`$env:NEO4J_PASSWORD`); kein Klartext im Skript.
-- [ ] Parametrisierbarer Stichtag und `runId`.
-- [ ] Logging/Zusammenfassung je Lauf (Anzahl Findings, betroffene User/Rollen).
+- [x] **`run/run_import.ps1`** (`-Dataset`, `-Lang`, `-SkipConvert`): konvertieren (Minimalset-Prüfung + Credential-Denylist) → migrieren → alle `load/*.cypher` in Reihenfolge (`-P dataset`/`-P lang`) → `99_validate`. Container-only; Passwort aus `.env`; `$LASTEXITCODE`-geprüft.
+- [x] **`run/run_evaluate.ps1`** (`-Ruleset`/`-Dataset`/`-AsOf` + Profile): Ruleset laden → `materialize_matches` → `evaluate_sod`. Löst **Profile aus `config/analysis_profiles.json`** auf (`-UserTypeProfile`, `-OrgProfile`, `-SleepDays`, `-MinCriticalityRank`, `-SodRules`) und baut die `-P`-Cypher-Literale; parametrisierbarer Stichtag/`runId`; Zusammenfassung je Lauf (Findings/Regeln/sleeping). Validiert (`dialog-service`/very-high → 1.018 Findings/5 Regeln).
+- [ ] (optional) Linux/macOS-Varianten (`.sh`); Did-Do-Schritt erst mit Phase 8.
 
-**DoD:** Frischer Lauf auf einem zweiten Rechner liefert identische Ergebnisse (gleiche Daten vorausgesetzt).
+**DoD:** Frischer Lauf auf einem zweiten Rechner liefert identische Ergebnisse (gleiche Daten vorausgesetzt). *(Import-Runner verifiziert; Auswerte-Runner verifiziert.)*
 
 ---
 
