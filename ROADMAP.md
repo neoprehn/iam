@@ -169,12 +169,14 @@ Bau:
 
 > **Zwischenschritt zur App (Phase 9).** NeoDash ist die **schnelle Anzeige-Schicht**, um die visuellen Inhalte (KPIs, Graph-Pfade, Tabellen) festzulegen. Es ist **nicht** die finale App (kein Import/Backup/Excel/Workflow); die Cypher hinter den Karten sind aber 1:1 in der App (Phase 9) wiederverwendbar.
 
-- [ ] NeoDash lokal an die DB anbinden (Browser → `:5005`, Bolt `:7687`).
-- [x] **PoC-Dashboard** `dashboards/sod_poc.json`: KPI-Kacheln (Findings, betroffene User, aktive, SAP_ALL), Top-Regeln-Tabelle, Graph der very-high-Konfliktpfade — alle Karten-Cypher gegen `runId='current'` verifiziert. *(Ausbau: Drill-down, Heatmap/Matrix, Parameter-Selektoren für Stichtag/Org/Risikoklasse → folgt.)*
+- [x] NeoDash lokal an die DB angebunden (Browser → `:5005`, Bolt `:7687`); Dashboard-Import getestet.
+- [x] **PoC-Dashboard** `dashboards/sod_poc.json`: KPI-Kacheln (Findings, betroffene User, aktive, SAP_ALL **im Scope**), Top-Regeln-Tabelle, Graph der very-high-Konfliktpfade, **`runId`-Selektor** (`$neodash_runId`, Default `current`). Scope-Konsistenz über `(:Run)`-Knoten (SAP_ALL folgt dem Lauf: `current`=39 / `dialog-active`=21).
 - [x] Dashboard als JSON in `dashboards/` committet (PoC); kanonische Fassung nach UI-Feinschliff erneut exportieren.
-- [ ] (Optional, später) gebrandetes Frontend mit NVL/React.
+- [ ] *(Ausbau, optional)* weitere Reiter (nach Kritikalität, Nutzer-Hygiene, Org-Sicht, Drill-down) + Selektoren (Dataset/Stichtag). **Showcase-Stopp gesetzt.**
 
-**DoD:** Dashboard reproduzierbar aus dem Repo herstellbar; Darstellung ist versioniert.
+> Das **gebrandete NVL/React-Frontend** ist **nicht** Teil von Phase 6 — es ist die Oberfläche der App und steht unter **Phase 9**.
+
+**DoD:** Dashboard reproduzierbar aus dem Repo herstellbar; Darstellung ist versioniert. *(PoC erfüllt.)*
 
 ---
 
@@ -222,7 +224,7 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 - [ ] **Backend-Service** (Runner als API): `import`, `evaluate` (asynchrone Jobs mit Status/Fortschritt — Materialisierung dauert Minuten), `findings` (Filter), `datasets` (Liste/Verwaltung).
 - [ ] **Front-end — geführte Workflows:** Import-Assistent und Auswerte-Assistent; **Parameter-Formulare statt JSON** (User-Typ, Org-Filter, Sleeping, Scope, Stichtag) — die App schreibt die Parameter, der Nutzer pflegt **kein** JSON.
 - [ ] **System/Mandant-Wahl:** „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem" → **Vergleichs-Abfragen** über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
-- [ ] **Fancy Auswertungen:** KPIs, **Graph-Darstellung** der Konfliktpfade, Heatmap/Matrix, Drill-down.
+- [ ] **Fancy Auswertungen:** KPIs, **Graph-Darstellung** der Konfliktpfade (gebrandetes Frontend mit **NVL/React** statt NeoDash), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (Phase 6) sind die Vorlage.
 - [ ] **Export** der Ergebnisse (z. B. **Excel**) zur Weiterverarbeitung (Backend-Endpunkt Query→`.xlsx`).
 - [ ] **Backup/Restore/Clear:** ein System sichern (`neo4j-admin database dump`, je `dataset`) und für spätere Vergleiche wieder einladen; **DB leeren** (Reset-Operation).
 - [ ] **Ruleset-Editor (später):** Ergänzungen am Filterset über die UI — Vendor-Basis (regenerierbar) von Kunden-Erweiterungen getrennt, Round-Trip auf die JSON.
