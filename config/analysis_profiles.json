@@ -54,9 +54,10 @@
   ],
 
   "userTypeProfiles": [
-    { "name": "all", "userTypes": [], "description": "alle Benutzertypen." },
-    { "name": "dialog-service", "userTypes": ["Dialog", "Service"], "description": "Dialog + Service (A/S) — anmeldefaehige Personen." },
-    { "name": "dialog-only", "userTypes": ["Dialog"], "description": "nur Dialog (A)." }
+    { "name": "all", "userTypes": [], "excludeLocked": false, "description": "alle Benutzertypen, inkl. gesperrt." },
+    { "name": "dialog-service", "userTypes": ["Dialog", "Service"], "excludeLocked": false, "description": "Dialog + Service (A/S), inkl. gesperrt." },
+    { "name": "dialog-active", "userTypes": ["Dialog", "Service"], "excludeLocked": true, "description": "Dialog + Service (A/S) UND nicht gesperrt — die audit-relevante Sicht." },
+    { "name": "dialog-only", "userTypes": ["Dialog"], "excludeLocked": false, "description": "nur Dialog (A)." }
   ],
 
   "sleeping": {

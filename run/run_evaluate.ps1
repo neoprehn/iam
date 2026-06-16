@@ -49,21 +49,21 @@ $pw = Get-EnvVal 'NEO4J_PASSWORD'
 if (-not $pw) { throw 'NEO4J_PASSWORD fehlt in .env' }
 
 # PS-Wert -> Cypher-Literal (String/Bool/Zahl/Liste/Map)
-function To-Cypher($v) {
+function ConvertTo-Cypher($v) {
     if ($null -eq $v) { return 'null' }
     if ($v -is [bool]) { return $v.ToString().ToLower() }
     if ($v -is [int] -or $v -is [long] -or $v -is [double]) { return "$v" }
     if ($v -is [string]) { return "'" + ($v -replace "'", "\'") + "'" }
     if ($v -is [System.Collections.IDictionary]) {
-        $p = $v.GetEnumerator() | ForEach-Object { "$($_.Key):$(To-Cypher $_.Value)" }
+        $p = $v.GetEnumerator() | ForEach-Object { "$($_.Key):$(ConvertTo-Cypher $_.Value)" }
         return '{' + ($p -join ',') + '}'
     }
     if ($v -is [System.Management.Automation.PSCustomObject]) {
-        $p = $v.PSObject.Properties | Where-Object { -not $_.Name.StartsWith('_') } | ForEach-Object { "$($_.Name):$(To-Cypher $_.Value)" }
+        $p = $v.PSObject.Properties | Where-Object { -not $_.Name.StartsWith('_') } | ForEach-Object { "$($_.Name):$(ConvertTo-Cypher $_.Value)" }
         return '{' + ($p -join ',') + '}'
     }
     if ($v -is [System.Collections.IEnumerable]) {
-        return '[' + (($v | ForEach-Object { To-Cypher $_ }) -join ',') + ']'
+        return '[' + (($v | ForEach-Object { ConvertTo-Cypher $_ }) -join ',') + ']'
     }
     return "'$v'"
 }
@@ -78,7 +78,9 @@ if (-not $rsDir) { throw "Kein Ruleset-Ordner fuer '$Ruleset' (rules/*/ruleset.j
 
 # Profile aufloesen
 $utp = $cfg.userTypeProfiles | Where-Object { $_.name -eq $UserTypeProfile } | Select-Object -First 1
-$userTypes = if ($utp) { @($utp.userTypes) } else { throw "userTypeProfile '$UserTypeProfile' unbekannt." }
+if (-not $utp) { throw "userTypeProfile '$UserTypeProfile' unbekannt." }
+$userTypes = @($utp.userTypes)
+$excludeLocked = [bool]$utp.excludeLocked
 $op = $cfg.profiles | Where-Object { $_.name -eq $OrgProfile } | Select-Object -First 1
 if (-not $op) { throw "OrgProfile '$OrgProfile' unbekannt." }
 $orgFilters = if ($op.org.mode -eq 'filtered') { $op.org.filters } else { [pscustomobject]@{} }
@@ -86,13 +88,13 @@ if ($SleepDays -lt 0) { $SleepDays = [int]$cfg.sleeping.sleepDays }
 if (-not $RunId) { $RunId = "$Ruleset-$(Get-Date -Format yyyyMMddHHmmss)" }
 
 Write-Host "== Auswerte-Runner | ruleset=$Ruleset dataset=$Dataset asOf=$AsOf runId=$RunId ==" -ForegroundColor Cyan
-Write-Host "   userTypes=$(To-Cypher $userTypes) org=$OrgProfile orgFilters=$(To-Cypher $orgFilters) sleepDays=$SleepDays minRank=$MinCriticalityRank" -ForegroundColor DarkCyan
+Write-Host "   userTypes=$(ConvertTo-Cypher $userTypes) org=$OrgProfile orgFilters=$(ConvertTo-Cypher $orgFilters) sleepDays=$SleepDays minRank=$MinCriticalityRank" -ForegroundColor DarkCyan
 
 function Invoke-Cypher([string] $file, [string[]] $params) {
-    $args = @('exec', 'iam-neo4j', 'cypher-shell', '-u', 'neo4j', '-p', $pw)
-    foreach ($p in $params) { $args += @('-P', $p) }
-    $args += @('-f', $file)
-    & docker @args
+    $dargs = @('exec', 'iam-neo4j', 'cypher-shell', '-u', 'neo4j', '-p', $pw)
+    foreach ($p in $params) { $dargs += @('-P', $p) }
+    $dargs += @('-f', $file)
+    & docker @dargs
     if ($LASTEXITCODE -ne 0) { throw "Fehler in $file" }
 }
 
@@ -107,9 +109,9 @@ if (-not $SkipMaterialize) {
 Write-Host "[3/3] SoD auswerten ..." -ForegroundColor Cyan
 Invoke-Cypher '/cypher/sod/evaluate_sod.cypher' @(
     "ruleset => '$Ruleset'", "dataset => '$Dataset'", "asOf => date('$AsOf')", "runId => '$RunId'",
-    "userTypes => $(To-Cypher $userTypes)", "sleepDays => $SleepDays",
-    "minCriticalityRank => $MinCriticalityRank", "sodRules => $(To-Cypher $SodRules)",
-    "orgFilters => $(To-Cypher $orgFilters)"
+    "userTypes => $(ConvertTo-Cypher $userTypes)", "excludeLocked => $(ConvertTo-Cypher $excludeLocked)",
+    "sleepDays => $SleepDays", "minCriticalityRank => $MinCriticalityRank",
+    "sodRules => $(ConvertTo-Cypher $SodRules)", "orgFilters => $(ConvertTo-Cypher $orgFilters)"
 )
 
 # Zusammenfassung (Query als Argument -> kein stdin-BOM)
