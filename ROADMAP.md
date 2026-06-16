@@ -144,11 +144,10 @@ Bau:
 - [x] **Einzelberechtigungs-Matcher** `cypher/checks/query_match.cypher` (parametrisiert `$ruleset`/`$query`/`$dataset`/`$asOf`): Query-Matching pro User nach `combinationSemantics` + AE-06 (Werte AND/OR, Felder/Objekte UND, TCodes ODER, Auth↔TCode UND); **Org-Felder im Default „egal"** (wie `*`). Validiert an `kpmg_r3`/`sachsenenergie` (diskriminiert, 39…1022 Treffer je Query; 1000_BC-SEC = manueller Gegencheck ±Gültigkeit).
 - [x] **SoD-Evaluator** (Zwei-Schritt, reine Mengenlogik): CNF-Klauseln beim Laden (`(:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query)`). `cypher/sod/materialize_matches.cypher` materialisiert das Zwischenergebnis `(:User)-[:MATCHES]->(:Query)` (nur SoD-relevante Queries); `cypher/sod/evaluate_sod.cypher` wertet darauf aus → Findings `(:SoDConflict)` (jede Klausel ≥1 gematchte Query), Risiko/Kritikalität aus `(:SoDRule)` angehängt. **Nutzertyp-Filter** (`$userTypes`, z. B. `['Dialog','Service']` vs. alle) und **Sleeping-Regel** (`$sleepDays`=180 → `userSleeping`-Flag; `cypher/checks/sleeping_users.cypher`). Validiert an `kpmg_r3`/`sachsenenergie` (Stichtag 2023-12-31): 5.637 Findings/355 User, aktive Dialog-very-high = 233, Evidenz je Klausel geprüft.
 - [x] **Org-`filtered`-Modus** (`$orgFilters`: `AND`/`OR`/`RANGE`) im `query_match` nachgerüstet (Default `{}` = „egal"); `userTypes`/`sleepDays`/`orgFilters` als Profile in `config/analysis_profiles.json`; **Phase-3-Doku** (`docs/phasen/phase-3.md`) mit voller Parametrisierung.
-- [ ] **Org-Level-Platzhalter auflösen:** org-pflichtige (abgeleitete) Rollen tragen `$<Feld>`-Platzhalter; echte Werte an `Role.org_$<Feld>` (AGR_1252). Org-Filter darauf erweitern + in `materialize_matches` übernehmen. Außerdem: CSI-Rulesets CNF-zerlegen (SoD über `csi`/`csi_bi`); Scope-Profile (Modul/Kritikalität) im Lauf anwenden.
+- [ ] **Org-Level-Platzhalter auflösen:** org-pflichtige (abgeleitete) Rollen tragen `$<Feld>`-Platzhalter; echte Werte an `Role.org_$<Feld>` (AGR_1252). Org-Filter darauf erweitern + in `materialize_matches` übernehmen.
+- [ ] **Scope-Profile** (Modul/Kritikalität, „nur FI"/„nur very-critical") im Lauf anwenden.
 - [x] **Einzel-Checks** (`cypher/checks/`) — `sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade): `sachsenenergie` 39 User, 18 aktive Dialog; `SAP*`/`DDIC` aktiv.
-- [ ] Kritische TCodes/Objekte mit `:Critical` taggen (Einstiegspunkte) — bzw. direkt aus dem Ruleset-Scope ableiten.
-- [ ] Pfad-Gültigkeitsschnittmenge (AE-08), `*`-Normalisierung (AE-06), Intra- vs. Inter-Rollen-Konflikt (AE-11).
-- [ ] Findings in die Snapshot-Schicht: `(:SoDConflict {sodRule, ruleset, asOf, runId})` mit `VIOLATED_BY`/`VIA_ROLE`/`BASED_ON_RULE`; `DETACH DELETE` der Snapshot-Schicht vor jedem Lauf (AE-10).
+- [x] **Findings-Snapshot** (`evaluate_sod.cypher`): `(:SoDConflict {ruleId, ruleset, dataset, asOf, runId})` mit `VIOLATES`/`BASED_ON` + Kritikalität/`userSleeping`; `DETACH DELETE` des Laufs vor jeder Auswertung (AE-10). *(`VIA_ROLE`-Evidenz + Intra-/Inter-Unterscheidung → Phase X.)*
 
 **DoD:** Reproduzierbarer SoD-Lauf zu frei wählbarem Stichtag, Ruleset und Profil, mit vollständiger Nachweiskette (Regel, Pfade, Stichtag, Run, Ruleset).
 
@@ -206,6 +205,16 @@ Bau:
 - [ ] Verfahren für Ergebnisübergabe (`neo4j-admin database dump`, verschlüsselt, unter Auflagen) dokumentieren — Ausnahmefall.
 
 **DoD:** Ein Kollege bringt das Projekt auf einem eigenen Rechner identisch zum Laufen, ohne dass Mandantendaten das Repo berühren.
+
+---
+
+### Phase X — Backlog / Sammelbecken (zurückgestellt)
+
+Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen Pfad.
+
+- [ ] **CSI-Rulesets CNF-zerlegen** (`clauses` in `sod_rules.json` für `csi`/`csi_bi`), damit die SoD-Auswertung auch über die CSI-Kataloge läuft. *(KPMG ist bereits scharf; die Mechanik ist generisch.)*
+- [ ] **Kritische TCodes/Objekte taggen** (`:Critical`) — **Ansatz noch offen**: Kritikalität steckt bereits im Ruleset (`soxClassification`/`criticality`, Query-Scope). Ob ein zusätzliches, ruleset-unabhängiges `:Critical`-Tagging nötig/sinnvoll ist, ist zu entscheiden, bevor gebaut wird.
+- [ ] **Pfad-Gültigkeitsschnittmenge (AE-08)** bei verschachtelten Rollen sauber prüfen; **Intra- vs. Inter-Rollen-Konflikt (AE-11)** in den Findings unterscheiden, inkl. `VIA_ROLE`-Evidenz (welche Rolle(n) den Konflikt verursachen).
 
 ---
 
