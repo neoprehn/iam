@@ -1,0 +1,63 @@
+{
+  "title": "SoD PoC — kpmg_r3 / sachsenenergie",
+  "version": "2.4",
+  "settings": {
+    "pagenumber": 0,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {},
+    "downloadImageEnabled": true,
+    "queryTimeLimit": 30
+  },
+  "pages": [
+    {
+      "title": "SoD-Konflikte",
+      "reports": [
+        {
+          "id": "kpi-findings",
+          "title": "SoD-Konflikte (Findings)",
+          "query": "MATCH (f:SoDConflict {runId:'current'}) RETURN count(f) AS Findings\n",
+          "width": 3, "height": 2, "x": 0, "y": 0,
+          "type": "value", "selection": {}, "settings": {}
+        },
+        {
+          "id": "kpi-users",
+          "title": "Betroffene User",
+          "query": "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {runId:'current'}) RETURN count(DISTINCT u) AS User\n",
+          "width": 3, "height": 2, "x": 3, "y": 0,
+          "type": "value", "selection": {}, "settings": {}
+        },
+        {
+          "id": "kpi-active",
+          "title": "Aktive (nicht sleeping)",
+          "query": "MATCH (f:SoDConflict {runId:'current'}) WHERE NOT f.userSleeping RETURN count(f) AS Aktiv\n",
+          "width": 3, "height": 2, "x": 6, "y": 0,
+          "type": "value", "selection": {}, "settings": {}
+        },
+        {
+          "id": "kpi-sapall",
+          "title": "SAP_ALL-Inhaber",
+          "query": "MATCH (u:User {dataset:'sachsenenergie'})-[:HAS_PROFILE]->(:Profile {id:'SAP_ALL'}) RETURN count(DISTINCT u) AS SAP_ALL\n",
+          "width": 3, "height": 2, "x": 9, "y": 0,
+          "type": "value", "selection": {}, "settings": {}
+        },
+        {
+          "id": "tbl-rules",
+          "title": "Top-Regeln (betroffene User)",
+          "query": "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:'current'})-[:BASED_ON]->(r:SoDRule)\nRETURN r.id AS Regel, r.criticality AS Kritikalitaet, r.criticalityRank AS Rang, left(r.description,55) AS Beschreibung, count(DISTINCT u) AS User\nORDER BY Rang DESC, User DESC\n",
+          "width": 7, "height": 4, "x": 0, "y": 2,
+          "type": "table", "selection": {}, "settings": {}
+        },
+        {
+          "id": "graph-vh",
+          "title": "Konfliktpfade (very-high): User → Konflikt → Regel",
+          "query": "MATCH p=(u:User)-[:VIOLATES]->(f:SoDConflict {runId:'current'})-[:BASED_ON]->(r:SoDRule)\nWHERE f.criticality = 'very-high'\nRETURN p LIMIT 40\n",
+          "width": 5, "height": 4, "x": 7, "y": 2,
+          "type": "graph", "selection": {}, "settings": { "nodePositions": {} }
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {}
+}

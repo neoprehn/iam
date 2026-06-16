@@ -169,9 +169,9 @@ Bau:
 
 > **Zwischenschritt zur App (Phase 9).** NeoDash ist die **schnelle Anzeige-Schicht**, um die visuellen Inhalte (KPIs, Graph-Pfade, Tabellen) festzulegen. Es ist **nicht** die finale App (kein Import/Backup/Excel/Workflow); die Cypher hinter den Karten sind aber 1:1 in der App (Phase 9) wiederverwendbar.
 
-- [ ] NeoDash lokal an die DB anbinden.
-- [ ] Dashboard-Inhalte: KPI-Kacheln (User mit SoD-Konflikt, kritische Einzelberechtigungen, Top-Konflikttypen), Konflikt-Tabelle mit Drill-down, Graph-Visualisierung der Konfliktpfade (kritische Pfade farblich), SoD-Heatmap/Matrix, Parameter-Selektoren (Stichtag, Organisationseinheit, Risikoklasse).
-- [ ] Dashboard als JSON exportieren → `dashboards/` committen.
+- [ ] NeoDash lokal an die DB anbinden (Browser → `:5005`, Bolt `:7687`).
+- [x] **PoC-Dashboard** `dashboards/sod_poc.json`: KPI-Kacheln (Findings, betroffene User, aktive, SAP_ALL), Top-Regeln-Tabelle, Graph der very-high-Konfliktpfade — alle Karten-Cypher gegen `runId='current'` verifiziert. *(Ausbau: Drill-down, Heatmap/Matrix, Parameter-Selektoren für Stichtag/Org/Risikoklasse → folgt.)*
+- [x] Dashboard als JSON in `dashboards/` committet (PoC); kanonische Fassung nach UI-Feinschliff erneut exportieren.
 - [ ] (Optional, später) gebrandetes Frontend mit NVL/React.
 
 **DoD:** Dashboard reproduzierbar aus dem Repo herstellbar; Darstellung ist versioniert.
