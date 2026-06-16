@@ -144,25 +144,12 @@ Bau:
 - [x] **Einzelberechtigungs-Matcher** `cypher/checks/query_match.cypher` (parametrisiert `$ruleset`/`$query`/`$dataset`/`$asOf`): Query-Matching pro User nach `combinationSemantics` + AE-06 (Werte AND/OR, Felder/Objekte UND, TCodes ODER, Auth↔TCode UND); **Org-Felder im Default „egal"** (wie `*`). Validiert an `kpmg_r3`/`sachsenenergie` (diskriminiert, 39…1022 Treffer je Query; 1000_BC-SEC = manueller Gegencheck ±Gültigkeit).
 - [x] **SoD-Evaluator** (Zwei-Schritt, reine Mengenlogik): CNF-Klauseln beim Laden (`(:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query)`). `cypher/sod/materialize_matches.cypher` materialisiert das Zwischenergebnis `(:User)-[:MATCHES]->(:Query)` (nur SoD-relevante Queries); `cypher/sod/evaluate_sod.cypher` wertet darauf aus → Findings `(:SoDConflict)` (jede Klausel ≥1 gematchte Query), Risiko/Kritikalität aus `(:SoDRule)` angehängt. **Nutzertyp-Filter** (`$userTypes`, z. B. `['Dialog','Service']` vs. alle) und **Sleeping-Regel** (`$sleepDays`=180 → `userSleeping`-Flag; `cypher/checks/sleeping_users.cypher`). Validiert an `kpmg_r3`/`sachsenenergie` (Stichtag 2023-12-31): 5.637 Findings/355 User, aktive Dialog-very-high = 233, Evidenz je Klausel geprüft.
 - [x] **Org-`filtered`-Modus** (`$orgFilters`: `AND`/`OR`/`RANGE`) im `query_match` nachgerüstet (Default `{}` = „egal"); `userTypes`/`sleepDays`/`orgFilters` als Profile in `config/analysis_profiles.json`; **Phase-3-Doku** (`docs/phasen/phase-3.md`) mit voller Parametrisierung.
-- [ ] **Org-Level-Platzhalter auflösen:** org-pflichtige (abgeleitete) Rollen tragen `$<Feld>`-Platzhalter; echte Werte an `Role.org_$<Feld>` (AGR_1252). Org-Filter darauf erweitern + in `materialize_matches` übernehmen.
-- [ ] **Scope-Profile** (Modul/Kritikalität, „nur FI"/„nur very-critical") im Lauf anwenden.
+- [x] **Org-Level-Platzhalter aufgelöst** (`load/24_resolve_org_levels.cypher`): in role-eigenen Auths wird der Platzhalter (`$BUKRS`) durch die Rollenwerte (`Role.org_$BUKRS`, AGR_1252) ersetzt — der Org-Filter (`$orgFilters`) sieht danach echte Werte. Filter-Logik (AND/OR/RANGE, `*`, Bereiche) isoliert bewiesen; Auflösung an `sachsenenergie` verifiziert. *(Org-Scoping ist in diesem Mandanten kaum genutzt — meist `*` — daher schränkt der Filter selten ein; das ist Daten, kein Bug.)*
+- [x] **Scope im SoD-Lauf** (`evaluate_sod.cypher`): `$minCriticalityRank` (z. B. 5 = nur very-high) und `$sodRules` (explizite Regeln). Validiert: alle 22 Regeln / 5.637 Findings → nur very-high 5 Regeln / 1.118; einzelne Regel 47. *(Modul-Scope für SoD → Phase X.)*
 - [x] **Einzel-Checks** (`cypher/checks/`) — `sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade): `sachsenenergie` 39 User, 18 aktive Dialog; `SAP*`/`DDIC` aktiv.
 - [x] **Findings-Snapshot** (`evaluate_sod.cypher`): `(:SoDConflict {ruleId, ruleset, dataset, asOf, runId})` mit `VIOLATES`/`BASED_ON` + Kritikalität/`userSleeping`; `DETACH DELETE` des Laufs vor jeder Auswertung (AE-10). *(`VIA_ROLE`-Evidenz + Intra-/Inter-Unterscheidung → Phase X.)*
 
 **DoD:** Reproduzierbarer SoD-Lauf zu frei wählbarem Stichtag, Ruleset und Profil, mit vollständiger Nachweiskette (Regel, Pfade, Stichtag, Run, Ruleset).
-
----
-
-### Phase 4 — Did-Do (Nutzung aus STAD/ST03N)
-**Ziel:** Nutzungssicht und Can-Do×Did-Do-Matrix.
-
-- [ ] Extraktionsweg festlegen: ST03N-Aggregate (`SWNC_COLLECTOR_GET_AGGREGATES`, `ENTRY_ID`=TCode/Report, `TASKTYPE`) als pragmatischer Einstieg; bei Bedarf regelmäßige Roh-STAD-Extrakte; für Forensik SAL/`CDHDR`.
-- [ ] `EXECUTED`-Kanten (User→Transaction) mit `count`, `firstSeen`, `lastSeen`, `taskType`, `asOf`, `runId` in die Snapshot-Schicht.
-- [ ] Matrix-Abfragen: ungenutzte Berechtigungen (Least-Privilege-Kandidaten), materialisierte SoD (Did-Do auf beiden Konfliktseiten).
-- [ ] Caveats dokumentieren: Aufbewahrungsfenster (≥1 Jahr für Abschlussprozesse), selten-aber-vital, indirekte Aufrufe nicht erfasst, kein Audit-Log (AE-13), S/4-Fiori/OData-Ebene.
-- [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): benutzerbezogene Nutzungsauswertung als Hinweis an den Mandanten; Pseudonymisierung der User-ID für Statistik, Klartext nur im begründeten Einzelfall.
-
-**DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
 
 ---
 
@@ -215,6 +202,19 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 - [ ] **CSI-Rulesets CNF-zerlegen** (`clauses` in `sod_rules.json` für `csi`/`csi_bi`), damit die SoD-Auswertung auch über die CSI-Kataloge läuft. *(KPMG ist bereits scharf; die Mechanik ist generisch.)*
 - [ ] **Kritische TCodes/Objekte taggen** (`:Critical`) — **Ansatz noch offen**: Kritikalität steckt bereits im Ruleset (`soxClassification`/`criticality`, Query-Scope). Ob ein zusätzliches, ruleset-unabhängiges `:Critical`-Tagging nötig/sinnvoll ist, ist zu entscheiden, bevor gebaut wird.
 - [ ] **Pfad-Gültigkeitsschnittmenge (AE-08)** bei verschachtelten Rollen sauber prüfen; **Intra- vs. Inter-Rollen-Konflikt (AE-11)** in den Findings unterscheiden, inkl. `VIA_ROLE`-Evidenz (welche Rolle(n) den Konflikt verursachen).
+
+---
+
+### Phase 8 — Did-Do (Nutzung aus STAD/ST03N) — *die Kür, zuletzt*
+**Ziel:** Nutzungssicht und Can-Do×Did-Do-Matrix. Bewusst als Letztes — wertvoll, aber nicht auf dem kritischen Pfad.
+
+- [ ] Extraktionsweg festlegen: ST03N-Aggregate (`SWNC_COLLECTOR_GET_AGGREGATES`, `ENTRY_ID`=TCode/Report, `TASKTYPE`) als pragmatischer Einstieg; bei Bedarf regelmäßige Roh-STAD-Extrakte; für Forensik SAL/`CDHDR`.
+- [ ] `EXECUTED`-Kanten (User→Transaction) mit `count`, `firstSeen`, `lastSeen`, `taskType`, `asOf`, `runId` in die Snapshot-Schicht.
+- [ ] Matrix-Abfragen: ungenutzte Berechtigungen (Least-Privilege-Kandidaten), materialisierte SoD (Did-Do auf beiden Konfliktseiten).
+- [ ] Caveats dokumentieren: Aufbewahrungsfenster (≥1 Jahr für Abschlussprozesse), selten-aber-vital, indirekte Aufrufe nicht erfasst, kein Audit-Log (AE-13), S/4-Fiori/OData-Ebene.
+- [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): benutzerbezogene Nutzungsauswertung als Hinweis an den Mandanten; Pseudonymisierung der User-ID für Statistik, Klartext nur im begründeten Einzelfall.
+
+**DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
 
 ---
 

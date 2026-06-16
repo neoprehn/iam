@@ -5,15 +5,21 @@
 //
 // Nutzertyp-Filter: $userTypes = Liste Subtyp-Labels (z. B. ['Dialog','Service']); leer = alle.
 // Sleeping-Flag: userSleeping = kein Logon in $sleepDays Tagen (oder nie).
+// Scope: $minCriticalityRank (0..5; nur Regeln >= Rang, 5=very-high) und $sodRules (Liste
+// expliziter Regel-IDs; leer = alle) — so laufen z. B. „nur very-critical" oder einzelne Regeln.
 // Idempotent: alte Findings dieses (ruleset,dataset,runId) werden zuerst entfernt.
-// Parameter: $ruleset, $dataset, $asOf, $runId, $userTypes (list), $sleepDays (int).
-// Aufruf: ... -P "userTypes=>['Dialog','Service']" -P "sleepDays=>180" ...
+// Parameter: $ruleset, $dataset, $asOf, $runId, $userTypes (list), $sleepDays (int),
+//            $minCriticalityRank (int), $sodRules (list).
+// Aufruf: ... -P "userTypes=>['Dialog','Service']" -P "sleepDays=>180" -P "minCriticalityRank=>5" -P "sodRules=>[]"
 
 CREATE CONSTRAINT sodconflict_key IF NOT EXISTS FOR (f:SoDConflict) REQUIRE f.key IS UNIQUE;
 
 MATCH (f:SoDConflict {ruleset:$ruleset, dataset:$dataset, runId:$runId}) DETACH DELETE f;
 
-MATCH (rule:SoDRule {ruleset:$ruleset}) WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() }
+MATCH (rule:SoDRule {ruleset:$ruleset})
+WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() }
+  AND coalesce(rule.criticalityRank, 0) >= $minCriticalityRank
+  AND ( size($sodRules) = 0 OR rule.id IN $sodRules )
 MATCH (u:User {dataset:$dataset})
 WHERE ( size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u)) )
   AND all( cl IN [(rule)-[:HAS_CLAUSE]->(c) | c]
