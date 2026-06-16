@@ -3,7 +3,7 @@
 **Projekt:** Graphbasierte Auswertung von SAP-Berechtigungen (R/3 und S/4HANA) — Can-Do (Berechtigung) und Did-Do (Nutzung), inklusive SoD-Konfliktanalyse.
 **Repository:** `neoprehn/iam` (aktuell einziger vorhandener Baustein).
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe Abschnitt „Windows-Spezifika").
-**Stand:** Phasen 0–2 abgeschlossen (Umgebung, Datenmodell, Can-Do-Import beide Pfade, performant). Phase 3 (Auswertung/SoD) in Vorbereitung: 3 Rulesets aufbereitet, erster Einzel-Check (`SAP_ALL`) gelaufen; Ruleset-Loader + Evaluator stehen noch aus.
+**Stand:** Phasen 0–3 und 5 abgeschlossen — Import (Can-Do, beide Pfade, performant), SoD-Evaluator (Zwei-Schritt, voll parametrisiert: User-Typ/Org/Sleeping/Scope), zwei Runner (`run_import`/`run_evaluate`). Offen: Phase 6 (NeoDash, Zwischenschritt), Phase 7 (Verteilung), **Phase 9 (transportable App — das Produktziel)**, Phase X (Backlog), Phase 8 (Did-Do, Kür).
 
 ---
 
@@ -167,6 +167,8 @@ Bau:
 ### Phase 6 — Darstellung (Dashboards)
 **Ziel:** Versionierte, ansprechende Ergebnisdarstellung.
 
+> **Zwischenschritt zur App (Phase 9).** NeoDash ist die **schnelle Anzeige-Schicht**, um die visuellen Inhalte (KPIs, Graph-Pfade, Tabellen) festzulegen. Es ist **nicht** die finale App (kein Import/Backup/Excel/Workflow); die Cypher hinter den Karten sind aber 1:1 in der App (Phase 9) wiederverwendbar.
+
 - [ ] NeoDash lokal an die DB anbinden.
 - [ ] Dashboard-Inhalte: KPI-Kacheln (User mit SoD-Konflikt, kritische Einzelberechtigungen, Top-Konflikttypen), Konflikt-Tabelle mit Drill-down, Graph-Visualisierung der Konfliktpfade (kritische Pfade farblich), SoD-Heatmap/Matrix, Parameter-Selektoren (Stichtag, Organisationseinheit, Risikoklasse).
 - [ ] Dashboard als JSON exportieren → `dashboards/` committen.
@@ -208,6 +210,24 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 - [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): benutzerbezogene Nutzungsauswertung als Hinweis an den Mandanten; Pseudonymisierung der User-ID für Statistik, Klartext nur im begründeten Einzelfall.
 
 **DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
+
+---
+
+### Phase 9 — Anwendung (transportable Docker-App)
+
+**Ziel:** Eine **nutzerfreundliche, transportable App** (Docker), die den gesamten Ablauf ohne JSON-Pflege steuerbar macht. Baut **auf allem Bestehenden auf** — nichts wird weggeworfen: die **Runner** werden Backend-Operationen, die **`dataset`-Dimension** trägt „neuer Mandant vs. Vergleich", die **Findings im Graph** sind der Ergebnis-Store, **Profile/Config** werden von App-Formularen gefüllt. NeoDash (Phase 6) ist der **Zwischenschritt** der Anzeige; die Cypher hinter den Karten sind in der App wiederverwendbar.
+
+**Architektur (lokal, Vertrauensgrenze bleibt):** `Front-end (Web) → lokaler Backend-Service (Runner-as-API, Jobs) → Neo4j`. Nur die Bedienoberfläche ist außen; **keine Mandantendaten verlassen** die Umgebung.
+
+- [ ] **Backend-Service** (Runner als API): `import`, `evaluate` (asynchrone Jobs mit Status/Fortschritt — Materialisierung dauert Minuten), `findings` (Filter), `datasets` (Liste/Verwaltung).
+- [ ] **Front-end — geführte Workflows:** Import-Assistent und Auswerte-Assistent; **Parameter-Formulare statt JSON** (User-Typ, Org-Filter, Sleeping, Scope, Stichtag) — die App schreibt die Parameter, der Nutzer pflegt **kein** JSON.
+- [ ] **System/Mandant-Wahl:** „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem" → **Vergleichs-Abfragen** über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
+- [ ] **Fancy Auswertungen:** KPIs, **Graph-Darstellung** der Konfliktpfade, Heatmap/Matrix, Drill-down.
+- [ ] **Export** der Ergebnisse (z. B. **Excel**) zur Weiterverarbeitung (Backend-Endpunkt Query→`.xlsx`).
+- [ ] **Backup/Restore/Clear:** ein System sichern (`neo4j-admin database dump`, je `dataset`) und für spätere Vergleiche wieder einladen; **DB leeren** (Reset-Operation).
+- [ ] **Ruleset-Editor (später):** Ergänzungen am Filterset über die UI — Vendor-Basis (regenerierbar) von Kunden-Erweiterungen getrennt, Round-Trip auf die JSON.
+
+**DoD:** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich, Anzeige, Export und Backup/Restore ohne JSON-Pflege bedienbar sind — lokal, ohne dass Mandantendaten die Umgebung verlassen.
 
 ---
 
