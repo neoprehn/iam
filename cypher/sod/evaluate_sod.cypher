@@ -15,8 +15,16 @@
 // Aufruf: ... -P "userTypes=>['Dialog','Service']" -P "excludeLocked=>true" -P "sleepDays=>180" ...
 
 CREATE CONSTRAINT sodconflict_key IF NOT EXISTS FOR (f:SoDConflict) REQUIRE f.key IS UNIQUE;
+CREATE CONSTRAINT run_key IF NOT EXISTS FOR (r:Run) REQUIRE r.key IS UNIQUE;
 
 MATCH (f:SoDConflict {ruleset:$ruleset, dataset:$dataset, runId:$runId}) DETACH DELETE f;
+
+// Run-Knoten trägt den Scope des Laufs -> Can-Do-KPIs (z. B. SAP_ALL) können denselben
+// Nutzertyp-/Sperr-Filter anwenden wie die SoD-Auswertung.
+MERGE (run:Run {key: $ruleset + '|' + $dataset + '|' + $runId})
+  SET run.runId = $runId, run.ruleset = $ruleset, run.dataset = $dataset, run.asOf = $asOf,
+      run.userTypes = $userTypes, run.excludeLocked = $excludeLocked, run.sleepDays = $sleepDays,
+      run.minCriticalityRank = $minCriticalityRank, run.generatedAt = datetime();
 
 MATCH (rule:SoDRule {ruleset:$ruleset})
 WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() }

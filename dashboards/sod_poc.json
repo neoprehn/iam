@@ -53,8 +53,8 @@
         },
         {
           "id": "kpi-sapall",
-          "title": "SAP_ALL-Inhaber",
-          "query": "MATCH (u:User {dataset:'sachsenenergie'})-[:HAS_PROFILE]->(:Profile {id:'SAP_ALL'}) RETURN count(DISTINCT u) AS SAP_ALL\n",
+          "title": "SAP_ALL-Inhaber (im Scope)",
+          "query": "MATCH (run:Run {runId:$neodash_runId})\nMATCH (u:User {dataset:run.dataset})-[:HAS_PROFILE]->(:Profile {id:'SAP_ALL'})\nWHERE (size(run.userTypes)=0 OR any(t IN run.userTypes WHERE t IN labels(u)))\n  AND (NOT run.excludeLocked OR NOT 'Locked' IN labels(u))\nRETURN count(DISTINCT u) AS SAP_ALL\n",
           "width": 2, "height": 2, "x": 10, "y": 0,
           "type": "value", "selection": {}, "settings": {}
         },
