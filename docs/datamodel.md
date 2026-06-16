@@ -120,5 +120,28 @@ das Datumsprädikat auf **jede** relevante Kante des Pfades wirken
 - `migrations/V002__indexes.cypher` — Composite-Lookup-Indizes `(dataset, id)`, ein
   `dataset`-Index für `Authorization` sowie der Range-Index `ASSIGNED_TO(validFrom, validTo)`.
 
-Erweiterungen nach Bedarf (Phase 2 ff.): `AuthField`, `ObjectClass`, `OrgValue` (nur falls
-Pivot nötig), `Service`/`FioriTile` (S/4) — als weitere Migrationen `V003__…`.
+Erweiterungen nach Bedarf: `AuthField`, `ObjectClass`, `OrgValue` (nur falls Pivot nötig),
+`Service`/`FioriTile` (S/4) — als weitere Migrationen. `V003__authorization_key.cypher` ergänzt
+das Unique-Constraint auf `Authorization.key` (Performance, siehe [Phase 2](phasen/phase-2.md)).
+
+## Auswerte-Schicht (Phase 3)
+
+Über der Can-Do-Schicht liegen drei klar getrennte Bereiche (Details: [Phase 3](phasen/phase-3.md)):
+
+**Ruleset — konstant, ohne `dataset`** (Referenzdaten, je `ruleset`):
+- `(:Query)` (Funktionsbaustein) `-[:REQUIRES]->(:AuthReq)` (Objekt/Feld/Werte/`andLogic`).
+- `(:SoDRule) -[:USES {var}]-> (:Query)` und die CNF-Klauseln
+  `(:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query)`.
+- `(:Risk)` (CSI-nativ), je Regel verknüpft.
+
+**Org-Feld-Registry — je `dataset`:** `(:OrgField)` aus USORG (welche Felder org-relevant sind).
+
+**Run-/Snapshot-Schicht — regenerierbar, mit Provenienz** (AE-10):
+- Zwischenergebnis „wer kann was": `(:User)-[:MATCHES {ruleset, asOf, runId}]->(:Query)`.
+- Findings: `(:User)-[:VIOLATES]->(:SoDConflict {ruleId, ruleset, dataset, asOf, runId,
+  criticality, userSleeping})-[:BASED_ON]->(:SoDRule)`. Risiko/Kritikalität stammt aus der
+  Regel und wird nur angehängt.
+
+Schlüssel analog zur Can-Do-Schicht über synthetische `key` (`ruleset|id`); die Constraints
+(`query_key`, `sodrule_key`, `clause_key`, `sodconflict_key`) legt der Ruleset-Loader bzw. der
+Evaluator idempotent an.

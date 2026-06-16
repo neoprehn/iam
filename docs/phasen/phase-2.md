@@ -17,8 +17,8 @@ Python, kein lokales Java** (AE-15):
 2. **Load-Skripte** `load/00…11_*.cypher` (Cypher). Ausgeführt von **`cypher-shell` im
    Container** (`docker exec … -f /load/…`), Batching über `apoc.periodic.iterate`. Das
    Verzeichnis `load/` ist read-only in den Neo4j-Container gemountet.
-3. **Orchestrierung**: aktuell die Skripte 00→11 der Reihe nach mit `-P "dataset => '…'"`
-   (wird in Phase 5 der Runner `run/run_all.ps1`).
+3. **Orchestrierung**: die `load/*.cypher` der Reihe nach mit `-P "dataset => '…'"` / `-P "lang => […]"`
+   — gebündelt im Runner `run/run_import.ps1` (Phase 5).
 
 ## Importstrategie
 
@@ -121,21 +121,25 @@ Beide Pfade sind abgebildet: **rollenbasiert** (`User -ASSIGNED_TO-> Role -HAS_A
 Authorization -FOR_OBJECT-> AuthObject`) und **direkt** (`User -HAS_PROFILE-> Profile`).
 Datensparsamkeit: aus USR02 wurden **keine** Passwort-/Hash-Felder geladen.
 
-## Erweiterte Quellen (Skripte 12–17)
+## Erweiterte Quellen (Skripte 12–24)
 
 Zusätzlich zum Kern eingebunden:
 
 | Skript | Quelle | Ergebnis |
 | --- | --- | --- |
 | 12 | V_USERNAME | `:User.name/.nameLast/.persNumber` (personenbezogen, lokal) |
-| 13 | TOBJT | `:AuthObject.text` (Objekt-Texte, DE) |
+| 13 | TOBJT | `:AuthObject.text` (Objekt-Texte, sprachgeschaltet `$lang`) |
 | 14 | USREFUS | `(:User)-[:HAS_REFERENCE]->(:User)` — Referenzbenutzer-Zuordnung (sofern im Mandanten gepflegt) |
 | 15 | UST10C | `(:Profile)-[:CONTAINS]->(:Profile)` (Sammelprofile, + `:Collective`) |
 | 16 | AGR_1252 | `:Role.org_<VARBL>` (Org-Ebenen abgeleiteter Rollen) |
 | 17 | AGR_TCODES | `(:Role)-[:HAS_MENU]->(:Transaction)` (Rollenmenü, informativ) |
 | 18 | UST10S | `(:Profile)-[:HAS_AUTH]->(:Authorization{scope:'profile'})-[:FOR_OBJECT]->…` (Struktur) |
 | 19 | UST12 | Feldwerte `f_<FELD>` an den Profil-Templates (**verlustfrei, alle Profile**) |
-| 20 | USR13 | `:Authorization.authText` (Berechtigungs-Texte) |
+| 20 | USR13 | `:Authorization.authText` (Berechtigungs-Texte, sprachgeschaltet) |
+| 21 | AGR_TEXTS | `:Role.text` (Rollentexte, sprachgeschaltet `$lang`) |
+| 22 | AGR_1016B | `:Role.profileGenerated/.profileState` (Profil-Generierungsstatus, konzeptunabhängig) |
+| 23 | USORG | `(:OrgField)` — Registry der organisatorischen Felder (für die Org-Dimension der Auswertung) |
+| 24 | — | Org-Level-Platzhalter auflösen: `$<Feld>` in role-eigenen Auths → echte Werte aus `Role.org_$<Feld>` (AGR_1252) |
 
 :::{admonition} Verlustfrei by construction
 :class: important

@@ -33,6 +33,7 @@ vor dem Produktivlauf einmal gegen das konkrete SAP-System verifizieren (SE11/SE
 | `02_agr_define.csv` | AGR_DEFINE | Rollen (+ übergeordnete/Ableitungs-Rolle) |
 | `agr_texts.csv` | AGR_TEXTS | Rollentexte, **sprachabhängig** (Loader `21`, `$lang`-Schalter) |
 | `agr_1016b.csv` | AGR_1016B | Generierungs-Status der Rollenprofile (Loader `22` → `:Role.profileGenerated`/`profileState`) |
+| `usorg.csv` | USORG | Registry der organisatorischen Berechtigungsfelder (Loader `23` → `(:OrgField)`; Grundlage der Org-Dimension in der Auswertung) |
 | `03_agr_agrs.csv` | AGR_AGRS | Sammelrolle → Einzelrolle |
 | `04_agr_users.csv` | AGR_USERS | User → Rolle (mit Gültigkeit) |
 | `05_agr_prof.csv` | AGR_PROF | Rolle → (generiertes) Profil |
