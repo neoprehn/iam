@@ -3,7 +3,7 @@
 **Projekt:** Graphbasierte Auswertung von SAP-Berechtigungen (R/3 und S/4HANA) — Can-Do (Berechtigung) und Did-Do (Nutzung), inklusive SoD-Konfliktanalyse.
 **Repository:** `neoprehn/iam` (aktuell einziger vorhandener Baustein).
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe Abschnitt „Windows-Spezifika").
-**Stand:** Phasen 0–3 und 5 abgeschlossen — Import (Can-Do, beide Pfade, performant), SoD-Evaluator (Zwei-Schritt, voll parametrisiert: User-Typ/Org/Sleeping/Scope), zwei Runner (`run_import`/`run_evaluate`). Offen: Phase 6 (NeoDash, Zwischenschritt), Phase 7 (Verteilung), **Phase 9 (transportable App — das Produktziel)**, Phase X (Backlog), Phase 8 (Did-Do, Kür).
+**Stand:** Phasen 0–3 und 5 abgeschlossen — Import (Can-Do, beide Pfade, performant), SoD-Evaluator (Zwei-Schritt, voll parametrisiert: User-Typ/Org/Sleeping/Scope), zwei Runner (`run_import`/`run_evaluate`). Phase 6 (NeoDash) als PoC abgeschlossen (Showcase-Stopp). **Phase 9 (transportable App — das Produktziel) begonnen: Bau-Schritt 1 (Backend-API über die Runner, FastAPI-Container) steht.** Offen: Phase 7 (Verteilung), restliche Phase 9 (UI, Import-Endpunkt, Vergleich/Export/Backup), Phase X (Backlog), Phase 8 (Did-Do, Kür).
 
 ---
 
@@ -221,7 +221,8 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 
 **Architektur (lokal, Vertrauensgrenze bleibt):** `Front-end (Web) → lokaler Backend-Service (Runner-as-API, Jobs) → Neo4j`. Nur die Bedienoberfläche ist außen; **keine Mandantendaten verlassen** die Umgebung.
 
-- [ ] **Backend-Service** (Runner als API): `import`, `evaluate` (asynchrone Jobs mit Status/Fortschritt — Materialisierung dauert Minuten), `findings` (Filter), `datasets` (Liste/Verwaltung).
+- [x] **Backend-Service** (Runner als API) — **Bau-Schritt 1 erledigt.** FastAPI-Container (`backend/`, Compose-Service `iam-backend`, Port 8000), orchestriert die vorhandenen `cypher/`-Dateien über den Neo4j-Treiber (statt `cypher-shell -f`; `apoc.cypher.runFile` ist apoc-**extended** und fehlt → Statements werden im Backend gesplittet und einzeln gefahren). Endpunkte: `GET /health`, `GET /datasets`, `GET /runs` (Scope/Provenienz aus `(:Run)`), `GET /findings?runId&minRank`, `POST /runs` → **asynchroner Job** (Hintergrund-Thread: optional load_ruleset → materialize → evaluate), `GET /jobs/{id}` (Status/Schritt/Ergebniszähler). Profile/Sleeping aus `config/analysis_profiles.json`, Ruleset-Ordner per Scan über `rules/*/ruleset.json`. *Org-Filterung (placeholder/AGR_1252) noch nicht verdrahtet — Profil wird validiert + auf `(:Run)` protokolliert.*
+- [ ] **Import-Endpunkt** (`POST /imports`): den Konvertier-/Migrier-/Lade-Pfad aus `run_import.ps1` als Job nachziehen (bisher nur die Auswerte-Seite als API).
 - [ ] **Front-end — geführte Workflows:** Import-Assistent und Auswerte-Assistent; **Parameter-Formulare statt JSON** (User-Typ, Org-Filter, Sleeping, Scope, Stichtag) — die App schreibt die Parameter, der Nutzer pflegt **kein** JSON.
 - [ ] **System/Mandant-Wahl:** „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem" → **Vergleichs-Abfragen** über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
 - [ ] **Fancy Auswertungen:** KPIs, **Graph-Darstellung** der Konfliktpfade (gebrandetes Frontend mit **NVL/React** statt NeoDash), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (Phase 6) sind die Vorlage.
