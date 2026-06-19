@@ -13,7 +13,9 @@ vor dem Produktivlauf einmal gegen das konkrete SAP-System verifizieren (SE11/SE
 
 ## Format-Konventionen
 
-- **CSV mit Kopfzeile**, Trennzeichen `;` oder `,` (einheitlich je Lauf), UTF-8.
+- **Trennzeichen: Tab** (`\t`), UTF-8, mit Kopfzeile. Der Konverter erzeugt das automatisch aus dem
+  SE16-„unkonvertiert"-Export; bei direktem CSV-Export Tab als Trenner wählen (die Load-Skripte lesen
+  `FIELDTERMINATOR '\t'`).
 - **Spaltenüberschriften = SAP-Feldnamen** (z. B. `BNAME`, `AGR_NAME`). So sind die
   Load-Skripte unabhängig von der Extraktionsmethode (SE16-Export, Tabellen-Download, Report).
 - Dateien liegen lokal in `data/import/` und werden in Cypher als `file:///<name>.csv`
@@ -25,26 +27,50 @@ vor dem Produktivlauf einmal gegen das konkrete SAP-System verifizieren (SE11/SE
 - **`*`/unbeschränkt**: wird gespeichert „wie geliefert" (kein Vorab-Mapping); Normalisierung
   erst in der Abfragelogik (AE-06).
 
-## Dateiliste (Reihenfolge = Ladereihenfolge)
+## Welche Tabellen herunterladen?
 
-| Datei | Tabelle | Zweck |
-| --- | --- | --- |
-| `01_usr02.csv` | USR02 | Benutzer (Stammsatz, Typ, Sperre, Gültigkeit) |
-| `02_agr_define.csv` | AGR_DEFINE | Rollen (+ übergeordnete/Ableitungs-Rolle) |
-| `agr_texts.csv` | AGR_TEXTS | Rollentexte, **sprachabhängig** (Loader `21`, `$lang`-Schalter) |
-| `agr_1016b.csv` | AGR_1016B | Generierungs-Status der Rollenprofile (Loader `22` → `:Role.profileGenerated`/`profileState`) |
-| `usorg.csv` | USORG | Registry der organisatorischen Berechtigungsfelder (Loader `23` → `(:OrgField)`; Grundlage der Org-Dimension in der Auswertung) |
-| `03_agr_agrs.csv` | AGR_AGRS | Sammelrolle → Einzelrolle |
-| `04_agr_users.csv` | AGR_USERS | User → Rolle (mit Gültigkeit) |
-| `05_agr_prof.csv` | AGR_PROF | Rolle → (generiertes) Profil |
-| `06_ust04.csv` | UST04 | User → Profil (direkt, z. B. `SAP_ALL`) |
-| `07_usr11.csv` | USR11 | Profiltexte |
-| `08_agr_1251.csv` | AGR_1251 | Berechtigungsdaten der Rollen (Auth-Instanzen + Feldwerte) |
-| `09_tstc.csv` | TSTC | Transaktions-Katalog |
-| `10_usobt_c.csv` | USOBT_C | SU24: Vorschlagsobjekte + Feldwerte je Transaktion (Quelle für `CHECKS`) |
-| *(optional)* `11_usobx_c.csv` | USOBX_C | SU24: Prüfkennzeichen (`OKFLAG`) — präzisiert aktiv/unterdrückt |
-| *(optional)* `12_agr_1252.csv` | AGR_1252 | Org-Ebenen abgeleiteter Rollen |
-| *(optional)* `13_tobj.csv` | TOBJ | Objekt-Katalog (Objektklasse) |
+Die SE16-Exporte (eine `.txt`/`.csv` je Tabelle, Dateiname = Tabellenname) gehören in den
+Dataset-Ordner. Der Konverter prüft das **Minimalset vor dem Import** (Quelle:
+`config/required_tables.json`) — **fehlt eine Pflicht-Tabelle, bricht er ab.** Optionale Tabellen
+reichern nur an (es erscheint lediglich ein Hinweis, wenn sie fehlen).
+
+### Pflicht (Minimalset)
+
+| Tabelle | Zweck |
+| --- | --- |
+| **USR02** | Benutzer-Stammsatz (Typ, Sperre, letzter Logon, Gültigkeit) |
+| **AGR_DEFINE** | Rollen-Definition (Sammelrolle über `PARENT_AGR`) |
+| **AGR_AGRS** | Sammelrolle → Einzelrollen |
+| **AGR_USERS** | Benutzer ↔ Rolle (mit Gültigkeit) |
+| **ARG_PROF** | Rolle → generiertes Profil. *SAP-Tabelle ist `AGR_PROF`; in diesem Pipeline-Stand wird die Datei als `ARG_PROF` erwartet (historischer Exportname).* |
+| **UST04** | Benutzer → direkt zugewiesenes Profil (z. B. `SAP_ALL`) |
+| **AGR_1251** | Rollen-Berechtigungsdaten (Objekt/Feld/Werte je Rolle) |
+| **TSTCT** | Transaktionstexte |
+| **USOBT_C** | SU24-Vorschlagswerte (TCode → Objekt/Feld; Quelle für `CHECKS`) |
+| **UST10S** | Profil-Berechtigungen (Profilinhalte) |
+| **UST12** | Berechtigungs-Feldwerte zu den Profilberechtigungen |
+
+### Optional (Anreicherung)
+
+| Tabelle | Ergänzt |
+| --- | --- |
+| **USR11** | Profiltexte |
+| **USR13** | Berechtigungstexte |
+| **TOBJT** | Berechtigungsobjekt-Texte |
+| **AGR_TEXTS** | Rollentexte (sprachabhängig, `$lang`-Schalter) |
+| **V_USERNAME** | Benutzernamen (Vor-/Nachname) |
+| **USREFUS** | Referenzbenutzer |
+| **UST10C** | Sammelprofile (Profil → enthaltene Profile) |
+| **AGR_1252** | Org-Ebenen abgeleiteter Rollen |
+| **AGR_TCODES** | Rollenmenü (TCodes der Rolle) |
+| **AGR_1016B** | Profil-Generierungsstatus der Rollen |
+
+> Zusätzlich nutzt Loader `23` die Tabelle **USORG** (Registry der org-relevanten
+> Berechtigungsfelder, Grundlage der Org-Dimension). Sie ist **nicht** Teil der Minimalset-Prüfung —
+> ohne sie entfällt die Org-Feld-Erkennung. Bei Bedarf mit exportieren.
+
+Die genaue Ladereihenfolge ergibt sich aus den Dateinamen unter `load/` (`00…99`); die
+benötigten **Spalten je Tabelle** stehen unten.
 
 ## Spalten je Tabelle
 
