@@ -5,7 +5,7 @@
 //     offene Gueltigkeiten (validFrom/validTo = null) gelten als unbegrenzt (AE-07/08).
 // Parameter: $dataset, $asOf (Neo4j-date, z. B. date()).
 // Aufruf:
-//   ... cypher-shell -P "dataset => 'sachsenenergie'" -P "asOf => date()" -f /cypher/checks/sap_all.cypher
+//   ... cypher-shell -P "dataset => 'acme'" -P "asOf => date()" -f /cypher/checks/sap_all.cypher
 //
 // Risikofokus: aktive Dialog-User mit SAP_ALL (anmeldefaehige Personen mit Vollzugriff).
 

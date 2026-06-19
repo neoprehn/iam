@@ -1,7 +1,7 @@
 // Sleeping-Check: User ohne Anmeldung in den letzten $sleepDays Tagen (oder nie angemeldet) —
 // als Stichtag $asOf. Dormante Konten sind ein eigenes Audit-Finding und dienen zugleich als
 // Filter/Flag fuer die SoD-Auswertung (userSleeping). Parameter: $dataset, $asOf, $sleepDays.
-// Aufruf: ... -P "dataset=>'sachsenenergie'" -P "asOf=>date()" -P "sleepDays=>180"
+// Aufruf: ... -P "dataset=>'acme'" -P "asOf=>date()" -P "sleepDays=>180"
 
 MATCH (u:User {dataset:$dataset})
 WHERE u.lastLogon IS NULL OR u.lastLogon < ($asOf - duration({days: $sleepDays}))

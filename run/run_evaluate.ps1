@@ -20,7 +20,7 @@
 .PARAMETER SkipMaterialize  Zwischenergebnis bereits materialisiert (gleicher Stichtag!).
 
 .EXAMPLE
-  .\run\run_evaluate.ps1 -Ruleset kpmg_r3 -Dataset sachsenenergie -AsOf 2023-12-31 -UserTypeProfile dialog-service
+  .\run\run_evaluate.ps1 -Ruleset kpmg_r3 -Dataset acme -AsOf 2023-12-31 -UserTypeProfile dialog-service
 #>
 param(
     [string] $Ruleset = 'kpmg_r3',

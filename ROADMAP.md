@@ -3,7 +3,7 @@
 **Projekt:** Graphbasierte Auswertung von SAP-Berechtigungen (R/3 und S/4HANA) — Can-Do (Berechtigung) und Did-Do (Nutzung), inklusive SoD-Konfliktanalyse.
 **Repository:** `neoprehn/iam` (aktuell einziger vorhandener Baustein).
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe Abschnitt „Windows-Spezifika").
-**Stand:** Phasen 0–3 und 5 abgeschlossen — Import (Can-Do, beide Pfade, performant), SoD-Evaluator (Zwei-Schritt, voll parametrisiert: User-Typ/Org/Sleeping/Scope), zwei Runner (`run_import`/`run_evaluate`). Phase 6 (NeoDash) als PoC abgeschlossen (Showcase-Stopp). **Phase 9 (transportable App — das Produktziel) gut unterwegs: Bau-Schritte 1–3 stehen** — Backend-API über die Runner, minimale UI mit **Import- und Auswerte-Assistent**, voller **Import im Container** (SE16-Konverter nach Python portiert; kein PowerShell mehr nötig). Bedienbar unter `http://localhost:8000/`: **Import, Auswertung, Bereinigen (Clear/Reset) und Backup/Restore** (inkl. Backup & Clear, Quelldaten-ZIP, Download/Restore) — alles ohne JSON-Pflege. Offen: Phase 7 (Verteilung), restliche Phase 9 (Mandanten-Vergleich, Excel-Export, NVL/React-Frontend, Ruleset-Editor), Phase X (Backlog), Phase 8 (Did-Do, Kür).
+**Stand:** Phasen 0–3 und 5 abgeschlossen — Import (Can-Do, beide Pfade, performant), SoD-Evaluator (Zwei-Schritt, voll parametrisiert: User-Typ/Org/Sleeping/Scope), zwei Runner (`run_import`/`run_evaluate`). Phase 6 (NeoDash) als PoC abgeschlossen (Showcase-Stopp). **Phase 9 (transportable App — das Produktziel) weit umgesetzt: Bau-Schritte 1–4 stehen** — Backend-API über die Runner (FastAPI-Container `iam-backend`), voller **Import im Container** (SE16-Konverter nach Python portiert; kein PowerShell mehr nötig) **inkl. ZIP-Upload**, **Ribbon-Oberfläche nach Lebenszyklus** (Daten → Auswertung → Ergebnisse → Sichern → Verwalten). Bedienbar unter `http://localhost:8000/`: **Import (Ordner/ZIP), Auswertung, Ergebnisse + CSV-Export, Backup/Restore (Quelldaten-ZIP, inkl. Backup & Clear, Download), Bereinigen (Clear/Reset)** — alles ohne JSON-Pflege. Offen: Phase 7 (Verteilung), restliche Phase 9 (Mandanten-Vergleich, natives `.xlsx`, NVL/React-Frontend, Ruleset-Editor), Phase X (Backlog), Phase 8 (Did-Do, Kür).
 
 ---
 
@@ -121,7 +121,7 @@ Relevante Quelltabellen: `USR02` (Benutzer), `USR04`/`UST04` (Direktprofile), `U
 - [x] SE16-Konverter `load/Convert-Se16Export.ps1` (unkonvertiert → UTF-8/Tab/CSV; container-only, kein Python): konvertiert den **ganzen Ordner**, **prüft das Minimalset** vor dem Lauf (`config/required_tables.json`) und **verwirft Credential-Spalten** (Passwort-Hashes, Defense in Depth).
 - [x] Phase in der Doku dokumentiert (`docs/phasen/phase-2.md`) — Dokumentations-DoD.
 
-**DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar. ✓ verifiziert am dataset `sachsenenergie`: 182.170 Authorizations (Rollen- **und** Profilpfad inkl. Feldwerte), 131.145 Transactions, 72.109 `ASSIGNED_TO`, 63.088 `HAS_PROFILE`, 192.230 `CHECKS`, 103.165 `HAS_MENU`.
+**DoD:** Beide Berechtigungspfade (rollenbasiert + direkt) vollständig im Graphen; stichprobenartig gegen SAP nachvollziehbar. ✓ verifiziert am dataset `acme`: 182.170 Authorizations (Rollen- **und** Profilpfad inkl. Feldwerte), 131.145 Transactions, 72.109 `ASSIGNED_TO`, 63.088 `HAS_PROFILE`, 192.230 `CHECKS`, 103.165 `HAS_MENU`.
 
 > **Performance (gelöst):** Die langsamen Importe (`08`/`18`/`19`/`20`, teils Stunden) hatten zwei Ursachen: (1) **fehlender Index auf `Authorization.key`** → Full-Label-Scan bei jedem MERGE/MATCH (Hauptursache, behoben via `V003`); (2) O(n²)-Read-Modify-Write beim `f_<FELD>`-Array-Append in `19` (UST12) → behoben durch **Zwei-Pass/Aggregate-First** (`collect DISTINCT` je Auth/Feld, dann einmal setzen). `08` (AGR_1251) und `19` (UST12) wurden auf Aggregate-First umgestellt; `18`/`20` profitieren allein vom Key-Index (kein O(n²), nur Lookups). Ergebnis end-to-end (verifiziert, byte-identische Daten): `08` ~3 h → **7 s**, `18` 88 min → **3 s**, `19` 4,6 h → **9 s**, `20` >33 min → **3 s**. Die gesamte Import-Pipeline läuft jetzt in unter einer Minute.
 
@@ -141,12 +141,12 @@ Ruleset-Aufbereitung (abgeschlossen):
 
 Bau:
 - [x] **Ruleset-Loader** `cypher/ruleset/load_ruleset.cypher`: `(:Query)`/`(:AuthReq)`/`(:SoDRule)` aus den JSON (apoc.load.json), idempotent; Org-Felder `(:OrgField)` aus USORG (`load/23`).
-- [x] **Einzelberechtigungs-Matcher** `cypher/checks/query_match.cypher` (parametrisiert `$ruleset`/`$query`/`$dataset`/`$asOf`): Query-Matching pro User nach `combinationSemantics` + AE-06 (Werte AND/OR, Felder/Objekte UND, TCodes ODER, Auth↔TCode UND); **Org-Felder im Default „egal"** (wie `*`). Validiert an `kpmg_r3`/`sachsenenergie` (diskriminiert, 39…1022 Treffer je Query; 1000_BC-SEC = manueller Gegencheck ±Gültigkeit).
-- [x] **SoD-Evaluator** (Zwei-Schritt, reine Mengenlogik): CNF-Klauseln beim Laden (`(:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query)`). `cypher/sod/materialize_matches.cypher` materialisiert das Zwischenergebnis `(:User)-[:MATCHES]->(:Query)` (nur SoD-relevante Queries); `cypher/sod/evaluate_sod.cypher` wertet darauf aus → Findings `(:SoDConflict)` (jede Klausel ≥1 gematchte Query), Risiko/Kritikalität aus `(:SoDRule)` angehängt. **Nutzertyp-Filter** (`$userTypes`, z. B. `['Dialog','Service']` vs. alle) und **Sleeping-Regel** (`$sleepDays`=180 → `userSleeping`-Flag; `cypher/checks/sleeping_users.cypher`). Validiert an `kpmg_r3`/`sachsenenergie` (Stichtag 2023-12-31): 5.637 Findings/355 User, aktive Dialog-very-high = 233, Evidenz je Klausel geprüft.
+- [x] **Einzelberechtigungs-Matcher** `cypher/checks/query_match.cypher` (parametrisiert `$ruleset`/`$query`/`$dataset`/`$asOf`): Query-Matching pro User nach `combinationSemantics` + AE-06 (Werte AND/OR, Felder/Objekte UND, TCodes ODER, Auth↔TCode UND); **Org-Felder im Default „egal"** (wie `*`). Validiert an `kpmg_r3`/`acme` (diskriminiert, 39…1022 Treffer je Query; 1000_BC-SEC = manueller Gegencheck ±Gültigkeit).
+- [x] **SoD-Evaluator** (Zwei-Schritt, reine Mengenlogik): CNF-Klauseln beim Laden (`(:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query)`). `cypher/sod/materialize_matches.cypher` materialisiert das Zwischenergebnis `(:User)-[:MATCHES]->(:Query)` (nur SoD-relevante Queries); `cypher/sod/evaluate_sod.cypher` wertet darauf aus → Findings `(:SoDConflict)` (jede Klausel ≥1 gematchte Query), Risiko/Kritikalität aus `(:SoDRule)` angehängt. **Nutzertyp-Filter** (`$userTypes`, z. B. `['Dialog','Service']` vs. alle) und **Sleeping-Regel** (`$sleepDays`=180 → `userSleeping`-Flag; `cypher/checks/sleeping_users.cypher`). Validiert an `kpmg_r3`/`acme` (Stichtag 2023-12-31): 5.637 Findings/355 User, aktive Dialog-very-high = 233, Evidenz je Klausel geprüft.
 - [x] **Org-`filtered`-Modus** (`$orgFilters`: `AND`/`OR`/`RANGE`) im `query_match` nachgerüstet (Default `{}` = „egal"); `userTypes`/`sleepDays`/`orgFilters` als Profile in `config/analysis_profiles.json`; **Phase-3-Doku** (`docs/phasen/phase-3.md`) mit voller Parametrisierung.
-- [x] **Org-Level-Platzhalter aufgelöst** (`load/24_resolve_org_levels.cypher`): in role-eigenen Auths wird der Platzhalter (`$BUKRS`) durch die Rollenwerte (`Role.org_$BUKRS`, AGR_1252) ersetzt — der Org-Filter (`$orgFilters`) sieht danach echte Werte. Filter-Logik (AND/OR/RANGE, `*`, Bereiche) isoliert bewiesen; Auflösung an `sachsenenergie` verifiziert. *(Org-Scoping ist in diesem Mandanten kaum genutzt — meist `*` — daher schränkt der Filter selten ein; das ist Daten, kein Bug.)*
+- [x] **Org-Level-Platzhalter aufgelöst** (`load/24_resolve_org_levels.cypher`): in role-eigenen Auths wird der Platzhalter (`$BUKRS`) durch die Rollenwerte (`Role.org_$BUKRS`, AGR_1252) ersetzt — der Org-Filter (`$orgFilters`) sieht danach echte Werte. Filter-Logik (AND/OR/RANGE, `*`, Bereiche) isoliert bewiesen; Auflösung an `acme` verifiziert. *(Org-Scoping ist in diesem Mandanten kaum genutzt — meist `*` — daher schränkt der Filter selten ein; das ist Daten, kein Bug.)*
 - [x] **Scope im SoD-Lauf** (`evaluate_sod.cypher`): `$minCriticalityRank` (z. B. 5 = nur very-high) und `$sodRules` (explizite Regeln). Validiert: alle 22 Regeln / 5.637 Findings → nur very-high 5 Regeln / 1.118; einzelne Regel 47. *(Modul-Scope für SoD → Phase X.)*
-- [x] **Einzel-Checks** (`cypher/checks/`) — `sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade): `sachsenenergie` 39 User, 18 aktive Dialog; `SAP*`/`DDIC` aktiv.
+- [x] **Einzel-Checks** (`cypher/checks/`) — `sap_all.cypher` (wer hat `SAP_ALL`, beide Pfade): `acme` 39 User, 18 aktive Dialog; `SAP*`/`DDIC` aktiv.
 - [x] **Findings-Snapshot** (`evaluate_sod.cypher`): `(:SoDConflict {ruleId, ruleset, dataset, asOf, runId})` mit `VIOLATES`/`BASED_ON` + Kritikalität/`userSleeping`; `DETACH DELETE` des Laufs vor jeder Auswertung (AE-10). *(`VIA_ROLE`-Evidenz + Intra-/Inter-Unterscheidung → Phase X.)*
 
 **DoD:** Reproduzierbarer SoD-Lauf zu frei wählbarem Stichtag, Ruleset und Profil, mit vollständiger Nachweiskette (Regel, Pfade, Stichtag, Run, Ruleset).
@@ -222,7 +222,7 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 **Architektur (lokal, Vertrauensgrenze bleibt):** `Front-end (Web) → lokaler Backend-Service (Runner-as-API, Jobs) → Neo4j`. Nur die Bedienoberfläche ist außen; **keine Mandantendaten verlassen** die Umgebung.
 
 - [x] **Backend-Service** (Runner als API) — **Bau-Schritt 1 erledigt.** FastAPI-Container (`backend/`, Compose-Service `iam-backend`, Port 8000), orchestriert die vorhandenen `cypher/`-Dateien über den Neo4j-Treiber (statt `cypher-shell -f`; `apoc.cypher.runFile` ist apoc-**extended** und fehlt → Statements werden im Backend gesplittet und einzeln gefahren). Endpunkte: `GET /health`, `GET /datasets`, `GET /runs` (Scope/Provenienz aus `(:Run)`), `GET /findings?runId&minRank`, `POST /runs` → **asynchroner Job** (Hintergrund-Thread: optional load_ruleset → materialize → evaluate), `GET /jobs/{id}` (Status/Schritt/Ergebniszähler). Profile/Sleeping aus `config/analysis_profiles.json`, Ruleset-Ordner per Scan über `rules/*/ruleset.json`. *Org-Filterung (placeholder/AGR_1252) noch nicht verdrahtet — Profil wird validiert + auf `(:Run)` protokolliert.*
-- [x] **Import-Endpunkt** (`POST /imports`) — **Bau-Schritt 3 erledigt.** Voller Import als asynchroner Job **im Container** (kein PowerShell mehr nötig): **konvertieren → Schema → laden → validieren**. Der SE16-Konverter ist nach **Python portiert** (`backend/convert.py`, zeilengleich zu `load/Convert-Se16Export.ps1` inkl. Credential-Denylist; gegen die aktuelle PS-Version byte-identisch verifiziert); Schema über die idempotenten `migrations/*.cypher`, Laden über `load/*.cypher` (Reihenfolge = Dateiname) mit `$dataset`/`$lang`. Zusatz: `GET /import-folders` (vorhandene `data/import/<dataset>` mit txt/csv-Zählung). Verifiziert: voller Import sachsenenergie in ~80 s → 1378 User / 6816 Rollen / 182170 Berechtigungen. `data/import` als RW-Mount im Backend — **bleibt lokal**.
+- [x] **Import-Endpunkt** (`POST /imports`) — **Bau-Schritt 3 erledigt.** Voller Import als asynchroner Job **im Container** (kein PowerShell mehr nötig): **konvertieren → Schema → laden → validieren**. Der SE16-Konverter ist nach **Python portiert** (`backend/convert.py`, zeilengleich zu `load/Convert-Se16Export.ps1` inkl. Credential-Denylist; gegen die aktuelle PS-Version byte-identisch verifiziert); Schema über die idempotenten `migrations/*.cypher`, Laden über `load/*.cypher` (Reihenfolge = Dateiname) mit `$dataset`/`$lang`. Zusatz: `GET /import-folders` (vorhandene `data/import/<dataset>` mit txt/csv-Zählung). Verifiziert: voller Import acme in ~80 s → 1378 User / 6816 Rollen / 182170 Berechtigungen. `data/import` als RW-Mount im Backend — **bleibt lokal**.
 - [~] **Front-end — geführte Workflows** — **Bau-Schritt 4: Ribbon-Oberfläche nach Lebenszyklus.** Schlanke statische Single-Page (`frontend/index.html`), **vom Backend ausgeliefert** (kein Node/React-Build, ein Container) unter `http://localhost:8000/`. **Ribbon-Bar oben** gegliedert wie der Ablauf: **1 Daten · 2 Auswertung · 3 Ergebnisse · 4 Sichern · 5 Verwalten**; Befehle öffnen **Dialoge**, der Hauptbereich zeigt durchgehend die **Ergebnisse** (KPIs · Läufe · Findings). **Import-Dialog** mit **ZIP-Upload** (`POST /imports/upload`, `python-multipart`; entpackt `.csv`/`.txt` → konvertiert ggf. → Import) **und** vorhandenem Ordner (`POST /imports`). **Auswerte-Dialog**: datengetriebenes Parameter-Formular statt JSON (aus `GET /profiles`). **Ergebnisse**: Läufe-Liste mit Findings-Zahl (Counts jetzt in `GET /runs`), KPIs beim Anklicken eines Laufs, Findings-Tabelle, **CSV-Export** des aktiven Laufs. **Sichern**- und **Verwalten**-Dialoge (Backup/Restore, Clear/Reset). *Offen: gebrandetes NVL/React bleibt der „Fancy"-Schritt unten.*
 - [ ] **System/Mandant-Wahl:** „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem" → **Vergleichs-Abfragen** über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
 - [ ] **Fancy Auswertungen:** KPIs, **Graph-Darstellung** der Konfliktpfade (gebrandetes Frontend mit **NVL/React** statt NeoDash), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (Phase 6) sind die Vorlage.
@@ -234,27 +234,53 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 
 ---
 
+## Zielarchitektur — Laufzeit (Phase 9)
+
+Lokal, ein Compose, Vertrauensgrenze bleibt — **keine Mandantendaten verlassen** die Umgebung:
+
+```
+ Browser (http://localhost:8000/)
+   │  statische Ribbon-UI (frontend/index.html), vom Backend ausgeliefert
+   ▼
+ iam-backend  (FastAPI, Port 8000)            ← Runner-as-API, asynchrone Jobs
+   │  Import (Ordner/ZIP) · Auswertung · Findings/Export · Backup/Restore · Clear/Reset
+   │  orchestriert die cypher-/load-/migrations-Dateien über den Neo4j-Treiber
+   ▼
+ iam-neo4j  (Neo4j 5 Community + APOC, Bolt 7687 / Browser 7474)
+   ├─ Rohschicht je `dataset` (User/Role/Profile/Authorization/…)
+   ├─ konstante Ruleset-Schicht (Query/SoDRule/AuthReq/Clause)
+   └─ regenerierbare Findings (:SoDConflict) + (:Run)-Scope/Provenienz
+
+ iam-neodash (PoC-Anzeige, Port 5005)   ·   iam-migrations (Schema, profile: tools)
+```
+
 ## Zielarchitektur — Repo-Struktur
 
 ```
 iam/
-├─ ROADMAP.md
-├─ README.md                   # Onboarding
-├─ docker-compose.yml          # Neo4j + NeoDash, Versionen gepinnt
-├─ .gitignore                  # /data, .env, *.dump
+├─ ROADMAP.md / README.md
+├─ docker-compose.yml          # neo4j + neodash + backend (+ migrations als tools-Profil), gepinnt
+├─ .gitignore                  # /data, /backups, .env, *.dump
 ├─ .gitattributes              # Zeilenenden (LF für .cypher/.sh) für Linux-Container
-├─ .env.example
-├─ migrations/                 # neo4j-migrations: Constraints, Indizes
-├─ load/                       # LOAD CSV-Skripte (Daten liegen lokal)
-├─ rules/                      # Regelkatalog (sod_matrix.csv)
+├─ backend/                    # FastAPI-App (app.py), SE16-Konverter (convert.py), Dockerfile, requirements
+├─ frontend/                   # statische Ribbon-UI (index.html), vom Backend ausgeliefert
+├─ config/                     # analysis_profiles.json (Profile), required_tables.json (Minimalset)
+├─ migrations/                 # neo4j-migrations: Constraints, Indizes (idempotent)
+├─ load/                       # LOAD-CSV-Skripte + Convert-Se16Export.ps1 (Host-Variante)
+├─ rules/                      # normalisierte Rulesets (KPMG_R3/CSI/CSI_BI) + _archive/ (Quellen/Konverter)
 ├─ cypher/
-│   ├─ checks/                 # Einzelberechtigungs-Checks
-│   └─ sod/                    # SoD-Abfragen
-├─ dashboards/                 # NeoDash-Export (JSON)
-├─ run/                        # run_all.ps1 (primär) / run_all.sh
-├─ docs/                       # datamodel.md, Extraktionsleitfaden
-└─ data/                       # GITIGNORED: SAP-CSV + DB-Volume + Import
+│   ├─ checks/                 # Einzelberechtigungs-Checks (SAP_ALL, query_match, …)
+│   ├─ sod/                    # SoD-Materialisierung + Auswertung
+│   ├─ ruleset/               # Ruleset-Loader (JSON → Graph)
+│   └─ admin/                  # clear_dataset / reset_data (gebatcht)
+├─ dashboards/                 # NeoDash-Export (JSON, PoC)
+├─ run/                        # run_import.ps1 / run_evaluate.ps1 (Host-Runner, weiter nutzbar)
+├─ docs/                       # Sphinx/MyST (Read the Docs): Phasen, Datenmodell, Extraktionsleitfaden
+├─ data/                       # GITIGNORED: SAP-CSV + Import + DB-Volume
+└─ backups/                    # GITIGNORED: Dataset-Backups (.zip der bereinigten .csv)
 ```
+
+> **Hinweis zu den Host-Runnern.** `run/*.ps1` (PowerShell) bleiben als Host-Variante nutzbar; die **App-Endpunkte** im `backend/` sind die plattformunabhängige, container-interne Entsprechung (kein lokales PowerShell/`cypher-shell` nötig).
 
 ---
 

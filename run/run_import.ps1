@@ -12,7 +12,7 @@
 .PARAMETER SkipConvert  .txt sind bereits konvertiert -> Konvertierung ueberspringen.
 
 .EXAMPLE
-  .\run\run_import.ps1 -Dataset sachsenenergie
+  .\run\run_import.ps1 -Dataset acme
 #>
 param(
     [Parameter(Mandatory = $true)] [string] $Dataset,

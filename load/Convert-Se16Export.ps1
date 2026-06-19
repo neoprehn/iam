@@ -43,7 +43,7 @@
 
 .EXAMPLE
   # Ganzen Ordner konvertieren (empfohlen), sensible Spalten werden automatisch verworfen:
-  .\load\Convert-Se16Export.ps1 -Folder data\import\sachsenenergie
+  .\load\Convert-Se16Export.ps1 -Folder data\import\acme
 #>
 param(
     [Parameter(Mandatory = $true)] [string] $Folder,

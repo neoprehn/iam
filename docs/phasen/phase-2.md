@@ -68,19 +68,19 @@ Python, kein lokales Java** (AE-15):
 
 ```powershell
 # 1. SE16-Tabellen exportieren ("unkonvertiert"), .txt nach data/import/<dataset>/ legen
-#    (Ordnername = dataset, z. B. data/import/sachsenenergie/)
+#    (Ordnername = dataset, z. B. data/import/acme/)
 
 # 2. In CSV konvertieren — ALLE Tabellen des Ordners; sensible Credential-Spalten
 #    (PWDSALTEDHASH, BCODE, PASSCODE, OCOD*/BCDA*/CODV* ...) werden dabei automatisch
 #    verworfen (-DropColumnsLike), landen also in keiner CSV.
-.\load\Convert-Se16Export.ps1 -Folder data\import\sachsenenergie
+.\load\Convert-Se16Export.ps1 -Folder data\import\acme
 
 # 3. Schema sicherstellen (Phase 1)
 docker compose run --rm migrations
 
 # 4. Laden (Reihenfolge 00..11) — dataset = Ordnername, Sprache über $lang-Schalter
 $pw = $env:NEO4J_PASSWORD
-$ds = "dataset => 'sachsenenergie'"
+$ds = "dataset => 'acme'"
 # Sprach-Schalter aus .env (IMPORT_LANG, z. B. "DE,DEU,D"); leer = Default DE,DEU,D
 $codes = ($env:IMPORT_LANG, 'DE,DEU,D' -ne '')[0].Split(',').ForEach({ "'$($_.Trim())'" }) -join ','
 $lang = "lang => [$codes]"

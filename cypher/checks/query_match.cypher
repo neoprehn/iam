@@ -5,7 +5,7 @@
 // "egal" (wie '*'); ueber $orgFilters je Feld einschraenkbar ({op: AND|OR|RANGE, values/from/to}).
 // Effektive Auths ueber Rollen/Profile/Composite/Collective; ASSIGNED_TO stichtagsgefiltert.
 // Parameter: $ruleset, $query, $dataset, $asOf, $orgFilters (Map; {} = alle Org-Felder egal).
-// Aufruf: ... -P "ruleset=>'kpmg_r3'" -P "query=>'1003_BC-SEC'" -P "dataset=>'sachsenenergie'"
+// Aufruf: ... -P "ruleset=>'kpmg_r3'" -P "query=>'1003_BC-SEC'" -P "dataset=>'acme'"
 //         -P "asOf=>date()" -P "orgFilters=>{BUKRS:{op:'OR',values:['1000','4000']}}"
 
 MATCH (of:OrgField {dataset:$dataset})

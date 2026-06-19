@@ -25,38 +25,53 @@ cd iam
 Copy-Item .env.example .env
 notepad .env
 
-# 3. Umgebung starten (erster Start zieht Images + APOC)
-docker compose up -d
+# 3. Umgebung starten (erster Start zieht Images + APOC, baut das Backend)
+docker compose up -d --build
 
-# 4. Erreichbarkeit prüfen
-#    Neo4j Browser : http://localhost:7474
-#    NeoDash       : http://localhost:5005
+# 4. Schema einmalig anlegen (idempotent; der erste Import stellt es auch sicher)
+docker compose run --rm migrations
 
-# 5. Cypher über den Container ausführen (kein lokaler cypher-shell-Install nötig)
-docker exec -i iam-neo4j cypher-shell -u neo4j -p "$env:NEO4J_PASSWORD" "RETURN 1 AS ok;"
+# 5. App öffnen
+#    Web-App (Import/Auswertung/Ergebnisse/Sichern/Verwalten) : http://localhost:8000/
+#    Neo4j Browser : http://localhost:7474   ·   NeoDash : http://localhost:5005
 ```
 
-SAP-CSV-Extrakte gehören lokal nach `data/import/` und werden in Cypher als
-`file:///<dateiname>.csv` referenziert (keine Windows-Absolutpfade — der Linux-Container
-versteht sie nicht).
+## Bedienung über die App (empfohlen)
+
+Die **Web-App** unter <http://localhost:8000/> deckt den ganzen Lebenszyklus ohne JSON-Pflege ab
+— gegliedert in einer Ribbon-Bar: **Daten** (Import per ZIP-Upload oder Ordner) → **Auswertung**
+(SoD-Lauf mit Parameter-Formular) → **Ergebnisse** (KPIs, Findings, CSV-Export) → **Sichern**
+(Backup/Restore der Quelldaten) → **Verwalten** (Clear/Reset). Das Backend (`iam-backend`)
+orchestriert die vorhandenen Cypher-/Load-Skripte als asynchrone Jobs — plattformunabhängig im
+Container, ohne lokales PowerShell. Details: [docs/phasen/phase-9](docs/phasen/phase-9.md).
+
+SAP-Extrakte gehören lokal nach `data/import/<dataset>/` (oder per ZIP-Upload in der App) und
+verlassen die Umgebung nie. Die alternativen Host-Runner `run/run_import.ps1` /
+`run/run_evaluate.ps1` bleiben für PowerShell-Nutzung erhalten.
 
 ## Repo-Struktur
 
 ```
 iam/
-├─ docker-compose.yml   # Neo4j + NeoDash + migrations, Versionen gepinnt, APOC
+├─ docker-compose.yml   # neo4j + neodash + backend (+ migrations als tools-Profil), gepinnt, APOC
 ├─ docker/              # Dockerfile(s), z. B. neo4j-migrations-CLI (gepinnt)
-├─ migrations/          # neo4j-migrations: Constraints, Indizes
-├─ load/               # LOAD CSV-Skripte (Daten liegen lokal)
-├─ rules/              # Regelkatalog (sod_matrix.csv)
+├─ backend/            # FastAPI-App (app.py) + SE16-Konverter (convert.py), Dockerfile
+├─ frontend/           # statische Ribbon-UI (index.html), vom Backend ausgeliefert
+├─ config/             # analysis_profiles.json, required_tables.json
+├─ migrations/          # neo4j-migrations: Constraints, Indizes (idempotent)
+├─ load/               # LOAD-CSV-Skripte + Convert-Se16Export.ps1 (Host-Variante)
+├─ rules/              # normalisierte Rulesets (KPMG_R3/CSI/CSI_BI) + _archive/
 ├─ cypher/
 │  ├─ checks/          # Einzelberechtigungs-Checks
-│  └─ sod/             # SoD-Abfragen
-├─ dashboards/         # NeoDash-Export (JSON)
-├─ run/                # run_all.ps1 (primär) / run_all.sh
-├─ docs/               # datamodel.md, Extraktionsleitfaden
+│  ├─ sod/             # SoD-Materialisierung + Auswertung
+│  ├─ ruleset/        # Ruleset-Loader (JSON → Graph)
+│  └─ admin/           # clear_dataset / reset_data
+├─ dashboards/         # NeoDash-Export (JSON, PoC)
+├─ run/                # run_import.ps1 / run_evaluate.ps1 (Host-Runner)
+├─ docs/               # Sphinx/MyST: Phasen, Datenmodell, Extraktionsleitfaden
 │  └─ legacy/          # Alte Importskripte (Referenz)
-└─ data/              # GITIGNORED: SAP-CSV + DB-Volume + Import
+├─ data/              # GITIGNORED: SAP-CSV + DB-Volume + Import
+└─ backups/           # GITIGNORED: Dataset-Backups (.zip)
 ```
 
 ## Anforderungen
