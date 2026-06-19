@@ -10,3 +10,7 @@ docs/_build/
 Thumbs.db
 .DS_Store
 .idea/
+
+# Python
+__pycache__/
+*.pyc
