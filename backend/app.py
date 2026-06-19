@@ -13,6 +13,7 @@ import threading
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from neo4j import GraphDatabase
 
@@ -22,6 +23,7 @@ NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "/app/config"))
 RULES_DIR = Path(os.environ.get("RULES_DIR", "/app/rules"))
 CYPHER_DIR = Path(os.environ.get("CYPHER_DIR", "/app/cypher"))
+FRONTEND_DIR = Path(os.environ.get("FRONTEND_DIR", "/app/frontend"))
 
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 app = FastAPI(title="IAM SoD Backend", version="0.1.0")
@@ -32,13 +34,23 @@ def profiles() -> dict:
     return json.loads((CONFIG_DIR / "analysis_profiles.json").read_text(encoding="utf-8"))
 
 
+def list_rulesets() -> list[dict]:
+    """Verfuegbare Rulesets aus rules/*/ruleset.json (id + Anzeigename)."""
+    out = []
+    if RULES_DIR.exists():
+        for d in sorted(RULES_DIR.iterdir()):
+            rj = d / "ruleset.json"
+            if rj.is_file():
+                meta = json.loads(rj.read_text(encoding="utf-8"))
+                if meta.get("ruleset"):
+                    out.append({"id": meta["ruleset"], "name": meta.get("name", meta["ruleset"]), "dir": d.name})
+    return out
+
+
 def ruleset_dir(ruleset: str):
-    if not RULES_DIR.exists():
-        return None
-    for d in RULES_DIR.iterdir():
-        rj = d / "ruleset.json"
-        if rj.is_file() and json.loads(rj.read_text(encoding="utf-8")).get("ruleset") == ruleset:
-            return d.name
+    for r in list_rulesets():
+        if r["id"] == ruleset:
+            return r["dir"]
     return None
 
 
@@ -143,6 +155,20 @@ def datasets():
         return [r["id"] for r in s.run("MATCH (d:Dataset) RETURN d.id AS id ORDER BY id")]
 
 
+@app.get("/profiles")
+def profiles_meta():
+    """Speist die Formular-Dropdowns der UI (datengetrieben aus config + rules)."""
+    cfg = profiles()
+    return {
+        "rulesets": list_rulesets(),
+        "defaultRuleset": cfg.get("defaults", {}).get("ruleset"),
+        "orgProfiles": [{"name": p["name"], "description": p.get("description", "")} for p in cfg["profiles"]],
+        "userTypeProfiles": [{"name": p["name"], "description": p.get("description", "")} for p in cfg["userTypeProfiles"]],
+        "scopeProfiles": [{"name": p["name"], "description": p.get("description", "")} for p in cfg.get("scopeProfiles", [])],
+        "sleepDays": cfg["sleeping"]["sleepDays"],
+    }
+
+
 @app.get("/runs")
 def list_runs():
     with driver.session() as s:
@@ -175,3 +201,11 @@ def job_status(job_id: str):
     if job_id not in jobs:
         raise HTTPException(404, "unbekannte Job-Id")
     return jobs[job_id]
+
+
+# Minimale UI (Phase 9, Bau-Schritt 2): statische Single-Page, vom Backend ausgeliefert.
+# Bewusst leichtgewichtig (kein Node/React-Build, ein Container) — das gebrandete NVL/React-
+# Frontend bleibt der spaetere "Fancy"-Schritt. MUSS nach allen API-Routen gemountet werden,
+# damit "/" die UI liefert, ohne /health, /runs, ... zu ueberdecken.
+if FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="ui")

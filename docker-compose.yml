@@ -63,7 +63,8 @@ services:
     volumes:
       - ./config:/app/config:ro
       - ./rules:/app/rules:ro
-      - ./cypher:/app/cypher:ro   # Orchestrierte Statements (Treiber statt cypher-shell -f)
+      - ./cypher:/app/cypher:ro     # Orchestrierte Statements (Treiber statt cypher-shell -f)
+      - ./frontend:/app/frontend:ro # Minimale UI (statisch, vom Backend ausgeliefert)
     restart: unless-stopped
 
   # Schema-Migrationen (AE-02). Startet NICHT bei `docker compose up` (profile: tools).

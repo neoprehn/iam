@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IAM — SoD-Auswertung</title>
+<style>
+  :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
+          --accent:#4c8bf5; --crit:#e5484d; --warn:#f5a623; --ok:#46a758; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+  header { padding:16px 24px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:12px; }
+  header h1 { font-size:18px; margin:0; }
+  header span { color:var(--muted); font-size:13px; }
+  main { display:grid; grid-template-columns:360px 1fr; gap:0; height:calc(100vh - 57px); }
+  .side { border-right:1px solid var(--line); padding:20px; overflow:auto; }
+  .content { padding:20px 24px; overflow:auto; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:0 0 12px; }
+  label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
+  input, select { width:100%; padding:7px 9px; background:var(--panel); color:var(--fg);
+    border:1px solid var(--line); border-radius:6px; font:inherit; }
+  .row { display:flex; gap:10px; }
+  .row > div { flex:1; }
+  .check { display:flex; align-items:flex-start; gap:8px; margin-top:12px; }
+  .check input { width:auto; margin-top:3px; }
+  .check label { margin:0; color:var(--fg); }
+  .check small { display:block; color:var(--muted); }
+  button { margin-top:18px; width:100%; padding:10px; background:var(--accent); color:#fff;
+    border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--fg); font-weight:400; }
+  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
+  #status { margin-top:16px; padding:10px 12px; border-radius:6px; border:1px solid var(--line);
+    background:var(--panel); display:none; }
+  #status.err { border-color:var(--crit); color:#ffb3b5; }
+  .kpis { display:flex; gap:14px; margin-bottom:20px; flex-wrap:wrap; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px 18px; min-width:120px; }
+  .kpi b { display:block; font-size:28px; }
+  .kpi span { color:var(--muted); font-size:12px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--bg); }
+  .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
+  .tag.veryhigh,.tag.high { background:rgba(229,72,77,.18); color:#ff8a8e; }
+  .tag.critical { background:rgba(229,72,77,.28); color:#ff6166; }
+  .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
+  .tag.low { background:rgba(70,167,88,.18); color:#7bd690; }
+  .runs { list-style:none; padding:0; margin:0; }
+  .runs li { padding:9px 11px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px;
+    cursor:pointer; display:flex; justify-content:space-between; gap:8px; }
+  .runs li:hover { border-color:var(--accent); }
+  .runs li.active { border-color:var(--accent); background:rgba(76,139,245,.08); }
+  .runs b { font-weight:600; }
+  .runs small { color:var(--muted); }
+  .muted { color:var(--muted); }
+  .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
+    border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>IAM &mdash; SoD-Auswertung</h1>
+  <span>Phase 9 &middot; minimale UI &uuml;ber die Backend-API</span>
+</header>
+<main>
+  <aside class="side">
+    <h2>Auswertung starten</h2>
+    <form id="runForm">
+      <label for="ruleset">Ruleset</label>
+      <select id="ruleset"></select>
+
+      <label for="dataset">System (dataset)</label>
+      <select id="dataset"></select>
+
+      <div class="row">
+        <div>
+          <label for="asOf">Stichtag</label>
+          <input type="date" id="asOf" value="2023-12-31" />
+        </div>
+        <div>
+          <label for="sleepDays">Sleeping (Tage)</label>
+          <input type="number" id="sleepDays" min="0" step="1" />
+        </div>
+      </div>
+
+      <label for="userTypeProfile">Nutzertyp-Profil</label>
+      <select id="userTypeProfile"></select>
+      <div class="hint" id="utHint"></div>
+
+      <label for="orgProfile">Org-Profil</label>
+      <select id="orgProfile"></select>
+      <div class="hint" id="orgHint">Org-Filterung noch nicht verdrahtet &mdash; wird auf (:Run) protokolliert.</div>
+
+      <label for="minRank">Mindest-Kritikalit&auml;t</label>
+      <select id="minRank">
+        <option value="0">alle</option>
+        <option value="2">ab medium</option>
+        <option value="3">ab high</option>
+        <option value="4">ab critical</option>
+        <option value="5">nur very-high</option>
+      </select>
+
+      <label for="runId">Run-ID (optional)</label>
+      <input id="runId" placeholder="z. B. dialog-active" />
+
+      <div class="check">
+        <input type="checkbox" id="skipMaterialize" />
+        <div><label for="skipMaterialize">Materialisierung &uuml;berspringen</label>
+          <small>nur wenn &bdquo;wer kann was&ldquo; f&uuml;r diesen Stichtag bereits vorliegt (schneller).</small></div>
+      </div>
+      <div class="check">
+        <input type="checkbox" id="skipRulesetLoad" checked />
+        <div><label for="skipRulesetLoad">Ruleset-Laden &uuml;berspringen</label>
+          <small>Ruleset ist i. d. R. schon geladen.</small></div>
+      </div>
+
+      <button type="submit" id="startBtn">Auswertung starten</button>
+    </form>
+    <div id="status"></div>
+  </aside>
+
+  <section class="content">
+    <div class="kpis" id="kpis"></div>
+    <h2>L&auml;ufe</h2>
+    <ul class="runs" id="runs"></ul>
+    <h2 style="margin-top:24px">Findings <span class="muted" id="findingsMeta"></span></h2>
+    <table>
+      <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Sleeping</th></tr></thead>
+      <tbody id="findingsBody"><tr><td colspan="4" class="muted">Lauf w&auml;hlen oder Auswertung starten&hellip;</td></tr></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
+let activeRunId = null;
+
+function opt(sel, value, text, title) {
+  const o = document.createElement('option');
+  o.value = value; o.textContent = text; if (title) o.title = title;
+  sel.appendChild(o);
+}
+
+async function loadMeta() {
+  const [meta, datasets] = await Promise.all([api('/profiles'), api('/datasets')]);
+  meta.rulesets.forEach(r => opt($('ruleset'), r.id, r.name));
+  if (meta.defaultRuleset) $('ruleset').value = meta.defaultRuleset;
+  datasets.forEach(d => opt($('dataset'), d, d));
+  meta.userTypeProfiles.forEach(p => opt($('userTypeProfile'), p.name, p.name, p.description));
+  meta.orgProfiles.forEach(p => opt($('orgProfile'), p.name, p.name, p.description));
+  $('sleepDays').value = meta.sleepDays;
+  metaCache = meta;
+  showUtHint();
+}
+let metaCache = { userTypeProfiles: [] };
+function showUtHint() {
+  const p = metaCache.userTypeProfiles.find(x => x.name === $('userTypeProfile').value);
+  $('utHint').textContent = p ? p.description : '';
+}
+$('userTypeProfile').addEventListener('change', showUtHint);
+
+function critTag(c) {
+  const cls = (c || '').replace('-', '').toLowerCase();
+  return `<span class="tag ${cls}">${c || '?'}</span>`;
+}
+
+async function loadRuns() {
+  const runs = await api('/runs');
+  const ul = $('runs');
+  ul.innerHTML = runs.length ? '' : '<li class="muted" style="cursor:default">noch keine L&auml;ufe</li>';
+  runs.forEach(r => {
+    const li = document.createElement('li');
+    if (r.runId === activeRunId) li.className = 'active';
+    const ut = (r.userTypes && r.userTypes.length) ? r.userTypes.join('+') : 'alle';
+    li.innerHTML = `<span><b>${r.runId}</b> &middot; <small>${r.ruleset} / ${r.dataset}</small></span>`
+      + `<small>${ut}${r.excludeLocked ? ', aktiv' : ''} &middot; ${r.asOf}</small>`;
+    li.onclick = () => showFindings(r.runId);
+    ul.appendChild(li);
+  });
+}
+
+async function showFindings(runId) {
+  activeRunId = runId;
+  document.querySelectorAll('.runs li').forEach(li => li.classList.remove('active'));
+  const findings = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
+  $('findingsMeta').textContent = `· ${runId} (${findings.length}${findings.length >= 500 ? '+, Top 500' : ''})`;
+  const body = $('findingsBody');
+  body.innerHTML = findings.length ? '' : '<tr><td colspan="4" class="muted">keine Findings</td></tr>';
+  findings.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${f.user}</td><td>${f.rule}</td><td>${critTag(f.criticality)}</td>`
+      + `<td>${f.sleeping ? '<span class="tag medium">sleeping</span>' : '&ndash;'}</td>`;
+    body.appendChild(tr);
+  });
+  loadRuns();
+}
+
+function setKpis(j) {
+  $('kpis').innerHTML =
+    `<div class="kpi"><b>${j.findings ?? '–'}</b><span>Findings</span></div>`
+  + `<div class="kpi"><b>${j.rules ?? '–'}</b><span>betroffene Regeln</span></div>`
+  + `<div class="kpi"><b>${j.sleeping ?? '–'}</b><span>davon sleeping</span></div>`;
+}
+
+async function poll(jobId) {
+  const st = $('status');
+  while (true) {
+    const j = await api('/jobs/' + jobId);
+    if (j.status === 'done') {
+      st.innerHTML = `<span class="tag low">fertig</span> Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings.`;
+      setKpis(j);
+      await showFindings(j.runId);
+      return;
+    }
+    if (j.status === 'error') {
+      st.className = 'err'; st.style.display = 'block';
+      st.innerHTML = `<b>Fehler:</b> ${j.error}`;
+      return;
+    }
+    st.innerHTML = `<span class="spin"></span> Schritt: <b>${j.step || j.status}</b>&hellip;`;
+    await new Promise(r => setTimeout(r, 1500));
+  }
+}
+
+$('runForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('startBtn'); btn.disabled = true;
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Job wird gestartet&hellip;';
+  try {
+    const body = {
+      ruleset: $('ruleset').value,
+      dataset: $('dataset').value,
+      asOf: $('asOf').value,
+      userTypeProfile: $('userTypeProfile').value,
+      orgProfile: $('orgProfile').value,
+      sleepDays: parseInt($('sleepDays').value, 10),
+      minCriticalityRank: parseInt($('minRank').value, 10),
+      runId: $('runId').value.trim() || null,
+      skipMaterialize: $('skipMaterialize').checked,
+      skipRulesetLoad: $('skipRulesetLoad').checked,
+    };
+    const { jobId } = await api('/runs', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    await poll(jobId);
+  } catch (err) {
+    st.className = 'err'; st.style.display = 'block';
+    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+loadMeta().then(loadRuns).catch(e =>
+  document.body.insertAdjacentHTML('beforeend',
+    '<p style="color:#ff8a8e;padding:20px">Backend nicht erreichbar: ' + JSON.stringify(e) + '</p>'));
+</script>
+</body>
+</html>
