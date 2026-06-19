@@ -16,7 +16,7 @@ Fortschritt erscheint als Statuszeile unter dem Ribbon. Ergebnis: ein **Dataset*
 
 :::{admonition} Welche Tabellen werden gebraucht?
 :class: note
-**Pflicht (Minimalset):** `USR02`, `AGR_DEFINE`, `AGR_AGRS`, `AGR_USERS`, `ARG_PROF`, `UST04`,
+**Pflicht (Minimalset):** `USR02`, `AGR_DEFINE`, `AGR_AGRS`, `AGR_USERS`, `AGR_PROF`, `UST04`,
 `AGR_1251`, `TSTCT`, `USOBT_C`, `UST10S`, `UST12`. Fehlt eine davon, bricht der Import mit klarer
 Meldung ab. **Optional** (Anreicherung): u. a. `AGR_TEXTS`, `USR11`, `AGR_1252`, `AGR_TCODES`,
 `AGR_1016B`. Vollständige Liste mit Zweck und Spalten im

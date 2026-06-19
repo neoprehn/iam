@@ -42,7 +42,7 @@ reichern nur an (es erscheint lediglich ein Hinweis, wenn sie fehlen).
 | **AGR_DEFINE** | Rollen-Definition (Sammelrolle über `PARENT_AGR`) |
 | **AGR_AGRS** | Sammelrolle → Einzelrollen |
 | **AGR_USERS** | Benutzer ↔ Rolle (mit Gültigkeit) |
-| **ARG_PROF** | Rolle → generiertes Profil. *SAP-Tabelle ist `AGR_PROF`; in diesem Pipeline-Stand wird die Datei als `ARG_PROF` erwartet (historischer Exportname).* |
+| **AGR_PROF** | Rolle → generiertes Profil |
 | **UST04** | Benutzer → direkt zugewiesenes Profil (z. B. `SAP_ALL`) |
 | **AGR_1251** | Rollen-Berechtigungsdaten (Objekt/Feld/Werte je Rolle) |
 | **TSTCT** | Transaktionstexte |

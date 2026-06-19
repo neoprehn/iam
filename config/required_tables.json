@@ -5,7 +5,7 @@
     "AGR_DEFINE",
     "AGR_AGRS",
     "AGR_USERS",
-    "ARG_PROF",
+    "AGR_PROF",
     "UST04",
     "AGR_1251",
     "TSTCT",
@@ -23,6 +23,7 @@
     "UST10C",
     "AGR_1252",
     "AGR_TCODES",
-    "AGR_1016B"
+    "AGR_1016B",
+    "USORG"
   ]
 }

@@ -70,7 +70,7 @@ if (-not $RequiredTables -or $RequiredTables.Count -eq 0) {
     }
     else {
         Write-Warning "Config nicht gefunden: $RequiredTablesConfig - verwende eingebauten Fallback."
-        $RequiredTables = @('USR02', 'AGR_DEFINE', 'AGR_AGRS', 'AGR_USERS', 'ARG_PROF', 'UST04', 'AGR_1251', 'TSTCT', 'USOBT_C', 'UST10S', 'UST12')
+        $RequiredTables = @('USR02', 'AGR_DEFINE', 'AGR_AGRS', 'AGR_USERS', 'AGR_PROF', 'UST04', 'AGR_1251', 'TSTCT', 'USOBT_C', 'UST10S', 'UST12')
     }
 }
 
