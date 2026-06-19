@@ -3,40 +3,45 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>IAM — SoD-Auswertung</title>
+<title>IAM — SAP-Berechtigungsanalyse</title>
 <style>
   :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
-          --accent:#4c8bf5; --crit:#e5484d; --warn:#f5a623; --ok:#46a758; }
+          --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
   * { box-sizing:border-box; }
   body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
-  header { padding:16px 24px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:12px; }
-  header h1 { font-size:18px; margin:0; }
-  header span { color:var(--muted); font-size:13px; }
-  main { display:grid; grid-template-columns:360px 1fr; gap:0; height:calc(100vh - 57px); }
-  .side { border-right:1px solid var(--line); padding:20px; overflow:auto; }
-  .content { padding:20px 24px; overflow:auto; }
-  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:0 0 12px; }
-  label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
-  input, select { width:100%; padding:7px 9px; background:var(--panel); color:var(--fg);
-    border:1px solid var(--line); border-radius:6px; font:inherit; }
-  .row { display:flex; gap:10px; }
-  .row > div { flex:1; }
-  .check { display:flex; align-items:flex-start; gap:8px; margin-top:12px; }
-  .check input { width:auto; margin-top:3px; }
-  .check label { margin:0; color:var(--fg); }
-  .check small { display:block; color:var(--muted); }
-  button { margin-top:18px; width:100%; padding:10px; background:var(--accent); color:#fff;
-    border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
-  button:disabled { opacity:.5; cursor:default; }
-  button.ghost { background:transparent; border:1px solid var(--line); color:var(--fg); font-weight:400; }
-  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
-  #status { margin-top:16px; padding:10px 12px; border-radius:6px; border:1px solid var(--line);
-    background:var(--panel); display:none; }
+  a { color:var(--accent); }
+
+  /* Kopf + Ribbon */
+  header { padding:10px 20px 0; }
+  header h1 { font-size:17px; margin:0; }
+  header span { color:var(--muted); font-size:12px; }
+  .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
+    background:var(--panel); margin-top:8px; overflow-x:auto; }
+  .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
+    border-right:1px solid var(--line); }
+  .group:last-child { border-right:0; }
+  .group .cmds { display:flex; gap:6px; }
+  .group .lbl { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+    margin-top:5px; }
+  .cmd { display:flex; flex-direction:column; align-items:center; gap:3px; min-width:64px;
+    padding:7px 10px; background:transparent; color:var(--fg); border:1px solid transparent;
+    border-radius:7px; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap; }
+  .cmd:hover { background:rgba(76,139,245,.12); border-color:var(--line); }
+  .cmd .ico { font-size:18px; line-height:1; }
+  .cmd.danger:hover { background:rgba(229,72,77,.14); }
+  .cmd:disabled { opacity:.4; cursor:default; background:transparent; border-color:transparent; }
+
+  #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
+    border:1px solid var(--line); background:var(--panel); }
   #status.err { border-color:var(--crit); color:#ffb3b5; }
-  .kpis { display:flex; gap:14px; margin-bottom:20px; flex-wrap:wrap; }
-  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px 18px; min-width:120px; }
-  .kpi b { display:block; font-size:28px; }
+
+  main { padding:16px 20px 28px; }
+  .kpis { display:flex; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 18px; min-width:130px; }
+  .kpi b { display:block; font-size:26px; }
   .kpi span { color:var(--muted); font-size:12px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 10px; }
+  .cols { display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
   th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
   th { color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--bg); }
@@ -50,133 +55,185 @@
     cursor:pointer; display:flex; justify-content:space-between; gap:8px; }
   .runs li:hover { border-color:var(--accent); }
   .runs li.active { border-color:var(--accent); background:rgba(76,139,245,.08); }
-  .runs b { font-weight:600; }
-  .runs small { color:var(--muted); }
   .muted { color:var(--muted); }
   .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
     border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
   @keyframes s { to { transform:rotate(360deg); } }
+
+  /* Dialoge */
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+    align-items:flex-start; justify-content:center; padding:48px 16px; z-index:50; overflow:auto; }
+  .overlay.open { display:flex; }
+  .dialog { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    width:460px; max-width:100%; padding:20px 22px; }
+  .dialog h3 { margin:0 0 4px; font-size:16px; }
+  .dialog .sub { color:var(--muted); font-size:12px; margin-bottom:14px; }
+  .dialog .x { float:right; cursor:pointer; color:var(--muted); font-size:18px; line-height:1; }
+  label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
+  input, select { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
+    border:1px solid var(--line); border-radius:6px; font:inherit; }
+  input[type=file] { padding:6px; }
+  .row { display:flex; gap:10px; } .row > div { flex:1; }
+  .check { display:flex; align-items:flex-start; gap:8px; margin-top:12px; }
+  .check input { width:auto; margin-top:3px; }
+  .check label { margin:0; color:var(--fg); }
+  .check small { display:block; color:var(--muted); }
+  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
+  .sep { border-top:1px solid var(--line); margin:18px 0 4px; padding-top:14px; }
+  button.primary { margin-top:16px; width:100%; padding:10px; background:var(--accent); color:#fff;
+    border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+  button.ghost { width:100%; padding:9px; background:transparent; border:1px solid var(--line);
+    color:var(--fg); border-radius:6px; font:inherit; cursor:pointer; margin-top:8px; }
+  button.ghost.danger { border-color:var(--crit); color:#ff8a8e; }
+  button:disabled { opacity:.5; cursor:default; }
 </style>
 </head>
 <body>
 <header>
   <h1>IAM &mdash; SAP-Berechtigungsanalyse</h1>
-  <span>Phase 9 &middot; minimale UI &uuml;ber die Backend-API (Import &amp; SoD-Auswertung)</span>
+  <span>Phase 9 &middot; Lebenszyklus: Daten &rarr; Auswertung &rarr; Ergebnisse &rarr; Sichern &rarr; Verwalten</span>
 </header>
+
+<nav class="ribbon">
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdImport"><span class="ico">&#128228;</span>Import</button>
+    </div><div class="lbl">1 &middot; Daten</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdRun"><span class="ico">&#9654;</span>Neuer Lauf</button>
+    </div><div class="lbl">2 &middot; Auswertung</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button>
+      <button class="cmd" id="cmdExport" disabled><span class="ico">&#128202;</span>Export CSV</button>
+    </div><div class="lbl">3 &middot; Ergebnisse</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdBackup"><span class="ico">&#128190;</span>Backup / Restore</button>
+    </div><div class="lbl">4 &middot; Sichern</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd danger" id="cmdManage"><span class="ico">&#129529;</span>Bereinigen</button>
+    </div><div class="lbl">5 &middot; Verwalten</div>
+  </div>
+</nav>
+
+<div id="status"></div>
+
 <main>
-  <aside class="side">
-    <h2>Import starten</h2>
-    <form id="importForm">
-      <label for="impDataset">System (Import-Ordner)</label>
-      <select id="impDataset"></select>
-      <div class="hint" id="impHint"></div>
-
-      <label for="impLang">Sprachen (SPRAS/LANGU)</label>
-      <input id="impLang" value="DE,DEU,D" />
-
-      <div class="check">
-        <input type="checkbox" id="skipConvert" />
-        <div><label for="skipConvert">Konvertierung &uuml;berspringen</label>
-          <small>.csv liegen bereits vor (nur laden).</small></div>
-      </div>
-      <div class="check">
-        <input type="checkbox" id="skipSchema" />
-        <div><label for="skipSchema">Schema &uuml;berspringen</label>
-          <small>Constraints/Indizes sind schon angelegt.</small></div>
-      </div>
-
-      <button type="submit" id="importBtn">Import starten</button>
-    </form>
-    <div id="importStatus"></div>
-
-    <h2 style="margin-top:28px;border-top:1px solid var(--line);padding-top:20px">Auswertung starten</h2>
-    <form id="runForm">
-      <label for="ruleset">Ruleset</label>
-      <select id="ruleset"></select>
-
-      <label for="dataset">System (dataset)</label>
-      <select id="dataset"></select>
-
-      <div class="row">
-        <div>
-          <label for="asOf">Stichtag</label>
-          <input type="date" id="asOf" value="2023-12-31" />
-        </div>
-        <div>
-          <label for="sleepDays">Sleeping (Tage)</label>
-          <input type="number" id="sleepDays" min="0" step="1" />
-        </div>
-      </div>
-
-      <label for="userTypeProfile">Nutzertyp-Profil</label>
-      <select id="userTypeProfile"></select>
-      <div class="hint" id="utHint"></div>
-
-      <label for="orgProfile">Org-Profil</label>
-      <select id="orgProfile"></select>
-      <div class="hint" id="orgHint">Org-Filterung noch nicht verdrahtet &mdash; wird auf (:Run) protokolliert.</div>
-
-      <label for="minRank">Mindest-Kritikalit&auml;t</label>
-      <select id="minRank">
-        <option value="0">alle</option>
-        <option value="2">ab medium</option>
-        <option value="3">ab high</option>
-        <option value="4">ab critical</option>
-        <option value="5">nur very-high</option>
-      </select>
-
-      <label for="runId">Run-ID (optional)</label>
-      <input id="runId" placeholder="z. B. dialog-active" />
-
-      <div class="check">
-        <input type="checkbox" id="skipMaterialize" />
-        <div><label for="skipMaterialize">Materialisierung &uuml;berspringen</label>
-          <small>nur wenn &bdquo;wer kann was&ldquo; f&uuml;r diesen Stichtag bereits vorliegt (schneller).</small></div>
-      </div>
-      <div class="check">
-        <input type="checkbox" id="skipRulesetLoad" checked />
-        <div><label for="skipRulesetLoad">Ruleset-Laden &uuml;berspringen</label>
-          <small>Ruleset ist i. d. R. schon geladen.</small></div>
-      </div>
-
-      <button type="submit" id="startBtn">Auswertung starten</button>
-    </form>
-    <div id="status"></div>
-
-    <h2 style="margin-top:28px;border-top:1px solid var(--line);padding-top:20px">Daten verwalten</h2>
-    <label for="clrDataset">Dataset</label>
-    <select id="clrDataset"></select>
-    <div class="check">
-      <input type="checkbox" id="backupClear" />
-      <div><label for="backupClear">danach leeren (Backup &amp; Clear)</label></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="cols">
+    <div>
+      <h2 style="margin-top:0">L&auml;ufe</h2>
+      <ul class="runs" id="runs"></ul>
     </div>
-    <button class="ghost" id="backupBtn" style="margin-top:10px">Backup erstellen</button>
-    <button class="ghost" id="clearBtn" style="margin-top:8px">Dieses Dataset l&ouml;schen</button>
-    <button class="ghost" id="resetBtn"
-      style="margin-top:8px;border-color:var(--crit);color:#ff8a8e">Alles zur&uuml;cksetzen</button>
-    <div class="hint">Ruleset &amp; Schema bleiben in allen F&auml;llen erhalten.</div>
-    <div id="adminStatus"></div>
-
-    <h2 style="margin-top:24px">Backups</h2>
-    <ul class="runs" id="backups"></ul>
-  </aside>
-
-  <section class="content">
-    <div class="kpis" id="kpis"></div>
-    <h2>L&auml;ufe</h2>
-    <ul class="runs" id="runs"></ul>
-    <h2 style="margin-top:24px">Findings <span class="muted" id="findingsMeta"></span></h2>
-    <table>
-      <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Sleeping</th></tr></thead>
-      <tbody id="findingsBody"><tr><td colspan="4" class="muted">Lauf w&auml;hlen oder Auswertung starten&hellip;</td></tr></tbody>
-    </table>
-  </section>
+    <div>
+      <h2 style="margin-top:0">Findings <span class="muted" id="findingsMeta"></span></h2>
+      <table>
+        <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Sleeping</th></tr></thead>
+        <tbody id="findingsBody"><tr><td colspan="4" class="muted">Lauf w&auml;hlen oder „Neuer Lauf"&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 </main>
+
+<!-- Dialog: Import -->
+<div class="overlay" id="dlg-import"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Import</h3>
+  <div class="sub">Daten eines Systems laden &mdash; ZIP hochladen (mit `.csv`/`.txt`) oder vorhandenen Ordner.</div>
+  <form id="formUpload">
+    <label for="upFile">ZIP-Datei</label>
+    <input type="file" id="upFile" accept=".zip" />
+    <div class="row">
+      <div><label for="upDataset">Dataset-Name</label><input id="upDataset" placeholder="aus Dateiname" /></div>
+      <div><label for="upLang">Sprachen</label><input id="upLang" value="DE,DEU,D" /></div>
+    </div>
+    <div class="check"><input type="checkbox" id="upSkipSchema" />
+      <div><label for="upSkipSchema">Schema &uuml;berspringen</label>
+        <small>Constraints/Indizes sind schon angelegt.</small></div></div>
+    <button class="primary" type="submit" id="upBtn">ZIP importieren</button>
+  </form>
+  <div class="sep"></div>
+  <form id="formFolder">
+    <label for="impDataset">oder vorhandener Ordner (data/import/&hellip;)</label>
+    <select id="impDataset"></select>
+    <div class="check"><input type="checkbox" id="impSkipConvert" />
+      <div><label for="impSkipConvert">Konvertierung &uuml;berspringen</label>
+        <small>.csv liegen bereits vor.</small></div></div>
+    <button class="ghost" type="submit" id="impBtn">Ordner importieren</button>
+  </form>
+</div></div>
+
+<!-- Dialog: Neuer Lauf -->
+<div class="overlay" id="dlg-run"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Neuer Lauf</h3>
+  <div class="sub">SoD-Auswertung mit Parametern &mdash; F&uuml;llt intern die Parameter (kein JSON).</div>
+  <form id="formRun">
+    <div class="row">
+      <div><label for="ruleset">Ruleset</label><select id="ruleset"></select></div>
+      <div><label for="runDataset">System (dataset)</label><select id="runDataset"></select></div>
+    </div>
+    <div class="row">
+      <div><label for="asOf">Stichtag</label><input type="date" id="asOf" value="2023-12-31" /></div>
+      <div><label for="sleepDays">Sleeping (Tage)</label><input type="number" id="sleepDays" min="0" step="1" /></div>
+    </div>
+    <label for="userTypeProfile">Nutzertyp-Profil</label>
+    <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
+    <label for="orgProfile">Org-Profil</label>
+    <select id="orgProfile"></select>
+    <div class="hint">Org-Filterung noch nicht verdrahtet &mdash; wird auf (:Run) protokolliert.</div>
+    <div class="row">
+      <div><label for="minRank">Mindest-Kritikalit&auml;t</label>
+        <select id="minRank">
+          <option value="0">alle</option><option value="2">ab medium</option>
+          <option value="3">ab high</option><option value="4">ab critical</option>
+          <option value="5">nur very-high</option>
+        </select></div>
+      <div><label for="runId">Run-ID (optional)</label><input id="runId" placeholder="z. B. dialog-active" /></div>
+    </div>
+    <div class="check"><input type="checkbox" id="skipMaterialize" />
+      <div><label for="skipMaterialize">Materialisierung &uuml;berspringen</label>
+        <small>nur wenn „wer kann was" f&uuml;r den Stichtag schon vorliegt (schneller).</small></div></div>
+    <div class="check"><input type="checkbox" id="skipRulesetLoad" checked />
+      <div><label for="skipRulesetLoad">Ruleset-Laden &uuml;berspringen</label>
+        <small>Ruleset ist i. d. R. schon geladen.</small></div></div>
+    <button class="primary" type="submit" id="runBtn">Auswertung starten</button>
+  </form>
+</div></div>
+
+<!-- Dialog: Sichern -->
+<div class="overlay" id="dlg-backup"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Sichern &amp; Wiederherstellen</h3>
+  <div class="sub">Backup = ZIP der bereinigten Quelldaten. Restore = Re-Import. Ergebnisse separat als CSV (Ribbon).</div>
+  <label for="bkpDataset">Dataset</label>
+  <select id="bkpDataset"></select>
+  <div class="check"><input type="checkbox" id="backupClear" />
+    <div><label for="backupClear">danach leeren (Backup &amp; Clear)</label></div></div>
+  <button class="ghost" id="backupBtn">Backup erstellen</button>
+  <h2>Backups</h2>
+  <ul class="runs" id="backups"></ul>
+</div></div>
+
+<!-- Dialog: Verwalten -->
+<div class="overlay" id="dlg-manage"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Bereinigen</h3>
+  <div class="sub">Ruleset &amp; Schema bleiben in allen F&auml;llen erhalten.</div>
+  <label for="clrDataset">Dataset</label>
+  <select id="clrDataset"></select>
+  <button class="ghost" id="clearBtn">Dieses Dataset l&ouml;schen</button>
+  <button class="ghost danger" id="resetBtn">Alles zur&uuml;cksetzen</button>
+</div></div>
 
 <script>
 const $ = id => document.getElementById(id);
 const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
-let activeRunId = null;
+const doneTag = '<span class="tag low">fertig</span>';
+let activeRunId = null, runsById = {}, metaCache = { userTypeProfiles: [] };
 
 function opt(sel, value, text, title) {
   const o = document.createElement('option');
@@ -184,6 +241,20 @@ function opt(sel, value, text, title) {
   sel.appendChild(o);
 }
 
+/* Dialoge */
+function openDlg(id) { $(id).classList.add('open'); }
+function closeDlg() { document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open')); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeDlg(); }));
+document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
+$('cmdImport').onclick = () => openDlg('dlg-import');
+$('cmdRun').onclick = () => openDlg('dlg-run');
+$('cmdBackup').onclick = () => openDlg('dlg-backup');
+$('cmdManage').onclick = () => openDlg('dlg-manage');
+$('cmdRefresh').onclick = () => refreshAll();
+$('cmdExport').onclick = () => { if (activeRunId) location.href = '/findings/export?runId=' + encodeURIComponent(activeRunId); };
+
+/* Daten laden */
 async function loadMeta() {
   const meta = await api('/profiles');
   meta.rulesets.forEach(r => opt($('ruleset'), r.id, r.name));
@@ -191,43 +262,52 @@ async function loadMeta() {
   meta.userTypeProfiles.forEach(p => opt($('userTypeProfile'), p.name, p.name, p.description));
   meta.orgProfiles.forEach(p => opt($('orgProfile'), p.name, p.name, p.description));
   $('sleepDays').value = meta.sleepDays;
-  metaCache = meta;
-  showUtHint();
+  metaCache = meta; showUtHint();
 }
-
-async function refreshDatasets() {
-  const datasets = await api('/datasets');
-  for (const id of ['dataset', 'clrDataset']) {
-    const sel = $(id), cur = sel.value;
-    sel.innerHTML = '';
-    datasets.forEach(d => opt(sel, d, d));
-    if (datasets.includes(cur)) sel.value = cur;
-    else if (!datasets.length) opt(sel, '', '— keine —');
-  }
-  return datasets;
-}
-let metaCache = { userTypeProfiles: [] };
 function showUtHint() {
   const p = metaCache.userTypeProfiles.find(x => x.name === $('userTypeProfile').value);
   $('utHint').textContent = p ? p.description : '';
 }
 $('userTypeProfile').addEventListener('change', showUtHint);
 
-function critTag(c) {
-  const cls = (c || '').replace('-', '').toLowerCase();
-  return `<span class="tag ${cls}">${c || '?'}</span>`;
+async function refreshDatasets() {
+  const datasets = await api('/datasets');
+  for (const id of ['runDataset', 'clrDataset', 'bkpDataset']) {
+    const sel = $(id), cur = sel.value; sel.innerHTML = '';
+    datasets.forEach(d => opt(sel, d, d));
+    if (datasets.includes(cur)) sel.value = cur;
+    else if (!datasets.length) opt(sel, '', '— keine —');
+  }
+  return datasets;
+}
+async function loadImportFolders() {
+  const folders = await api('/import-folders');
+  const sel = $('impDataset'); sel.innerHTML = '';
+  folders.forEach(f => opt(sel, f.dataset, `${f.dataset} (${f.txt} txt / ${f.csv} csv)`));
+  if (!folders.length) opt(sel, '', '— kein Ordner —');
+}
+
+function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLowerCase()}">${c || '?'}</span>`; }
+
+function setKpis(j) {
+  $('kpis').innerHTML =
+    `<div class="kpi"><b>${j.findings ?? '–'}</b><span>Findings</span></div>`
+  + `<div class="kpi"><b>${j.rules ?? '–'}</b><span>betroffene Regeln</span></div>`
+  + `<div class="kpi"><b>${j.sleeping ?? '–'}</b><span>davon sleeping</span></div>`;
 }
 
 async function loadRuns() {
   const runs = await api('/runs');
+  runsById = {}; runs.forEach(r => runsById[r.runId] = r);
   const ul = $('runs');
   ul.innerHTML = runs.length ? '' : '<li class="muted" style="cursor:default">noch keine L&auml;ufe</li>';
   runs.forEach(r => {
     const li = document.createElement('li');
     if (r.runId === activeRunId) li.className = 'active';
     const ut = (r.userTypes && r.userTypes.length) ? r.userTypes.join('+') : 'alle';
-    li.innerHTML = `<span><b>${r.runId}</b> &middot; <small>${r.ruleset} / ${r.dataset}</small></span>`
-      + `<small>${ut}${r.excludeLocked ? ', aktiv' : ''} &middot; ${r.asOf}</small>`;
+    li.innerHTML = `<span><b>${r.runId}</b> &middot; <small>${r.ruleset}/${r.dataset}</small><br>`
+      + `<small class="muted">${ut}${r.excludeLocked ? ', aktiv' : ''} &middot; ${r.asOf}</small></span>`
+      + `<span><b>${r.findings}</b></span>`;
     li.onclick = () => showFindings(r.runId);
     ul.appendChild(li);
   });
@@ -235,7 +315,9 @@ async function loadRuns() {
 
 async function showFindings(runId) {
   activeRunId = runId;
+  $('cmdExport').disabled = false;
   document.querySelectorAll('.runs li').forEach(li => li.classList.remove('active'));
+  if (runsById[runId]) setKpis(runsById[runId]);
   const findings = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
   $('findingsMeta').textContent = `· ${runId} (${findings.length}${findings.length >= 500 ? '+, Top 500' : ''})`;
   const body = $('findingsBody');
@@ -249,176 +331,113 @@ async function showFindings(runId) {
   loadRuns();
 }
 
-function setKpis(j) {
-  $('kpis').innerHTML =
-    `<div class="kpi"><b>${j.findings ?? '–'}</b><span>Findings</span></div>`
-  + `<div class="kpi"><b>${j.rules ?? '–'}</b><span>betroffene Regeln</span></div>`
-  + `<div class="kpi"><b>${j.sleeping ?? '–'}</b><span>davon sleeping</span></div>`;
-}
-
-async function poll(jobId, st, onDone) {
-  while (true) {
-    const j = await api('/jobs/' + jobId);
-    if (j.status === 'done') { st.className = ''; await onDone(j); return; }
-    if (j.status === 'error') {
-      st.className = 'err'; st.style.display = 'block';
-      st.innerHTML = `<b>Fehler:</b> ${j.error}`;
-      return;
-    }
-    st.innerHTML = `<span class="spin"></span> Schritt: <b>${j.step || j.status}</b>&hellip;`;
-    await new Promise(r => setTimeout(r, 1500));
-  }
-}
-
-$('runForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = $('startBtn'); btn.disabled = true;
-  const st = $('status'); st.className = ''; st.style.display = 'block';
-  st.innerHTML = '<span class="spin"></span> Job wird gestartet&hellip;';
-  try {
-    const body = {
-      ruleset: $('ruleset').value,
-      dataset: $('dataset').value,
-      asOf: $('asOf').value,
-      userTypeProfile: $('userTypeProfile').value,
-      orgProfile: $('orgProfile').value,
-      sleepDays: parseInt($('sleepDays').value, 10),
-      minCriticalityRank: parseInt($('minRank').value, 10),
-      runId: $('runId').value.trim() || null,
-      skipMaterialize: $('skipMaterialize').checked,
-      skipRulesetLoad: $('skipRulesetLoad').checked,
-    };
-    const { jobId } = await api('/runs', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
-    await poll(jobId, st, async j => {
-      st.innerHTML = `<span class="tag low">fertig</span> Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings.`;
-      setKpis(j);
-      await showFindings(j.runId);
-    });
-  } catch (err) {
-    st.className = 'err'; st.style.display = 'block';
-    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-async function loadImportFolders() {
-  const folders = await api('/import-folders');
-  const sel = $('impDataset');
-  sel.innerHTML = '';
-  folders.forEach(f => opt(sel, f.dataset, `${f.dataset} (${f.txt} txt / ${f.csv} csv)`));
-  if (!folders.length) opt(sel, '', '— kein Import-Ordner gefunden —');
-  showImpHint();
-}
-function showImpHint() {
-  $('impHint').textContent = $('impDataset').value
-    ? 'SE16-.txt erwartet unter data/import/' + $('impDataset').value + '/' : '';
-}
-$('impDataset').addEventListener('change', showImpHint);
-
-$('importForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = $('importBtn'); btn.disabled = true;
-  const st = $('importStatus'); st.className = ''; st.style.display = 'block';
-  st.innerHTML = '<span class="spin"></span> Import-Job wird gestartet&hellip;';
-  try {
-    const body = {
-      dataset: $('impDataset').value,
-      lang: $('impLang').value.split(',').map(s => s.trim()).filter(Boolean),
-      skipConvert: $('skipConvert').checked,
-      skipSchema: $('skipSchema').checked,
-    };
-    const { jobId } = await api('/imports', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
-    await poll(jobId, st, async j => {
-      st.innerHTML = `<span class="tag low">fertig</span> <b>${j.dataset}</b> &mdash; `
-        + `${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`;
-      await refreshDatasets();   // neuer Stand verfuegbar
-      loadImportFolders();
-    });
-  } catch (err) {
-    st.className = 'err'; st.style.display = 'block';
-    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-async function refreshAll() {
-  await refreshDatasets();
-  await loadRuns();
-  await loadImportFolders();
-  await loadBackups();
-}
-
-async function runAdmin(url, st, confirmMsg, label, onDone) {
-  if (!confirm(confirmMsg)) return;
-  st.className = ''; st.style.display = 'block';
-  st.innerHTML = '<span class="spin"></span> ' + label + '&hellip;';
-  try {
-    const { jobId } = await api(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
-    await poll(jobId, st, async j => {
-      st.innerHTML = await onDone(j);
-      await refreshAll();
-      if (activeRunId) await showFindings(activeRunId).catch(() => {});
-    });
-  } catch (err) {
-    st.className = 'err'; st.style.display = 'block';
-    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
-  }
-}
-
-const doneTag = '<span class="tag low">fertig</span>';
-
 async function loadBackups() {
   const backups = await api('/backups');
   const ul = $('backups');
   ul.innerHTML = backups.length ? '' : '<li class="muted" style="cursor:default">noch keine Backups</li>';
   backups.forEach(b => {
-    const li = document.createElement('li');
-    li.style.cursor = 'default';
-    li.innerHTML = `<span><b>${b.dataset}</b><br><small>${b.createdAt} &middot; ${(b.sizeBytes / 1e6).toFixed(1)} MB</small></span>`
-      + `<span style="white-space:nowrap">`
-      + `<a href="#" class="rest" data-file="${b.file}" title="Wiederherstellen">&#8635;</a> `
+    const li = document.createElement('li'); li.style.cursor = 'default';
+    li.innerHTML = `<span><b>${b.dataset}</b><br><small class="muted">${b.createdAt} &middot; ${(b.sizeBytes / 1e6).toFixed(1)} MB</small></span>`
+      + `<span style="white-space:nowrap"><a href="#" class="rest" data-file="${b.file}" title="Wiederherstellen">&#8635;</a> `
       + `<a href="/backups/${encodeURIComponent(b.file)}/download" title="Herunterladen">&#8595;</a></span>`;
     ul.appendChild(li);
   });
   ul.querySelectorAll('a.rest').forEach(a => a.onclick = e => {
-    e.preventDefault();
-    const f = a.dataset.file;
-    runAdmin('/backups/' + encodeURIComponent(f) + '/restore', $('adminStatus'),
-      `Backup "${f}" wiederherstellen (Re-Import)?`, 'Wiederhergestellt',
+    e.preventDefault(); const f = a.dataset.file;
+    runJob('/backups/' + encodeURIComponent(f) + '/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' },
+      `Backup „${f}" wiederherstellen (Re-Import)?`,
       j => `${doneTag} <b>${j.dataset}</b> &mdash; ${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`);
   });
 }
 
+async function refreshAll() {
+  await refreshDatasets(); await loadRuns(); await loadImportFolders(); await loadBackups();
+}
+
+/* Job-Lauf mit globaler Statusanzeige */
+async function poll(jobId, onDone) {
+  const st = $('status'); st.style.display = 'block';
+  while (true) {
+    const j = await api('/jobs/' + jobId);
+    if (j.status === 'done') { st.className = ''; st.innerHTML = await onDone(j); await refreshAll();
+      if (activeRunId) await showFindings(activeRunId).catch(() => {}); return j; }
+    if (j.status === 'error') { st.className = 'err'; st.innerHTML = `<b>Fehler:</b> ${j.error}`; return j; }
+    st.innerHTML = `<span class="spin"></span> Schritt: <b>${j.step || j.status}</b>&hellip;`;
+    await new Promise(r => setTimeout(r, 1500));
+  }
+}
+
+async function runJob(url, fetchOpts, confirmMsg, onDone) {
+  if (confirmMsg && !confirm(confirmMsg)) return;
+  closeDlg();
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Job wird gestartet&hellip;';
+  try {
+    const { jobId } = await api(url, fetchOpts);
+    await poll(jobId, onDone);
+  } catch (err) {
+    st.className = 'err'; st.style.display = 'block';
+    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
+  }
+}
+const json = body => ({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+const importDone = j => `${doneTag} <b>${j.dataset}</b> &mdash; ${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`;
+
+/* Formulare */
+$('formUpload').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = $('upFile').files[0];
+  if (!f) { alert('Bitte eine ZIP-Datei wählen.'); return; }
+  closeDlg();
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Upload&hellip;';
+  try {
+    const fd = new FormData();
+    fd.append('file', f); fd.append('dataset', $('upDataset').value.trim());
+    fd.append('lang', $('upLang').value.trim()); fd.append('skipSchema', $('upSkipSchema').checked);
+    const { jobId } = await api('/imports/upload', { method: 'POST', body: fd });
+    await poll(jobId, importDone);
+  } catch (err) {
+    st.className = 'err'; st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
+  }
+});
+
+$('formFolder').addEventListener('submit', e => {
+  e.preventDefault();
+  const d = $('impDataset').value; if (!d) return;
+  runJob('/imports', json({ dataset: d, skipConvert: $('impSkipConvert').checked }), null, importDone);
+});
+
+$('formRun').addEventListener('submit', e => {
+  e.preventDefault();
+  runJob('/runs', json({
+    ruleset: $('ruleset').value, dataset: $('runDataset').value, asOf: $('asOf').value,
+    userTypeProfile: $('userTypeProfile').value, orgProfile: $('orgProfile').value,
+    sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
+    runId: $('runId').value.trim() || null,
+    skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
+  }), null, async j => { activeRunId = j.runId; return `${doneTag} Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings.`; });
+});
+
+$('backupBtn').addEventListener('click', () => {
+  const d = $('bkpDataset').value; if (!d) return;
+  const clear = $('backupClear').checked;
+  runJob('/datasets/' + encodeURIComponent(d) + '/backup' + (clear ? '?clear=true' : ''), { method: 'POST' },
+    clear ? `Backup von „${d}" erstellen und Dataset danach leeren?` : null,
+    j => `${doneTag} Backup <b>${j.backup}</b> (${j.tables} Tab., ${(j.sizeBytes / 1e6).toFixed(1)} MB)`
+       + (j.cleared ? ' &mdash; Dataset geleert.' : '.'));
+});
+
 $('clearBtn').addEventListener('click', () => {
-  const d = $('clrDataset').value;
-  if (!d) return;
-  runAdmin('/datasets/' + encodeURIComponent(d) + '/clear', $('adminStatus'),
-    `Dataset "${d}" wirklich löschen? (Ruleset & Schema bleiben.)`, `Dataset ${d} gelöscht`,
+  const d = $('clrDataset').value; if (!d) return;
+  runJob('/datasets/' + encodeURIComponent(d) + '/clear', { method: 'POST' },
+    `Dataset „${d}" wirklich löschen? (Ruleset & Schema bleiben.)`,
     j => `${doneTag} Dataset <b>${d}</b> gelöscht (${j.remaining} Rest-Knoten).`);
 });
 $('resetBtn').addEventListener('click', () =>
-  runAdmin('/reset', $('adminStatus'),
+  runJob('/reset', { method: 'POST' },
     'ALLE Daten (alle Datasets, Läufe, Findings) wirklich zurücksetzen? Ruleset & Schema bleiben.',
-    'Alles zurückgesetzt',
     j => `${doneTag} Zurückgesetzt — ${j.remaining} Rest-Knoten, Ruleset: ${j.rulesetQueries} Queries.`));
-
-$('backupBtn').addEventListener('click', () => {
-  const d = $('clrDataset').value;
-  if (!d) return;
-  const clear = $('backupClear').checked;
-  const msg = clear ? `Backup von "${d}" erstellen und Dataset danach leeren?`
-                    : `Backup von "${d}" erstellen?`;
-  runAdmin('/datasets/' + encodeURIComponent(d) + '/backup' + (clear ? '?clear=true' : ''),
-    $('adminStatus'), msg, 'Backup erstellt',
-    j => `${doneTag} Backup <b>${j.backup}</b> (${j.tables} Tabellen, ${(j.sizeBytes / 1e6).toFixed(1)} MB)`
-       + (j.cleared ? ' &mdash; Dataset geleert.' : '.'));
-});
 
 loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).catch(e =>
   document.body.insertAdjacentHTML('beforeend',

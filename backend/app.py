@@ -7,16 +7,20 @@ Bewusst MVP: In-Memory-Jobs (Single-Instance), Findings bleiben im Graph (kein e
 """
 import os
 import re
+import io
+import csv
 import json
 import uuid
+import shutil
 import zipfile
+import tempfile
 import datetime
 import threading
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 from neo4j import GraphDatabase
 
@@ -296,6 +300,34 @@ def do_restore(job_id: str, path: Path, dataset: str | None):
         jobs[job_id].update(status="error", error=str(e))
 
 
+def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], skip_schema: bool):
+    """Entpackt ein hochgeladenes ZIP (.csv und/oder .txt) nach data/import/<dataset> und importiert.
+    .txt vorhanden -> konvertieren; nur .csv -> Konvertierung ueberspringen."""
+    try:
+        jobs[job_id].update(status="running", step="unpack", dataset=dataset)
+        dest = DATA_DIR / dataset
+        dest.mkdir(parents=True, exist_ok=True)
+        extracted, has_txt = 0, False
+        with zipfile.ZipFile(zip_path) as z:
+            for n in z.namelist():
+                low = n.lower()
+                if low.endswith(".csv") or low.endswith(".txt"):
+                    (dest / Path(n).name).write_bytes(z.read(n))
+                    extracted += 1
+                    has_txt = has_txt or low.endswith(".txt")
+        if not extracted:
+            raise ValueError("ZIP enthielt keine .csv/.txt-Dateien")
+        do_import(job_id, ImportReq(dataset=dataset, lang=lang,
+                                    skipConvert=not has_txt, skipSchema=skip_schema))
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+    finally:
+        try:
+            os.remove(zip_path)
+        except OSError:
+            pass
+
+
 @app.get("/health")
 def health():
     with driver.session() as s:
@@ -326,8 +358,17 @@ def profiles_meta():
 @app.get("/runs")
 def list_runs():
     with driver.session() as s:
-        return [jsonable(dict(r["run"])) for r in s.run(
-            "MATCH (run:Run) RETURN run ORDER BY run.runId")]
+        out = []
+        for r in s.run(
+                "MATCH (run:Run) "
+                "CALL { WITH run MATCH (f:SoDConflict {runId:run.runId, dataset:run.dataset}) "
+                "  RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
+                "         sum(CASE WHEN f.userSleeping THEN 1 ELSE 0 END) AS sleeping } "
+                "RETURN run, findings, rules, sleeping ORDER BY run.runId"):
+            d = jsonable(dict(r["run"]))
+            d.update(findings=r["findings"], rules=r["rules"], sleeping=r["sleeping"])
+            out.append(d)
+        return out
 
 
 @app.get("/findings")
@@ -342,12 +383,54 @@ def findings(runId: str, minRank: int = 0, limit: int = 200):
             runId=runId, minRank=minRank, limit=limit)]
 
 
+@app.get("/findings/export")
+def export_findings(runId: str):
+    """Findings eines Laufs als CSV (Semikolon, UTF-8-BOM -> Excel-tauglich) — Ergebnis-Export
+    getrennt vom Quell-Backup."""
+    with driver.session() as s:
+        rows = list(s.run(
+            "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$r})-[:BASED_ON]->(rule:SoDRule) "
+            "RETURN u.id AS user, f.ruleId AS rule, f.ruleset AS ruleset, f.dataset AS dataset, "
+            "f.criticality AS criticality, coalesce(f.criticalityRank,0) AS criticalityRank, "
+            "coalesce(f.userSleeping,false) AS sleeping, f.reasonCode AS reasonCode "
+            "ORDER BY criticalityRank DESC, user", r=runId))
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter=";")
+    w.writerow(["user", "rule", "ruleset", "dataset", "criticality", "criticalityRank",
+                "sleeping", "reasonCode"])
+    for x in rows:
+        w.writerow([x["user"], x["rule"], x["ruleset"], x["dataset"], x["criticality"],
+                    x["criticalityRank"], x["sleeping"], x["reasonCode"]])
+    data = "﻿" + buf.getvalue()   # BOM, damit Excel UTF-8/Umlaute korrekt liest
+    return Response(content=data, media_type="text/csv; charset=utf-8",
+                   headers={"Content-Disposition": f'attachment; filename="findings_{runId}.csv"'})
+
+
 @app.post("/imports")
 def start_import(req: ImportReq):
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "queued", "kind": "import", "request": req.model_dump()}
     threading.Thread(target=do_import, args=(job_id, req), daemon=True).start()
     return {"jobId": job_id}
+
+
+@app.post("/imports/upload")
+async def upload_import(file: UploadFile = File(...), dataset: str = Form(""),
+                        lang: str = Form(""), skipSchema: bool = Form(False)):
+    """Import per ZIP-Upload: .csv/.txt im ZIP -> data/import/<dataset> -> Import-Job."""
+    ds = re.sub(r"[^A-Za-z0-9._-]", "_", dataset or Path(file.filename or "import").stem)
+    if not ds:
+        raise HTTPException(400, "dataset-Name leer/ungueltig")
+    tmp = Path(tempfile.gettempdir()) / f"upload_{uuid.uuid4().hex}.zip"
+    with open(tmp, "wb") as out:
+        shutil.copyfileobj(file.file, out)
+    langs = [c.strip() for c in lang.split(",") if c.strip()]
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "import",
+                    "request": {"dataset": ds, "upload": file.filename}}
+    threading.Thread(target=do_upload_import, args=(job_id, str(tmp), ds, langs, skipSchema),
+                     daemon=True).start()
+    return {"jobId": job_id, "dataset": ds}
 
 
 @app.get("/import-folders")
