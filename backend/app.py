@@ -197,6 +197,32 @@ def do_import(job_id: str, req: ImportReq):
         jobs[job_id].update(status="error", error=str(e))
 
 
+def do_clear(job_id: str, dataset: str):
+    try:
+        jobs[job_id].update(status="running", step="clear", dataset=dataset)
+        with driver.session() as s:
+            run_file(s, "admin/clear_dataset.cypher", {"dataset": dataset})
+            rec = s.run("MATCH (n {dataset:$d}) RETURN count(n) AS remaining", d=dataset).single()
+        jobs[job_id].update(status="done", step="done", remaining=rec["remaining"])
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
+def do_reset(job_id: str):
+    try:
+        jobs[job_id].update(status="running", step="reset")
+        with driver.session() as s:
+            run_file(s, "admin/reset_data.cypher", {})
+            rec = s.run("MATCH (n) WHERE NOT n:Query AND NOT n:SoDRule AND NOT n:AuthReq "
+                        "AND NOT n:Clause AND NOT n:__Neo4jMigration "
+                        "RETURN count(n) AS remaining").single()
+            q = s.run("MATCH (q:Query) RETURN count(q) AS queries").single()
+        jobs[job_id].update(status="done", step="done",
+                            remaining=rec["remaining"], rulesetQueries=q["queries"])
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
 @app.get("/health")
 def health():
     with driver.session() as s:
@@ -262,6 +288,24 @@ def import_folders():
         if txt or csv:   # nur echte Import-Ordner (SE16-.txt oder bereits konvertierte .csv)
             out.append({"dataset": d.name, "txt": txt, "csv": csv})
     return out
+
+
+@app.post("/datasets/{dataset}/clear")
+def clear_dataset(dataset: str):
+    """Loescht ein Dataset (inkl. Runs/Findings); Ruleset + Schema bleiben."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "clear", "request": {"dataset": dataset}}
+    threading.Thread(target=do_clear, args=(job_id, dataset), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.post("/reset")
+def reset_data():
+    """Setzt alle Daten zurueck (alle Datasets/Runs/Findings); Ruleset + Schema bleiben."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "reset", "request": {}}
+    threading.Thread(target=do_reset, args=(job_id,), daemon=True).start()
+    return {"jobId": job_id}
 
 
 @app.post("/runs")

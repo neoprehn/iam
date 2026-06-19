@@ -142,6 +142,15 @@
       <button type="submit" id="startBtn">Auswertung starten</button>
     </form>
     <div id="status"></div>
+
+    <h2 style="margin-top:28px;border-top:1px solid var(--line);padding-top:20px">Daten bereinigen</h2>
+    <label for="clrDataset">Dataset</label>
+    <select id="clrDataset"></select>
+    <button class="ghost" id="clearBtn" style="margin-top:10px">Dieses Dataset l&ouml;schen</button>
+    <button class="ghost" id="resetBtn"
+      style="margin-top:8px;border-color:var(--crit);color:#ff8a8e">Alles zur&uuml;cksetzen</button>
+    <div class="hint">Ruleset &amp; Schema bleiben in beiden F&auml;llen erhalten.</div>
+    <div id="adminStatus"></div>
   </aside>
 
   <section class="content">
@@ -168,15 +177,26 @@ function opt(sel, value, text, title) {
 }
 
 async function loadMeta() {
-  const [meta, datasets] = await Promise.all([api('/profiles'), api('/datasets')]);
+  const meta = await api('/profiles');
   meta.rulesets.forEach(r => opt($('ruleset'), r.id, r.name));
   if (meta.defaultRuleset) $('ruleset').value = meta.defaultRuleset;
-  datasets.forEach(d => opt($('dataset'), d, d));
   meta.userTypeProfiles.forEach(p => opt($('userTypeProfile'), p.name, p.name, p.description));
   meta.orgProfiles.forEach(p => opt($('orgProfile'), p.name, p.name, p.description));
   $('sleepDays').value = meta.sleepDays;
   metaCache = meta;
   showUtHint();
+}
+
+async function refreshDatasets() {
+  const datasets = await api('/datasets');
+  for (const id of ['dataset', 'clrDataset']) {
+    const sel = $(id), cur = sel.value;
+    sel.innerHTML = '';
+    datasets.forEach(d => opt(sel, d, d));
+    if (datasets.includes(cur)) sel.value = cur;
+    else if (!datasets.length) opt(sel, '', '— keine —');
+  }
+  return datasets;
 }
 let metaCache = { userTypeProfiles: [] };
 function showUtHint() {
@@ -308,10 +328,7 @@ $('importForm').addEventListener('submit', async e => {
     await poll(jobId, st, async j => {
       st.innerHTML = `<span class="tag low">fertig</span> <b>${j.dataset}</b> &mdash; `
         + `${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`;
-      // Dataset-Dropdown der Auswertung auffrischen (neuer Stand verfuegbar)
-      const datasets = await api('/datasets');
-      const dsel = $('dataset'); const cur = dsel.value; dsel.innerHTML = '';
-      datasets.forEach(d => opt(dsel, d, d)); if (datasets.includes(cur)) dsel.value = cur;
+      await refreshDatasets();   // neuer Stand verfuegbar
       loadImportFolders();
     });
   } catch (err) {
@@ -322,7 +339,37 @@ $('importForm').addEventListener('submit', async e => {
   }
 });
 
-loadMeta().then(loadRuns).then(loadImportFolders).catch(e =>
+async function runAdmin(url, st, confirmMsg, label) {
+  if (!confirm(confirmMsg)) return;
+  st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> ' + label + '&hellip;';
+  try {
+    const { jobId } = await api(url, { method: 'POST' });
+    await poll(jobId, st, async j => {
+      st.innerHTML = `<span class="tag low">fertig</span> ${label} &mdash; `
+        + `${j.remaining} Rest-Knoten` + (j.rulesetQueries != null ? `, Ruleset: ${j.rulesetQueries} Queries` : '') + '.';
+      await refreshDatasets();
+      await loadRuns();
+      if (activeRunId) await showFindings(activeRunId).catch(() => {});
+    });
+  } catch (err) {
+    st.className = 'err'; st.style.display = 'block';
+    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
+  }
+}
+
+$('clearBtn').addEventListener('click', () => {
+  const d = $('clrDataset').value;
+  if (!d) return;
+  runAdmin('/datasets/' + encodeURIComponent(d) + '/clear', $('adminStatus'),
+    `Dataset "${d}" wirklich löschen? (Ruleset & Schema bleiben.)`, `Dataset ${d} gelöscht`);
+});
+$('resetBtn').addEventListener('click', () =>
+  runAdmin('/reset', $('adminStatus'),
+    'ALLE Daten (alle Datasets, Läufe, Findings) wirklich zurücksetzen? Ruleset & Schema bleiben.',
+    'Alles zurückgesetzt'));
+
+loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).catch(e =>
   document.body.insertAdjacentHTML('beforeend',
     '<p style="color:#ff8a8e;padding:20px">Backend nicht erreichbar: ' + JSON.stringify(e) + '</p>'));
 </script>
