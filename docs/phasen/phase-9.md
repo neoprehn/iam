@@ -46,6 +46,7 @@ Befehl öffnet einen **Dialog**, der **Hauptbereich** zeigt durchgehend die **Er
 | **3 Ergebnisse** | Aktualisieren · Export CSV | Läufe/Findings neu laden · Findings des aktiven Laufs als CSV |
 | **4 Sichern** | Backup / Restore | Quelldaten-ZIP erstellen (opt. „Backup & Clear"), wiederherstellen, herunterladen |
 | **5 Verwalten** | Bereinigen | Dataset löschen · alles zurücksetzen (Ruleset & Schema bleiben) |
+| **6 Admin** | Admin | Regelwerke/Konnektoren: zeigt geladene Rulesets; Ruleset-Editor & Filterset-Import *(geplant)* |
 
 ## API-Oberfläche (Runner als Endpunkte)
 
@@ -100,6 +101,19 @@ Schema einmalig anlegen (oder über den ersten Import, der es idempotent sichers
 ```bash
 docker compose run --rm migrations
 ```
+
+## Deployment & Betrieb
+
+Verteilungseinheit ist **Docker Compose** (lokal, ein Befehl). Der Stack ist **Kubernetes-fähig**
+(z. B. interner, abgesicherter Unternehmens-Cluster): `neo4j` als `StatefulSet` mit `PVC`
+(Community = Single-Instance), `backend` als `Deployment` (vorerst 1 Replica — Jobs liegen
+in-memory), Passwort als `Secret`, `data/import` + `backups` als `PVC`, Code/Config ins Image
+gebacken. Der Zugang läuft **clusterintern bzw. hinter Unternehmens-Auth** (SSO/OIDC am Ingress) —
+„public" meint den internen, gesicherten Cluster, **nicht** das offene Internet.
+
+**Bewusst kein eigenes Benutzer-/Berechtigungskonzept:** die App läuft lokal bzw. wird als Container
+verteilt; der Zugriff wird über die Umgebung abgesichert. Eine Auth-Schicht kommt erst, wenn die App
+mehrbenutzerfähig zentral betrieben wird.
 
 ## Status & Offenes
 

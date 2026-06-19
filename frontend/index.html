@@ -11,10 +11,22 @@
   body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
   a { color:var(--accent); }
 
-  /* Kopf + Ribbon */
-  header { padding:10px 20px 0; }
-  header h1 { font-size:17px; margin:0; }
-  header span { color:var(--muted); font-size:12px; }
+  /* Banner */
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 22px; background:linear-gradient(110deg,#141d2b 0%,#0f1419 60%);
+    border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:13px; }
+  .brand .mark { width:38px; height:38px; border-radius:9px; flex:none;
+    background:linear-gradient(135deg,var(--accent),#7b5cf5); display:flex; align-items:center;
+    justify-content:center; font-weight:800; font-size:17px; color:#fff; letter-spacing:.5px;
+    box-shadow:0 2px 10px rgba(76,139,245,.35); }
+  .brand .title { font-size:18px; font-weight:700; line-height:1.15; }
+  .brand .title b { color:var(--accent); font-weight:700; }
+  .brand .tag { color:var(--muted); font-size:12px; margin-top:1px; }
+  .bctx { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .chip { font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    border-radius:20px; padding:3px 11px; white-space:nowrap; }
+  .chip .dot { color:var(--ok); }
   .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
     background:var(--panel); margin-top:8px; overflow-x:auto; }
   .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
@@ -90,8 +102,17 @@
 </head>
 <body>
 <header>
-  <h1>IAM &mdash; SAP-Berechtigungsanalyse</h1>
-  <span>Phase 9 &middot; Lebenszyklus: Daten &rarr; Auswertung &rarr; Ergebnisse &rarr; Sichern &rarr; Verwalten</span>
+  <div class="brand">
+    <div class="mark">IAM</div>
+    <div>
+      <div class="title"><b>IAM</b> &middot; SAP-Berechtigungs- &amp; SoD-Analyse</div>
+      <div class="tag">Graphbasierte Auswertung &middot; lokal &middot; Vertrauensgrenze gewahrt</div>
+    </div>
+  </div>
+  <div class="bctx">
+    <span class="chip" id="chipConn"><span class="dot">&#9679;</span> verbunden</span>
+    <span class="chip" id="chipData">&ndash;</span>
+  </div>
 </header>
 
 <nav class="ribbon">
@@ -120,6 +141,11 @@
     <div class="cmds">
       <button class="cmd danger" id="cmdManage"><span class="ico">&#129529;</span>Bereinigen</button>
     </div><div class="lbl">5 &middot; Verwalten</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdAdmin"><span class="ico">&#9881;</span>Admin</button>
+    </div><div class="lbl">6 &middot; Admin</div>
   </div>
 </nav>
 
@@ -229,6 +255,22 @@
   <button class="ghost danger" id="resetBtn">Alles zur&uuml;cksetzen</button>
 </div></div>
 
+<!-- Dialog: Admin -->
+<div class="overlay" id="dlg-admin"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Admin</h3>
+  <div class="sub">Regelwerke &amp; Konnektoren. Aktuell aktiv: geladene Rulesets; weitere Funktionen geplant.</div>
+  <h2 style="margin-top:6px">Geladene Rulesets</h2>
+  <ul class="runs" id="adminRulesets"></ul>
+  <h2>Geplant</h2>
+  <button class="ghost" disabled title="kommt später">SoD-Filter nachjustieren (Ruleset-Editor)</button>
+  <button class="ghost" disabled title="kommt später">Neues Filterset importieren</button>
+  <div class="hint">Weitere Filtersets/Konnektoren perspektivisch: SAP&nbsp;S/4HANA,
+    Azure&nbsp;AD&nbsp;/&nbsp;Entra, Microsoft&nbsp;Dynamics, Salesforce &hellip; &mdash; die App ist
+    pro System ein eigenes Ruleset; das Datenmodell bleibt gleich.</div>
+  <div class="hint" style="margin-top:8px">Kein eigenes Benutzer-/Berechtigungskonzept: die App
+    läuft lokal bzw. wird als Container verteilt (Zugriff über die Umgebung abgesichert).</div>
+</div></div>
+
 <script>
 const $ = id => document.getElementById(id);
 const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
@@ -253,6 +295,19 @@ $('cmdBackup').onclick = () => openDlg('dlg-backup');
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
 $('cmdExport').onclick = () => { if (activeRunId) location.href = '/findings/export?runId=' + encodeURIComponent(activeRunId); };
+$('cmdAdmin').onclick = () => { renderAdminRulesets(); openDlg('dlg-admin'); };
+
+function renderAdminRulesets() {
+  const ul = $('adminRulesets');
+  const rs = metaCache.rulesets || [];
+  ul.innerHTML = rs.length ? '' : '<li class="muted" style="cursor:default">keine Rulesets gefunden</li>';
+  rs.forEach(r => {
+    const li = document.createElement('li'); li.style.cursor = 'default';
+    li.innerHTML = `<span><b>${r.name}</b><br><small class="muted">${r.id} &middot; ${r.dir}</small></span>`
+      + (r.id === metaCache.defaultRuleset ? '<span class="tag low">Standard</span>' : '');
+    ul.appendChild(li);
+  });
+}
 
 /* Daten laden */
 async function loadMeta() {
@@ -270,6 +325,11 @@ function showUtHint() {
 }
 $('userTypeProfile').addEventListener('change', showUtHint);
 
+let ctx = { datasets: 0, runs: 0 };
+function updateCtxChip() {
+  $('chipData').textContent = `${ctx.datasets} Dataset${ctx.datasets === 1 ? '' : 's'} · ${ctx.runs} Lauf${ctx.runs === 1 ? '' : 'läufe'}`;
+}
+
 async function refreshDatasets() {
   const datasets = await api('/datasets');
   for (const id of ['runDataset', 'clrDataset', 'bkpDataset']) {
@@ -278,6 +338,7 @@ async function refreshDatasets() {
     if (datasets.includes(cur)) sel.value = cur;
     else if (!datasets.length) opt(sel, '', '— keine —');
   }
+  ctx.datasets = datasets.length; updateCtxChip();
   return datasets;
 }
 async function loadImportFolders() {
@@ -299,6 +360,7 @@ function setKpis(j) {
 async function loadRuns() {
   const runs = await api('/runs');
   runsById = {}; runs.forEach(r => runsById[r.runId] = r);
+  ctx.runs = runs.length; updateCtxChip();
   const ul = $('runs');
   ul.innerHTML = runs.length ? '' : '<li class="muted" style="cursor:default">noch keine L&auml;ufe</li>';
   runs.forEach(r => {
