@@ -143,14 +143,22 @@
     </form>
     <div id="status"></div>
 
-    <h2 style="margin-top:28px;border-top:1px solid var(--line);padding-top:20px">Daten bereinigen</h2>
+    <h2 style="margin-top:28px;border-top:1px solid var(--line);padding-top:20px">Daten verwalten</h2>
     <label for="clrDataset">Dataset</label>
     <select id="clrDataset"></select>
-    <button class="ghost" id="clearBtn" style="margin-top:10px">Dieses Dataset l&ouml;schen</button>
+    <div class="check">
+      <input type="checkbox" id="backupClear" />
+      <div><label for="backupClear">danach leeren (Backup &amp; Clear)</label></div>
+    </div>
+    <button class="ghost" id="backupBtn" style="margin-top:10px">Backup erstellen</button>
+    <button class="ghost" id="clearBtn" style="margin-top:8px">Dieses Dataset l&ouml;schen</button>
     <button class="ghost" id="resetBtn"
       style="margin-top:8px;border-color:var(--crit);color:#ff8a8e">Alles zur&uuml;cksetzen</button>
-    <div class="hint">Ruleset &amp; Schema bleiben in beiden F&auml;llen erhalten.</div>
+    <div class="hint">Ruleset &amp; Schema bleiben in allen F&auml;llen erhalten.</div>
     <div id="adminStatus"></div>
+
+    <h2 style="margin-top:24px">Backups</h2>
+    <ul class="runs" id="backups"></ul>
   </aside>
 
   <section class="content">
@@ -339,17 +347,22 @@ $('importForm').addEventListener('submit', async e => {
   }
 });
 
-async function runAdmin(url, st, confirmMsg, label) {
+async function refreshAll() {
+  await refreshDatasets();
+  await loadRuns();
+  await loadImportFolders();
+  await loadBackups();
+}
+
+async function runAdmin(url, st, confirmMsg, label, onDone) {
   if (!confirm(confirmMsg)) return;
   st.className = ''; st.style.display = 'block';
   st.innerHTML = '<span class="spin"></span> ' + label + '&hellip;';
   try {
-    const { jobId } = await api(url, { method: 'POST' });
+    const { jobId } = await api(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     await poll(jobId, st, async j => {
-      st.innerHTML = `<span class="tag low">fertig</span> ${label} &mdash; `
-        + `${j.remaining} Rest-Knoten` + (j.rulesetQueries != null ? `, Ruleset: ${j.rulesetQueries} Queries` : '') + '.';
-      await refreshDatasets();
-      await loadRuns();
+      st.innerHTML = await onDone(j);
+      await refreshAll();
       if (activeRunId) await showFindings(activeRunId).catch(() => {});
     });
   } catch (err) {
@@ -358,18 +371,56 @@ async function runAdmin(url, st, confirmMsg, label) {
   }
 }
 
+const doneTag = '<span class="tag low">fertig</span>';
+
+async function loadBackups() {
+  const backups = await api('/backups');
+  const ul = $('backups');
+  ul.innerHTML = backups.length ? '' : '<li class="muted" style="cursor:default">noch keine Backups</li>';
+  backups.forEach(b => {
+    const li = document.createElement('li');
+    li.style.cursor = 'default';
+    li.innerHTML = `<span><b>${b.dataset}</b><br><small>${b.createdAt} &middot; ${(b.sizeBytes / 1e6).toFixed(1)} MB</small></span>`
+      + `<span style="white-space:nowrap">`
+      + `<a href="#" class="rest" data-file="${b.file}" title="Wiederherstellen">&#8635;</a> `
+      + `<a href="/backups/${encodeURIComponent(b.file)}/download" title="Herunterladen">&#8595;</a></span>`;
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll('a.rest').forEach(a => a.onclick = e => {
+    e.preventDefault();
+    const f = a.dataset.file;
+    runAdmin('/backups/' + encodeURIComponent(f) + '/restore', $('adminStatus'),
+      `Backup "${f}" wiederherstellen (Re-Import)?`, 'Wiederhergestellt',
+      j => `${doneTag} <b>${j.dataset}</b> &mdash; ${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`);
+  });
+}
+
 $('clearBtn').addEventListener('click', () => {
   const d = $('clrDataset').value;
   if (!d) return;
   runAdmin('/datasets/' + encodeURIComponent(d) + '/clear', $('adminStatus'),
-    `Dataset "${d}" wirklich löschen? (Ruleset & Schema bleiben.)`, `Dataset ${d} gelöscht`);
+    `Dataset "${d}" wirklich löschen? (Ruleset & Schema bleiben.)`, `Dataset ${d} gelöscht`,
+    j => `${doneTag} Dataset <b>${d}</b> gelöscht (${j.remaining} Rest-Knoten).`);
 });
 $('resetBtn').addEventListener('click', () =>
   runAdmin('/reset', $('adminStatus'),
     'ALLE Daten (alle Datasets, Läufe, Findings) wirklich zurücksetzen? Ruleset & Schema bleiben.',
-    'Alles zurückgesetzt'));
+    'Alles zurückgesetzt',
+    j => `${doneTag} Zurückgesetzt — ${j.remaining} Rest-Knoten, Ruleset: ${j.rulesetQueries} Queries.`));
 
-loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).catch(e =>
+$('backupBtn').addEventListener('click', () => {
+  const d = $('clrDataset').value;
+  if (!d) return;
+  const clear = $('backupClear').checked;
+  const msg = clear ? `Backup von "${d}" erstellen und Dataset danach leeren?`
+                    : `Backup von "${d}" erstellen?`;
+  runAdmin('/datasets/' + encodeURIComponent(d) + '/backup' + (clear ? '?clear=true' : ''),
+    $('adminStatus'), msg, 'Backup erstellt',
+    j => `${doneTag} Backup <b>${j.backup}</b> (${j.tables} Tabellen, ${(j.sizeBytes / 1e6).toFixed(1)} MB)`
+       + (j.cleared ? ' &mdash; Dataset geleert.' : '.'));
+});
+
+loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).catch(e =>
   document.body.insertAdjacentHTML('beforeend',
     '<p style="color:#ff8a8e;padding:20px">Backend nicht erreichbar: ' + JSON.stringify(e) + '</p>'));
 </script>

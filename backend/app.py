@@ -6,14 +6,17 @@ asynchronen Job. Plattformunabhaengig im Container; ersetzt die PowerShell-Runne
 Bewusst MVP: In-Memory-Jobs (Single-Instance), Findings bleiben im Graph (kein eigener Store).
 """
 import os
+import re
 import json
 import uuid
+import zipfile
 import datetime
 import threading
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from neo4j import GraphDatabase
 
@@ -28,6 +31,7 @@ CYPHER_DIR = Path(os.environ.get("CYPHER_DIR", "/app/cypher"))
 LOAD_DIR = Path(os.environ.get("LOAD_DIR", "/app/load"))
 MIGRATIONS_DIR = Path(os.environ.get("MIGRATIONS_DIR", "/app/migrations"))
 DATA_DIR = Path(os.environ.get("DATA_DIR", "/app/data/import"))
+BACKUP_DIR = Path(os.environ.get("BACKUP_DIR", "/app/backups"))
 FRONTEND_DIR = Path(os.environ.get("FRONTEND_DIR", "/app/frontend"))
 DEFAULT_LANG = [c.strip() for c in os.environ.get("IMPORT_LANG", "DE,DEU,D").split(",") if c.strip()]
 
@@ -223,6 +227,75 @@ def do_reset(job_id: str):
         jobs[job_id].update(status="error", error=str(e))
 
 
+# --- Backup/Restore (Quelldaten-Ebene) -------------------------------------------------
+# Backup = ZIP der konvertierten, credential-bereinigten .csv eines Datasets (+ manifest.json);
+# Restore = entpacken + deterministischer Re-Import. Online, transportabel (eine Datei), trust-aware
+# (nur bereinigte .csv, nie die rohen .txt). Findings sind regenerierbar (neu auswerten nach Restore).
+_SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
+
+
+def _backup_path(file: str) -> Path:
+    if not _SAFE_NAME.match(file) or not file.endswith(".zip"):
+        raise HTTPException(400, "ungueltiger Dateiname")
+    p = (BACKUP_DIR / file).resolve()
+    if p.parent != BACKUP_DIR.resolve() or not p.is_file():
+        raise HTTPException(404, "Backup nicht gefunden")
+    return p
+
+
+def do_backup(job_id: str, dataset: str, clear: bool):
+    try:
+        folder = DATA_DIR / dataset
+        if not folder.is_dir():
+            raise ValueError(f"Import-Ordner fehlt: data/import/{dataset}")
+        jobs[job_id].update(status="running", step="backup", dataset=dataset)
+        csvs = sorted(folder.glob("*.csv"))
+        if not csvs:   # nur .txt vorhanden -> erst konvertieren (bereinigte .csv erzeugen)
+            convert.convert_folder(folder, required_config=CONFIG_DIR / "required_tables.json")
+            csvs = sorted(folder.glob("*.csv"))
+        if not csvs:
+            raise ValueError("keine .csv/.txt zum Sichern gefunden")
+
+        BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+        ts = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        name = f"{dataset}__{ts}.zip"
+        manifest = {"dataset": dataset, "createdAt": datetime.datetime.now().isoformat(timespec="seconds"),
+                    "tables": [{"table": c.stem, "bytes": c.stat().st_size} for c in csvs]}
+        with zipfile.ZipFile(BACKUP_DIR / name, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
+            for c in csvs:
+                z.write(c, arcname=f"csv/{c.name}")
+        jobs[job_id].update(backup=name, sizeBytes=(BACKUP_DIR / name).stat().st_size, tables=len(csvs))
+
+        if clear:   # "Backup & Clear": Graph des Datasets leeren (Ruleset/Schema bleiben)
+            jobs[job_id]["step"] = "clear"
+            with driver.session() as s:
+                run_file(s, "admin/clear_dataset.cypher", {"dataset": dataset})
+            jobs[job_id]["cleared"] = True
+        jobs[job_id].update(status="done", step="done")
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
+def do_restore(job_id: str, path: Path, dataset: str | None):
+    try:
+        jobs[job_id].update(status="running", step="unpack")
+        with zipfile.ZipFile(path) as z:
+            manifest = json.loads(z.read("manifest.json"))
+            target = dataset or manifest["dataset"]
+            if not _SAFE_NAME.match(target):
+                raise ValueError(f"ungueltiger Ziel-Dataset-Name: {target}")
+            dest = DATA_DIR / target
+            dest.mkdir(parents=True, exist_ok=True)
+            for n in z.namelist():
+                if n.startswith("csv/") and n.endswith(".csv"):
+                    (dest / Path(n).name).write_bytes(z.read(n))
+        # .csv liegen jetzt vor -> Re-Import ohne Konvertierung (Schema idempotent sicherstellen)
+        do_import(job_id, ImportReq(dataset=target, skipConvert=True, skipSchema=False))
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
 @app.get("/health")
 def health():
     with driver.session() as s:
@@ -305,6 +378,45 @@ def reset_data():
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "queued", "kind": "reset", "request": {}}
     threading.Thread(target=do_reset, args=(job_id,), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.post("/datasets/{dataset}/backup")
+def backup_dataset(dataset: str, clear: bool = False):
+    """Sichert die .csv eines Datasets als ZIP; clear=true leert danach den Graph (Backup & Clear)."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "backup", "request": {"dataset": dataset, "clear": clear}}
+    threading.Thread(target=do_backup, args=(job_id, dataset, clear), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.get("/backups")
+def list_backups():
+    if not BACKUP_DIR.exists():
+        return []
+    out = []
+    for p in sorted(BACKUP_DIR.glob("*.zip"), key=lambda x: x.stat().st_mtime, reverse=True):
+        st = p.stat()
+        out.append({"file": p.name, "dataset": p.name.split("__")[0], "sizeBytes": st.st_size,
+                    "createdAt": datetime.datetime.fromtimestamp(st.st_mtime).isoformat(timespec="seconds")})
+    return out
+
+
+@app.get("/backups/{file}/download")
+def download_backup(file: str):
+    return FileResponse(_backup_path(file), filename=file, media_type="application/zip")
+
+
+class RestoreReq(BaseModel):
+    dataset: str | None = None      # Ziel-Dataset (Default: aus dem Manifest des Backups)
+
+
+@app.post("/backups/{file}/restore")
+def restore_backup(file: str, req: RestoreReq):
+    path = _backup_path(file)
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "restore", "request": {"file": file, "dataset": req.dataset}}
+    threading.Thread(target=do_restore, args=(job_id, path, req.dataset), daemon=True).start()
     return {"jobId": job_id}
 
 

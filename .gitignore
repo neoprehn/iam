@@ -1,5 +1,6 @@
 # Mandantendaten, Secrets, Dumps — niemals ins Repo (AE-01)
 /data/
+/backups/
 .env
 *.dump
 

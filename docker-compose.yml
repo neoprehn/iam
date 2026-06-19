@@ -67,6 +67,7 @@ services:
       - ./load:/app/load:ro           # Load-Skripte (Import-Job)
       - ./migrations:/app/migrations:ro  # Schema (idempotent, Import-Job)
       - ./data/import:/app/data/import   # SE16-.txt rein, .csv-Konvertat raus (RW) — bleibt lokal
+      - ./backups:/app/backups        # Dataset-Backups (.zip der bereinigten .csv) — bleibt lokal
       - ./frontend:/app/frontend:ro   # Minimale UI (statisch, vom Backend ausgeliefert)
     restart: unless-stopped
 
