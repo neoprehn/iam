@@ -60,12 +60,36 @@
 </head>
 <body>
 <header>
-  <h1>IAM &mdash; SoD-Auswertung</h1>
-  <span>Phase 9 &middot; minimale UI &uuml;ber die Backend-API</span>
+  <h1>IAM &mdash; SAP-Berechtigungsanalyse</h1>
+  <span>Phase 9 &middot; minimale UI &uuml;ber die Backend-API (Import &amp; SoD-Auswertung)</span>
 </header>
 <main>
   <aside class="side">
-    <h2>Auswertung starten</h2>
+    <h2>Import starten</h2>
+    <form id="importForm">
+      <label for="impDataset">System (Import-Ordner)</label>
+      <select id="impDataset"></select>
+      <div class="hint" id="impHint"></div>
+
+      <label for="impLang">Sprachen (SPRAS/LANGU)</label>
+      <input id="impLang" value="DE,DEU,D" />
+
+      <div class="check">
+        <input type="checkbox" id="skipConvert" />
+        <div><label for="skipConvert">Konvertierung &uuml;berspringen</label>
+          <small>.csv liegen bereits vor (nur laden).</small></div>
+      </div>
+      <div class="check">
+        <input type="checkbox" id="skipSchema" />
+        <div><label for="skipSchema">Schema &uuml;berspringen</label>
+          <small>Constraints/Indizes sind schon angelegt.</small></div>
+      </div>
+
+      <button type="submit" id="importBtn">Import starten</button>
+    </form>
+    <div id="importStatus"></div>
+
+    <h2 style="margin-top:28px;border-top:1px solid var(--line);padding-top:20px">Auswertung starten</h2>
     <form id="runForm">
       <label for="ruleset">Ruleset</label>
       <select id="ruleset"></select>
@@ -204,16 +228,10 @@ function setKpis(j) {
   + `<div class="kpi"><b>${j.sleeping ?? '–'}</b><span>davon sleeping</span></div>`;
 }
 
-async function poll(jobId) {
-  const st = $('status');
+async function poll(jobId, st, onDone) {
   while (true) {
     const j = await api('/jobs/' + jobId);
-    if (j.status === 'done') {
-      st.innerHTML = `<span class="tag low">fertig</span> Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings.`;
-      setKpis(j);
-      await showFindings(j.runId);
-      return;
-    }
+    if (j.status === 'done') { st.className = ''; await onDone(j); return; }
     if (j.status === 'error') {
       st.className = 'err'; st.style.display = 'block';
       st.innerHTML = `<b>Fehler:</b> ${j.error}`;
@@ -245,7 +263,11 @@ $('runForm').addEventListener('submit', async e => {
     const { jobId } = await api('/runs', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
     });
-    await poll(jobId);
+    await poll(jobId, st, async j => {
+      st.innerHTML = `<span class="tag low">fertig</span> Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings.`;
+      setKpis(j);
+      await showFindings(j.runId);
+    });
   } catch (err) {
     st.className = 'err'; st.style.display = 'block';
     st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
@@ -254,7 +276,53 @@ $('runForm').addEventListener('submit', async e => {
   }
 });
 
-loadMeta().then(loadRuns).catch(e =>
+async function loadImportFolders() {
+  const folders = await api('/import-folders');
+  const sel = $('impDataset');
+  sel.innerHTML = '';
+  folders.forEach(f => opt(sel, f.dataset, `${f.dataset} (${f.txt} txt / ${f.csv} csv)`));
+  if (!folders.length) opt(sel, '', '— kein Import-Ordner gefunden —');
+  showImpHint();
+}
+function showImpHint() {
+  $('impHint').textContent = $('impDataset').value
+    ? 'SE16-.txt erwartet unter data/import/' + $('impDataset').value + '/' : '';
+}
+$('impDataset').addEventListener('change', showImpHint);
+
+$('importForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('importBtn'); btn.disabled = true;
+  const st = $('importStatus'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Import-Job wird gestartet&hellip;';
+  try {
+    const body = {
+      dataset: $('impDataset').value,
+      lang: $('impLang').value.split(',').map(s => s.trim()).filter(Boolean),
+      skipConvert: $('skipConvert').checked,
+      skipSchema: $('skipSchema').checked,
+    };
+    const { jobId } = await api('/imports', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    await poll(jobId, st, async j => {
+      st.innerHTML = `<span class="tag low">fertig</span> <b>${j.dataset}</b> &mdash; `
+        + `${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`;
+      // Dataset-Dropdown der Auswertung auffrischen (neuer Stand verfuegbar)
+      const datasets = await api('/datasets');
+      const dsel = $('dataset'); const cur = dsel.value; dsel.innerHTML = '';
+      datasets.forEach(d => opt(dsel, d, d)); if (datasets.includes(cur)) dsel.value = cur;
+      loadImportFolders();
+    });
+  } catch (err) {
+    st.className = 'err'; st.style.display = 'block';
+    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+loadMeta().then(loadRuns).then(loadImportFolders).catch(e =>
   document.body.insertAdjacentHTML('beforeend',
     '<p style="color:#ff8a8e;padding:20px">Backend nicht erreichbar: ' + JSON.stringify(e) + '</p>'));
 </script>

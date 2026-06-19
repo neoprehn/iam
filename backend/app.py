@@ -17,13 +17,19 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from neo4j import GraphDatabase
 
+import convert
+
 NEO4J_URI = os.environ.get("NEO4J_URI", "bolt://neo4j:7687")
 NEO4J_USER = os.environ.get("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "/app/config"))
 RULES_DIR = Path(os.environ.get("RULES_DIR", "/app/rules"))
 CYPHER_DIR = Path(os.environ.get("CYPHER_DIR", "/app/cypher"))
+LOAD_DIR = Path(os.environ.get("LOAD_DIR", "/app/load"))
+MIGRATIONS_DIR = Path(os.environ.get("MIGRATIONS_DIR", "/app/migrations"))
+DATA_DIR = Path(os.environ.get("DATA_DIR", "/app/data/import"))
 FRONTEND_DIR = Path(os.environ.get("FRONTEND_DIR", "/app/frontend"))
+DEFAULT_LANG = [c.strip() for c in os.environ.get("IMPORT_LANG", "DE,DEU,D").split(",") if c.strip()]
 
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 app = FastAPI(title="IAM SoD Backend", version="0.1.0")
@@ -74,10 +80,14 @@ def split_statements(text: str) -> list[str]:
     return [s for s in stmts if s]
 
 
-def run_file(session, rel_path: str, params: dict):
-    text = (CYPHER_DIR / rel_path).read_text(encoding="utf-8")
-    for stmt in split_statements(text):
+def run_cypher_path(session, path: Path, params: dict):
+    """Eine .cypher-Datei (mehrere ;-getrennte Statements) ueber den Treiber fahren."""
+    for stmt in split_statements(path.read_text(encoding="utf-8")):
         session.run(stmt, **params).consume()
+
+
+def run_file(session, rel_path: str, params: dict):
+    run_cypher_path(session, CYPHER_DIR / rel_path, params)
 
 
 class RunReq(BaseModel):
@@ -142,6 +152,51 @@ def do_run(job_id: str, req: RunReq):
         jobs[job_id].update(status="error", error=str(e))
 
 
+class ImportReq(BaseModel):
+    dataset: str                    # Ordnername unter data/import/ (= dataset-Id)
+    lang: list[str] = []            # Sprach-Schalter (SPRAS/LANGU); leer = Default (IMPORT_LANG)
+    skipConvert: bool = False       # .csv liegen schon vor -> Konvertierung ueberspringen
+    skipSchema: bool = False        # Migrationen (Constraints/Indizes) ueberspringen
+
+
+def do_import(job_id: str, req: ImportReq):
+    try:
+        folder = DATA_DIR / req.dataset
+        if not folder.is_dir():
+            raise ValueError(f"Import-Ordner fehlt: data/import/{req.dataset}")
+        lang = req.lang or DEFAULT_LANG
+        jobs[job_id].update(status="running", dataset=req.dataset, step="start")
+
+        # 1. Konvertieren (SE16-.txt -> .csv; Minimalset-Pruefung + Credential-Denylist im Konverter)
+        if not req.skipConvert:
+            jobs[job_id]["step"] = "convert"
+            conv = convert.convert_folder(folder, required_config=CONFIG_DIR / "required_tables.json")
+            jobs[job_id]["converted"] = conv["converted"]
+            jobs[job_id]["missingOptional"] = conv["missingOptional"]
+
+        with driver.session() as s:
+            # 2. Schema sicherstellen (idempotente CREATE ... IF NOT EXISTS)
+            if not req.skipSchema:
+                jobs[job_id]["step"] = "schema"
+                for f in sorted(MIGRATIONS_DIR.glob("*.cypher")):
+                    run_cypher_path(s, f, {})
+            # 3. Laden (Reihenfolge = Dateiname), mit dataset + lang
+            for f in sorted(LOAD_DIR.glob("*.cypher")):
+                jobs[job_id]["step"] = f"load {f.name}"
+                run_cypher_path(s, f, {"dataset": req.dataset, "lang": lang})
+            # 4. Validieren (eigene Zaehler statt Konsolen-Output)
+            jobs[job_id]["step"] = "validate"
+            rec = s.run(
+                "OPTIONAL MATCH (u:User {dataset:$d}) WITH count(u) AS users "
+                "OPTIONAL MATCH (r:Role {dataset:$d}) WITH users, count(r) AS roles "
+                "OPTIONAL MATCH (a:Authorization {dataset:$d}) RETURN users, roles, count(a) AS auths",
+                d=req.dataset).single()
+        jobs[job_id].update(status="done", step="done",
+                            users=rec["users"], roles=rec["roles"], auths=rec["auths"])
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
 @app.get("/health")
 def health():
     with driver.session() as s:
@@ -188,10 +243,31 @@ def findings(runId: str, minRank: int = 0, limit: int = 200):
             runId=runId, minRank=minRank, limit=limit)]
 
 
+@app.post("/imports")
+def start_import(req: ImportReq):
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "import", "request": req.model_dump()}
+    threading.Thread(target=do_import, args=(job_id, req), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.get("/import-folders")
+def import_folders():
+    """Vorhandene data/import/<dataset>-Ordner (mit/ohne bereits konvertierte .csv)."""
+    if not DATA_DIR.exists():
+        return []
+    out = []
+    for d in sorted(p for p in DATA_DIR.iterdir() if p.is_dir()):
+        txt, csv = len(list(d.glob("*.txt"))), len(list(d.glob("*.csv")))
+        if txt or csv:   # nur echte Import-Ordner (SE16-.txt oder bereits konvertierte .csv)
+            out.append({"dataset": d.name, "txt": txt, "csv": csv})
+    return out
+
+
 @app.post("/runs")
 def start_run(req: RunReq):
     job_id = str(uuid.uuid4())
-    jobs[job_id] = {"status": "queued", "request": req.model_dump()}
+    jobs[job_id] = {"status": "queued", "kind": "run", "request": req.model_dump()}
     threading.Thread(target=do_run, args=(job_id, req), daemon=True).start()
     return {"jobId": job_id}
 
