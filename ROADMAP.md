@@ -232,6 +232,33 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 - [x] **Backend-Service** (Runner als API) — **Bau-Schritt 1 erledigt.** FastAPI-Container (`backend/`, Compose-Service `iam-backend`, Port 8000), orchestriert die vorhandenen `cypher/`-Dateien über den Neo4j-Treiber (statt `cypher-shell -f`; `apoc.cypher.runFile` ist apoc-**extended** und fehlt → Statements werden im Backend gesplittet und einzeln gefahren). Endpunkte: `GET /health`, `GET /datasets`, `GET /runs` (Scope/Provenienz aus `(:Run)`), `GET /findings?runId&minRank`, `POST /runs` → **asynchroner Job** (Hintergrund-Thread: optional load_ruleset → materialize → evaluate), `GET /jobs/{id}` (Status/Schritt/Ergebniszähler). Profile/Sleeping aus `config/analysis_profiles.json`, Ruleset-Ordner per Scan über `rules/*/ruleset.json`. *Org-Filterung (placeholder/AGR_1252) noch nicht verdrahtet — Profil wird validiert + auf `(:Run)` protokolliert.*
 - [x] **Import-Endpunkt** (`POST /imports`) — **Bau-Schritt 3 erledigt.** Voller Import als asynchroner Job **im Container** (kein PowerShell mehr nötig): **konvertieren → Schema → laden → validieren**. Der SE16-Konverter ist nach **Python portiert** (`backend/convert.py`, zeilengleich zu `load/Convert-Se16Export.ps1` inkl. Credential-Denylist; gegen die aktuelle PS-Version byte-identisch verifiziert); Schema über die idempotenten `migrations/*.cypher`, Laden über `load/*.cypher` (Reihenfolge = Dateiname) mit `$dataset`/`$lang`. Zusatz: `GET /import-folders` (vorhandene `data/import/<dataset>` mit txt/csv-Zählung). Verifiziert: voller Import (alle Pflichttabellen) in deutlich unter zwei Minuten → User/Rollen/Berechtigungen vollständig im Graphen. `data/import` als RW-Mount im Backend — **bleibt lokal**.
 - [~] **Front-end — geführte Workflows** — **Bau-Schritt 4: Ribbon-Oberfläche nach Lebenszyklus.** Schlanke statische Single-Page (`frontend/index.html`), **vom Backend ausgeliefert** (kein Node/React-Build, ein Container) unter `http://localhost:8000/`. **Ribbon-Bar oben** gegliedert wie der Ablauf: **1 Daten · 2 Auswertung · 3 Ergebnisse · 4 Sichern · 5 Verwalten**; Befehle öffnen **Dialoge**, der Hauptbereich zeigt durchgehend die **Ergebnisse** (KPIs · Läufe · Findings). **Import-Dialog** mit **ZIP-Upload** (`POST /imports/upload`, `python-multipart`; entpackt `.csv`/`.txt` → konvertiert ggf. → Import) **und** vorhandenem Ordner (`POST /imports`). **Auswerte-Dialog**: datengetriebenes Parameter-Formular statt JSON (aus `GET /profiles`). **Ergebnisse**: Läufe-Liste mit Findings-Zahl (Counts jetzt in `GET /runs`), KPIs beim Anklicken eines Laufs, Findings-Tabelle, **CSV-Export** des aktiven Laufs. **Sichern**- und **Verwalten**-Dialoge (Backup/Restore, Clear/Reset). Poliertes **Banner** (Wortmarke, Tagline, Status-Chips: Verbindung / N Datasets · M Läufe) und eine **Admin-Gruppe** (Ribbon 6) als Heimat der geplanten Regelwerks-Funktionen (zeigt die geladenen Rulesets; Editor/Filterset-Import noch „geplant"). *Offen: gebrandetes NVL/React bleibt der „Fancy"-Schritt unten.*
+#### Geführte Auswertung (Auswerten v2) — gezielte Filter-/Scope-Auswahl
+
+Statt „ein Lauf über alle 600+ Filter": nach dem Import gezielt **auswählen, was** ausgewertet wird,
+**für wen**, und **wie tief**. Vieles existiert bereits als Backend-Parameter (`sodRules`,
+`userTypes`, `excludeLocked`, `sleepDays`, `minCriticalityRank`) und scopeProfiles in
+`config/analysis_profiles.json` — hier fehlt v. a. die **geführte Auswahl-UI** und etwas Backend.
+
+- [ ] **Katalog-Auswahl (Filter/Regeln):** Browser über die Queries (Einzelfilter) **und** SoD-Regeln,
+  **filterbar** nach Kritikalität (z. B. nur very-high), **Namensmuster** (z. B. `BC_*`), Modul,
+  queryType. Mehrfachauswahl → Lauf nur über die Auswahl. *(Kritikalität/explizite Regel-IDs ✓ als
+  Param; Muster-/Modul-Filter + UI neu.)*
+- [ ] **Zwei Auswertungsarten:** **(a) Einzelfilter / Can-Do** — „wer matcht Query X" (nur
+  Materialisierung der gewählten Queries, ohne SoD); **(b) SoD-Konflikte** — bei Auswahl bestimmter
+  SoD-Regeln **zuerst nur deren Einzelfilter** (Klausel-Queries) materialisieren, dann SoD.
+  → **scoped materialize** statt „alle SoD-Queries". *(neu; heute materialisiert der Lauf alle
+  SoD-relevanten Queries.)*
+- [ ] **Nutzer-Scope verfeinern:** Nutzertypen (A/S…) ✓; **Sleeping** als Eingabefeld **+ Schnellwahl
+  90/180/360 Tage**; **Gesperrte nach Sperrtyp** auswählbar (failed_logons / admin_local /
+  admin_global — Daten liegen als `lockReasons` vor) statt nur `excludeLocked`-Bool. *(Sperrtyp-Filter
+  neu; Sleeping-Wert ✓ im Backend.)*
+- [ ] **Lauf verwalten:** einen einzelnen **Lauf löschen** (`(:Run)` + dessen Findings/VIA/MATCHES),
+  optional **vorher sichern** (Findings-CSV-Export als „Backup") oder einfach löschen. *(per-Run-Delete
+  neu; CSV-Export ✓.)*
+- [ ] **Evidenz-Perf:** vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)`
+  (transitive Hülle CONTAINS/HAS_PROFILE), damit `explain_sod` (intra/inter + VIA_ROLE) ein Lookup
+  statt variabler Pfadsuche wird → Evidenz default-on möglich. *(Optimierung der v1 aus Phase X.)*
+
 - [ ] **System/Mandant-Wahl:** „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem" → **Vergleichs-Abfragen** über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
 - [ ] **Fancy Auswertungen:** KPIs, **Graph-Darstellung** der Konfliktpfade (gebrandetes Frontend mit **NVL/React** statt NeoDash), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (Phase 6) sind die Vorlage.
 - [~] **Export** der Ergebnisse — **CSV erledigt.** `GET /findings/export?runId=…` liefert die Findings eines Laufs als **CSV** (Semikolon, UTF-8-BOM → direkt Excel-tauglich), getrennt vom Quell-Backup; in der UI als „Export CSV" (Ribbon, aktiver Lauf). *Offen: natives `.xlsx` (z. B. openpyxl) und weitere Sichten (Top-Regeln, Matrix).*
