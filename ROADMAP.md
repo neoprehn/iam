@@ -206,7 +206,7 @@ Bewusst nach hinten gestellte Punkte — sinnvoll, aber nicht auf dem kritischen
 
 - [ ] **CSI-Rulesets CNF-zerlegen** (`clauses` in `sod_rules.json` für `csi`/`csi_bi`), damit die SoD-Auswertung auch über die CSI-Kataloge läuft. *(KPMG ist bereits scharf; die Mechanik ist generisch.)*
 - [ ] **Kritische TCodes/Objekte taggen** (`:Critical`) — **Ansatz noch offen**: Kritikalität steckt bereits im Ruleset (`soxClassification`/`criticality`, Query-Scope). Ob ein zusätzliches, ruleset-unabhängiges `:Critical`-Tagging nötig/sinnvoll ist, ist zu entscheiden, bevor gebaut wird.
-- [ ] **Pfad-Gültigkeitsschnittmenge (AE-08)** bei verschachtelten Rollen sauber prüfen; **Intra- vs. Inter-Rollen-Konflikt (AE-11)** in den Findings unterscheiden, inkl. `VIA_ROLE`-Evidenz (welche Rolle(n) den Konflikt verursachen).
+- [~] **Intra- vs. Inter-Rollen-Konflikt (AE-11) + Evidenz — umgesetzt (v1).** `cypher/sod/explain_sod.cypher` rechnet pro Finding die **verursachenden Rollen/Profile** aus (`(:SoDConflict)-[:VIA_ROLE]->(:Role)` / `-[:VIA_PROFILE]->(:Profile)`) und klassifiziert `conflictType` **intra** (eine Rolle/ein Profil deckt alle Klauseln allein — „by design") vs. **inter** (erst die Kombination). Hilfsrelation `(:Role|:Profile)-[:PROVIDES {ruleset}]->(:Query)` (Akteur erfüllt Query allein), reine Mengenlogik auf MATCHES. Sichtbar in `/findings`, CSV-Export und der UI (Spalten **Typ** + **Verursacht durch**). **Opt-in**, da teuer: per Lauf-Formular „Evidenz mitberechnen" oder nachträglich `POST /runs/{id}/explain` (Ribbon „Evidenz"). *Offen: Perf-Optimierung (vorab geflachte Rollen→Auth-Erreichbarkeit), und **AE-08** Pfad-Gültigkeitsschnittmenge bei verschachtelten Rollen.*
 
 ---
 

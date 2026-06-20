@@ -129,6 +129,7 @@
   <div class="group">
     <div class="cmds">
       <button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button>
+      <button class="cmd" id="cmdExplain" disabled><span class="ico">&#128270;</span>Evidenz</button>
       <button class="cmd" id="cmdExport" disabled><span class="ico">&#128202;</span>Export CSV</button>
     </div><div class="lbl">3 &middot; Ergebnisse</div>
   </div>
@@ -161,8 +162,8 @@
     <div>
       <h2 style="margin-top:0">Findings <span class="muted" id="findingsMeta"></span></h2>
       <table>
-        <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Sleeping</th></tr></thead>
-        <tbody id="findingsBody"><tr><td colspan="4" class="muted">Lauf w&auml;hlen oder „Neuer Lauf"&hellip;</td></tr></tbody>
+        <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Typ</th><th>Verursacht durch</th><th>Sleeping</th></tr></thead>
+        <tbody id="findingsBody"><tr><td colspan="6" class="muted">Lauf w&auml;hlen oder „Neuer Lauf"&hellip;</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -228,6 +229,10 @@
     <div class="check"><input type="checkbox" id="skipRulesetLoad" checked />
       <div><label for="skipRulesetLoad">Ruleset-Laden &uuml;berspringen</label>
         <small>Ruleset ist i. d. R. schon geladen.</small></div></div>
+    <div class="check"><input type="checkbox" id="withExplain" />
+      <div><label for="withExplain">Evidenz mitberechnen</label>
+        <small>verursachende Rollen/Profile + intra/inter &mdash; <b>deutlich langsamer</b>. Sonst
+          sp&auml;ter per „Evidenz" (Ribbon) nachrechenbar.</small></div></div>
     <button class="primary" type="submit" id="runBtn">Auswertung starten</button>
   </form>
 </div></div>
@@ -295,6 +300,12 @@ $('cmdBackup').onclick = () => openDlg('dlg-backup');
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
 $('cmdExport').onclick = () => { if (activeRunId) location.href = '/findings/export?runId=' + encodeURIComponent(activeRunId); };
+$('cmdExplain').onclick = () => {
+  if (!activeRunId) return;
+  runJob('/runs/' + encodeURIComponent(activeRunId) + '/explain', { method: 'POST' },
+    `Evidenz für „${activeRunId}" berechnen? Das kann einige Minuten dauern.`,
+    j => `${doneTag} Evidenz fertig — ${j.intra} intra-Rolle, ${j.inter} inter-Rolle (von ${j.findings}).`);
+};
 $('cmdAdmin').onclick = () => { renderAdminRulesets(); openDlg('dlg-admin'); };
 
 function renderAdminRulesets() {
@@ -379,14 +390,23 @@ async function showFindings(runId) {
   activeRunId = runId;
   $('cmdExport').disabled = false;
   document.querySelectorAll('.runs li').forEach(li => li.classList.remove('active'));
+  $('cmdExplain').disabled = false;
   if (runsById[runId]) setKpis(runsById[runId]);
   const findings = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
   $('findingsMeta').textContent = `· ${runId} (${findings.length}${findings.length >= 500 ? '+, Top 500' : ''})`;
   const body = $('findingsBody');
-  body.innerHTML = findings.length ? '' : '<tr><td colspan="4" class="muted">keine Findings</td></tr>';
+  body.innerHTML = findings.length ? '' : '<tr><td colspan="6" class="muted">keine Findings</td></tr>';
   findings.forEach(f => {
     const tr = document.createElement('tr');
+    const via = [...(f.roles || []), ...((f.profiles || []).map(p => p + ' (P)'))];
+    const viaHtml = via.length
+      ? `<span title="${via.join(', ')}">${via.slice(0, 2).join(', ')}${via.length > 2 ? ` +${via.length - 2}` : ''}</span>`
+      : '<span class="muted">&ndash;</span>';
+    const typ = f.conflictType
+      ? `<span class="tag ${f.conflictType === 'intra' ? 'medium' : 'critical'}">${f.conflictType === 'intra' ? 'intra-Rolle' : 'inter-Rolle'}</span>`
+      : '<span class="muted">&ndash;</span>';
     tr.innerHTML = `<td>${f.user}</td><td>${f.rule}</td><td>${critTag(f.criticality)}</td>`
+      + `<td>${typ}</td><td>${viaHtml}</td>`
       + `<td>${f.sleeping ? '<span class="tag medium">sleeping</span>' : '&ndash;'}</td>`;
     body.appendChild(tr);
   });
@@ -478,7 +498,10 @@ $('formRun').addEventListener('submit', e => {
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
     runId: $('runId').value.trim() || null,
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
-  }), null, async j => { activeRunId = j.runId; return `${doneTag} Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings.`; });
+    skipExplain: !$('withExplain').checked,
+  }), null, async j => { activeRunId = j.runId;
+    return `${doneTag} Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings`
+      + (j.intra != null ? ` (${j.intra} intra-Rolle)` : '') + '.'; });
 });
 
 $('backupBtn').addEventListener('click', () => {

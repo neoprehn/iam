@@ -110,6 +110,8 @@ class RunReq(BaseModel):
     runId: str | None = None
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
+    skipExplain: bool = True         # Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) ist teuer ->
+                                     # Default aus; per Formular oder POST /runs/{id}/explain anfordern
 
 
 def do_run(job_id: str, req: RunReq):
@@ -149,13 +151,17 @@ def do_run(job_id: str, req: RunReq):
                 "minCriticalityRank": req.minCriticalityRank,
                 "sodRules": req.sodRules,
             })
+            if not req.skipExplain:
+                jobs[job_id]["step"] = "explain"
+                run_file(s, "sod/explain_sod.cypher", base)
             rec = s.run(
                 "MATCH (f:SoDConflict {runId:$r}) "
                 "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
-                "sum(CASE WHEN f.userSleeping THEN 1 ELSE 0 END) AS sleeping", r=run_id,
+                "sum(CASE WHEN f.userSleeping THEN 1 ELSE 0 END) AS sleeping, "
+                "sum(CASE WHEN f.conflictType='intra' THEN 1 ELSE 0 END) AS intra", r=run_id,
             ).single()
-        jobs[job_id].update(status="done", step="done",
-                            findings=rec["findings"], rules=rec["rules"], sleeping=rec["sleeping"])
+        jobs[job_id].update(status="done", step="done", findings=rec["findings"],
+                            rules=rec["rules"], sleeping=rec["sleeping"], intra=rec["intra"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
 
@@ -201,6 +207,28 @@ def do_import(job_id: str, req: ImportReq):
                 d=req.dataset).single()
         jobs[job_id].update(status="done", step="done",
                             users=rec["users"], roles=rec["roles"], auths=rec["auths"])
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
+def do_explain(job_id: str, run_id: str):
+    """Evidenz (VIA_ROLE/VIA_PROFILE + conflictType) fuer einen bestehenden Lauf nachrechnen.
+    Scope (ruleset/dataset/asOf) kommt aus dem (:Run)-Knoten."""
+    try:
+        with driver.session() as s:
+            run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, r.dataset AS dataset, "
+                        "r.asOf AS asOf", id=run_id).single()
+            if not run:
+                raise ValueError(f"Lauf '{run_id}' nicht gefunden")
+            jobs[job_id].update(status="running", step="explain", runId=run_id)
+            run_file(s, "sod/explain_sod.cypher",
+                     {"ruleset": run["ruleset"], "dataset": run["dataset"],
+                      "asOf": run["asOf"], "runId": run_id})
+            rec = s.run("MATCH (f:SoDConflict {runId:$id}) RETURN count(f) AS findings, "
+                        "sum(CASE WHEN f.conflictType='intra' THEN 1 ELSE 0 END) AS intra, "
+                        "sum(CASE WHEN f.conflictType='inter' THEN 1 ELSE 0 END) AS inter", id=run_id).single()
+        jobs[job_id].update(status="done", step="done",
+                            findings=rec["findings"], intra=rec["intra"], inter=rec["inter"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
 
@@ -378,7 +406,9 @@ def findings(runId: str, minRank: int = 0, limit: int = 200):
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
             "WHERE coalesce(f.criticalityRank,0) >= $minRank "
             "RETURN u.id AS user, f.ruleId AS rule, f.criticality AS criticality, "
-            "       coalesce(f.userSleeping,false) AS sleeping "
+            "       coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType, "
+            "       [(f)-[:VIA_ROLE]->(r) | r.id] AS roles, "
+            "       [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles "
             "ORDER BY coalesce(f.criticalityRank,0) DESC, user LIMIT $limit",
             runId=runId, minRank=minRank, limit=limit)]
 
@@ -392,15 +422,18 @@ def export_findings(runId: str):
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$r})-[:BASED_ON]->(rule:SoDRule) "
             "RETURN u.id AS user, f.ruleId AS rule, f.ruleset AS ruleset, f.dataset AS dataset, "
             "f.criticality AS criticality, coalesce(f.criticalityRank,0) AS criticalityRank, "
-            "coalesce(f.userSleeping,false) AS sleeping, f.reasonCode AS reasonCode "
+            "coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType, "
+            "[(f)-[:VIA_ROLE]->(r) | r.id] AS roles, [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles, "
+            "f.reasonCode AS reasonCode "
             "ORDER BY criticalityRank DESC, user", r=runId))
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=";")
     w.writerow(["user", "rule", "ruleset", "dataset", "criticality", "criticalityRank",
-                "sleeping", "reasonCode"])
+                "sleeping", "conflictType", "roles", "profiles", "reasonCode"])
     for x in rows:
         w.writerow([x["user"], x["rule"], x["ruleset"], x["dataset"], x["criticality"],
-                    x["criticalityRank"], x["sleeping"], x["reasonCode"]])
+                    x["criticalityRank"], x["sleeping"], x["conflictType"],
+                    "|".join(x["roles"] or []), "|".join(x["profiles"] or []), x["reasonCode"]])
     data = "﻿" + buf.getvalue()   # BOM, damit Excel UTF-8/Umlaute korrekt liest
     return Response(content=data, media_type="text/csv; charset=utf-8",
                    headers={"Content-Disposition": f'attachment; filename="findings_{runId}.csv"'})
@@ -444,6 +477,15 @@ def import_folders():
         if txt or csv:   # nur echte Import-Ordner (SE16-.txt oder bereits konvertierte .csv)
             out.append({"dataset": d.name, "txt": txt, "csv": csv})
     return out
+
+
+@app.post("/runs/{runId}/explain")
+def explain_run(runId: str):
+    """Evidenz (verursachende Rollen/Profile, intra/inter) fuer einen Lauf nachrechnen (teuer)."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "explain", "request": {"runId": runId}}
+    threading.Thread(target=do_explain, args=(job_id, runId), daemon=True).start()
+    return {"jobId": job_id}
 
 
 @app.post("/datasets/{dataset}/clear")
