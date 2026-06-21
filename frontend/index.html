@@ -81,17 +81,16 @@
   .filterbox select { font-size:12px; padding:6px 8px; }
   .filterbox .ghost { margin-top:10px; padding:7px; font-size:12px; }
   .ddcheck { position:relative; }
-  .ddcheck-btn { width:100%; text-align:left; background:var(--bg); color:var(--text);
+  .ddcheck-btn { width:100%; text-align:left; background:var(--bg); color:var(--fg);
     border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:12px; cursor:pointer; }
   .ddcheck-btn:hover { border-color:var(--accent); }
-  #filterUserTypePanel { display:none; position:absolute; z-index:20; top:100%; left:0; right:0; margin-top:2px;
-    background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:6px 8px;
-    box-shadow:0 6px 16px rgba(0,0,0,.35); text-align:left; }
+  #filterUserTypePanel { display:none; position:absolute; z-index:20; top:100%; left:0; right:0;
+    width:100%; box-sizing:border-box; margin-top:2px; background:var(--panel); border:1px solid var(--line);
+    border-radius:6px; padding:6px 8px; box-shadow:0 6px 16px rgba(0,0,0,.35); text-align:left; }
   #filterUserTypePanel.open { display:block; }
-  #filterUserTypePanel label { display:flex; flex-direction:row; align-items:center; justify-content:flex-start;
-    gap:8px; width:100%; box-sizing:border-box; font-size:12px; padding:5px 2px; margin:0; cursor:pointer;
-    text-align:left; color:var(--fg); }
-  #filterUserTypePanel input[type=checkbox] { margin:0; flex:0 0 auto; order:-1; }
+  #filterUserTypePanel label { display:block; width:100%; box-sizing:border-box; font-size:12px;
+    padding:5px 4px; margin:0; cursor:pointer; text-align:left; white-space:normal; color:var(--fg); }
+  #filterUserTypePanel input[type=checkbox] { width:auto; margin:0 8px 0 0; vertical-align:middle; }
   .resultbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-bottom:10px; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .pill { cursor:pointer; border:1px solid transparent; }
@@ -505,8 +504,10 @@ async function loadRuns() {
     const li = document.createElement('li');
     li.className = 'run-card' + (r.runId === activeRunId ? ' active' : '');
     const label = r.title || r.runId;
+    const rs = (metaCache.rulesets || []).find(x => x.id === r.ruleset);
     li.innerHTML = `<div class="run-card-top"><span class="run-id">${label}</span></div>`
       + `<div class="run-card-meta">`
+      + `<span class="chip-mini">${rs ? rs.name : r.ruleset}</span>`
       + `<span class="chip-mini">Stichtag ${r.asOf}</span>`
       + `<span class="chip-mini">${fmtDateTime(r.generatedAt)}</span>`
       + `</div>`;
