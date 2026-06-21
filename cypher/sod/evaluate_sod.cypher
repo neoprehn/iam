@@ -11,7 +11,8 @@
 // expliziter Regel-IDs; leer = alle) — so laufen z. B. „nur very-critical" oder einzelne Regeln.
 // Idempotent: alte Findings dieses (ruleset,dataset,runId) werden zuerst entfernt.
 // Parameter: $ruleset, $dataset, $asOf, $runId, $userTypes (list), $excludeLocked (bool),
-//            $sleepDays (int), $minCriticalityRank (int), $sodRules (list).
+//            $sleepDays (int), $minCriticalityRank (int), $sodRules (list), $title (Variantenname,
+//            menschenlesbar; faellt im Backend auf $runId zurueck, falls leer).
 // Aufruf: ... -P "userTypes=>['Dialog','Service']" -P "excludeLocked=>true" -P "sleepDays=>180" ...
 
 CREATE CONSTRAINT sodconflict_key IF NOT EXISTS FOR (f:SoDConflict) REQUIRE f.key IS UNIQUE;
@@ -22,7 +23,7 @@ MATCH (f:SoDConflict {ruleset:$ruleset, dataset:$dataset, runId:$runId}) DETACH 
 // Run-Knoten trägt den Scope des Laufs -> Can-Do-KPIs (z. B. SAP_ALL) können denselben
 // Nutzertyp-/Sperr-Filter anwenden wie die SoD-Auswertung.
 MERGE (run:Run {key: $ruleset + '|' + $dataset + '|' + $runId})
-  SET run.runId = $runId, run.ruleset = $ruleset, run.dataset = $dataset, run.asOf = $asOf,
+  SET run.runId = $runId, run.title = $title, run.ruleset = $ruleset, run.dataset = $dataset, run.asOf = $asOf,
       run.userTypes = $userTypes, run.excludeLocked = $excludeLocked, run.sleepDays = $sleepDays,
       run.minCriticalityRank = $minCriticalityRank, run.generatedAt = datetime(),
       run.orgMode = $orgMode, run.orgFilters = apoc.convert.toJson($orgFilters);

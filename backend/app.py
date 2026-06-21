@@ -18,7 +18,7 @@ import datetime
 import threading
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
@@ -108,6 +108,8 @@ class RunReq(BaseModel):
     minCriticalityRank: int = 0
     sodRules: list[str] = []
     runId: str | None = None
+    title: str | None = None        # menschenlesbarer Name der Variante (z. B. "Übergreifend");
+                                     # leer -> runId als Fallback (siehe do_run)
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
     skipExplain: bool = True         # Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) ist teuer ->
@@ -127,6 +129,7 @@ def do_run(job_id: str, req: RunReq):
         org_filters = op["org"].get("filters", {}) if org_mode == "filtered" else {}
         sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
         run_id = req.runId or f"{req.ruleset}-{datetime.datetime.now():%Y%m%d%H%M%S}"
+        title = req.title or run_id
         as_of = datetime.date.fromisoformat(req.asOf)
         base = {"ruleset": req.ruleset, "dataset": req.dataset, "asOf": as_of, "runId": run_id}
         org = {"orgMode": org_mode, "orgFilters": org_filters}
@@ -150,6 +153,7 @@ def do_run(job_id: str, req: RunReq):
                 "sleepDays": sleep_days,
                 "minCriticalityRank": req.minCriticalityRank,
                 "sodRules": req.sodRules,
+                "title": title,
             })
             if not req.skipExplain:
                 jobs[job_id]["step"] = "explain"
@@ -399,18 +403,84 @@ def list_runs():
         return out
 
 
+_FINDINGS_WHERE = (
+    "WHERE coalesce(f.criticalityRank,0) >= $minRank "
+    "  AND ($user IS NULL OR u.id = $user) "
+    "  AND ($rule IS NULL OR f.ruleId = $rule) "
+    "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
+    "  AND ($sleeping IS NULL OR coalesce(f.userSleeping,false) = $sleeping) "
+    "  AND ($ruleCriticality IS NULL OR f.criticality = $ruleCriticality) "
+)
+
+
 @app.get("/findings")
-def findings(runId: str, minRank: int = 0, limit: int = 200):
+def findings(runId: str, minRank: int = 0, limit: int = 200,
+             user: str | None = None, rule: str | None = None,
+             userType: list[str] = Query(default=[]), sleeping: bool | None = None,
+             ruleCriticality: str | None = None):
+    """Findings eines Laufs; optional auf User/Regel/Nutzertyp(en)/Sleeping/Kritikalitaet
+    eingeschraenkt (Drill-down: Klick auf User-/Regel-Zelle, oder Ergebnisfilter in der Sidebar)."""
     with driver.session() as s:
         return [jsonable(dict(r)) for r in s.run(
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
-            "WHERE coalesce(f.criticalityRank,0) >= $minRank "
+            + _FINDINGS_WHERE +
             "RETURN u.id AS user, f.ruleId AS rule, f.criticality AS criticality, "
             "       coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType, "
             "       [(f)-[:VIA_ROLE]->(r) | r.id] AS roles, "
             "       [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles "
             "ORDER BY coalesce(f.criticalityRank,0) DESC, user LIMIT $limit",
-            runId=runId, minRank=minRank, limit=limit)]
+            runId=runId, minRank=minRank, limit=limit, user=user, rule=rule,
+            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality)]
+
+
+@app.get("/findings/summary")
+def findings_summary(runId: str, minRank: int = 0, user: str | None = None, rule: str | None = None,
+                      userType: list[str] = Query(default=[]), sleeping: bool | None = None,
+                      ruleCriticality: str | None = None):
+    """KPI-Aggregate (Findings/betroffene Regeln/sleeping) fuer den aktuellen Filterkontext —
+    unabhaengig vom Limit der Findings-Liste, damit die KPI-Kacheln zum gewaehlten Filter passen."""
+    with driver.session() as s:
+        rec = s.run(
+            "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
+            + _FINDINGS_WHERE +
+            "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
+            "       sum(CASE WHEN coalesce(f.userSleeping,false) THEN 1 ELSE 0 END) AS sleeping",
+            runId=runId, minRank=minRank, user=user, rule=rule,
+            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality).single()
+        return jsonable(dict(rec))
+
+
+@app.get("/queries")
+def queries(runId: str):
+    """SoD-relevante Queries (Einzelfilter) des Rulesets eines Laufs — speist die
+    Query-Auswahl fuer den Matches-Drill-down ('wer matcht Query X')."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        return [dict(r) for r in s.run(
+            "MATCH (q:Query {ruleset:$ruleset}) "
+            "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
+            "RETURN q.id AS id, q.criticality AS criticality, q.module AS module "
+            "ORDER BY id", ruleset=run["ruleset"])]
+
+
+@app.get("/matches")
+def matches(runId: str, query: str | None = None, user: str | None = None,
+            userType: list[str] = Query(default=[])):
+    """Wer matcht Query X (Einzelberechtigung) im Zwischenergebnis (:User)-[:MATCHES]->(:Query)
+    eines Laufs — optional auf einen User/Nutzertyp(en) eingeschraenkt (Drill-down 'Query -> wer matcht')."""
+    with driver.session() as s:
+        return [dict(r) for r in s.run(
+            "MATCH (u:User)-[:MATCHES {runId:$runId}]->(q:Query) "
+            "WHERE ($qid IS NULL OR q.id = $qid) AND ($user IS NULL OR u.id = $user) "
+            "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
+            "RETURN u.id AS user, coalesce(u.name,'') AS name, "
+            "       CASE WHEN 'Dialog' IN labels(u) THEN 'Dialog' WHEN 'System' IN labels(u) THEN 'System' "
+            "            WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Comm' ELSE '?' END AS typ, "
+            "       CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status, "
+            "       q.id AS query "
+            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType)]
 
 
 @app.get("/findings/export")

@@ -7,9 +7,17 @@
 <style>
   :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
           --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
+  html[data-theme="light"] { --bg:#f5f7fa; --panel:#ffffff; --line:#d7dee6; --fg:#1b232c;
+          --muted:#5b6b7a; --accent:#2f6fe0; --crit:#c0392b; --ok:#1f7a37; }
   * { box-sizing:border-box; }
   body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
   a { color:var(--accent); }
+  html[data-theme="light"] .tag.veryhigh { background:rgba(217,42,42,.14); color:#b3261e; }
+  html[data-theme="light"] .tag.critical { background:rgba(229,72,77,.14); color:#c0392b; }
+  html[data-theme="light"] .tag.high { background:rgba(235,123,46,.16); color:#a8590c; }
+  html[data-theme="light"] .tag.medium { background:rgba(245,166,35,.18); color:#8a6300; }
+  html[data-theme="light"] .tag.low { background:rgba(70,167,88,.16); color:#1f7a37; }
+  html[data-theme="light"] header { background:linear-gradient(110deg,#eef2f7 0%,#ffffff 60%); }
 
   /* Banner */
   header { display:flex; align-items:center; justify-content:space-between; gap:16px;
@@ -58,15 +66,56 @@
   th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
   th { color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--bg); }
   .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
-  .tag.veryhigh,.tag.high { background:rgba(229,72,77,.18); color:#ff8a8e; }
-  .tag.critical { background:rgba(229,72,77,.28); color:#ff6166; }
+  .tag.veryhigh { background:rgba(217,42,42,.30); color:#ff5c5c; }
+  .tag.critical { background:rgba(229,72,77,.24); color:#ff7a66; }
+  .tag.high { background:rgba(235,123,46,.20); color:#ffa552; }
   .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
   .tag.low { background:rgba(70,167,88,.18); color:#7bd690; }
+  td.click, th.click { cursor:pointer; }
+  td.click:hover { color:var(--accent); text-decoration:underline; }
+  .runsbox { border:1px solid var(--line); border-radius:8px; padding:10px; }
+  .runsbox .runs { margin:0; }
+  .filterbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  .filterbox label { margin:10px 0 4px; }
+  .filterbox label:first-child { margin-top:0; }
+  .filterbox select { font-size:12px; padding:6px 8px; }
+  .filterbox .ghost { margin-top:10px; padding:7px; font-size:12px; }
+  .ddcheck { position:relative; }
+  .ddcheck-btn { width:100%; text-align:left; background:var(--bg); color:var(--text);
+    border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:12px; cursor:pointer; }
+  .ddcheck-btn:hover { border-color:var(--accent); }
+  #filterUserTypePanel { display:none; position:absolute; z-index:20; top:100%; left:0; right:0; margin-top:2px;
+    background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:6px 8px;
+    box-shadow:0 6px 16px rgba(0,0,0,.35); text-align:left; }
+  #filterUserTypePanel.open { display:block; }
+  #filterUserTypePanel label { display:flex; flex-direction:row; align-items:center; justify-content:flex-start;
+    gap:8px; width:100%; box-sizing:border-box; font-size:12px; padding:5px 2px; margin:0; cursor:pointer;
+    text-align:left; color:var(--fg); }
+  #filterUserTypePanel input[type=checkbox] { margin:0; flex:0 0 auto; order:-1; }
+  .resultbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-bottom:10px; }
+  .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .pill { cursor:pointer; border:1px solid transparent; }
+  .pill:not(.tag) { background:var(--bg); color:var(--muted); border-color:var(--line); }
+  .pill:not(.tag):hover { border-color:var(--accent); }
+  .pill.active:not(.tag) { color:var(--fg); border-color:var(--accent); }
+  .pill.tag { opacity:.55; }
+  .pill.tag.active { opacity:1; box-shadow:0 0 0 2px currentColor inset; }
+  #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
+  #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
-  .runs li { padding:9px 11px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px;
-    cursor:pointer; display:flex; justify-content:space-between; gap:8px; }
-  .runs li:hover { border-color:var(--accent); }
-  .runs li.active { border-color:var(--accent); background:rgba(76,139,245,.08); }
+  .runs li { padding:9px 11px; border-radius:6px; margin-bottom:8px; }
+  .run-card { border:1px solid var(--line); border-left:3px solid var(--line); background:var(--panel);
+    cursor:pointer; transition:border-color .15s, background .15s; }
+  .run-card:hover { border-color:var(--accent); border-left-color:var(--accent); }
+  .run-card.active { border-color:var(--accent); border-left-color:var(--accent); background:rgba(76,139,245,.10); }
+  .run-card-top { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .run-card-top .run-id { font-weight:700; font-size:13px; }
+  .run-card-top .run-badge { font-size:12px; font-weight:700; color:var(--accent);
+    background:rgba(76,139,245,.14); padding:2px 9px; border-radius:10px; white-space:nowrap; }
+  .run-card-meta { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+  .chip-mini { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
+    border-radius:10px; padding:2px 7px; white-space:nowrap; }
+  .chip-mini.warn { color:#f5c451; border-color:rgba(245,166,35,.4); }
   .muted { color:var(--muted); }
   .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
     border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
@@ -110,6 +159,7 @@
     </div>
   </div>
   <div class="bctx">
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
     <span class="chip" id="chipConn"><span class="dot">&#9679;</span> verbunden</span>
     <span class="chip" id="chipData">&ndash;</span>
   </div>
@@ -156,14 +206,60 @@
   <div class="kpis" id="kpis"></div>
   <div class="cols">
     <div>
-      <h2 style="margin-top:0">L&auml;ufe</h2>
-      <ul class="runs" id="runs"></ul>
+      <h2 style="margin-top:0">Filter</h2>
+      <div class="filterbox">
+        <label for="filterUserTypeBtn">Nutzertyp</label>
+        <div class="ddcheck" id="filterUserType">
+          <button type="button" class="ddcheck-btn" id="filterUserTypeBtn">&ndash; alle &ndash;</button>
+          <div class="ddcheck-panel" id="filterUserTypePanel">
+            <label><input type="checkbox" value="Dialog"> A &ndash; Dialog</label>
+            <label><input type="checkbox" value="System"> B &ndash; System</label>
+            <label><input type="checkbox" value="Service"> S &ndash; Service</label>
+            <label><input type="checkbox" value="Communication"> C &ndash; Communication</label>
+            <label><input type="checkbox" value="Reference"> L &ndash; Reference</label>
+          </div>
+        </div>
+        <label for="filterUser">User</label>
+        <select id="filterUser"><option value="">&ndash; alle &ndash;</option></select>
+        <label for="filterQuery">Einzelberechtigung</label>
+        <select id="filterQuery"><option value="">&ndash; alle &ndash;</option></select>
+        <label for="filterRule">SoD</label>
+        <select id="filterRule"><option value="">&ndash; alle &ndash;</option></select>
+        <button class="ghost" id="filterApplyBtn">Filtern</button>
+        <button class="ghost" id="filterResetBtn">Zur&uuml;cksetzen</button>
+      </div>
+
+      <h2>L&auml;ufe</h2>
+      <div class="runsbox"><ul class="runs" id="runs"></ul></div>
     </div>
     <div>
-      <h2 style="margin-top:0">Findings <span class="muted" id="findingsMeta"></span></h2>
-      <table>
+      <h2 style="margin-top:0"><span id="resultsTitle">Findings</span> <span class="muted" id="findingsMeta"></span></h2>
+      <div class="resultbar">
+        <span class="muted" style="font-size:12px">Kritikalit&auml;t:</span>
+        <div class="pillgroup" id="ruleCritPills">
+          <button type="button" class="pill active" data-value="">alle</button>
+          <button type="button" class="pill tag veryhigh" data-value="very-high">very-high</button>
+          <button type="button" class="pill tag critical" data-value="critical">critical</button>
+          <button type="button" class="pill tag high" data-value="high">high</button>
+          <button type="button" class="pill tag medium" data-value="medium">medium</button>
+          <button type="button" class="pill tag low" data-value="low">low</button>
+        </div>
+        <span class="muted" style="font-size:12px">Sleeping:</span>
+        <div class="pillgroup" id="sleepingPills">
+          <button type="button" class="pill active" data-value="">alle</button>
+          <button type="button" class="pill" data-value="true">nur sleeping</button>
+          <button type="button" class="pill" data-value="false">nicht sleeping</button>
+        </div>
+      </div>
+      <div id="filterActive"><span class="muted" id="filterActiveText"></span>
+        <button class="ghost" id="filterActiveClear" style="margin:0;width:auto;padding:4px 10px">zur&uuml;cksetzen</button></div>
+      <table id="findingsTable">
         <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Typ</th><th>Verursacht durch</th><th>Sleeping</th></tr></thead>
         <tbody id="findingsBody"><tr><td colspan="6" class="muted">Lauf w&auml;hlen oder „Neuer Lauf"&hellip;</td></tr></tbody>
+      </table>
+      <table id="matchesTable" style="display:none">
+        <thead><tr><th>User</th><th>Name</th><th>Typ</th><th>Status</th></tr></thead>
+        <tbody id="matchesBody"></tbody>
       </table>
     </div>
   </div>
@@ -213,7 +309,8 @@
     <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
     <label for="orgProfile">Org-Profil</label>
     <select id="orgProfile"></select>
-    <div class="hint">Org-Filterung noch nicht verdrahtet &mdash; wird auf (:Run) protokolliert.</div>
+    <label for="runTitle">Titel (optional)</label>
+    <input id="runTitle" placeholder="Variantenname" />
     <div class="row">
       <div><label for="minRank">Mindest-Kritikalit&auml;t</label>
         <select id="minRank">
@@ -282,6 +379,17 @@ const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e =>
 const doneTag = '<span class="tag low">fertig</span>';
 let activeRunId = null, runsById = {}, metaCache = { userTypeProfiles: [] };
 
+/* Theme */
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+}
+applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
+$('themeToggle').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', next); applyTheme(next);
+};
+
 function opt(sel, value, text, title) {
   const o = document.createElement('option');
   o.value = value; o.textContent = text; if (title) o.title = title;
@@ -295,7 +403,7 @@ document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e
 document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
 $('cmdImport').onclick = () => openDlg('dlg-import');
-$('cmdRun').onclick = () => openDlg('dlg-run');
+$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); openDlg('dlg-run'); };
 $('cmdBackup').onclick = () => openDlg('dlg-backup');
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
@@ -336,6 +444,17 @@ function showUtHint() {
 }
 $('userTypeProfile').addEventListener('change', showUtHint);
 
+let titleAutoFilled = true;
+function defaultRunTitle() {
+  const p = $('orgProfile').value || 'standard';
+  return p.split(/[-_]/).filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+}
+function refreshRunTitleDefault() {
+  if (titleAutoFilled) $('runTitle').value = defaultRunTitle();
+}
+$('orgProfile').addEventListener('change', refreshRunTitleDefault);
+$('runTitle').addEventListener('input', () => { titleAutoFilled = false; });
+
 let ctx = { datasets: 0, runs: 0 };
 function updateCtxChip() {
   $('chipData').textContent = `${ctx.datasets} Dataset${ctx.datasets === 1 ? '' : 's'} · ${ctx.runs} Lauf${ctx.runs === 1 ? '' : 'läufe'}`;
@@ -361,6 +480,14 @@ async function loadImportFolders() {
 
 function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLowerCase()}">${c || '?'}</span>`; }
 
+function fmtDateTime(iso) {
+  if (!iso) return '&ndash;';
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 function setKpis(j) {
   $('kpis').innerHTML =
     `<div class="kpi"><b>${j.findings ?? '–'}</b><span>Findings</span></div>`
@@ -376,24 +503,108 @@ async function loadRuns() {
   ul.innerHTML = runs.length ? '' : '<li class="muted" style="cursor:default">noch keine L&auml;ufe</li>';
   runs.forEach(r => {
     const li = document.createElement('li');
-    if (r.runId === activeRunId) li.className = 'active';
-    const ut = (r.userTypes && r.userTypes.length) ? r.userTypes.join('+') : 'alle';
-    li.innerHTML = `<span><b>${r.runId}</b> &middot; <small>${r.ruleset}/${r.dataset}</small><br>`
-      + `<small class="muted">${ut}${r.excludeLocked ? ', aktiv' : ''} &middot; ${r.asOf}</small></span>`
-      + `<span><b>${r.findings}</b></span>`;
+    li.className = 'run-card' + (r.runId === activeRunId ? ' active' : '');
+    const label = r.title || r.runId;
+    li.innerHTML = `<div class="run-card-top"><span class="run-id">${label}</span></div>`
+      + `<div class="run-card-meta">`
+      + `<span class="chip-mini">Stichtag ${r.asOf}</span>`
+      + `<span class="chip-mini">${fmtDateTime(r.generatedAt)}</span>`
+      + `</div>`;
     li.onclick = () => showFindings(r.runId);
     ul.appendChild(li);
   });
 }
 
+/* Findings + Filter-Sidebar (User/Regel/Query) — Klick auf User-/Regel-Zelle setzt den
+   passenden Filter und wendet ihn sofort an. */
+let allFindingsForRun = [];
+
 async function showFindings(runId) {
   activeRunId = runId;
   $('cmdExport').disabled = false;
-  document.querySelectorAll('.runs li').forEach(li => li.classList.remove('active'));
+  document.querySelectorAll('.run-card').forEach(li => li.classList.remove('active'));
   $('cmdExplain').disabled = false;
-  if (runsById[runId]) setKpis(runsById[runId]);
-  const findings = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
-  $('findingsMeta').textContent = `· ${runId} (${findings.length}${findings.length >= 500 ? '+, Top 500' : ''})`;
+  $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
+  resetUserTypeFilter();
+  ruleCritValue = ''; sleepingValue = ''; renderRuleCritPills(); renderSleepingPills();
+  hideFilterActive();
+  refreshKpis({});
+  allFindingsForRun = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
+  rulesCache = [...new Map(allFindingsForRun.map(f => [f.rule, f.criticality])).entries()]
+    .map(([rule, criticality]) => ({ rule, criticality }));
+  populateFilterSelects(allFindingsForRun);
+  renderFindingsTable(allFindingsForRun);
+  setFindingsMeta(allFindingsForRun.length);
+  loadRuns();
+  loadQueriesForRun(runId);
+}
+
+function userTypeValues() {
+  return Array.from(document.querySelectorAll('#filterUserTypePanel input:checked')).map(c => c.value);
+}
+function updateUserTypeBtn() {
+  const vals = userTypeValues();
+  $('filterUserTypeBtn').textContent = vals.length ? vals.join('+') : '– alle –';
+}
+function resetUserTypeFilter() {
+  document.querySelectorAll('#filterUserTypePanel input').forEach(c => c.checked = false);
+  updateUserTypeBtn();
+}
+document.querySelectorAll('#filterUserTypePanel input').forEach(cb =>
+  cb.addEventListener('change', () => { updateUserTypeBtn(); applyFilters(); }));
+$('filterUserTypeBtn').addEventListener('click', e => {
+  e.stopPropagation(); $('filterUserTypePanel').classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#filterUserType')) $('filterUserTypePanel').classList.remove('open');
+});
+
+/* KPI-Kacheln folgen dem aktuellen Filterkontext (User/Regel/Nutzertyp(en)/Sleeping/Kritikalitaet)
+   statt immer den Gesamtzahlen des Laufs — separater Aggregat-Call, da die Findings-Liste
+   serverseitig auf 500 begrenzt ist. */
+async function refreshKpis(f) {
+  if (!activeRunId) return;
+  let url = '/findings/summary?runId=' + encodeURIComponent(activeRunId);
+  if (f.user) url += '&user=' + encodeURIComponent(f.user);
+  if (f.rule) url += '&rule=' + encodeURIComponent(f.rule);
+  (f.userTypes || []).forEach(t => url += '&userType=' + encodeURIComponent(t));
+  if (f.sleeping) url += '&sleeping=' + f.sleeping;
+  if (f.ruleCriticality) url += '&ruleCriticality=' + encodeURIComponent(f.ruleCriticality);
+  setKpis(await api(url));
+}
+
+function setFindingsMeta(n) {
+  const r = runsById[activeRunId];
+  $('resultsTitle').textContent = (r && r.title) || activeRunId || 'Findings';
+  $('findingsMeta').textContent = `· ${activeRunId} (${n}${n >= 500 ? '+, Top 500' : ''})`;
+}
+
+let rulesCache = [];
+
+function populateFilterSelects(findings) {
+  const users = [...new Set(findings.map(f => f.user))].sort();
+  const su = $('filterUser'); su.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
+  users.forEach(u => opt(su, u, u));
+  renderRuleSelect();
+}
+
+function renderRuleSelect() {
+  const crit = ruleCritValue;
+  const rules = rulesCache.filter(r => !crit || r.criticality === crit)
+    .sort((a, b) => a.rule.localeCompare(b.rule));
+  const sr = $('filterRule'); const cur = sr.value;
+  sr.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
+  rules.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r.rule; o.textContent = r.rule;
+    if (CRIT_COLOR[r.criticality]) o.style.color = CRIT_COLOR[r.criticality];
+    sr.appendChild(o);
+  });
+  if (rules.some(r => r.rule === cur)) sr.value = cur;
+}
+
+function renderFindingsTable(findings) {
+  $('matchesTable').style.display = 'none'; $('findingsTable').style.display = '';
   const body = $('findingsBody');
   body.innerHTML = findings.length ? '' : '<tr><td colspan="6" class="muted">keine Findings</td></tr>';
   findings.forEach(f => {
@@ -405,12 +616,121 @@ async function showFindings(runId) {
     const typ = f.conflictType
       ? `<span class="tag ${f.conflictType === 'intra' ? 'medium' : 'critical'}">${f.conflictType === 'intra' ? 'intra-Rolle' : 'inter-Rolle'}</span>`
       : '<span class="muted">&ndash;</span>';
-    tr.innerHTML = `<td>${f.user}</td><td>${f.rule}</td><td>${critTag(f.criticality)}</td>`
+    tr.innerHTML = `<td class="click" data-user="${f.user}" title="nach diesem User filtern">${f.user}</td>`
+      + `<td class="click" data-rule="${f.rule}" title="nach dieser Regel filtern">${f.rule}</td>`
+      + `<td>${critTag(f.criticality)}</td>`
       + `<td>${typ}</td><td>${viaHtml}</td>`
       + `<td>${f.sleeping ? '<span class="tag medium">sleeping</span>' : '&ndash;'}</td>`;
+    tr.querySelector('[data-user]').onclick = () => {
+      $('filterUser').value = f.user; $('filterQuery').value = '';
+      ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = '';
+      applyFilters();
+    };
+    tr.querySelector('[data-rule]').onclick = () => {
+      ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = f.rule;
+      $('filterUser').value = ''; $('filterQuery').value = '';
+      applyFilters();
+    };
     body.appendChild(tr);
   });
-  loadRuns();
+}
+
+function showFilterActive(text) { $('filterActiveText').textContent = text; $('filterActive').classList.add('show'); }
+function hideFilterActive() { $('filterActive').classList.remove('show'); }
+
+const CRIT_COLOR = { 'very-high': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
+
+let ruleCritValue = '', sleepingValue = '';
+function renderRuleCritPills() {
+  document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === ruleCritValue));
+}
+function renderSleepingPills() {
+  document.querySelectorAll('#sleepingPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === sleepingValue));
+}
+document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.addEventListener('click', () => {
+  ruleCritValue = b.dataset.value; renderRuleCritPills(); renderRuleSelect(); applyFilters();
+}));
+document.querySelectorAll('#sleepingPills .pill').forEach(b => b.addEventListener('click', () => {
+  sleepingValue = b.dataset.value; renderSleepingPills(); applyFilters();
+}));
+
+async function applyFilters() {
+  if (!activeRunId) return;
+  const u = $('filterUser').value, r = $('filterRule').value, q = $('filterQuery').value;
+  const uts = userTypeValues(), sl = sleepingValue;
+  const rc = ruleCritValue;
+  if (q) {
+    let url = '/matches?runId=' + encodeURIComponent(activeRunId) + '&query=' + encodeURIComponent(q);
+    if (u) url += '&user=' + encodeURIComponent(u);
+    uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
+    const rows = await api(url);
+    $('findingsTable').style.display = 'none'; $('matchesTable').style.display = '';
+    const body = $('matchesBody');
+    body.innerHTML = rows.length ? '' : '<tr><td colspan="4" class="muted">keine Treffer</td></tr>';
+    rows.forEach(m => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${m.user}</td><td>${m.name || '&ndash;'}</td><td>${m.typ}</td><td>${m.status}</td>`;
+      body.appendChild(tr);
+    });
+    setFindingsMeta(rows.length);
+    showFilterActive(`Query „${q}"${u ? ' · User „' + u + '"' : ''}${uts.length ? ' · Typ ' + uts.join('+') : ''} &mdash; wer matcht`);
+    return;
+  }
+  if (!u && !r && !uts.length && !sl && !rc) {
+    renderFindingsTable(allFindingsForRun); setFindingsMeta(allFindingsForRun.length);
+    hideFilterActive(); refreshKpis({}); return;
+  }
+  let url = '/findings?runId=' + encodeURIComponent(activeRunId) + '&limit=500';
+  if (u) url += '&user=' + encodeURIComponent(u);
+  if (r) url += '&rule=' + encodeURIComponent(r);
+  uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
+  if (sl) url += '&sleeping=' + sl;
+  if (rc) url += '&ruleCriticality=' + encodeURIComponent(rc);
+  const rows = await api(url);
+  renderFindingsTable(rows);
+  setFindingsMeta(rows.length);
+  showFilterActive([u && `User „${u}"`, r && `Regel „${r}"`, uts.length && `Typ ${uts.join('+')}`,
+    sl && (sl === 'true' ? 'nur sleeping' : 'nicht sleeping'), rc && `Kritikalität „${rc}"`]
+    .filter(Boolean).join(' · '));
+  refreshKpis({ user: u, rule: r, userTypes: uts, sleeping: sl, ruleCriticality: rc });
+}
+$('filterApplyBtn').onclick = applyFilters;
+$('filterResetBtn').onclick = () => {
+  $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
+  resetUserTypeFilter();
+  ruleCritValue = ''; sleepingValue = ''; renderRuleCritPills(); renderSleepingPills();
+  renderRuleSelect(); renderQuerySelect();
+  renderFindingsTable(allFindingsForRun); setFindingsMeta(allFindingsForRun.length);
+  hideFilterActive(); refreshKpis({});
+};
+$('filterActiveClear').onclick = () => $('filterResetBtn').onclick();
+
+let queriesCache = [];
+
+async function loadQueriesForRun(runId) {
+  try {
+    queriesCache = await api('/queries?runId=' + encodeURIComponent(runId));
+  } catch {
+    queriesCache = [];
+  }
+  renderQuerySelect();
+}
+
+function renderQuerySelect() {
+  const sel = $('filterQuery'); const cur = sel.value;
+  const qs = queriesCache;
+  if (!queriesCache.length) {
+    sel.innerHTML = '<option value="">&ndash; nicht verf&uuml;gbar &ndash;</option>'; return;
+  }
+  sel.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
+  qs.forEach(q => {
+    const o = document.createElement('option');
+    o.value = q.id; o.textContent = `${q.id}${q.module ? ' · ' + q.module : ''}`;
+    if (q.criticality) o.title = q.criticality;
+    if (CRIT_COLOR[q.criticality]) o.style.color = CRIT_COLOR[q.criticality];
+    sel.appendChild(o);
+  });
+  if (qs.some(q => q.id === cur)) sel.value = cur;
 }
 
 async function loadBackups() {
@@ -496,7 +816,7 @@ $('formRun').addEventListener('submit', e => {
     ruleset: $('ruleset').value, dataset: $('runDataset').value, asOf: $('asOf').value,
     userTypeProfile: $('userTypeProfile').value, orgProfile: $('orgProfile').value,
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
-    runId: $('runId').value.trim() || null,
+    runId: $('runId').value.trim() || null, title: $('runTitle').value.trim() || null,
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
     skipExplain: !$('withExplain').checked,
   }), null, async j => { activeRunId = j.runId;

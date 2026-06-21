@@ -4,8 +4,9 @@ Was macht welcher Befehl in der Ribbon-Bar — und was bedeuten die Auswahlmögl
 
 ## Banner
 
-Oben links die Wortmarke, oben rechts zwei **Status-Chips**: Verbindung zur Datenbank und der
-Kontext **„N Datasets · M Läufe"** (aktualisiert sich nach jeder Aktion).
+Oben links die Wortmarke, oben rechts der **Hell/Dunkel-Umschalter** (merkt sich die Wahl im
+Browser) sowie zwei **Status-Chips**: Verbindung zur Datenbank und der Kontext
+**„N Datasets · M Läufe"** (aktualisiert sich nach jeder Aktion).
 
 ## 1 · Daten
 
@@ -66,8 +67,20 @@ Ob die Auswertung auf Organisationsebenen (z. B. Buchungskreis) eingeschränkt w
 | **Aktualisieren** | lädt Läufe, Datasets, Backups neu. |
 | **Export CSV** | Findings des **aktiven** Laufs als CSV (Semikolon, UTF-8 — Excel-tauglich). |
 
-Im Hauptbereich: **KPIs** (Findings / betroffene Regeln / davon sleeping), **Läufe-Liste**
-(Klick = Lauf laden) und die **Findings-Tabelle** (nach Kritikalität sortiert; Sleeping markiert).
+Im Hauptbereich: **KPIs** (Findings / betroffene Regeln / davon sleeping — folgen dem aktuell
+gesetzten Filter, nicht nur den Gesamtzahlen des Laufs), **Läufe-Liste** (Klick = Lauf laden;
+jede Karte zeigt Bezeichnung, Stichtag und Erstellungs-Datum/-Zeit) und die **Findings-Tabelle**
+(nach Kritikalität sortiert; Sleeping markiert; Klick auf User-/Regel-Zelle filtert direkt danach).
+
+### Filter
+
+Links in der Sidebar: **Nutzertyp** (Ankreuz-Dropdown — A/B/S/C/L = Dialog/System/Service/
+Communication/Reference), **User**, **Einzelberechtigung** und **SoD** — Auswahl wendet über
+„Filtern" an bzw. sofort bei Klick auf eine Tabellenzelle.
+
+Über der Ergebnistabelle: **Kritikalität** und **Sleeping** als farbige Klick-Buttons (Pills) —
+wirken sofort als Ergebnisfilter, unabhängig vom Lauf-Parameter „Mindest-Kritikalität"/„Sleeping
+(Tage)" beim Start. Ein aktiver Filter erscheint als Chip mit „zurücksetzen".
 
 ## 4 · Sichern
 
