@@ -498,7 +498,10 @@ async function loadQueryEditorQueries() {
   const rs = $('qeRuleset').value; if (!rs) return;
   qeQueriesCache = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries');
   const sel = $('qeQuery'); const cur = sel.value; sel.innerHTML = '';
-  qeQueriesCache.forEach(q => opt(sel, q.id, `${q.shortDescription || q.description || q.id} (${q.id})${q.custom ? ' · eigen' : ''}`));
+  qeQueriesCache.forEach(q => {
+    const name = q.shortDescription || q.description;
+    opt(sel, q.id, `${q.id}${name ? ' ' + name : ''}${q.custom ? ' · eigen' : ''}`);
+  });
   if (qeQueriesCache.some(q => q.id === cur)) sel.value = cur;
   loadQueryEditorForm();
 }
@@ -747,7 +750,8 @@ function renderRuleSelect() {
   sr.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
   rules.forEach(r => {
     const o = document.createElement('option');
-    o.value = r.rule; o.textContent = `${sodRuleNames[r.rule] || r.rule} (${r.rule})`;
+    const name = sodRuleNames[r.rule];
+    o.value = r.rule; o.textContent = name ? `${r.rule} ${name}` : r.rule;
     if (CRIT_COLOR[r.criticality]) o.style.color = CRIT_COLOR[r.criticality];
     sr.appendChild(o);
   });
@@ -876,8 +880,8 @@ function renderQuerySelect() {
   sel.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
   qs.forEach(q => {
     const o = document.createElement('option');
-    const name = q.shortDescription || q.description || q.id;
-    o.value = q.id; o.textContent = `${name} (${q.id})${q.module ? ' · ' + q.module : ''}`;
+    const name = q.shortDescription || q.description;
+    o.value = q.id; o.textContent = `${q.id}${name ? ' ' + name : ''}${q.module ? ' · ' + q.module : ''}`;
     if (q.criticality) o.title = q.criticality;
     if (CRIT_COLOR[q.criticality]) o.style.color = CRIT_COLOR[q.criticality];
     sel.appendChild(o);

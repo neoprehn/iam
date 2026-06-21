@@ -75,10 +75,10 @@ jede Karte zeigt Bezeichnung, Stichtag und Erstellungs-Datum/-Zeit) und die **Fi
 ### Filter
 
 Links in der Sidebar: **Nutzertyp** (Ankreuz-Dropdown — A/B/S/C/L = Dialog/System/Service/
-Communication/Reference), **User**, **Einzelberechtigung** und **SoD** — beide zeigen die
-**Bezeichnung** (Kurzbezeichnung, falls gepflegt, sonst die Langbezeichnung) statt nur der sonst
-wenig aussagekr&auml;ftigen ID; die ID steht in Klammern dahinter. Auswahl wendet über „Filtern"
-an bzw. sofort bei Klick auf eine Tabellenzelle.
+Communication/Reference), **User**, **Einzelberechtigung** und **SoD** — beide zeigen **ID +
+Bezeichnung** (Kurzbezeichnung, falls gepflegt, sonst die Langbezeichnung); die ID steht
+**voran**, damit sie bei langen Bezeichnungen nicht durch die feste Dropdown-Breite abgeschnitten
+wird. Auswahl wendet über „Filtern" an bzw. sofort bei Klick auf eine Tabellenzelle.
 
 Über der Ergebnistabelle: **Kritikalität** und **Sleeping** als farbige Klick-Buttons (Pills) —
 wirken sofort als Ergebnisfilter, unabhängig vom Lauf-Parameter „Mindest-Kritikalität"/„Sleeping
