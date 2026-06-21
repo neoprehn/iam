@@ -91,11 +91,17 @@ wirken sofort als Ergebnisfilter, unabhängig vom Lauf-Parameter „Mindest-Krit
 Backups enthalten nur die **bereinigten Quelldaten** — keine Findings (die werden nach dem
 Wiederherstellen neu ausgewertet). Backups bleiben lokal.
 
+Im selben Dialog, separat darunter: **Lauf-Backups** — sichert einen einzelnen
+**Auswertungslauf** (Run + Findings, ohne Evidenz; die ist über „Evidenz" im Ribbon jederzeit
+neu berechenbar) als eigenes ZIP. Jedes Dataset trägt dafür eine **Dataset-uid**, die beim
+Wiederherstellen mit der im Lauf-Backup gespeicherten uid verglichen wird: weicht sie ab (das
+Dataset wurde seither neu befüllt), fragt die App vor dem Restore ausdrücklich nach.
+
 ## 5 · Verwalten
 
 | Befehl | Wirkung |
 | --- | --- |
-| **Bereinigen** | Dialog: **Dieses Dataset löschen** oder **Alles zurücksetzen**. **Ruleset & Schema bleiben** in beiden Fällen erhalten. |
+| **Bereinigen** | Dialog: **Dieses Dataset löschen** oder **Alles zurücksetzen** (Ruleset & Schema bleiben in beiden Fällen erhalten), sowie separat **einen einzelnen Auswertungslauf löschen** (Run + Findings; Dataset und andere Läufe bleiben unberührt). |
 
 Beide Aktionen fragen vor dem Ausführen nach.
 

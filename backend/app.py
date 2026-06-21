@@ -36,6 +36,7 @@ LOAD_DIR = Path(os.environ.get("LOAD_DIR", "/app/load"))
 MIGRATIONS_DIR = Path(os.environ.get("MIGRATIONS_DIR", "/app/migrations"))
 DATA_DIR = Path(os.environ.get("DATA_DIR", "/app/data/import"))
 BACKUP_DIR = Path(os.environ.get("BACKUP_DIR", "/app/backups"))
+RUN_BACKUP_DIR = BACKUP_DIR / "runs"
 FRONTEND_DIR = Path(os.environ.get("FRONTEND_DIR", "/app/frontend"))
 DEFAULT_LANG = [c.strip() for c in os.environ.get("IMPORT_LANG", "DE,DEU,D").split(",") if c.strip()]
 
@@ -237,6 +238,17 @@ def do_explain(job_id: str, run_id: str):
         jobs[job_id].update(status="error", error=str(e))
 
 
+def do_delete_run(job_id: str, run_id: str):
+    """Loescht einen einzelnen Auswertungslauf (Run + Findings); Dataset bleibt unberuehrt."""
+    try:
+        jobs[job_id].update(status="running", step="delete", runId=run_id)
+        with driver.session() as s:
+            run_file(s, "admin/delete_run.cypher", {"runId": run_id})
+        jobs[job_id].update(status="done", step="done")
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
 def do_clear(job_id: str, dataset: str):
     try:
         jobs[job_id].update(status="running", step="clear", dataset=dataset)
@@ -328,6 +340,85 @@ def do_restore(job_id: str, path: Path, dataset: str | None):
                     (dest / Path(n).name).write_bytes(z.read(n))
         # .csv liegen jetzt vor -> Re-Import ohne Konvertierung (Schema idempotent sicherstellen)
         do_import(job_id, ImportReq(dataset=target, skipConvert=True, skipSchema=False))
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
+# --- Backup/Restore (Auswertungslauf-Ebene) --------------------------------------------
+# Lauf-Backup = ZIP aus manifest.json (Provenienz inkl. Dataset-uid) + run.json + findings.json.
+# Getrennt von Quelldaten-Backups (oben): sichert das ABGELEITETE Ergebnis eines Laufs, kein
+# Re-Import. Restore prueft die Dataset-uid aus dem Manifest gegen die aktuelle Dataset-uid —
+# Mismatch bedeutet "das Dataset wurde seit dem Lauf neu befuellt", Restore dann nur mit
+# force=true (Warnung wird vom Frontend angezeigt).
+def _run_backup_path(file: str) -> Path:
+    if not _SAFE_NAME.match(file) or not file.endswith(".zip"):
+        raise HTTPException(400, "ungueltiger Dateiname")
+    p = (RUN_BACKUP_DIR / file).resolve()
+    if p.parent != RUN_BACKUP_DIR.resolve() or not p.is_file():
+        raise HTTPException(404, "Lauf-Backup nicht gefunden")
+    return p
+
+
+def _dataset_uid(s, dataset: str) -> str | None:
+    """Aktuelle Dataset-uid; legt sie nach (lazy backfill), falls das Dataset noch keine hat."""
+    rec = s.run("MATCH (d:Dataset {id:$id}) SET d.uid = coalesce(d.uid, randomUUID()) "
+                "RETURN d.uid AS uid", id=dataset).single()
+    return rec["uid"] if rec else None
+
+
+def do_backup_run(job_id: str, run_id: str):
+    try:
+        jobs[job_id].update(status="running", step="backup", runId=run_id)
+        with driver.session() as s:
+            rec = s.run("MATCH (r:Run {runId:$id}) RETURN r AS run", id=run_id).single()
+            if not rec:
+                raise ValueError(f"Lauf '{run_id}' nicht gefunden")
+            run_d = jsonable(dict(rec["run"]))
+            dataset_uid = _dataset_uid(s, run_d["dataset"])
+            findings = [jsonable(dict(r)) for r in s.run(
+                "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$id})-[:BASED_ON]->(rule:SoDRule) "
+                "RETURN u.id AS user, f.ruleId AS rule, f.criticality AS criticality, "
+                "f.criticalityRank AS criticalityRank, f.asOf AS asOf, f.reasonCode AS reasonCode, "
+                "coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType",
+                id=run_id)]
+        RUN_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+        ts = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        name = f"{run_id}__{ts}.run.zip"
+        manifest = {"runId": run_id, "dataset": run_d["dataset"], "datasetUid": dataset_uid,
+                    "ruleset": run_d.get("ruleset"), "title": run_d.get("title"), "asOf": run_d.get("asOf"),
+                    "generatedAt": run_d.get("generatedAt"),
+                    "createdAt": datetime.datetime.now().isoformat(timespec="seconds"),
+                    "findingsCount": len(findings)}
+        with zipfile.ZipFile(RUN_BACKUP_DIR / name, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
+            z.writestr("run.json", json.dumps(run_d, ensure_ascii=False, indent=2))
+            z.writestr("findings.json", json.dumps(findings, ensure_ascii=False, indent=2))
+        jobs[job_id].update(status="done", step="done", backup=name, findings=len(findings),
+                            sizeBytes=(RUN_BACKUP_DIR / name).stat().st_size)
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+
+
+def do_restore_run(job_id: str, path: Path, force: bool):
+    try:
+        jobs[job_id].update(status="running", step="check")
+        with zipfile.ZipFile(path) as z:
+            manifest = json.loads(z.read("manifest.json"))
+            run_d = json.loads(z.read("run.json"))
+            findings = json.loads(z.read("findings.json"))
+        with driver.session() as s:
+            current_uid = _dataset_uid(s, manifest["dataset"])
+            if not force and current_uid != manifest.get("datasetUid"):
+                raise ValueError(
+                    f"Dataset '{manifest['dataset']}' hat sich seit diesem Lauf-Backup geaendert "
+                    "(anderer Datenstand) — Wiederherstellung nur mit ausdruecklicher Bestaetigung.")
+            jobs[job_id]["step"] = "restore"
+            run_file(s, "admin/restore_run.cypher",
+                     {"run": run_d, "findings": findings, "runId": manifest["runId"]})
+            rec = s.run("MATCH (f:SoDConflict {runId:$id}) RETURN count(f) AS restored",
+                        id=manifest["runId"]).single()
+        jobs[job_id].update(status="done", step="done", runId=manifest["runId"],
+                            restored=rec["restored"], total=len(findings))
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
 
@@ -555,6 +646,54 @@ def explain_run(runId: str):
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "queued", "kind": "explain", "request": {"runId": runId}}
     threading.Thread(target=do_explain, args=(job_id, runId), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.post("/runs/{runId}/delete")
+def delete_run(runId: str):
+    """Loescht einen einzelnen Auswertungslauf (Run + Findings); Dataset bleibt unberuehrt."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "delete_run", "request": {"runId": runId}}
+    threading.Thread(target=do_delete_run, args=(job_id, runId), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.post("/runs/{runId}/backup")
+def backup_run(runId: str):
+    """Sichert einen Auswertungslauf (Run + Findings, ohne Evidenz) als eigenes ZIP."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "backup_run", "request": {"runId": runId}}
+    threading.Thread(target=do_backup_run, args=(job_id, runId), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.get("/runs/backups")
+def list_run_backups():
+    if not RUN_BACKUP_DIR.exists():
+        return []
+    out = []
+    for p in sorted(RUN_BACKUP_DIR.glob("*.zip"), key=lambda x: x.stat().st_mtime, reverse=True):
+        with zipfile.ZipFile(p) as z:
+            manifest = json.loads(z.read("manifest.json"))
+        out.append({"file": p.name, **manifest, "sizeBytes": p.stat().st_size})
+    return out
+
+
+@app.get("/runs/backups/{file}/download")
+def download_run_backup(file: str):
+    return FileResponse(_run_backup_path(file), filename=file, media_type="application/zip")
+
+
+class RunRestoreReq(BaseModel):
+    force: bool = False     # true = trotz abweichender Dataset-uid wiederherstellen
+
+
+@app.post("/runs/backups/{file}/restore")
+def restore_run_backup(file: str, req: RunRestoreReq):
+    path = _run_backup_path(file)
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "restore_run", "request": {"file": file, "force": req.force}}
+    threading.Thread(target=do_restore_run, args=(job_id, path, req.force), daemon=True).start()
     return {"jobId": job_id}
 
 

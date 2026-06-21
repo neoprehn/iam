@@ -20,13 +20,21 @@ CREATE CONSTRAINT run_key IF NOT EXISTS FOR (r:Run) REQUIRE r.key IS UNIQUE;
 
 MATCH (f:SoDConflict {ruleset:$ruleset, dataset:$dataset, runId:$runId}) DETACH DELETE f;
 
+// Dataset-uid am Run festhalten (Vergleichsanker fuer Lauf-Backup/Restore: erkennt, ob der
+// Dataset-Name seit dem Lauf neu befuellt wurde). Aeltere Datasets ohne uid bekommen sie hier
+// nachgetragen (lazy backfill), damit auch sie ab jetzt vergleichbar sind.
+OPTIONAL MATCH (ds:Dataset {id:$dataset})
+SET ds.uid = coalesce(ds.uid, randomUUID())
+WITH ds
+
 // Run-Knoten trägt den Scope des Laufs -> Can-Do-KPIs (z. B. SAP_ALL) können denselben
 // Nutzertyp-/Sperr-Filter anwenden wie die SoD-Auswertung.
 MERGE (run:Run {key: $ruleset + '|' + $dataset + '|' + $runId})
   SET run.runId = $runId, run.title = $title, run.ruleset = $ruleset, run.dataset = $dataset, run.asOf = $asOf,
       run.userTypes = $userTypes, run.excludeLocked = $excludeLocked, run.sleepDays = $sleepDays,
       run.minCriticalityRank = $minCriticalityRank, run.generatedAt = datetime(),
-      run.orgMode = $orgMode, run.orgFilters = apoc.convert.toJson($orgFilters);
+      run.orgMode = $orgMode, run.orgFilters = apoc.convert.toJson($orgFilters),
+      run.datasetUid = ds.uid;
 
 MATCH (rule:SoDRule {ruleset:$ruleset})
 WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() }

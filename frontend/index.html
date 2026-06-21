@@ -344,6 +344,16 @@
   <button class="ghost" id="backupBtn">Backup erstellen</button>
   <h2>Backups</h2>
   <ul class="runs" id="backups"></ul>
+
+  <div class="sep"></div>
+  <div class="sub">Lauf-Backup = Ergebnis eines Auswertungslaufs (Findings, ohne Evidenz). Beim
+    Wiederherstellen wird gepr&uuml;ft, ob das Ziel-Dataset noch derselbe Datenstand ist wie beim
+    Sichern (Dataset-uid) &mdash; bei Abweichung erst nach ausdr&uuml;cklicher Best&auml;tigung.</div>
+  <label for="bkpRun">Lauf</label>
+  <select id="bkpRun"></select>
+  <button class="ghost" id="backupRunBtn">Lauf sichern</button>
+  <h2>Lauf-Backups</h2>
+  <ul class="runs" id="runBackups"></ul>
 </div></div>
 
 <!-- Dialog: Verwalten -->
@@ -354,6 +364,11 @@
   <select id="clrDataset"></select>
   <button class="ghost" id="clearBtn">Dieses Dataset l&ouml;schen</button>
   <button class="ghost danger" id="resetBtn">Alles zur&uuml;cksetzen</button>
+
+  <div class="sep"></div>
+  <label for="clrRun">Auswertungslauf</label>
+  <select id="clrRun"></select>
+  <button class="ghost danger" id="clearRunBtn">Diesen Lauf l&ouml;schen</button>
 </div></div>
 
 <!-- Dialog: Admin -->
@@ -514,6 +529,12 @@ async function loadRuns() {
     li.onclick = () => showFindings(r.runId);
     ul.appendChild(li);
   });
+  for (const id of ['clrRun', 'bkpRun']) {
+    const sel = $(id), cur = sel.value; sel.innerHTML = '';
+    runs.forEach(r => opt(sel, r.runId, r.title || r.runId));
+    if (runs.some(r => r.runId === cur)) sel.value = cur;
+    else if (!runs.length) opt(sel, '', '— keine —');
+  }
 }
 
 /* Findings + Filter-Sidebar (User/Regel/Query) — Klick auf User-/Regel-Zelle setzt den
@@ -753,8 +774,45 @@ async function loadBackups() {
   });
 }
 
+async function loadRunBackups() {
+  const backups = await api('/runs/backups');
+  const ul = $('runBackups');
+  ul.innerHTML = backups.length ? '' : '<li class="muted" style="cursor:default">noch keine Lauf-Backups</li>';
+  backups.forEach(b => {
+    const li = document.createElement('li'); li.style.cursor = 'default';
+    li.innerHTML = `<span><b>${b.title || b.runId}</b><br><small class="muted">${b.dataset} &middot; ${b.createdAt} &middot; ${b.findingsCount} Findings &middot; ${(b.sizeBytes / 1e6).toFixed(2)} MB</small></span>`
+      + `<span style="white-space:nowrap"><a href="#" class="rest" data-file="${b.file}" title="Wiederherstellen">&#8635;</a> `
+      + `<a href="/runs/backups/${encodeURIComponent(b.file)}/download" title="Herunterladen">&#8595;</a></span>`;
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll('a.rest').forEach(a => a.onclick = e => {
+    e.preventDefault(); restoreRunBackup(a.dataset.file, false);
+  });
+}
+
+async function restoreRunBackup(file, force) {
+  const msg = force
+    ? `Datenstand des Ziel-Datasets weicht vom Lauf-Backup ab — „${file}" trotzdem wiederherstellen?`
+    : `Lauf-Backup „${file}" wiederherstellen?`;
+  if (!confirm(msg)) return;
+  closeDlg();
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Job wird gestartet&hellip;';
+  try {
+    const { jobId } = await api('/runs/backups/' + encodeURIComponent(file) + '/restore', json({ force }));
+    const j = await poll(jobId, j => `${doneTag} Lauf <b>${j.runId}</b> wiederhergestellt &mdash; ${j.restored}/${j.total} Findings.`);
+    if (j.status === 'error' && !force && /Datenstand/.test(j.error || '')
+        && confirm(j.error + '\n\nTrotzdem mit dem aktuellen Dataset wiederherstellen?')) {
+      return restoreRunBackup(file, true);
+    }
+  } catch (err) {
+    st.className = 'err'; st.style.display = 'block';
+    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
+  }
+}
+
 async function refreshAll() {
-  await refreshDatasets(); await loadRuns(); await loadImportFolders(); await loadBackups();
+  await refreshDatasets(); await loadRuns(); await loadImportFolders(); await loadBackups(); await loadRunBackups();
 }
 
 /* Job-Lauf mit globaler Statusanzeige */
@@ -845,7 +903,21 @@ $('resetBtn').addEventListener('click', () =>
     'ALLE Daten (alle Datasets, Läufe, Findings) wirklich zurücksetzen? Ruleset & Schema bleiben.',
     j => `${doneTag} Zurückgesetzt — ${j.remaining} Rest-Knoten, Ruleset: ${j.rulesetQueries} Queries.`));
 
-loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).catch(e =>
+$('backupRunBtn').addEventListener('click', () => {
+  const r = $('bkpRun').value; if (!r) return;
+  runJob('/runs/' + encodeURIComponent(r) + '/backup', { method: 'POST' }, null,
+    j => `${doneTag} Lauf-Backup <b>${j.backup}</b> (${j.findings} Findings, ${(j.sizeBytes / 1e6).toFixed(2)} MB).`);
+});
+
+$('clearRunBtn').addEventListener('click', () => {
+  const r = $('clrRun').value; if (!r) return;
+  const label = (runsById[r] && (runsById[r].title || r)) || r;
+  runJob('/runs/' + encodeURIComponent(r) + '/delete', { method: 'POST' },
+    `Lauf „${label}" wirklich löschen? (Dataset & andere Läufe bleiben erhalten.)`,
+    () => `${doneTag} Lauf <b>${label}</b> gelöscht.`);
+});
+
+loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).then(loadRunBackups).catch(e =>
   document.body.insertAdjacentHTML('beforeend',
     '<p style="color:#ff8a8e;padding:20px">Backend nicht erreichbar: ' + JSON.stringify(e) + '</p>'));
 </script>
