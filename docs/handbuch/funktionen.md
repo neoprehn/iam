@@ -111,20 +111,39 @@ Beide Aktionen fragen vor dem Ausführen nach.
 
 | Befehl | Wirkung |
 | --- | --- |
-| **Admin** | Zeigt die **geladenen Rulesets** (Name, ID, Standard-Markierung) und **Einzelfilter nachjustieren** (Ruleset-Editor). |
+| **Admin** | Zeigt die **geladenen Rulesets** (Name, ID, Standard-Markierung) und einen Link zum **Query Management** (eigene Seite, `/admin.html`). |
 
-**Einzelfilter-Editor** — Ruleset w&auml;hlen, Query w&auml;hlen, **Kurz-/Langbezeichnung,
-Kritikalit&auml;t, Modul, Query-Typ, „TCode ignorieren"** bearbeiten und speichern, oder unten eine
-**neue Query aus der gew&auml;hlten ableiten** (Berechtigungen/TCodes werden 1:1 &uuml;bernommen,
-in dieser Stufe nicht editierbar). Die **Kurzbezeichnung** ist es, was sp&auml;ter in den
-Sidebar-Filtern als Name erscheint (Langbezeichnung bleibt das ausf&uuml;hrliche Feld).
+### Query Management (eigene Seite, eigene Ribbon-Bar)
+
+Erreichbar über Admin &rarr; „Query Management". Eigene Ribbon-Gruppen: **Anzeige**
+(Aktualisieren), **Editieren** (Speichern/Abbrechen, aktiv sobald etwas ge&auml;ndert wurde),
+**Backup** (Overlay-Datei des gew&auml;hlten Rulesets herunterladen) und **Zur&uuml;ck** (zur
+Auswertung).
+
+Links: **Filterset** w&auml;hlen (aktuell 3 Rulesets), darunter **Suche** (unterst&uuml;tzt `*`
+als Platzhalter, z. B. „BC-SEC*") und Filter nach **Modul/Kritikalit&auml;t/Query-Typ**, dann die
+Liste aller Queries (ID + Bezeichnung, eigene/abgeleitete Queries markiert).
+
+Rechts, nach Auswahl einer Query: oben dauerhaft sichtbar die **Stammdaten**
+(Kurz-/Langbezeichnung, Kritikalit&auml;t, Modul, Query-Typ, „TCode ignorieren" — die
+**Kurzbezeichnung** ist es, was in den Sidebar-Filtern der Auswertung als Name erscheint), darunter
+drei **Tabs**:
+
+- **Aufbau** — Transaktionen und Berechtigungsobjekte der Query, **nur Anzeige** (Bearbeitung
+  folgt sp&auml;ter).
+- **Risiko** — Freitext: potenzielles Risiko dieser Berechtigung.
+- **Controls** — Freitext: mitigierende Ma&szlig;nahmen.
+
+Unten links: eine **neue Query aus der gew&auml;hlten ableiten** (Berechtigungen/TCodes 1:1
+&uuml;bernommen, Stammdaten/Risiko/Controls oben vorher anpassen).
+
 &Auml;nderungen schreiben **nie** in die Vendor-Datei (`queries.json`), sondern in ein separates
 Overlay (`queries.custom.json`) je Ruleset — Vendor-Updates &uuml;berschreiben eigene Anpassungen
 dadurch nicht. Speichern/Ableiten wirkt **sofort** (kein extra Reload-Schritt n&ouml;tig).
 
 **Geplant** in diesem Bereich:
 
-- **Authorizations/TCodes im Editor bearbeitbar** — bisher nur 1:1-Kopie beim Ableiten.
+- **Authorizations/TCodes im Aufbau-Tab bearbeitbar** — bisher nur Anzeige bzw. 1:1-Kopie beim Ableiten.
 - **USOBT-gest&uuml;tzter Query-Builder** — neue Queries per Auswahl Transaktion&nbsp;&rarr;
   Berechtigungsobjekte statt freier Eingabe.
 - **Stammdaten-Blatt: Query &rarr; System-Typ** (SAP R/3, S/4HANA, k&uuml;nftig weitere).

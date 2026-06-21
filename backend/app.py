@@ -106,14 +106,19 @@ def ensure_custom_queries_file(ruleset: str) -> Path:
 
 
 def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
-    """Vendor-Queries + Overlay, Overlay-Felder gewinnen je id; neue ids = eigene/abgeleitete
-    Queries. Gibt (id -> effektive Query, Menge der ueberlagerten/eigenen ids) zurueck."""
+    """Vendor-Queries + Overlay, Overlay-Felder gewinnen je id. Gibt (id -> effektive Query,
+    Menge der STRUKTURELL eigenen ids) zurueck — 'eigen' heisst hier: komplett neue/abgeleitete
+    Query (kein Vendor-Gegenstueck) ODER der Aufbau (authorizations/transactions) wurde
+    ueberschrieben. Reine Metadaten-Ergaenzungen (Kurzbezeichnung, Risiko, Controls, ...) auf
+    einer bestehenden Vendor-Query zaehlen NICHT als 'eigen' (s. Nutzerfeedback: das ist nur
+    eine Info-Ergaenzung, keine inhaltliche Aenderung der Query)."""
     vendor_path, custom_path = _ruleset_paths(ruleset)
     merged = {q["query"]: dict(q) for q in _load_json_list(vendor_path)}
     custom_ids = set()
     for c in _load_json_list(custom_path):
         qid = c["query"]
-        custom_ids.add(qid)
+        if qid not in merged or "authorizations" in c or "transactions" in c:
+            custom_ids.add(qid)
         if qid in merged:
             merged[qid] = {**merged[qid], **{k: v for k, v in c.items() if v is not None}}
         else:
@@ -539,14 +544,33 @@ def profiles_meta():
 
 @app.get("/admin/rulesets/{ruleset}/queries")
 def admin_list_queries(ruleset: str):
-    """Alle Queries eines Rulesets (Vendor + Overlay effektiv gemerged) fuer den
-    Einzelfilter-Editor; 'custom' markiert eigene Edits/abgeleitete Queries."""
+    """Alle Queries eines Rulesets (Vendor + Overlay effektiv gemerged) fuer das Query
+    Management; 'custom' markiert eigene Edits/abgeleitete Queries."""
     merged, custom_ids = _merged_queries(ruleset)
     return [{"id": qid, "description": q.get("description", ""),
              "shortDescription": q.get("shortDescription", ""), "criticality": q.get("criticality"),
              "module": q.get("module"), "queryType": q.get("queryType"),
              "disregardTcode": bool(q.get("disregardTcode", False)), "custom": qid in custom_ids}
             for qid, q in sorted(merged.items())]
+
+
+@app.get("/admin/rulesets/{ruleset}/queries/{queryId}")
+def admin_get_query(ruleset: str, queryId: str):
+    """Eine Query vollstaendig (inkl. authorizations/transactions, read-only) fuer den
+    'Aufbau'-Tab im Query Management."""
+    merged, custom_ids = _merged_queries(ruleset)
+    q = merged.get(queryId)
+    if not q:
+        raise HTTPException(404, f"Query '{queryId}' nicht gefunden")
+    return {**q, "custom": queryId in custom_ids}
+
+
+@app.get("/admin/rulesets/{ruleset}/overlay/download")
+def admin_download_overlay(ruleset: str):
+    """Overlay-Datei (queries.custom.json) eines Rulesets als Download — Sicherung der eigenen
+    Anpassungen/abgeleiteten Queries, getrennt von den Quelldaten-/Lauf-Backups."""
+    custom_path = ensure_custom_queries_file(ruleset)
+    return FileResponse(custom_path, filename=f"{ruleset}__queries.custom.json", media_type="application/json")
 
 
 class QueryEditReq(BaseModel):
@@ -556,6 +580,8 @@ class QueryEditReq(BaseModel):
     module: str | None = None
     queryType: str | None = None
     disregardTcode: bool | None = None
+    risk: str | None = None
+    controls: str | None = None
 
 
 @app.put("/admin/rulesets/{ruleset}/queries/{queryId}")
@@ -587,6 +613,8 @@ class QueryDeriveReq(BaseModel):
     module: str | None = None
     queryType: str | None = None
     disregardTcode: bool | None = None
+    risk: str | None = None
+    controls: str | None = None
 
 
 @app.post("/admin/rulesets/{ruleset}/queries/derive")
@@ -605,7 +633,8 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     new_q = dict(src)
     new_q["query"] = req.newId
     new_q["derivedFrom"] = req.fromId
-    for field in ("description", "shortDescription", "criticality", "module", "queryType", "disregardTcode"):
+    for field in ("description", "shortDescription", "criticality", "module", "queryType",
+                  "disregardTcode", "risk", "controls"):
         v = getattr(req, field)
         if v is not None:
             new_q[field] = v

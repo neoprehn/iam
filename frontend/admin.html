@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Query Management — IAM</title>
+<style>
+  :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
+          --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
+  html[data-theme="light"] { --bg:#f5f7fa; --panel:#ffffff; --line:#d7dee6; --fg:#1b232c;
+          --muted:#5b6b7a; --accent:#2f6fe0; --crit:#c0392b; --ok:#1f7a37; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+  a { color:var(--accent); }
+  html[data-theme="light"] header { background:linear-gradient(110deg,#eef2f7 0%,#ffffff 60%); }
+
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 22px; background:linear-gradient(110deg,#141d2b 0%,#0f1419 60%);
+    border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:13px; }
+  .brand .mark { width:38px; height:38px; border-radius:9px; flex:none;
+    background:linear-gradient(135deg,var(--accent),#7b5cf5); display:flex; align-items:center;
+    justify-content:center; font-weight:800; font-size:17px; color:#fff; letter-spacing:.5px;
+    box-shadow:0 2px 10px rgba(76,139,245,.35); }
+  .brand .title { font-size:18px; font-weight:700; line-height:1.15; }
+  .brand .title b { color:var(--accent); font-weight:700; }
+  .brand .tag { color:var(--muted); font-size:12px; margin-top:1px; }
+  .bctx { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .chip { font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    border-radius:20px; padding:3px 11px; white-space:nowrap; }
+  .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
+    background:var(--panel); margin-top:8px; overflow-x:auto; }
+  .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
+    border-right:1px solid var(--line); }
+  .group:last-child { border-right:0; }
+  .group .cmds { display:flex; gap:6px; }
+  .group .lbl { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+    margin-top:5px; }
+  .cmd { display:flex; flex-direction:column; align-items:center; gap:3px; min-width:64px;
+    padding:7px 10px; background:transparent; color:var(--fg); border:1px solid transparent;
+    border-radius:7px; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap;
+    text-decoration:none; }
+  .cmd:hover { background:rgba(76,139,245,.12); border-color:var(--line); }
+  .cmd .ico { font-size:18px; line-height:1; }
+  .cmd:disabled { opacity:.4; cursor:default; background:transparent; border-color:transparent; }
+
+  #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
+    border:1px solid var(--line); background:var(--panel); }
+  #status.err { border-color:var(--crit); color:#ffb3b5; }
+
+  main { padding:16px 20px 28px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 10px; }
+  .cols { display:grid; grid-template-columns:340px 1fr; gap:22px; align-items:start; }
+  .filterbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
+  label:first-child { margin-top:0; }
+  input, select, textarea { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
+    border:1px solid var(--line); border-radius:6px; font:inherit; }
+  textarea { resize:vertical; min-height:140px; }
+  .row { display:flex; gap:10px; } .row > div { flex:1; }
+  .check { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .check input { width:auto; }
+  .check label { margin:0; color:var(--fg); }
+  .muted { color:var(--muted); }
+  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
+  button.primary { padding:9px 18px; background:var(--accent); color:#fff;
+    border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+  button.ghost { padding:9px 14px; background:transparent; border:1px solid var(--line);
+    color:var(--fg); border-radius:6px; font:inherit; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+
+  .runs { list-style:none; padding:0; margin:0; max-height:55vh; overflow:auto; }
+  .runs li { padding:8px 10px; border-radius:6px; margin-bottom:5px; cursor:pointer;
+    border:1px solid var(--line); background:var(--bg); font-size:13px; }
+  .runs li:hover { border-color:var(--accent); }
+  .runs li.active { border-color:var(--accent); background:rgba(76,139,245,.10); }
+  .runs li small { color:var(--muted); }
+  .custom-badge { font-size:10px; color:var(--accent); }
+
+  #tab-meta { background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:14px 16px 4px; }
+  .tabs { display:flex; gap:4px; margin:18px 0 0; border-bottom:1px solid var(--line); }
+  .tab { padding:9px 16px; background:var(--panel); border:1px solid var(--line); border-bottom:0;
+    border-radius:8px 8px 0 0; color:var(--muted); font:inherit; font-size:13px; font-weight:600;
+    cursor:pointer; margin-bottom:-1px; }
+  .tab:hover { color:var(--fg); background:rgba(76,139,245,.10); }
+  .tab.active { color:var(--fg); background:var(--bg); border-color:var(--line);
+    border-bottom:1px solid var(--bg); box-shadow:0 -2px 0 var(--accent) inset; }
+  .tabpanel { padding:16px; background:var(--bg); border:1px solid var(--line); border-top:0;
+    border-radius:0 0 8px 8px; }
+  .auftable { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  .auftable th, .auftable td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  .auftable th { color:var(--muted); font-weight:600; }
+  .actions { display:flex; gap:8px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+  .badge { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
+    border-radius:10px; padding:3px 9px; white-space:nowrap; }
+  .badge.custom { color:var(--accent); border-color:var(--accent); }
+  .empty { color:var(--muted); padding:40px; text-align:center; }
+  .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
+    border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark">IAM</div>
+    <div>
+      <div class="title"><b>IAM</b> &middot; Query Management</div>
+      <div class="tag">Einzelfilter editieren &middot; vendor-getrennt (Overlay)</div>
+    </div>
+  </div>
+  <div class="bctx">
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
+    <span class="chip" id="amDirtyChip" style="display:none">&#9679; ungespeichert</span>
+  </div>
+</header>
+
+<nav class="ribbon">
+  <div class="group">
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
+    <div class="lbl">Anzeige</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
+      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+    </div>
+    <div class="lbl">Editieren</div>
+  </div>
+  <div class="group">
+    <div class="cmds"><button class="cmd" id="cmdDownloadOverlay"><span class="ico">&#8595;</span>Overlay sichern</button></div>
+    <div class="lbl">Backup</div>
+  </div>
+  <div class="group">
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
+    <div class="lbl">Zur&uuml;ck</div>
+  </div>
+</nav>
+
+<div id="status"></div>
+
+<main>
+  <div class="cols">
+    <div>
+      <h2>Filterset</h2>
+      <div class="filterbox">
+        <label for="amRuleset">Ruleset</label>
+        <select id="amRuleset"></select>
+        <label for="amSearch">Suche <span class="muted">(z.&nbsp;B. „BC-SEC*")</span></label>
+        <input id="amSearch" placeholder="ID oder Bezeichnung&hellip;" />
+        <div class="row">
+          <div><label for="amFilterModule">Modul</label><select id="amFilterModule"></select></div>
+          <div><label for="amFilterCriticality">Kritikalit&auml;t</label><select id="amFilterCriticality"></select></div>
+        </div>
+        <label for="amFilterQueryType">Query-Typ</label>
+        <select id="amFilterQueryType"></select>
+      </div>
+      <h2>Queries</h2>
+      <ul class="runs" id="amQueryList"></ul>
+
+      <h2>Neu ableiten</h2>
+      <div class="filterbox">
+        <div class="hint">Kopiert die links gew&auml;hlte Query (Berechtigungen/TCodes 1:1) unter
+          neuer ID &mdash; Metadaten rechts vorher anpassen, sie werden mit &uuml;bernommen.</div>
+        <label for="amNewId">Neue Query-ID</label>
+        <input id="amNewId" placeholder="z. B. BC_EIGENE_01" />
+        <button class="ghost" id="amDeriveBtn" style="width:100%;margin-top:8px">Ableiten &amp; &uuml;bernehmen</button>
+      </div>
+    </div>
+
+    <div>
+      <div id="amEmpty" class="empty">Links eine Query w&auml;hlen.</div>
+      <div id="amDetail" style="display:none">
+        <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
+          <span id="amTitle"></span>
+          <span class="badge" id="amBadge"></span>
+        </h2>
+        <div id="tab-meta">
+          <label for="amShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
+          <input id="amShortDescription" />
+          <label for="amDescription">Langbezeichnung</label>
+          <input id="amDescription" />
+          <div class="row">
+            <div><label for="amCriticality">Kritikalit&auml;t</label>
+              <select id="amCriticality">
+                <option value="">&ndash;</option>
+                <option value="very-high">very-high</option><option value="critical">critical</option>
+                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
+              </select></div>
+            <div><label for="amModule">Modul</label><input id="amModule" /></div>
+          </div>
+          <label for="amQueryType">Query-Typ</label>
+          <input id="amQueryType" />
+          <div class="check"><input type="checkbox" id="amDisregardTcode" />
+            <label for="amDisregardTcode">TCode ignorieren (disregardTcode)</label></div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="aufbau">Aufbau</button>
+          <button class="tab" data-tab="risiko">Risiko</button>
+          <button class="tab" data-tab="controls">Controls</button>
+        </div>
+
+        <div class="tabpanel" id="tab-aufbau">
+          <div class="hint">Nur Anzeige &mdash; Bearbeitung des Aufbaus folgt sp&auml;ter.</div>
+          <h2 style="margin-top:14px">Transaktionen</h2>
+          <table class="auftable" id="amTcodesTable"><thead><tr><th>TCode</th><th>Audit</th><th>STAD</th></tr></thead><tbody></tbody></table>
+          <h2>Berechtigungsobjekte</h2>
+          <table class="auftable" id="amAuthsTable"><thead><tr><th>Objekt</th><th>Feld</th><th>Verkn&uuml;pfung</th><th>Werte</th></tr></thead><tbody></tbody></table>
+        </div>
+
+        <div class="tabpanel" id="tab-risiko" hidden>
+          <label for="amRisk">Potenzielles Risiko</label>
+          <textarea id="amRisk" placeholder="Beschreibung des Risikos&hellip;"></textarea>
+        </div>
+
+        <div class="tabpanel" id="tab-controls" hidden>
+          <label for="amControls">Mitigierende Ma&szlig;nahmen</label>
+          <textarea id="amControls" placeholder="Beschreibung der Controls&hellip;"></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="amSaveBtn" disabled>Speichern</button>
+          <button class="ghost" id="amCancelBtn" disabled>Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
+const doneTag = '<span style="color:var(--ok)">&#10003;</span>';
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+}
+applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
+$('themeToggle').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', next); applyTheme(next);
+};
+
+function setStatus(html, isErr) {
+  const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
+}
+
+let queries = [], selectedId = null, dirty = false;
+
+async function loadRulesets() {
+  const meta = await api('/profiles');
+  const rulesets = meta.rulesets || [];
+  const sel = $('amRuleset'); const cur = sel.value; sel.innerHTML = '';
+  rulesets.forEach(r => { const o = document.createElement('option'); o.value = r.id; o.textContent = r.name; sel.appendChild(o); });
+  if (rulesets.some(r => r.id === cur)) sel.value = cur;
+  else if (meta.defaultRuleset) sel.value = meta.defaultRuleset;
+  await loadQueries();
+}
+
+async function loadQueries() {
+  const rs = $('amRuleset').value; if (!rs) return;
+  queries = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries');
+  fillFilterSelect('amFilterModule', queries.map(q => q.module));
+  fillFilterSelect('amFilterCriticality', queries.map(q => q.criticality));
+  fillFilterSelect('amFilterQueryType', queries.map(q => q.queryType));
+  renderQueryList();
+}
+
+function fillFilterSelect(id, values) {
+  const sel = $(id); const cur = sel.value;
+  const uniq = [...new Set(values.filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">– alle –</option>';
+  uniq.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; sel.appendChild(o); });
+  if (uniq.includes(cur)) sel.value = cur;
+}
+
+/* Suche unterstuetzt '*' als Platzhalter (z. B. "BC-SEC*"); ohne '*' = einfache Teilstring-Suche. */
+function matchesSearch(q, term) {
+  if (!term) return true;
+  const hay = `${q.id} ${q.description || ''} ${q.shortDescription || ''}`.toLowerCase();
+  if (!term.includes('*')) return hay.includes(term);
+  const pattern = term.split('*').map(p => p.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*');
+  return new RegExp(pattern, 'i').test(hay);
+}
+
+function renderQueryList() {
+  const term = $('amSearch').value.trim().toLowerCase();
+  const mod = $('amFilterModule').value, crit = $('amFilterCriticality').value, qt = $('amFilterQueryType').value;
+  const ul = $('amQueryList'); ul.innerHTML = '';
+  const filtered = queries.filter(q => matchesSearch(q, term)
+    && (!mod || q.module === mod) && (!crit || q.criticality === crit) && (!qt || q.queryType === qt));
+  if (!filtered.length) { ul.innerHTML = '<li class="muted" style="cursor:default">keine Treffer</li>'; return; }
+  filtered.forEach(q => {
+    const li = document.createElement('li');
+    li.className = q.id === selectedId ? 'active' : '';
+    const name = q.shortDescription || q.description || '';
+    li.innerHTML = `<b>${q.id}</b>${q.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}<br><small>${name}</small>`;
+    li.onclick = () => selectQuery(q.id);
+    ul.appendChild(li);
+  });
+}
+$('amRuleset').addEventListener('change', loadQueries);
+$('amFilterModule').addEventListener('change', renderQueryList);
+$('amFilterCriticality').addEventListener('change', renderQueryList);
+$('amFilterQueryType').addEventListener('change', renderQueryList);
+$('amSearch').addEventListener('input', renderQueryList);
+
+async function selectQuery(id) {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  selectedId = id;
+  const rs = $('amRuleset').value;
+  const q = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/' + encodeURIComponent(id));
+  renderQueryList();
+  $('amEmpty').style.display = 'none'; $('amDetail').style.display = '';
+  $('amTitle').textContent = `${q.query} ${q.shortDescription || q.description || ''}`;
+  $('amBadge').textContent = q.custom ? 'eigene Anpassung/Query' : 'Vendor-Original';
+  $('amBadge').classList.toggle('custom', !!q.custom);
+  $('amShortDescription').value = q.shortDescription || '';
+  $('amDescription').value = q.description || '';
+  $('amCriticality').value = q.criticality || '';
+  $('amModule').value = q.module || '';
+  $('amQueryType').value = q.queryType || '';
+  $('amDisregardTcode').checked = !!q.disregardTcode;
+  $('amRisk').value = q.risk || '';
+  $('amControls').value = q.controls || '';
+  renderAufbau(q);
+  setDirty(false);
+}
+
+function renderAufbau(q) {
+  const tb = $('amTcodesTable').querySelector('tbody'); tb.innerHTML = '';
+  (q.transactions || []).forEach(t => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.tcode}</td><td>${t.audit ? 'ja' : '–'}</td><td>${t.stad ? 'ja' : '–'}</td>`;
+    tb.appendChild(tr);
+  });
+  if (!(q.transactions || []).length) tb.innerHTML = '<tr><td colspan="3" class="muted">keine</td></tr>';
+  const ab = $('amAuthsTable').querySelector('tbody'); ab.innerHTML = '';
+  (q.authorizations || []).forEach(a => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${a.object}</td><td>${a.field}</td><td>${a.andLogic ? 'UND' : 'ODER'}</td><td>${(a.values || []).join(', ')}</td>`;
+    ab.appendChild(tr);
+  });
+  if (!(q.authorizations || []).length) ab.innerHTML = '<tr><td colspan="4" class="muted">keine</td></tr>';
+}
+
+function setDirty(v) {
+  dirty = v;
+  $('amDirtyChip').style.display = v ? '' : 'none';
+  $('amSaveBtn').disabled = !v; $('amCancelBtn').disabled = !v;
+  $('cmdSave').disabled = !v; $('cmdCancel').disabled = !v;
+}
+['amShortDescription', 'amDescription', 'amModule', 'amQueryType', 'amRisk', 'amControls']
+  .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
+$('amCriticality').addEventListener('change', () => setDirty(true));
+$('amDisregardTcode').addEventListener('change', () => setDirty(true));
+
+function formFields() {
+  return {
+    shortDescription: $('amShortDescription').value.trim() || null,
+    description: $('amDescription').value.trim() || null,
+    criticality: $('amCriticality').value || null,
+    module: $('amModule').value.trim() || null,
+    queryType: $('amQueryType').value.trim() || null,
+    disregardTcode: $('amDisregardTcode').checked,
+    risk: $('amRisk').value.trim() || null,
+    controls: $('amControls').value.trim() || null,
+  };
+}
+
+async function saveCurrent() {
+  if (!selectedId) return;
+  const rs = $('amRuleset').value;
+  setStatus('<span class="spin"></span> Speichern&hellip;');
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/' + encodeURIComponent(selectedId),
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formFields()) });
+    setStatus(`${doneTag} Query <b>${selectedId}</b> gespeichert.`);
+    await loadQueries();
+    await selectQuery(selectedId);
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+}
+$('amSaveBtn').onclick = saveCurrent;
+$('cmdSave').onclick = saveCurrent;
+$('amCancelBtn').onclick = () => selectQuery(selectedId);
+$('cmdCancel').onclick = () => selectQuery(selectedId);
+
+$('amDeriveBtn').addEventListener('click', async () => {
+  const rs = $('amRuleset').value, fromId = selectedId, newId = $('amNewId').value.trim();
+  if (!rs || !fromId || !newId) return;
+  setStatus('<span class="spin"></span> Ableiten&hellip;');
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/derive',
+      { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newId, fromId, ...formFields() }) });
+    setStatus(`${doneTag} Query <b>${newId}</b> aus „${fromId}" abgeleitet.`);
+    $('amNewId').value = '';
+    await loadQueries();
+    await selectQuery(newId);
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+});
+
+$('cmdRefresh').onclick = async () => {
+  const keep = selectedId;
+  await loadQueries();
+  if (keep) await selectQuery(keep);
+  setStatus(`${doneTag} aktualisiert.`);
+};
+$('cmdDownloadOverlay').onclick = () => {
+  const rs = $('amRuleset').value; if (!rs) return;
+  window.location.href = '/admin/rulesets/' + encodeURIComponent(rs) + '/overlay/download';
+};
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.tabpanel').forEach(p => p.hidden = p.id !== 'tab-' + t.dataset.tab);
+}));
+
+loadRulesets().catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+</script>
+</body>
+</html>

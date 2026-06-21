@@ -27,6 +27,8 @@ MERGE (query:Query {key: $ruleset + '|' + q.query})
       query.module = coalesce(q.module, query.module),
       query.soxClassification = coalesce(q.soxClassification, query.soxClassification),
       query.disregardTcode = coalesce(q.disregardTcode, query.disregardTcode, false),
+      query.risk = coalesce(q.risk, query.risk),
+      query.controls = coalesce(q.controls, query.controls),
       query.tcodes = CASE WHEN q.transactions IS NULL THEN query.tcodes
                           ELSE [t IN q.transactions WHERE coalesce(t.tcode,'') <> '' | t.tcode] END
 WITH query, q

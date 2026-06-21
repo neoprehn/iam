@@ -27,6 +27,9 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `gdprClassification` · `disregardTcode` (bool) · `multipleRun` (bool)
 - `authorizations[]`: `{ object, field, andLogic (bool), values (str[]), audit (bool) }`
 - `transactions[]`: `{ tcode, audit (bool), stad (bool) }`
+- `risk` (str, **optional**) · `controls` (str, **optional**) — Freitext: potenzielles Risiko bzw.
+  mitigierende Ma&szlig;nahmen, gepflegt &uuml;ber das Query Management (eigene Tabs); bisher in
+  keiner Vendor-Quelle vorhanden, daher zunaechst nur ueber das Overlay (s. u.) befuellt.
 
 **SoD-Regel** (`sod_rules.json[]`):
 - `sodRule` (str, ID) · `description` (Langbezeichnung, bei KPMG oft ein ganzer Satz inkl.

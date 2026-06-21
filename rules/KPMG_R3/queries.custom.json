@@ -1,0 +1,2402 @@
+[
+  {
+    "query": "1000_BC-SEC",
+    "shortDescription": "BC-SEC - Replace in Debugging"
+  },
+  {
+    "query": "1001_BC-SEC",
+    "shortDescription": "BC-SEC - Änderungsbelege löschen"
+  },
+  {
+    "query": "1002_BC-SEC",
+    "shortDescription": "BC-SEC - Änderungsbelegobjekte pflegen"
+  },
+  {
+    "query": "1003_BC-SEC",
+    "shortDescription": "BC-SEC - Nummernstand ändern"
+  },
+  {
+    "query": "1004_BC-SEC",
+    "shortDescription": "BC-SEC - Nummernkreise anlegen/ändern/löschen"
+  },
+  {
+    "query": "1005_BC-SEC",
+    "shortDescription": "BC-SEC - CO-Bewegungsdaten löschen"
+  },
+  {
+    "query": "1006_BC-SEC",
+    "shortDescription": "BC-SEC - ABAP/4 Reporting"
+  },
+  {
+    "query": "1007_BC-SEC",
+    "shortDescription": "BC-SEC - ABAP/4 Reporting (ALL)"
+  },
+  {
+    "query": "1008_BC-SEC",
+    "shortDescription": "BC-SEC - Funktionsbaustein ausführen"
+  },
+  {
+    "query": "1009_BC-SEC",
+    "shortDescription": "BC-SEC - Betriebssystemkommandos ausführen"
+  },
+  {
+    "query": "1010_BC-SEC",
+    "shortDescription": "BC-SEC - Security Audit Log Administration"
+  },
+  {
+    "query": "1011_BC-SEC",
+    "shortDescription": "BC-SEC - Security Audit Log Protokolle löschen"
+  },
+  {
+    "query": "1012_BC-SEC",
+    "shortDescription": "BC-SEC - Tabellenanzeige"
+  },
+  {
+    "query": "1013_BC-SEC",
+    "shortDescription": "BC-SEC - Tabellenanzeige (SC)"
+  },
+  {
+    "query": "1014_BC-SEC",
+    "shortDescription": "BC-SEC - Quick View pflegen"
+  },
+  {
+    "query": "1015_BC-SEC",
+    "shortDescription": "BC-SEC - Quick View anzeigen"
+  },
+  {
+    "query": "1016_BC-SEC",
+    "shortDescription": "BC-SEC - Downloadmöglichkeit"
+  },
+  {
+    "query": "1017_BC-SEC",
+    "shortDescription": "BC-SEC - Download/Upload von Daten"
+  },
+  {
+    "query": "1100_BC-DEV",
+    "shortDescription": "BC-DEV - Data Dictionary"
+  },
+  {
+    "query": "1101_BC-DEV",
+    "shortDescription": "BC-DEV - Objekte auf Datenbank anlegen/löschen"
+  },
+  {
+    "query": "1102_BC-DEV",
+    "shortDescription": "BC-DEV - ABAP/4 Entwicklung"
+  },
+  {
+    "query": "1103_BC-DEV",
+    "shortDescription": "BC-DEV - Funktionsbaustein Entwicklung"
+  },
+  {
+    "query": "1104_BC-DEV",
+    "shortDescription": "BC-DEV - Repository Infosystem"
+  },
+  {
+    "query": "1105_BC-DEV",
+    "shortDescription": "BC-DEV - Computer Aided Test Tool"
+  },
+  {
+    "query": "1106_BC-DEV",
+    "shortDescription": "BC-DEV - Query Pflege"
+  },
+  {
+    "query": "1107_BC-DEV",
+    "shortDescription": "BC-DEV - Tabellenpflege uneingeschränkt"
+  },
+  {
+    "query": "1108_BC-DEV",
+    "shortDescription": "BC-DEV - Tabellenpflege mandantenübergreifender Tabellen"
+  },
+  {
+    "query": "1109_BC-DEV",
+    "shortDescription": "BC-DEV - Tabellenpflege für Basistabellen"
+  },
+  {
+    "query": "1110_BC-DEV",
+    "shortDescription": "BC-DEV - Tabellenpflege (beliebige Berechtigungsgruppe)"
+  },
+  {
+    "query": "1111_BC-DEV",
+    "shortDescription": "BC-DEV - Systemänderbarkeit ändern"
+  },
+  {
+    "query": "1112_BC-DEV",
+    "shortDescription": "BC-DEV - Mandantenpflege (T000)"
+  },
+  {
+    "query": "1113_BC-DEV",
+    "shortDescription": "BC-DEV - Mandantenkopie Lokal"
+  },
+  {
+    "query": "1114_BC-DEV",
+    "shortDescription": "BC-DEV - Mandantenkopie Transport"
+  },
+  {
+    "query": "1115_BC-DEV",
+    "shortDescription": "BC-DEV - Datenimport bei Mandantenkopie"
+  },
+  {
+    "query": "1200_BC-USR",
+    "shortDescription": "BC-USR - Benutzer anlegen"
+  },
+  {
+    "query": "1201_BC-USR",
+    "shortDescription": "BC-USR - Benutzer ändern"
+  },
+  {
+    "query": "1202_BC-USR",
+    "shortDescription": "BC-USR - Benutzer sperren oder entsperren"
+  },
+  {
+    "query": "1203_BC-USR",
+    "shortDescription": "BC-USR - Benutzer löschen"
+  },
+  {
+    "query": "1204_BC-USR",
+    "shortDescription": "BC-USR - Berechtigungszuweisung (SU01 - Rollen)"
+  },
+  {
+    "query": "1205_BC-USR",
+    "shortDescription": "BC-USR - Berechtigungszuweisung (SU01- Profile)"
+  },
+  {
+    "query": "1206_BC-USR",
+    "shortDescription": "BC-USR - Berechtigungszuweisung (PFCG)"
+  },
+  {
+    "query": "1207_BC-USR",
+    "shortDescription": "BC-USR - Profilgenerator Rollen anlegen"
+  },
+  {
+    "query": "1208_BC-USR",
+    "shortDescription": "BC-USR - Profilgenerator Rollen ändern, generieren"
+  },
+  {
+    "query": "1209_BC-USR",
+    "shortDescription": "BC-USR - Profile anlegen, ändern, generieren"
+  },
+  {
+    "query": "1210_BC-USR",
+    "shortDescription": "BC-USR - Berechtigung anlegen, ändern, generieren"
+  },
+  {
+    "query": "1211_BC-USR",
+    "shortDescription": "BC-USR - Berechtigungsobjekte pflegen"
+  },
+  {
+    "query": "1212_BC-USR",
+    "shortDescription": "BC-USR - Berechtigungsobjekte global deaktivieren"
+  },
+  {
+    "query": "1213_BC-USR",
+    "shortDescription": "BC-USR - Berechtigungsobjekte Anpassung Prüfwerte"
+  },
+  {
+    "query": "1214_BC-USR",
+    "shortDescription": "BC-USR - Transaktionen sperren/entsperren"
+  },
+  {
+    "query": "1300_BC-CTS",
+    "shortDescription": "BC-CTS - Transportmanagement Administration"
+  },
+  {
+    "query": "1301_BC-CTS",
+    "shortDescription": "BC-CTS - Transportmanagement TPA-Import"
+  },
+  {
+    "query": "1302_BC-CTS",
+    "shortDescription": "BC-CTS - Transportmanagement (TPA an Importque weiterleiten)"
+  },
+  {
+    "query": "1303_BC-CTS",
+    "shortDescription": "BC-CTS - Transportmanagement (TPA aus Importque löschen)"
+  },
+  {
+    "query": "1304_BC-SRV",
+    "shortDescription": "BC-SRV - Transport Organizer (Initialisierung)"
+  },
+  {
+    "query": "1305_BC-CTS",
+    "shortDescription": "BC-CTS - Transport Organizer (ausführen von TP Kommandos)"
+  },
+  {
+    "query": "1306_BC-CTS",
+    "shortDescription": "BC-CTS - Transport Organizer (Freigeben von TPA)"
+  },
+  {
+    "query": "1307_BC-CTS",
+    "shortDescription": "BC-CTS - Transport Organizer (inaktive TPA aktivieren oder löschen)"
+  },
+  {
+    "query": "1400_BC-SRV",
+    "shortDescription": "BC-SRV - Pflege Profilparameter"
+  },
+  {
+    "query": "1401_BC-SRV",
+    "shortDescription": "BC-SRV - Pflege RFC-Verbindungen"
+  },
+  {
+    "query": "1402_BC-SRV",
+    "shortDescription": "BC-SRV - Pflege SAP-Instanzen"
+  },
+  {
+    "query": "1403_BC-SRV",
+    "shortDescription": "BC-SRV - Pflege Betriebssystemkommandos"
+  },
+  {
+    "query": "1404_BC-SRV",
+    "shortDescription": "BC-SRV - Pflege Betriebsarten"
+  },
+  {
+    "query": "1405_BC-SRV",
+    "shortDescription": "BC-SRV - Verbuchungsadministration"
+  },
+  {
+    "query": "1406_BC-SRV",
+    "shortDescription": "BC-SRV - Prozessadministration"
+  },
+  {
+    "query": "1407_BC-SRV",
+    "shortDescription": "BC-SRV - Transaktionsverwaltung"
+  },
+  {
+    "query": "1408_BC-SRV",
+    "shortDescription": "BC-SRV - Sperreinträge löschen"
+  },
+  {
+    "query": "1409_BC-SRV",
+    "shortDescription": "BC-SRV - Anzeige SAP Directories"
+  },
+  {
+    "query": "1410_BC-SRV",
+    "shortDescription": "BC-SRV - Security Log (auswerten)"
+  },
+  {
+    "query": "1411_BC-SRV",
+    "shortDescription": "BC-SRV - Profilparameter Historie anzeigen"
+  },
+  {
+    "query": "1420_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Verarbeitung"
+  },
+  {
+    "query": "1421_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Verarbeitung (alle Mappennamen)"
+  },
+  {
+    "query": "1422_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Verarbeitung (Batch)"
+  },
+  {
+    "query": "1423_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Mappen (freigeben)"
+  },
+  {
+    "query": "1424_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Mappen (löschen)"
+  },
+  {
+    "query": "1425_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Mappen (alle löschen)"
+  },
+  {
+    "query": "1426_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Mappen (analysieren)"
+  },
+  {
+    "query": "1427_BC-SRV",
+    "shortDescription": "BC-SRV - Batch Input Mappen (sperren, entsperren)"
+  },
+  {
+    "query": "1428_BC-SRV",
+    "shortDescription": "BC-SRV - Job im Hintergrund einplanen"
+  },
+  {
+    "query": "1429_BC-SRV",
+    "shortDescription": "BC-SRV - Jobadministration"
+  },
+  {
+    "query": "1430_BC-SRV",
+    "shortDescription": "BC-SRV - Jobadministration mandantenübergreifend"
+  },
+  {
+    "query": "1431_BC-SRV",
+    "shortDescription": "BC-SRV - Job unter fremden Namen einplanen"
+  },
+  {
+    "query": "1432_BC-SRV",
+    "shortDescription": "BC-SRV - Spooladministration (benutzerübergreifend)"
+  },
+  {
+    "query": "1433_BC-SRV",
+    "shortDescription": "BC-SRV - Spooladministration (Mandantenübergreifend)"
+  },
+  {
+    "query": "2000_FI-GL",
+    "shortDescription": "FI-GL - Sachkontenstammdaten im Kontenplan anlegen, ändern"
+  },
+  {
+    "query": "2001_FI-GL",
+    "shortDescription": "FI-GL - Sachkontenstamm im Buchungskreis anlegen"
+  },
+  {
+    "query": "2002_FI-GL",
+    "shortDescription": "FI-GL - Sachkontenstamm im Buchungskreis ändern"
+  },
+  {
+    "query": "2003_FI-GL",
+    "shortDescription": "FI-GL - Sachkonten in der Bilanzstruktur pflegen"
+  },
+  {
+    "query": "2004_FI-GL",
+    "shortDescription": "FI-GL - Sachk. Buchen"
+  },
+  {
+    "query": "2005_FI-GL",
+    "shortDescription": "FI-GL - Sachkonten Kassenbuchung"
+  },
+  {
+    "query": "2006_FI-GL",
+    "shortDescription": "FI-GL - Zinslauf"
+  },
+  {
+    "query": "2007_FI-GL",
+    "shortDescription": "FI-GL - Sachkonten Zahlungseingang erfassen"
+  },
+  {
+    "query": "2008_FI-GL",
+    "shortDescription": "FI-GL - Sachkonten Zahlungsausgang erfassen"
+  },
+  {
+    "query": "2009_FI-GL",
+    "shortDescription": "FI-GL - Zinssatzpflege"
+  },
+  {
+    "query": "2010_FI-GL",
+    "shortDescription": "FI-GL - Buchungsperioden öffnen und schließen"
+  },
+  {
+    "query": "2011_FI-GL",
+    "shortDescription": "FI-GL - Wechselkurse pflegen"
+  },
+  {
+    "query": "2012_FI-GL",
+    "shortDescription": "FI-GL - Stammdatenänderungsregeln ändern"
+  },
+  {
+    "query": "2013_FI-GL",
+    "shortDescription": "FI-GL - Massenstornierung von Belegen"
+  },
+  {
+    "query": "2014_FI-GL",
+    "shortDescription": "FI-GL - Sachkonten Bilanz auswerten/download"
+  },
+  {
+    "query": "2100_FI-AR",
+    "shortDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht)"
+  },
+  {
+    "query": "2101_FI-AR",
+    "shortDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht)"
+  },
+  {
+    "query": "2102_FI-AR",
+    "shortDescription": "FI-AR - Debitorenstamm löschen/deaktivieren (F-Sicht)"
+  },
+  {
+    "query": "2103_FI-AR",
+    "shortDescription": "FI-AR - Debitoren Buchen (verschiedene Transaktionen)"
+  },
+  {
+    "query": "2104_FI-AR",
+    "shortDescription": "FI-AR - Debebitoren Rechnung erfassen"
+  },
+  {
+    "query": "2105_FI-AR",
+    "shortDescription": "FI-AR - Debitoren Gutschrift erfassen"
+  },
+  {
+    "query": "2106_FI-AR",
+    "shortDescription": "FI-AR - Debitoren Zahlungseingang erfassen"
+  },
+  {
+    "query": "2107_FI-AR",
+    "shortDescription": "FI-AR - Deb. Zahlungsavis anlegen"
+  },
+  {
+    "query": "2108_FI-AR",
+    "shortDescription": "FI-AR - Debitoren Zahlungsavis ändern"
+  },
+  {
+    "query": "2109_FI-AR",
+    "shortDescription": "FI-AR - Debitor Ausgleichen"
+  },
+  {
+    "query": "2110_FI-AR",
+    "shortDescription": "FI-AR - Debitor Rücknahme Ausgleichsbeleg"
+  },
+  {
+    "query": "2111_FI-AR",
+    "shortDescription": "FI-AR - Debitoren Kreditmanagement ändern"
+  },
+  {
+    "query": "2200_FI-AP",
+    "shortDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht)"
+  },
+  {
+    "query": "2201_FI-AP",
+    "shortDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht)"
+  },
+  {
+    "query": "2202_FI-AP",
+    "shortDescription": "FI-AP - Kreditorenstamm löschen (F-Sicht)"
+  },
+  {
+    "query": "2203_FI-AP",
+    "shortDescription": "FI-AP - Kreditorenstamm löschen/deativieren (F-Sicht)"
+  },
+  {
+    "query": "2204_FI-AP",
+    "shortDescription": "FI-AP - Kred. Buchen (verschiedene Transaktionen)"
+  },
+  {
+    "query": "2205_FI-AP",
+    "shortDescription": "FI-AP - Kreditoren Rechnung erfassen"
+  },
+  {
+    "query": "2206_FI-AP",
+    "shortDescription": "FI-AP - Kreditoren Gutschrift erfassen"
+  },
+  {
+    "query": "2207_FI-AP",
+    "shortDescription": "FI-AP - Kreditoren Zahlungsanforderung erfassen"
+  },
+  {
+    "query": "2208_FI-AP",
+    "shortDescription": "FI-AP - Kreditoren Anzahlung erfassen"
+  },
+  {
+    "query": "2209_FI-AP",
+    "shortDescription": "FI-AP - Kreditor Zahlungsausgang erfassen"
+  },
+  {
+    "query": "2210_FI-AP",
+    "shortDescription": "FI-AP - Kreditoren Ausgleich erfassen"
+  },
+  {
+    "query": "2211_FI-AP",
+    "shortDescription": "FI-AP - Kreditor Rücknahme Ausgleichsbeleg"
+  },
+  {
+    "query": "2300_FI-AA",
+    "shortDescription": "FI-AA - Anlagenstamm anlegen"
+  },
+  {
+    "query": "2301_FI-AA",
+    "shortDescription": "FI-AA - Anlagenstamm ändern"
+  },
+  {
+    "query": "2302_FI-AA",
+    "shortDescription": "FI-AA - Anlagenstamm sperren"
+  },
+  {
+    "query": "2303_FI-AA",
+    "shortDescription": "FI-AA - Anlagenstamm löschen"
+  },
+  {
+    "query": "2304_FI-AA",
+    "shortDescription": "FI-AA - Anlagen Zugang durch Kauf"
+  },
+  {
+    "query": "2305_FI-AA",
+    "shortDescription": "FI-AA - Anlagen Zugang aus Eigenfertigung"
+  },
+  {
+    "query": "2306_FI-AA",
+    "shortDescription": "FI-AA - Anlagenabgang duch Verkauf (mit Debitor)"
+  },
+  {
+    "query": "2307_FI-AA",
+    "shortDescription": "FI-AA - Anlagenabgang duch Verkauf (ohne Debitor)"
+  },
+  {
+    "query": "2308_FI-AA",
+    "shortDescription": "FI-AA - Anlagenabgang durch Verschrottung"
+  },
+  {
+    "query": "2309_FI-AA",
+    "shortDescription": "FI-AA - Manuelle Abschreibung buchen"
+  },
+  {
+    "query": "2310_FI-AA",
+    "shortDescription": "FI-AA - Maschinelle Abschreibung buchen"
+  },
+  {
+    "query": "2311_FI-AA",
+    "shortDescription": "FI-AA - Maschinelle Bestandsbuchung (periodisch)"
+  },
+  {
+    "query": "2312_FI-AA",
+    "shortDescription": "FI-AA - Jahresabschluss zurücknehmen"
+  },
+  {
+    "query": "2400_FI-CM",
+    "shortDescription": "FI-CM - elektronischen Kontoauszug einlesen"
+  },
+  {
+    "query": "2401_FI-CM",
+    "shortDescription": "FI-CM - elektronischen Kontoauszug nachbearbeiten"
+  },
+  {
+    "query": "2402_FI-CM",
+    "shortDescription": "FI-CM - Kontoauszug manuell erfassen"
+  },
+  {
+    "query": "2403_FI-CM",
+    "shortDescription": "FI-CM - Zahllauf allgemein"
+  },
+  {
+    "query": "2404_FI-CM",
+    "shortDescription": "FI-CM - Zahllauf (Debitor)"
+  },
+  {
+    "query": "2405_FI-CM",
+    "shortDescription": "FI-CM - Zahllauf (Kreditor)"
+  },
+  {
+    "query": "2406_FI-CM",
+    "shortDescription": "FI-CM - Zahllauf (Vorschlagsliste)"
+  },
+  {
+    "query": "2407_FI-CM",
+    "shortDescription": "FI-CM - Zahllauf für Zahlungsanordnungen (Sachkonten)"
+  },
+  {
+    "query": "2500_TR-LO",
+    "shortDescription": "TR-LO - Vertrag (Hypothek) anlegen"
+  },
+  {
+    "query": "2501_TR-LO",
+    "shortDescription": "TR-LO - Vertrag (Schuldschein) anlegen"
+  },
+  {
+    "query": "2502_TR-LO",
+    "shortDescription": "TR-LO - Vertrag (Policendarlehen) anlegen"
+  },
+  {
+    "query": "2503_TR-LO",
+    "shortDescription": "TR-LO - Vertrag (allgemeines Darlehen) anlegen"
+  },
+  {
+    "query": "2504_TR-LO",
+    "shortDescription": "TR-LO - Vertrag ändern"
+  },
+  {
+    "query": "2505_TR-LO",
+    "shortDescription": "TR-LO - Vertragskonditionen ändern nach Buchung"
+  },
+  {
+    "query": "2506_TR-LO",
+    "shortDescription": "TR-LO - Vertrag auszahlen"
+  },
+  {
+    "query": "2507_TR-LO",
+    "shortDescription": "TR-LO - Vertrag Einzelvorgang stornieren"
+  },
+  {
+    "query": "2508_TR-LO",
+    "shortDescription": "TR-LO - Vertrag prolongieren Einzelumsetzung"
+  },
+  {
+    "query": "2509_TR-LO",
+    "shortDescription": "TR-LO - Prolongationstableau anlegen"
+  },
+  {
+    "query": "2510_TR-LO",
+    "shortDescription": "TR-LO - Prolongations Tableau ändern"
+  },
+  {
+    "query": "2511_TR-LO",
+    "shortDescription": "TR-LO - Einzeldarlehen buchen"
+  },
+  {
+    "query": "2512_TR-LO",
+    "shortDescription": "TR-LO - Einzelsätze buchen"
+  },
+  {
+    "query": "2513_TR-LO",
+    "shortDescription": "TR-LO - Massen Plansätze buchen"
+  },
+  {
+    "query": "2514_TR-LO",
+    "shortDescription": "TR-LO - Belege stornieren"
+  },
+  {
+    "query": "2600_TR-TM",
+    "shortDescription": "TR-TM - Festgeld anlegen"
+  },
+  {
+    "query": "2601_TR-TM",
+    "shortDescription": "TR-TM - Festgeld  ändern"
+  },
+  {
+    "query": "2602_TR-TM",
+    "shortDescription": "TR-TM - Festgeld prolongieren"
+  },
+  {
+    "query": "2603_TR-TM",
+    "shortDescription": "TR-TM - Festgeld abrechnen"
+  },
+  {
+    "query": "2604_TR-TM",
+    "shortDescription": "TR-TM - Devisengeschäfte anlegen"
+  },
+  {
+    "query": "2605_TR-TM",
+    "shortDescription": "TR-TM - Devisengeschäfte ändern"
+  },
+  {
+    "query": "2606_TR-TM",
+    "shortDescription": "TR-TM - Devisengeschäft SWAP"
+  },
+  {
+    "query": "2607_TR-TM",
+    "shortDescription": "TR-TM - Devisengeschäft Prolongation"
+  },
+  {
+    "query": "2608_TR-TM",
+    "shortDescription": "TR-TM - Devisengeschäft abrechnen"
+  },
+  {
+    "query": "2609_TR-TM",
+    "shortDescription": "TR-TM - Devisengeschäft Vorgang stornieren"
+  },
+  {
+    "query": "2610_TR-TM",
+    "shortDescription": "TR-TM - Buchung durchführen"
+  },
+  {
+    "query": "2611_TR-TM",
+    "shortDescription": "TR-TM - Buchungsbelege stornieren"
+  },
+  {
+    "query": "2612_TR-TM",
+    "shortDescription": "TR-TM - Stichtagsbewertung durchführen"
+  },
+  {
+    "query": "2613_TR-TM",
+    "shortDescription": "TR-TM - Stichtagsbewertung stornieren"
+  },
+  {
+    "query": "3000_MM-PUR",
+    "shortDescription": "MM-PUR - Lieferantenstamm anlegen (Einkaufssicht)"
+  },
+  {
+    "query": "3001_MM-PUR",
+    "shortDescription": "MM-PUR - Lieferantenstamm ändern (Einkaufssicht)"
+  },
+  {
+    "query": "3002_MM-PUR",
+    "shortDescription": "MM-PUR - Lieferantenstamm sperren oder entsperren"
+  },
+  {
+    "query": "3003_MM-PUR",
+    "shortDescription": "MM-PUR - Einkaufsinfosatz anlegen/hinzufügen"
+  },
+  {
+    "query": "3004_MM-PUR",
+    "shortDescription": "MM-PUR - Einkaufsinfosatz ändern"
+  },
+  {
+    "query": "3005_MM-PUR",
+    "shortDescription": "MM-PUR - Konditionen anlegen (Sonstige)"
+  },
+  {
+    "query": "3006_MM-PUR",
+    "shortDescription": "MM-PUR - Konditionen ändern (Sonstige)"
+  },
+  {
+    "query": "3007_MM-PUR",
+    "shortDescription": "MM-PUR - Konditionen pflegen (Preise)"
+  },
+  {
+    "query": "3008_MM-PUR",
+    "shortDescription": "MM-PUR - Konditionen pflegen (Zu- und Abschläge)"
+  },
+  {
+    "query": "3009_MM-PUR",
+    "shortDescription": "MM-PUR - Konditionen pflegen (Lieferant)"
+  },
+  {
+    "query": "3010_MM-PUR",
+    "shortDescription": "MM-PUR - BANF anlegen oder hinzufügen"
+  },
+  {
+    "query": "3011_MM-PUR",
+    "shortDescription": "MM-PUR - BANF ändern"
+  },
+  {
+    "query": "3012_MM-PUR",
+    "shortDescription": "MM-PUR - BANF freigeben"
+  },
+  {
+    "query": "3013_MM-PUR",
+    "shortDescription": "MM-PUR - Anfrage anlegen"
+  },
+  {
+    "query": "3014_MM-PUR",
+    "shortDescription": "MM-PUR - Anfrage ändern"
+  },
+  {
+    "query": "3015_MM-PUR",
+    "shortDescription": "MM-PUR - Angebot pflegen/erfassen"
+  },
+  {
+    "query": "3016_MM-PUR",
+    "shortDescription": "MM-PUR - Bestellung anlegen"
+  },
+  {
+    "query": "3017_MM-PUR",
+    "shortDescription": "MM-PUR - Bestellung ändern"
+  },
+  {
+    "query": "3018_MM-PUR",
+    "shortDescription": "MM-PUR - Bestellung freigeben"
+  },
+  {
+    "query": "3019_MM-PUR",
+    "shortDescription": "MM-PUR - Rahmenvertrag oder Kontrakt anlegen"
+  },
+  {
+    "query": "3020_MM-PUR",
+    "shortDescription": "MM-PUR - Rahmenvertrag oder Kontrakt ändern"
+  },
+  {
+    "query": "3021_MM-PUR",
+    "shortDescription": "MM-PUR - Kontrakt freigeben"
+  },
+  {
+    "query": "3100_MM-IM",
+    "shortDescription": "MM-IM - Wareneingang zur Bestellung (Bewegungsart BWART 101)"
+  },
+  {
+    "query": "3101_MM-IM",
+    "shortDescription": "MM-IM - Wareneingang ohne Bestellung (Bewegungsart BWART 501)"
+  },
+  {
+    "query": "3102_MM-IM",
+    "shortDescription": "MM-IM - Wareneingang Bestandserhöhung (Bewegungsarten BWART 561/563/565)"
+  },
+  {
+    "query": "3103_MM-IM",
+    "shortDescription": "MM-IM - Umbuchung (BWART *)"
+  },
+  {
+    "query": "3104_MM-IM",
+    "shortDescription": "MM-IM - Warenausgang zum Auftrag (BWART 231/261)"
+  },
+  {
+    "query": "3105_MM-IM",
+    "shortDescription": "MM-IM - Warenausgang Kostenstelle/Projekt (BWART 201/221)"
+  },
+  {
+    "query": "3106_MM-IM",
+    "shortDescription": "MM-IM - Warenausgang zur Verschrottung (BWART 551)"
+  },
+  {
+    "query": "3107_MM-IM",
+    "shortDescription": "MM-IM - Kommissionieren (BWART *)"
+  },
+  {
+    "query": "3108_MM-IM",
+    "shortDescription": "MM-IM - Inventurbeleg anlegen"
+  },
+  {
+    "query": "3109_MM-IM",
+    "shortDescription": "MM-IM - Inventurbeleg ändern"
+  },
+  {
+    "query": "3110_MM-IM",
+    "shortDescription": "MM-IM - Inventurzählung"
+  },
+  {
+    "query": "3111_MM-IM",
+    "shortDescription": "MM-IM - Inventurzählung ändern"
+  },
+  {
+    "query": "3112_MM-IM",
+    "shortDescription": "MM-IM - Inventurdifferenzen buchen"
+  },
+  {
+    "query": "3200_MM-IV",
+    "shortDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht)"
+  },
+  {
+    "query": "3201_MM-IV",
+    "shortDescription": "MM-IV - Rechnung erfassen (FI-Sicht)"
+  },
+  {
+    "query": "3202_MM-IV",
+    "shortDescription": "MM-IV - Gesperrte Rechnung freigeben"
+  },
+  {
+    "query": "3203_MM-IV",
+    "shortDescription": "MM-IV - Preisänderung Material"
+  },
+  {
+    "query": "3204_MM-IV",
+    "shortDescription": "MM-IV - We/Re Kontenpflege"
+  },
+  {
+    "query": "3300_MM-CBP",
+    "shortDescription": "MM-CBP - MRP-Einzelplanung - einstufig"
+  },
+  {
+    "query": "3301_MM-CBP",
+    "shortDescription": "MM-CBP - Hinzufügen Planauftrag"
+  },
+  {
+    "query": "3302_MM-CBP",
+    "shortDescription": "MM-CBP - Hinzufügen Vorplanung"
+  },
+  {
+    "query": "3400_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm anlegen"
+  },
+  {
+    "query": "3401_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm ändern"
+  },
+  {
+    "query": "3402_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm löschen"
+  },
+  {
+    "query": "3403_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm Profil anlegen"
+  },
+  {
+    "query": "3404_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm/Profil ändern"
+  },
+  {
+    "query": "3405_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm/Profil löschen"
+  },
+  {
+    "query": "3406_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm/Charge anlegen"
+  },
+  {
+    "query": "3407_MM-MD",
+    "shortDescription": "MM-MD - Materialstamm/Charge ändern"
+  },
+  {
+    "query": "4000_SD-MD",
+    "shortDescription": "SD-MD - Kundenstamm anlegen (V-Sicht)"
+  },
+  {
+    "query": "4001_SD-MD",
+    "shortDescription": "SD-MD - Kundenstamm ändern (V-Sicht)"
+  },
+  {
+    "query": "4002_SD-MD",
+    "shortDescription": "SD-MD - Kundenstamm sperren oder entsperren"
+  },
+  {
+    "query": "4003_SD-MD",
+    "shortDescription": "SD-MD - Kundenstamm löschen (V-Sicht)"
+  },
+  {
+    "query": "4004_SD-MD",
+    "shortDescription": "SD-MD - Konditionen anlegen"
+  },
+  {
+    "query": "4005_SD-MD",
+    "shortDescription": "SD-MD - Kondition ändern"
+  },
+  {
+    "query": "4006_SD-MD",
+    "shortDescription": "SD-MD - Konditionenpflege anlegen"
+  },
+  {
+    "query": "4007_SD-MD",
+    "shortDescription": "SD-MD - Konditionenpflege ändern"
+  },
+  {
+    "query": "4008_SD-MD",
+    "shortDescription": "SD-MD - Kreditmanagement Stammdaten pflegen"
+  },
+  {
+    "query": "4009_SD-MD",
+    "shortDescription": "SD-MD - Bonusabsprachen anlegen"
+  },
+  {
+    "query": "4010_SD-MD",
+    "shortDescription": "SD-MD - Bonusabsprache ändern"
+  },
+  {
+    "query": "4011_SD-MD",
+    "shortDescription": "SD-MD - Tabelle für Absagen pflegen"
+  },
+  {
+    "query": "4100_SD-SLS",
+    "shortDescription": "SD-SLS - Anfrage anlegen"
+  },
+  {
+    "query": "4101_SD-SLS",
+    "shortDescription": "SD-SLS - Angebot anlegen"
+  },
+  {
+    "query": "4102_SD-SLS",
+    "shortDescription": "SD-SLS - Auftrag anlegen"
+  },
+  {
+    "query": "4103_SD-SLS",
+    "shortDescription": "SD-SLS - Auftrag ändern"
+  },
+  {
+    "query": "4104_SD-SLS",
+    "shortDescription": "SD-SLS - Kontrakte anlegen"
+  },
+  {
+    "query": "4105_SD-SLS",
+    "shortDescription": "SD-SLS - Kontrakte ändern"
+  },
+  {
+    "query": "4106_SD-SLS",
+    "shortDescription": "SD-SLS - Auslieferung zum Kundenauftrag anlegen"
+  },
+  {
+    "query": "4107_SD-SLS",
+    "shortDescription": "SD-SLS - Auslieferung pflegen oder Warenausgang buchen"
+  },
+  {
+    "query": "4108_SD-SLS",
+    "shortDescription": "SD-SLS - Liste Warenausgang Auslieferung"
+  },
+  {
+    "query": "4109_SD-SLS",
+    "shortDescription": "SD-SLS - Vertriebsbelege sperren/ entsperren"
+  },
+  {
+    "query": "4200_SD-BIL",
+    "shortDescription": "SD-BIL - Faktura anlegen"
+  },
+  {
+    "query": "4201_SD-BIL",
+    "shortDescription": "SD-BIL - Faktura ändern"
+  },
+  {
+    "query": "4202_SD-BIL",
+    "shortDescription": "SD-BIL - Fakturierung stornieren"
+  },
+  {
+    "query": "4203_SD-BIL",
+    "shortDescription": "SD-BIL - Aufträge zur Faktura freigeben"
+  },
+  {
+    "query": "4204_SD-BIL",
+    "shortDescription": "SD-BIL - Fakturavorrat bearbeiten"
+  },
+  {
+    "query": "4205_SD-BIL",
+    "shortDescription": "SD-BIL - Bonusabrechnung (VB"
+  },
+  {
+    "query": "4206_SD-BIL",
+    "shortDescription": "SD-BIL - Rechnungsliste pflegen"
+  },
+  {
+    "query": "4207_SD-BIL",
+    "shortDescription": "SD-BIL - Rechnungsliste pflegen"
+  },
+  {
+    "query": "4208_SD-BIL",
+    "shortDescription": "SD-BIL - Rechnungslistenvorrat"
+  },
+  {
+    "query": "5000_CO-OM",
+    "shortDescription": "CO-OM - Kostenarten anlegen"
+  },
+  {
+    "query": "5001_CO-OM",
+    "shortDescription": "CO-OM - Kostenarten ändern"
+  },
+  {
+    "query": "5002_CO-OM",
+    "shortDescription": "CO-OM - Kostenstellen anlegen"
+  },
+  {
+    "query": "5003_CO-OM",
+    "shortDescription": "CO-OM - Kostenstellen ändern"
+  },
+  {
+    "query": "5004_CO-OM",
+    "shortDescription": "CO-OM - Kostenstellen löschen"
+  },
+  {
+    "query": "5005_CO-OM",
+    "shortDescription": "CO-OM - Standardhierarche pflegen"
+  },
+  {
+    "query": "5006_CO-OM",
+    "shortDescription": "CO-OM - Periodensperre setzen"
+  },
+  {
+    "query": "5007_CO-OM",
+    "shortDescription": "CO-OM - Kalkulationsschema pflegen"
+  },
+  {
+    "query": "5008_CO-OM",
+    "shortDescription": "CO-OM - Planungs Versionen pflegen"
+  },
+  {
+    "query": "5009_CO-OM",
+    "shortDescription": "CO-OM - Indirekte Leistungsverrechnung definieren"
+  },
+  {
+    "query": "5010_CO-OM",
+    "shortDescription": "CO-OM - Leistungsart anlegen"
+  },
+  {
+    "query": "5011_CO-OM",
+    "shortDescription": "CO-OM - Leistungsart ändern"
+  },
+  {
+    "query": "5012_CO-OM",
+    "shortDescription": "CO-OM - Leistungsarten löschen"
+  },
+  {
+    "query": "5013_CO-OM",
+    "shortDescription": "CO-OM - Leistungsartengruppen anlegen"
+  },
+  {
+    "query": "5014_CO-OM",
+    "shortDescription": "CO-OM - Leistungsartengruppen ändern"
+  },
+  {
+    "query": "5015_CO-OM",
+    "shortDescription": "CO-OM - Kostenarten oder Leistungsaufnahmen planen"
+  },
+  {
+    "query": "5016_CO-OM",
+    "shortDescription": "CO-OM - Leistungserbringung oder Tarife planen"
+  },
+  {
+    "query": "5017_CO-OM",
+    "shortDescription": "CO-OM - Statistische Kennzahlen planen"
+  },
+  {
+    "query": "5018_CO-OM",
+    "shortDescription": "CO-OM - Innenauftrag anlegen"
+  },
+  {
+    "query": "5019_CO-OM",
+    "shortDescription": "CO-OM - Innenauftrag ändern"
+  },
+  {
+    "query": "5020_CO-OM",
+    "shortDescription": "CO-OM - Gesamtplanung (Kostenplanwerte) ändern"
+  },
+  {
+    "query": "5021_CO-OM",
+    "shortDescription": "CO-OM - Kostenstellenetats planen"
+  },
+  {
+    "query": "5022_CO-OM",
+    "shortDescription": "CO-OM - Tarifermittlung durchführen"
+  },
+  {
+    "query": "5023_CO-OM",
+    "shortDescription": "CO-OM - Manuelle Umbuchung Kosten"
+  },
+  {
+    "query": "5024_CO-OM",
+    "shortDescription": "CO-OM - Manuelle Umbuchung Erlöse"
+  },
+  {
+    "query": "5025_CO-OM",
+    "shortDescription": "CO-OM - Umbuchung Einzelposten"
+  },
+  {
+    "query": "5026_CO-OM",
+    "shortDescription": "CO-OM - Leistungsverrechnung"
+  },
+  {
+    "query": "5027_CO-OM",
+    "shortDescription": "CO-OM - Umbuchung Leistungsverrechnung"
+  },
+  {
+    "query": "5028_CO-OM",
+    "shortDescription": "CO-OM - Manuelle Kostenverrechnung"
+  },
+  {
+    "query": "5029_CO-OM",
+    "shortDescription": "CO-OM - Schedule Manager"
+  },
+  {
+    "query": "5030_CO-OM",
+    "shortDescription": "CO-OM - Abstimmledger Abstimmung mit FiBu"
+  },
+  {
+    "query": "5031_CO-OM",
+    "shortDescription": "CO-OM - Abstimmledger nachbuchen"
+  },
+  {
+    "query": "5032_CO-OM",
+    "shortDescription": "CO-OM - Kostenstellen Periodische Umbuchung"
+  },
+  {
+    "query": "5033_CO-OM",
+    "shortDescription": "CO-OM - Indirekte Leistungsverrechnung durchführen"
+  },
+  {
+    "query": "5034_CO-OM",
+    "shortDescription": "CO-OM - Kostenstellen Obligovortrag"
+  },
+  {
+    "query": "5035_CO-OM",
+    "shortDescription": "CO-OM - Innenaufträge Nachbewertung Isttarife"
+  },
+  {
+    "query": "5036_CO-OM",
+    "shortDescription": "CO-OM - Innenaufträge Zuschläge pflegen"
+  },
+  {
+    "query": "5037_CO-OM",
+    "shortDescription": "CO-OM - Innenaufträge Budgetübertrag"
+  },
+  {
+    "query": "5038_CO-OM",
+    "shortDescription": "CO-OM - Innenaufträge Obligovortrag"
+  },
+  {
+    "query": "5039_CO-OM",
+    "shortDescription": "CO-OM - Periodensperre pflegen"
+  },
+  {
+    "query": "5100_CO-PA",
+    "shortDescription": "CO-PA - Merkmalswerte ändern"
+  },
+  {
+    "query": "5101_CO-PA",
+    "shortDescription": "CO-PA - Konditionssätze anlegen"
+  },
+  {
+    "query": "5102_CO-PA",
+    "shortDescription": "CO-PA - Ableitungsregeln pflegen"
+  },
+  {
+    "query": "5500_PS-PM",
+    "shortDescription": "PS-PM - Standard PSP anlegen"
+  },
+  {
+    "query": "5501_PS-PM",
+    "shortDescription": "PS-PM - Standard PSP ändern"
+  },
+  {
+    "query": "5502_PS-PM",
+    "shortDescription": "PS-PM - Standardnetz anlegen"
+  },
+  {
+    "query": "5503_PS-PM",
+    "shortDescription": "PS-PM - Standardnetz ändern"
+  },
+  {
+    "query": "5504_PS-PM",
+    "shortDescription": "PS-PM - Projekt PSP/Element anlegen"
+  },
+  {
+    "query": "5505_PS-PM",
+    "shortDescription": "PS-PM - Projekt PSP/Element ändern"
+  },
+  {
+    "query": "5506_PS-PM",
+    "shortDescription": "PS-PM - Projekt Netzplan anlegen"
+  },
+  {
+    "query": "5507_PS-PM",
+    "shortDescription": "PS-PM - Projekt Netzplan ändern"
+  },
+  {
+    "query": "5508_PS-PM",
+    "shortDescription": "PS-PM - Projekt Budget pflegen"
+  },
+  {
+    "query": "5509_PS-PM",
+    "shortDescription": "PS-PM - Projekt Kostenplanung pflegen"
+  },
+  {
+    "query": "5510_PS-PM",
+    "shortDescription": "PS-PM - Projekt Erlösplanung pflegen"
+  },
+  {
+    "query": "5511_PS-PM",
+    "shortDescription": "PS-PM - Projektabrechnung"
+  },
+  {
+    "query": "5512_PS-PM",
+    "shortDescription": "PS-PM - Projekt Rückmeldungen"
+  },
+  {
+    "query": "5513_PS-PM",
+    "shortDescription": "PS-PM - Projekt Rückmeldungen Rücknahme"
+  },
+  {
+    "query": "5514_PS-PM",
+    "shortDescription": "PS-PM - Projekt Massenänderung"
+  },
+  {
+    "query": "6000_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (Alle Infotypen) P_ORGIN"
+  },
+  {
+    "query": "6001_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (0002 Daten zur Person) P_ORGIN"
+  },
+  {
+    "query": "6002_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (0008 Basisbezüge) P_ORGIN"
+  },
+  {
+    "query": "6003_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (0009 Bankverbindung) P_ORGIN"
+  },
+  {
+    "query": "6004_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (0014 Wiederkehrende Bezüge und Abzüge) P_ORGIN"
+  },
+  {
+    "query": "6005_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (0015 Ergänzende Zahlung) P_ORGIN"
+  },
+  {
+    "query": "6006_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm pflegen (2010 Entgeltbelege) P_ORGIN"
+  },
+  {
+    "query": "6007_HR-P_ORGIN",
+    "shortDescription": "HR Personaldaten löschen P_ORGIN"
+  },
+  {
+    "query": "6008_HR-P_ORGIN",
+    "shortDescription": "HR Personaldaten löschen (Bewerber) P_ORGIN"
+  },
+  {
+    "query": "6009_HR-P_ORGIN",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benutzers (0008 Basisbezüge) P_ORGIN"
+  },
+  {
+    "query": "6010_HR-P_ORGIN",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0014 wiederkehrende Bezüge und Abzüge) P_ORGIN"
+  },
+  {
+    "query": "6011_HR-P_ORGIN",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0015 ergänzende Zahlung) P_ORGIN"
+  },
+  {
+    "query": "6012_HR-P_ORGIN",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (2010 Entgeltbelege) P_ORGIN"
+  },
+  {
+    "query": "6013_HR-P_ORGIN",
+    "shortDescription": "HR Zeitdaten pflegen P_ORGIN"
+  },
+  {
+    "query": "6014_HR-P_ORGIN",
+    "shortDescription": "HR Abrechnungsverwaltungssatz löschen P_ORGIN"
+  },
+  {
+    "query": "6015_HR-P_TCODE",
+    "shortDescription": "HR Abrechnungslauf starten (TCODE) P_TCODE"
+  },
+  {
+    "query": "6016_HR-P_ORGIN",
+    "shortDescription": "HR Abrechnungsergebnisse löschen P_ORGIN"
+  },
+  {
+    "query": "6017_HR-P_ORGIN",
+    "shortDescription": "HR Buchungslauf für FI erzeugen P_ORGIN"
+  },
+  {
+    "query": "6018_HR-P_ORGIN",
+    "shortDescription": "HR Abrechnungsbezogene Reports ausführen P_ORGIN"
+  },
+  {
+    "query": "6019_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm Anzeige (Alle Infotypen) P_ORGIN"
+  },
+  {
+    "query": "6020_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm Anzeige (Stammdaten Infotypen) P_ORGIN"
+  },
+  {
+    "query": "6021_HR-P_ORGIN",
+    "shortDescription": "HR Personalstamm Anzeige (Abrechnungs Infotypen) P_ORGIN"
+  },
+  {
+    "query": "6022_HR-P_ORGIN",
+    "shortDescription": "HR Entgeltnachweise anzeigen P_ORGIN"
+  },
+  {
+    "query": "6200_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (Alle Infotypen) P_ORGINCON"
+  },
+  {
+    "query": "6201_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (0002 Daten zur Person) P_ORGINCON"
+  },
+  {
+    "query": "6202_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (0008 Basisbezüge) P_ORGINCON"
+  },
+  {
+    "query": "6203_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (0009 Bankverbindung) P_ORGINCON"
+  },
+  {
+    "query": "6204-HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (0014 Wiederkehrende Bezüge und Abzüge) P_ORGINCON"
+  },
+  {
+    "query": "6205_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (0015 Ergänzende Zahlung) P_ORGINCON"
+  },
+  {
+    "query": "6206_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm pflegen (2010 Entgeltbelege) P_ORGINCON"
+  },
+  {
+    "query": "6207_HR-P_ORGINCON",
+    "shortDescription": "HR Personaldaten löschen P_ORGINCON"
+  },
+  {
+    "query": "6208_HR-P_ORGINCON",
+    "shortDescription": "HR Personaldaten löschen (Bewerber) P_ORGINCON"
+  },
+  {
+    "query": "6209_HR-P_ORGINCON",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benutzers (0008 Basisbezüge) P_ORGINCON"
+  },
+  {
+    "query": "6210_HR-P_ORGINCON",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0014 wiederkehrende Bezüge und Abzüge) P_ORGINCON"
+  },
+  {
+    "query": "6211_HR-P_ORGINCON",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0015 ergänzende Zahlung) P_ORGINCON"
+  },
+  {
+    "query": "6212_HR-P_ORGINCON",
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (2010 Entgeltbelege) P_ORGINCON"
+  },
+  {
+    "query": "6213_HR-P_ORGINCON",
+    "shortDescription": "HR Zeitdaten pflegen P_ORGINCON"
+  },
+  {
+    "query": "6214_HR-P_ORGINCON",
+    "shortDescription": "HR Abrechnungsverwaltungssatz löschen P_ORGINCON"
+  },
+  {
+    "query": "6215_HR-P_ORGINCON",
+    "shortDescription": "HR Abrechnungslauf starten (TCODE) P_TCODECON"
+  },
+  {
+    "query": "6216_HR-P_ORGINCON",
+    "shortDescription": "HR Abrechnungsergebnisse löschen P_ORGINCON"
+  },
+  {
+    "query": "6217_HR-P_ORGINCON",
+    "shortDescription": "HR Buchungslauf für FI erzeugen P_ORGINCON"
+  },
+  {
+    "query": "6218_HR-P_ORGINCON",
+    "shortDescription": "HR Abrechnungsbezogene Reports ausführen P_ORGINCON"
+  },
+  {
+    "query": "6219_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm Anzeige (Alle Infotypen) P_ORGINCON"
+  },
+  {
+    "query": "6220_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm Anzeige (Stammdaten Infotypen) P_ORGINCON"
+  },
+  {
+    "query": "6221_HR-P_ORGINCON",
+    "shortDescription": "HR Personalstamm Anzeige (Abrechnungs Infotypen) P_ORGINCON"
+  },
+  {
+    "query": "6222_HR-P_ORGINCON",
+    "shortDescription": "HR Entgeltnachweise anzeigen P_ORGINCON"
+  },
+  {
+    "query": "6400_HR-HR",
+    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten Benutzers (0008 Basisbezüge)"
+  },
+  {
+    "query": "6401_HR-HR",
+    "shortDescription": "HR Ausschluss Pflege HR-Stammddaten des Benutzers (0014 wiederkehrende Bezüge oder Abzüge)"
+  },
+  {
+    "query": "6402_HR-HR",
+    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten des Benutzers (0015 ergänzende Zahlung)"
+  },
+  {
+    "query": "6403_HR-HR",
+    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten des Benutzers (2010 Entgeltbelege)"
+  },
+  {
+    "query": "6404_HR-HR",
+    "shortDescription": "HR Abrechnungsverwaltungssatz pflegen"
+  },
+  {
+    "query": "6405_HR-HR",
+    "shortDescription": "HR Abrechnungsschemen pflegen"
+  },
+  {
+    "query": "6406_HR-HR",
+    "shortDescription": "HR Personalrechenregeln pflegen"
+  },
+  {
+    "query": "6407_HR-HR",
+    "shortDescription": "HR Funktionen und Operationen pflegen"
+  },
+  {
+    "query": "6408_HR-HR",
+    "shortDescription": "HR Ändern von Lohnarten"
+  },
+  {
+    "query": "6409_HR-HR",
+    "shortDescription": "HR Buchungslauf für FI stornieren/löschen"
+  },
+  {
+    "query": "6410_HR-HR",
+    "shortDescription": "HR Buchung der Zahlungen"
+  },
+  {
+    "query": "6411_HR-HR",
+    "shortDescription": "HR Zahlungsträger erstellen"
+  },
+  {
+    "query": "6600_HR-SEC",
+    "shortDescription": "HR Personaldaten Tabellenanzeige (alle Tabellen)"
+  },
+  {
+    "query": "6601_HR-SEC",
+    "shortDescription": "HR Personaldaten Tabellenanzeige (Berechtigungsgruppe PA)"
+  },
+  {
+    "query": "6602_HR-SEC",
+    "shortDescription": "HR Personaldaten Tabellenanzeige (Berechtigungsgruppe PC*)"
+  },
+  {
+    "query": "6604_HR-SEC",
+    "shortDescription": "HR Datenschutz - Zugriff auf Spool Dateien (Ausgabesteuerung)"
+  },
+  {
+    "query": "6605_HR-SEC",
+    "shortDescription": "HR Datenschutz - Zugriff auf Spool Dateien (Inhalt)"
+  },
+  {
+    "query": "6606_HR-SEC",
+    "shortDescription": "HR Datenschutz - SAP Queries"
+  },
+  {
+    "query": "6607_HR-SEC",
+    "shortDescription": "HR Datenschutz - Ad-Hoc-Queries"
+  },
+  {
+    "query": "7000_RE-RE",
+    "shortDescription": "RE-RE - Wirtschaftseinheit anlegen"
+  },
+  {
+    "query": "7001_RE-RE",
+    "shortDescription": "RE-RE - Wirtschaftseinheit ändern"
+  },
+  {
+    "query": "7002_RE-RE",
+    "shortDescription": "RE-RE - Wirtschaftseinheit anzeigen"
+  },
+  {
+    "query": "7003_RE-RE",
+    "shortDescription": "RE-RE - Grundstück ändern"
+  },
+  {
+    "query": "7004_RE-RE",
+    "shortDescription": "RE-RE - Grundstück ändern"
+  },
+  {
+    "query": "7005_RE-RE",
+    "shortDescription": "RE-RE - Grundstück anzeigen"
+  },
+  {
+    "query": "7006_RE-RE",
+    "shortDescription": "RE-RE - Gebäude anlegen"
+  },
+  {
+    "query": "7007_RE-RE",
+    "shortDescription": "RE-RE - Gebäude ändern"
+  },
+  {
+    "query": "7008_RE-RE",
+    "shortDescription": "RE-RE - Gebäude anzeigen"
+  },
+  {
+    "query": "7009_RE-RE",
+    "shortDescription": "RE-RE - Mieteinheit anlegen"
+  },
+  {
+    "query": "7010_RE-RE",
+    "shortDescription": "RE-RE - Mieteinheit ändern"
+  },
+  {
+    "query": "7011_RE-RE",
+    "shortDescription": "RE-RE - Mieteinheit anzeigen"
+  },
+  {
+    "query": "7012_RE-RE",
+    "shortDescription": "RE-RE - Räume pflegen"
+  },
+  {
+    "query": "7013_RE-RE",
+    "shortDescription": "RE-RE - Räume anzeigen"
+  },
+  {
+    "query": "7014_RE-RE",
+    "shortDescription": "RE-RE - Grundbuch anlegen"
+  },
+  {
+    "query": "7015_RE-RE",
+    "shortDescription": "RE-RE - Grundbuch ändern"
+  },
+  {
+    "query": "7016_RE-RE",
+    "shortDescription": "RE-RE - Grundbuch anzeigen"
+  },
+  {
+    "query": "7017_RE-RE",
+    "shortDescription": "RE-RE - Mieter anlegen"
+  },
+  {
+    "query": "7018_RE-RE",
+    "shortDescription": "RE-RE - Mieter ändern"
+  },
+  {
+    "query": "7019_RE-RE",
+    "shortDescription": "RE-RE - Mieter anzeigen"
+  },
+  {
+    "query": "7020_RE-RE",
+    "shortDescription": "RE-RE - Eigentümer anlegen"
+  },
+  {
+    "query": "7021_RE-RE",
+    "shortDescription": "RE-RE - Eigentümer ändern"
+  },
+  {
+    "query": "7100_RE-BIL",
+    "shortDescription": "RE-BIL - Mietvertrag anlegen"
+  },
+  {
+    "query": "7101_RE-BIL",
+    "shortDescription": "RE-BIL - Mietvertrag ändern (verschiedene Transaktionen)"
+  },
+  {
+    "query": "7102_RE-BIL",
+    "shortDescription": "RE-BIL - Mietvertrag anzeigen"
+  },
+  {
+    "query": "7103_RE-BIL",
+    "shortDescription": "RE-BIL - Mietvertrag aktivieren (verschiedene Transaktionen)"
+  },
+  {
+    "query": "7104_RE-BIL",
+    "shortDescription": "RE-BIL - Mietvertrag kündigen"
+  },
+  {
+    "query": "7105_RE-BIL",
+    "shortDescription": "RE-BIL - Sollstellung Mietvertrag"
+  },
+  {
+    "query": "7106_RE-BIL",
+    "shortDescription": "RE-BIL - Sollstellung Leerstand"
+  },
+  {
+    "query": "7107_RE-BIL",
+    "shortDescription": "RE-BIL - Sollstellung Abgrenzung"
+  },
+  {
+    "query": "7108_RE-BIL",
+    "shortDescription": "RE-BIL - Buchen (allgemeiner Immobilienvertrag)"
+  },
+  {
+    "query": "7109_RE-BIL",
+    "shortDescription": "RE-BIL - Stornieren (allgemeiner Immobilienvertrag)"
+  },
+  {
+    "query": "7110_RE-BIL",
+    "shortDescription": "RE-BIL - Mietanpassung (verschiedene Transaktionen)"
+  },
+  {
+    "query": "7200_RE-NBK",
+    "shortDescription": "RE-NBK - Betriebskosten simulieren"
+  },
+  {
+    "query": "7201_RE-NBK",
+    "shortDescription": "RE-NBK - Betriebskosten durchführen"
+  },
+  {
+    "query": "7202_RE-NBK",
+    "shortDescription": "RE-NBK - Betriebskosten stornieren"
+  },
+  {
+    "query": "7203_RE-NBK",
+    "shortDescription": "RE-NBK - Heizkosten simulieren"
+  },
+  {
+    "query": "7204_RE-NBK",
+    "shortDescription": "RE-NBK - Heizkosten durchführen"
+  },
+  {
+    "query": "7205_RE-NBK",
+    "shortDescription": "RE-NBK - Heizkosten stornieren"
+  },
+  {
+    "query": "7206_RE-NBK",
+    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten simulieren"
+  },
+  {
+    "query": "7207_RE-NBK",
+    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten durchführen"
+  },
+  {
+    "query": "7208_RE-NBK",
+    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten stornieren"
+  },
+  {
+    "query": "7209_RE-NBK",
+    "shortDescription": "RE-NBK - Vorauszahlungen berechnen"
+  },
+  {
+    "query": "7210_RE-NBK",
+    "shortDescription": "RE-NBK - Vorauszahlungen Anpassungen aktivieren"
+  },
+  {
+    "query": "7211_RE-NBK",
+    "shortDescription": "RE-NBK - Vorauszahlungen Pauschale aktivieren"
+  },
+  {
+    "query": "7212_RE-NBK",
+    "shortDescription": "RE-NBK - Nebenkostenabrechung ändern"
+  },
+  {
+    "query": "8000_IS-U",
+    "shortDescription": "IS-U - Geschäftspartner anlegen"
+  },
+  {
+    "query": "8001_IS-U",
+    "shortDescription": "IS-U - Geschäftspartner ändern"
+  },
+  {
+    "query": "8002_IS-U",
+    "shortDescription": "IS-U - Vertragskonto anlegen"
+  },
+  {
+    "query": "8003_IS-U",
+    "shortDescription": "IS-U - Vertragskonto ändern"
+  },
+  {
+    "query": "8004_IS-U",
+    "shortDescription": "IS-U - Vertrag anlegen"
+  },
+  {
+    "query": "8005_IS-U",
+    "shortDescription": "IS-U - Vertrag ändern"
+  },
+  {
+    "query": "8100_IS-U",
+    "shortDescription": "IS-U - Anschlussobjekt anlegen"
+  },
+  {
+    "query": "8101_IS-U",
+    "shortDescription": "IS-U - Anschlussobjekt ändern"
+  },
+  {
+    "query": "8102_IS-U",
+    "shortDescription": "IS-U - Verbrauchsstelle anlegen"
+  },
+  {
+    "query": "8103_IS-U",
+    "shortDescription": "IS-U - Verbrauchsstelle ändern"
+  },
+  {
+    "query": "8104_IS-U",
+    "shortDescription": "IS-U - Anlage anlegen"
+  },
+  {
+    "query": "8105_IS-U",
+    "shortDescription": "IS-U - Anlage ändern"
+  },
+  {
+    "query": "8106_IS-U",
+    "shortDescription": "IS-U - Zählpunkt anlegen"
+  },
+  {
+    "query": "8107_IS-U",
+    "shortDescription": "IS-U - Zählpunkt ändern"
+  },
+  {
+    "query": "8108_IS-U",
+    "shortDescription": "IS-U - Geräteplatz anlegen"
+  },
+  {
+    "query": "8109_IS-U",
+    "shortDescription": "IS-U - Geräteplatz ändern"
+  },
+  {
+    "query": "8110_IS-U",
+    "shortDescription": "IS-U - Gerät anlegen"
+  },
+  {
+    "query": "8111_IS-U",
+    "shortDescription": "IS-U - Gerät ändern"
+  },
+  {
+    "query": "8112_IS-U",
+    "shortDescription": "IS-U - Gerät Einbau"
+  },
+  {
+    "query": "8113_IS-U",
+    "shortDescription": "IS-U - Gerät Ausbau"
+  },
+  {
+    "query": "8114_IS-U",
+    "shortDescription": "IS-U - Gerät Wechsel"
+  },
+  {
+    "query": "8200_IS-U",
+    "shortDescription": "IS-U - Aufragserstellung ausführen"
+  },
+  {
+    "query": "8201_IS-U",
+    "shortDescription": "IS-U - Massenauftragserstellung ausführen"
+  },
+  {
+    "query": "8202_IS-U",
+    "shortDescription": "IS-U - Schnellerfassung Ablesungsergebnis"
+  },
+  {
+    "query": "8203_IS-U",
+    "shortDescription": "IS-U - Schnellerfassung Ablesungsergebnis mit Korrektur"
+  },
+  {
+    "query": "8204_IS-U",
+    "shortDescription": "IS-U - Korrektur unplausibler Ablesungsergebnisse"
+  },
+  {
+    "query": "8205_IS-U",
+    "shortDescription": "IS-U - Einzelerfassung Ablesnungsergebnisse"
+  },
+  {
+    "query": "8206_IS-U",
+    "shortDescription": "IS-U - Korrektur plausibler Ablesungsergebnisse"
+  },
+  {
+    "query": "8300_IS-U",
+    "shortDescription": "IS-U - Abrechnung Tarife anlegen"
+  },
+  {
+    "query": "8301_IS-U",
+    "shortDescription": "IS-U - Abrechnung Tarife ändern"
+  },
+  {
+    "query": "8302_IS-U",
+    "shortDescription": "IS-U - Abrechnung Preise anlegen"
+  },
+  {
+    "query": "8303_IS-U",
+    "shortDescription": "IS-U - Abrechnung Preise ändern"
+  },
+  {
+    "query": "8304_IS-U",
+    "shortDescription": "IS-U - Abrechnung Einzelabrechnung"
+  },
+  {
+    "query": "8305_IS-U",
+    "shortDescription": "IS-U - Anlegen manuelle Nachberechnung"
+  },
+  {
+    "query": "8306_IS-U",
+    "shortDescription": "IS-U - Ändern manuelle Nachberechnung"
+  },
+  {
+    "query": "8307_IS-U",
+    "shortDescription": "IS-U - Erstellen Einzelrechnung"
+  },
+  {
+    "query": "8308_IS-U",
+    "shortDescription": "IS-U - Abschlagsplan anlegen"
+  },
+  {
+    "query": "8400_IS-U",
+    "shortDescription": "IS-U - Faktura Einzelabrechnung"
+  },
+  {
+    "query": "8401_IS-U",
+    "shortDescription": "IS-U - Faktura Abschlagsplan anlegen"
+  },
+  {
+    "query": "8402_IS-U",
+    "shortDescription": "IS-U - Faktura Abschlagsplan ändern"
+  },
+  {
+    "query": "8403_IS-U",
+    "shortDescription": "IS-U - Fakturierungsbeleg erstellen"
+  },
+  {
+    "query": "8404_IS-U",
+    "shortDescription": "IS-U - Sammelrechnung erstellen"
+  },
+  {
+    "query": "8405_IS-U",
+    "shortDescription": "IS-U - Storno von Druck-/Abrechnungsbelege"
+  },
+  {
+    "query": "8500_IS-U",
+    "shortDescription": "IS-U - Zahlungsschema anlegen"
+  },
+  {
+    "query": "8501_IS-U",
+    "shortDescription": "IS-U - Zahlungsschema ändern"
+  },
+  {
+    "query": "8502_IS-U",
+    "shortDescription": "IS-U - Ausgleich zurücknehmen"
+  },
+  {
+    "query": "8503_IS-U",
+    "shortDescription": "IS-U - Rückzahlungsanforderung stornieren"
+  },
+  {
+    "query": "8504_IS-U",
+    "shortDescription": "IS-U - Zahlung buchen"
+  },
+  {
+    "query": "8505_IS-U",
+    "shortDescription": "IS-U - Ratenplan anlegen"
+  },
+  {
+    "query": "8506_IS-U",
+    "shortDescription": "IS-U - Ratenplan ändern"
+  },
+  {
+    "query": "8507_IS-U",
+    "shortDescription": "IS-U - Zahlungslauf /Lastschriftenlauf"
+  },
+  {
+    "query": "9000_FS-ICM",
+    "shortDescription": "FS-ICM - ICM Hauptmenü Zugriff"
+  },
+  {
+    "query": "9001_FS-ICM",
+    "shortDescription": "FS-ICM - ICM Managers Desktop Zugriff"
+  },
+  {
+    "query": "9002_FS-ICM",
+    "shortDescription": "FS-ICM - Periodenregeln Generierung"
+  },
+  {
+    "query": "9003_FS-ICM",
+    "shortDescription": "FS-ICM - CACS Berichte ausführen"
+  },
+  {
+    "query": "9004_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsvertragspartner Anzeige"
+  },
+  {
+    "query": "9005_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsvertragspartner Pflege"
+  },
+  {
+    "query": "9006_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsvertragsdaten Anzeige"
+  },
+  {
+    "query": "9007_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsvertragsdaten Pflege"
+  },
+  {
+    "query": "9008_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsfalldaten Pflege"
+  },
+  {
+    "query": "9009_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsfall Buchen"
+  },
+  {
+    "query": "9010_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsbelegdaten Anzeige"
+  },
+  {
+    "query": "9011_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsbelegdaten Pflege"
+  },
+  {
+    "query": "9012_FS-ICM",
+    "shortDescription": "FS-ICM - Organisationsstruktur Anzeige"
+  },
+  {
+    "query": "9013_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsvertragsdaten Anlage"
+  },
+  {
+    "query": "9014_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsfall Storno und Reaktivierung"
+  },
+  {
+    "query": "9015_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsbeleg buchen"
+  },
+  {
+    "query": "9016_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionsbeleg stornieren"
+  },
+  {
+    "query": "9017_FS-ICM",
+    "shortDescription": "FS-ICM - Organisationsstruktur Pflege"
+  },
+  {
+    "query": "9018_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Massenrücknahme"
+  },
+  {
+    "query": "9019_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Massennachverbuchung"
+  },
+  {
+    "query": "9020_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abschluss Pauschalen und Garantien"
+  },
+  {
+    "query": "9021_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnung"
+  },
+  {
+    "query": "9022_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnungslauf Übersicht"
+  },
+  {
+    "query": "9023_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Storno Abschluss"
+  },
+  {
+    "query": "9024_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Zahlsperren aufheben"
+  },
+  {
+    "query": "9025_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Rücknahme Abrechnung"
+  },
+  {
+    "query": "9026_FS-ICM",
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnungspläne löschen"
+  },
+  {
+    "query": "9027_FS-ICM",
+    "shortDescription": "FS-ICM - Protokollanzeige"
+  },
+  {
+    "query": "9028_FS-ICM",
+    "shortDescription": "FS-ICM - Transport Standardkonditionen"
+  },
+  {
+    "query": "9029_FS-ICM",
+    "shortDescription": "FS-ICM - Transport versionsgeführter Daten"
+  },
+  {
+    "query": "9030_FS-ICM",
+    "shortDescription": "FS-ICM - Fremddatenübernahme"
+  },
+  {
+    "query": "9031_FS-ICM",
+    "shortDescription": "FS-ICM - Provisionssachbearbeiter berechtigen"
+  },
+  {
+    "query": "9500_FS-CD",
+    "shortDescription": "FS-CD - Versicherungsobjekte Anzeige"
+  },
+  {
+    "query": "9501_FS-CD",
+    "shortDescription": "FS-CD - Starte Clarification Controller"
+  },
+  {
+    "query": "9502_FS-CD",
+    "shortDescription": "FS-CD - Posten Ausbuchen"
+  },
+  {
+    "query": "9503_FS-CD",
+    "shortDescription": "FS-CD - Zahlungsstapel bearbeiten"
+  },
+  {
+    "query": "9504_FS-CD",
+    "shortDescription": "FS-CD - Klärungsbearbeitung über CALL TRANS"
+  },
+  {
+    "query": "9505_FS-CD",
+    "shortDescription": "FS-CD - Kontenpflege"
+  },
+  {
+    "query": "9506_FS-CD",
+    "shortDescription": "FS-CD - Ausgleich zurücknehmen"
+  },
+  {
+    "query": "9507_FS-CD",
+    "shortDescription": "FS-CD - Beleg stornieren"
+  },
+  {
+    "query": "9508_FS-CD",
+    "shortDescription": "FS-CD - Massenstorno"
+  },
+  {
+    "query": "9509_FS-CD",
+    "shortDescription": "FS-CD - Rückläufer"
+  },
+  {
+    "query": "9510_FS-CD",
+    "shortDescription": "FS-CD - Massenstorno von Belegen"
+  },
+  {
+    "query": "9511_FS-CD",
+    "shortDescription": "FS-CD - Scheckstapel bearbeiten"
+  },
+  {
+    "query": "9512_FS-CD",
+    "shortDescription": "FS-CD - Kreditkartenstapel bearbeiten"
+  },
+  {
+    "query": "9513_FS-CD",
+    "shortDescription": "FS-CD - Transferieren"
+  },
+  {
+    "query": "9514_FS-CD",
+    "shortDescription": "FS-CD - Zahlungsauftragsstapel bearbeiten"
+  },
+  {
+    "query": "9515_FS-CD",
+    "shortDescription": "FS-CD - Stapel manuelle Ausgangsschecks"
+  },
+  {
+    "query": "9516_FS-CD",
+    "shortDescription": "FS-CD - Zahlungsfestlegung anlegen"
+  },
+  {
+    "query": "9517_FS-CD",
+    "shortDescription": "FS-CD - Zahlungsfestlegung ändern"
+  },
+  {
+    "query": "9518_FS-CD",
+    "shortDescription": "FS-CD - Zahlungsfestlegung anzeigen"
+  },
+  {
+    "query": "9519_FS-CD",
+    "shortDescription": "FS-CD - Zahlungsfestlegung stornieren"
+  },
+  {
+    "query": "9520_FS-CD",
+    "shortDescription": "FS-CD - Postenvormerkung stornieren"
+  },
+  {
+    "query": "9521_FS-CD",
+    "shortDescription": "FS-CD - Zahlung buchen"
+  },
+  {
+    "query": "9522_FS-CD",
+    "shortDescription": "FS-CD - Kassenbuch"
+  },
+  {
+    "query": "9523_FS-CD",
+    "shortDescription": "FS-CD - Klärungsbearbeitung: Zahlungsstapel"
+  },
+  {
+    "query": "9524_FS-CD",
+    "shortDescription": "FS-CD - Klärungsbearbeitung: Rückläufer"
+  },
+  {
+    "query": "9525_FS-CD",
+    "shortDescription": "FS-CD - Klärungsbearbeitung: Guthaben"
+  },
+  {
+    "query": "9526_FS-CD",
+    "shortDescription": "FS-CD - Beleg buchen"
+  },
+  {
+    "query": "9527_FS-CD",
+    "shortDescription": "FS-CD - Ändern Beleg"
+  },
+  {
+    "query": "9528_FS-CD",
+    "shortDescription": "FS-CD - Massenänderung Belege"
+  },
+  {
+    "query": "9529_FS-CD",
+    "shortDescription": "FS-CD - Anzeigen Beleg"
+  },
+  {
+    "query": "9530_FS-CD",
+    "shortDescription": "FS-CD - FI-CA: Einzelbearbeitung Verzinsung"
+  },
+  {
+    "query": "9531_FS-CD",
+    "shortDescription": "FS-CD - Zinslauf"
+  },
+  {
+    "query": "9532_FS-CD",
+    "shortDescription": "FS-CD - Kontenstand anzeigen"
+  },
+  {
+    "query": "9533_FS-CD",
+    "shortDescription": "FS-CD - Anzeigen der Rückläuferhistorie"
+  },
+  {
+    "query": "9534_FS-CD",
+    "shortDescription": "FS-CD - Vertragspartner anlegen"
+  },
+  {
+    "query": "9535_FS-CD",
+    "shortDescription": "FS-CD - Vertragspartner ändern"
+  },
+  {
+    "query": "9536_FS-CD",
+    "shortDescription": "FS-CD - Vertragspartner anzeigen"
+  },
+  {
+    "query": "9537_FS-CD",
+    "shortDescription": "FS-CD - PCARD: Abrechnung durchführen"
+  },
+  {
+    "query": "9538_FS-CD",
+    "shortDescription": "FS-CD - Ratenplan anlegen"
+  },
+  {
+    "query": "9539_FS-CD",
+    "shortDescription": "FS-CD - Ratenplan ändern"
+  },
+  {
+    "query": "9540_FS-CD",
+    "shortDescription": "FS-CD - Umgliederungen buchen"
+  },
+  {
+    "query": "9541_FS-CD",
+    "shortDescription": "FS-CD - Guthabenbearbeitung"
+  },
+  {
+    "query": "9542_FS-CD",
+    "shortDescription": "FS-CD - Fremdwährungsbewertung"
+  },
+  {
+    "query": "9543_FS-CD",
+    "shortDescription": "FS-CD - Protokollsätze Fremdwährungsbewertun"
+  },
+  {
+    "query": "9544_FS-CD",
+    "shortDescription": "FS-CD - Eventgesteuerte Umkehrbuchung"
+  },
+  {
+    "query": "9545_FS-CD",
+    "shortDescription": "FS-CD - Zahlungslauf / Lastschriftlauf"
+  },
+  {
+    "query": "9546_FS-CD",
+    "shortDescription": "FS-CD - Maklermeldung erfassen"
+  },
+  {
+    "query": "9547_FS-CD",
+    "shortDescription": "FS-CD - Makler´s Desktop"
+  },
+  {
+    "query": "9548_FS-CD",
+    "shortDescription": "FS-CD - Maklermeldung klären"
+  },
+  {
+    "query": "9549_FS-CD",
+    "shortDescription": "FS-CD - Maklermeldungshistorie anzeigen"
+  },
+  {
+    "query": "9550_FS-CD",
+    "shortDescription": "FS-CD - Storno Maklermeldung"
+  },
+  {
+    "query": "9552_FS-CD",
+    "shortDescription": "FS-CD - Maklermeldungübernahme"
+  },
+  {
+    "query": "9553_FS-CD",
+    "shortDescription": "FS-CD - Mahnstatus Historie"
+  },
+  {
+    "query": "9554_FS-CD",
+    "shortDescription": "FS-CD - Automatische Nachbearbeitung Maklermeldung"
+  },
+  {
+    "query": "9555_FS-CD",
+    "shortDescription": "FS-CD - Fall anlegen (Expertenmodus)"
+  },
+  {
+    "query": "9556_FS-CD",
+    "shortDescription": "FS-CD - Fall ändern (Expertenmodus)"
+  },
+  {
+    "query": "9557_FS-CD",
+    "shortDescription": "FS-CD - Fall anzeigen (Expertenmodus)"
+  },
+  {
+    "query": "9558_FS-CD",
+    "shortDescription": "FS-CD - Sammelrechnung: Anlegen"
+  },
+  {
+    "query": "9559_FS-CD",
+    "shortDescription": "FS-CD - Sammelrechnung: Ändern"
+  },
+  {
+    "query": "9560_FS-CD",
+    "shortDescription": "FS-CD - Sammelrechnung: Anzeigen"
+  },
+  {
+    "query": "9561_FS-CD",
+    "shortDescription": "FS-CD - Sammlregress: Anlegen"
+  },
+  {
+    "query": "9562_FS-CD",
+    "shortDescription": "FS-CD - Sammlregress: Ändern"
+  },
+  {
+    "query": "9563_FS-CD",
+    "shortDescription": "FS-CD - Sammlregress: Anzeigen"
+  },
+  {
+    "query": "9564_FS-CD",
+    "shortDescription": "FS-CD - Fallbündel:  Anlegen"
+  },
+  {
+    "query": "9565_FS-CD",
+    "shortDescription": "FS-CD - Fallbündel:  Ändern"
+  },
+  {
+    "query": "9566_FS-CD",
+    "shortDescription": "FS-CD - Fallbündel:  Anzeigen"
+  },
+  {
+    "query": "9567_FS-CD",
+    "shortDescription": "FS-CD - Fallsuche"
+  },
+  {
+    "query": "9568_FS-CD",
+    "shortDescription": "FS-CD - Einzelerfassung Rechnung"
+  },
+  {
+    "query": "9569_FS-CD",
+    "shortDescription": "FS-CD - Schaden anlegen (Erfassungsmodus)"
+  },
+  {
+    "query": "9570_FS-CD",
+    "shortDescription": "FS-CD - Schaden ändern (Erfassungsmodus)"
+  },
+  {
+    "query": "9571_FS-CD",
+    "shortDescription": "FS-CD - Schaden anzeigen (Erfassungsmodus)"
+  },
+  {
+    "query": "9572_FS-CD",
+    "shortDescription": "FS-CD - Anzeige der Zahlungsberechtigungen"
+  },
+  {
+    "query": "9573_FS-CD",
+    "shortDescription": "FS-CD - Schnellschaden anlegen"
+  },
+  {
+    "query": "9574_FS-CD",
+    "shortDescription": "FS-CD - Schnellschaden ändern"
+  },
+  {
+    "query": "9575_FS-CD",
+    "shortDescription": "FS-CD - Schnellschaden anzeigen"
+  },
+  {
+    "query": "9576_FS-CD",
+    "shortDescription": "FS-CD - Provenue anlegen (Übersicht-Modus)"
+  },
+  {
+    "query": "9577_FS-CD",
+    "shortDescription": "FS-CD - Leistungskatalog Suche"
+  },
+  {
+    "query": "9578_FS-CD",
+    "shortDescription": "FS-CD - Katalogposition anlegen"
+  },
+  {
+    "query": "9579_FS-CD",
+    "shortDescription": "FS-CD - Katalogposition ändern"
+  },
+  {
+    "query": "9580_FS-CD",
+    "shortDescription": "FS-CD - Katalogposition anzeigen"
+  },
+  {
+    "query": "9581_FS-CD",
+    "shortDescription": "FS-CD - Fallstatus anzeigen (Kundensicht)"
+  },
+  {
+    "query": "9582_FS-CD",
+    "shortDescription": "FS-CD - Versicherungsobjekt ändern"
+  },
+  {
+    "query": "9583_FS-CD",
+    "shortDescription": "FS-CD - Versicherungsobjekt anlegen"
+  },
+  {
+    "query": "9584_FS-CD",
+    "shortDescription": "FS-CD - Versicherungsobjekt anzeigen"
+  },
+  {
+    "query": "9585_FS-CD",
+    "shortDescription": "FS-CD - Guthabenaufteilung (mehrere Zahlungen)"
+  },
+  {
+    "query": "9586_FS-CD",
+    "shortDescription": "FS-CD - Buchen von Mitversicherungsanteilen"
+  },
+  {
+    "query": "9587_FS-CD",
+    "shortDescription": "FS-CD - Mitversicherungshistorie"
+  },
+  {
+    "query": "9588_FS-CD",
+    "shortDescription": "FS-CD - Verwaltung saldenverzinster Verträge"
+  },
+  {
+    "query": "9589_FS-CD",
+    "shortDescription": "FS-CD - Mahnstand Vertrag anzeigen"
+  },
+  {
+    "query": "9590_FS-CD",
+    "shortDescription": "FS-CD - Mahnstand Vertrag ändern"
+  },
+  {
+    "query": "9591_FS-CD",
+    "shortDescription": "FS-CD - Parallelisierte Sollstellung"
+  },
+  {
+    "query": "9592_FS-CD",
+    "shortDescription": "FS-CD - Sollstellung Versicherung"
+  },
+  {
+    "query": "9951_FS-CD",
+    "shortDescription": "FS-CD - Maklermeldung erzeugen"
+  },
+  {
+    "query": "A1000_BW-SEC",
+    "shortDescription": "BW Workbench: Administration"
+  }
+]

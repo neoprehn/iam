@@ -1,0 +1,602 @@
+[
+  {
+    "query": "CBOMXH",
+    "shortDescription": "PP: Maintain BOMs without History"
+  },
+  {
+    "query": "FAREPA",
+    "shortDescription": "FI-AR: Maintain A/R Extended Manual Postings"
+  },
+  {
+    "query": "FBOLEA",
+    "shortDescription": "FI-GEN: Maintain Boleto Management"
+  },
+  {
+    "query": "FCLOSA",
+    "shortDescription": "FI-GEN: Maintain FI Posting Periods"
+  },
+  {
+    "query": "FCLOSB",
+    "shortDescription": "FI-GEN: Maintain FI Posting Periods"
+  },
+  {
+    "query": "FCSTMA",
+    "shortDescription": "FI-CUST:  Maintain Customizing FI"
+  },
+  {
+    "query": "FCSTMB",
+    "shortDescription": "FI-CUST: Maintain Customizing FI"
+  },
+  {
+    "query": "FCUSMA",
+    "shortDescription": "FI-MD: Mass Maintain Customer Master Data"
+  },
+  {
+    "query": "FCUSTA",
+    "shortDescription": "FI-MD: Maintain Customer Master Data"
+  },
+  {
+    "query": "FCUSTB",
+    "shortDescription": "FI-MD: Block/Unblock Customer Master Data"
+  },
+  {
+    "query": "FCUSTC",
+    "shortDescription": "FI-MD: Confirm Customer Master Data"
+  },
+  {
+    "query": "FCUSTN",
+    "shortDescription": "FI-MD: Create Customer Master Data"
+  },
+  {
+    "query": "FCUSTU",
+    "shortDescription": "FI-MD: Update Customer Master Data"
+  },
+  {
+    "query": "FCUSTX",
+    "shortDescription": "FI-MD: Mark Customer Master Data for deletion"
+  },
+  {
+    "query": "FDTPKA",
+    "shortDescription": "FI-GEN: Change the default Document Types / Posting Keys"
+  },
+  {
+    "query": "FFIDCA",
+    "shortDescription": "FI-GEN: Delete Fi Documents"
+  },
+  {
+    "query": "FFIDPK",
+    "shortDescription": "FI-GEN: Park & Maintain Parked Documents"
+  },
+  {
+    "query": "FFIPDA",
+    "shortDescription": "FI-GEN: Post Parked Document"
+  },
+  {
+    "query": "FPAPPA",
+    "shortDescription": "FI-GEN: Protect allowed posting period (F_BKPF_BUP)"
+  },
+  {
+    "query": "FVENDA",
+    "shortDescription": "FI-MD: Maintain Vendor Master Data"
+  },
+  {
+    "query": "FVENDB",
+    "shortDescription": "FI-MD: Block/Unblock Vendor Master Data"
+  },
+  {
+    "query": "FVENDC",
+    "shortDescription": "FI-MD: Confirm Vendor Master Data"
+  },
+  {
+    "query": "FVENDN",
+    "shortDescription": "FI-MD: Create Vendor Master Data"
+  },
+  {
+    "query": "FVENDU",
+    "shortDescription": "FI-MD: Update Vendor Master Data"
+  },
+  {
+    "query": "FVENDX",
+    "shortDescription": "FI-MD: Mark Vendor Master Data for deletion"
+  },
+  {
+    "query": "FVENMA",
+    "shortDescription": "FI-MD: Mass Maintain Vendor Master Data"
+  },
+  {
+    "query": "INOTIA",
+    "shortDescription": "PM: Maintain Notifications"
+  },
+  {
+    "query": "MCLOSA",
+    "shortDescription": "MM: Maintain MM Posting Periods"
+  },
+  {
+    "query": "MVENDA",
+    "shortDescription": "MM-MD: Maintain Vendor Master Data"
+  },
+  {
+    "query": "MVENDB",
+    "shortDescription": "MM-MD: Block/Unblock Vendor Master Data"
+  },
+  {
+    "query": "MVENDN",
+    "shortDescription": "MM-MD: Create Vendor Master Data"
+  },
+  {
+    "query": "MVENDU",
+    "shortDescription": "MM-MD: Update Vendor Master Data"
+  },
+  {
+    "query": "MVENDX",
+    "shortDescription": "MM-MD: Mark Vendor Master Data for deletion"
+  },
+  {
+    "query": "MVENMA",
+    "shortDescription": "MM-MD: Mass Maintain Vendor Master Data"
+  },
+  {
+    "query": "PMDMDX",
+    "shortDescription": "HR: Mass Deletion of HR Master Data"
+  },
+  {
+    "query": "PORGEA",
+    "shortDescription": "HR: Maintain Organizational Management"
+  },
+  {
+    "query": "PORGPA",
+    "shortDescription": "HR: Maintain Organizational Management"
+  },
+  {
+    "query": "PPAPIA",
+    "shortDescription": "HR: Maintain PA Master Data"
+  },
+  {
+    "query": "PPAPID",
+    "shortDescription": "HR: Display PA Master Data"
+  },
+  {
+    "query": "PABAP1",
+    "shortDescription": "HR: Reporting (independent check on infotype and org. assignment)"
+  },
+  {
+    "query": "PABAP2",
+    "shortDescription": "HR: Reporting (no check on P_ORGIN, P_ORGXX and P_PERNR)"
+  },
+  {
+    "query": "PSTRUA",
+    "shortDescription": "HR: Maintain Organizational Structure Objects"
+  },
+  {
+    "query": "PSTRUD",
+    "shortDescription": "HR: Display Organizational Structure Objects"
+  },
+  {
+    "query": "S$SEU1",
+    "shortDescription": "BC: Using of Repository Info System INTERNAL $SEU <4.7"
+  },
+  {
+    "query": "S$SEU2",
+    "shortDescription": "BC: Using of Repository Info System INTERNAL $SEU >4.6"
+  },
+  {
+    "query": "SABAPA",
+    "shortDescription": "BC: Execute ABAPs Directly"
+  },
+  {
+    "query": "SABAPB",
+    "shortDescription": "BC: Execute ABAPs in Background"
+  },
+  {
+    "query": "SABAPC",
+    "shortDescription": "BC: Execute ABAPs Background"
+  },
+  {
+    "query": "SABVAA",
+    "shortDescription": "BC: Maintain ABAP Variants"
+  },
+  {
+    "query": "SALLPD",
+    "shortDescription": "BC: Use of ALL Printer Devices"
+  },
+  {
+    "query": "SBJOBD",
+    "shortDescription": "BC: Display Background Jobs"
+  },
+  {
+    "query": "SBJOBR",
+    "shortDescription": "BC: Release Background Jobs"
+  },
+  {
+    "query": "SCALLC",
+    "shortDescription": "BC: C calls in ABAP programs"
+  },
+  {
+    "query": "SCALLO",
+    "shortDescription": "BC: OLE calls  in ABAP programs"
+  },
+  {
+    "query": "SCALLP",
+    "shortDescription": "BC: CPIC calls  in ABAP programs"
+  },
+  {
+    "query": "SCDOCA",
+    "shortDescription": "BC: Access to maintain or delete change documents"
+  },
+  {
+    "query": "SCDOCX",
+    "shortDescription": "BC: Delete change documents"
+  },
+  {
+    "query": "SCPICA",
+    "shortDescription": "BC: CPI-C user (Server authorization)"
+  },
+  {
+    "query": "SCTDTA",
+    "shortDescription": "BC: Extract SAP Tables using external tool"
+  },
+  {
+    "query": "SDEBUA",
+    "shortDescription": "BC: Debugging Access Update rights"
+  },
+  {
+    "query": "SDEBUD",
+    "shortDescription": "BC: Debugging Access Display"
+  },
+  {
+    "query": "SDEVLA",
+    "shortDescription": "BC: Development Access"
+  },
+  {
+    "query": "SEXMIA",
+    "shortDescription": "BC: External Management Interface (XMI)"
+  },
+  {
+    "query": "SLAYOA",
+    "shortDescription": "BC: Maintain Standard Layouts"
+  },
+  {
+    "query": "SLAYRA",
+    "shortDescription": "BC: Maintain Standard Layouts – Report specific"
+  },
+  {
+    "query": "SLOCKA",
+    "shortDescription": "BC: Manage lock entries"
+  },
+  {
+    "query": "SLOCLD",
+    "shortDescription": "BC: Use of Local Printer Definitions"
+  },
+  {
+    "query": "SPFCGA",
+    "shortDescription": "BC: Maintain Roles"
+  },
+  {
+    "query": "SRFCTD",
+    "shortDescription": "BC: Display access to Tables via RFC"
+  },
+  {
+    "query": "SRFCTE",
+    "shortDescription": "BC: Execute trusted RFC connections"
+  },
+  {
+    "query": "SSA38A",
+    "shortDescription": "BC: Execute ABAPs Directly"
+  },
+  {
+    "query": "SSDMOA",
+    "shortDescription": "BC: Execution of dynamic menu SDMO"
+  },
+  {
+    "query": "SSE16D",
+    "shortDescription": "BC: Display Tables"
+  },
+  {
+    "query": "SSM30D",
+    "shortDescription": "BC: Display Tables"
+  },
+  {
+    "query": "SSM35B",
+    "shortDescription": "BC: Maintain Batch Input Sessions"
+  },
+  {
+    "query": "SSTCDA",
+    "shortDescription": "BC: Run all transactions by bypassing S_TCODE checks (Alternative < 4.7)"
+  },
+  {
+    "query": "SSTCRA",
+    "shortDescription": "BC: Sys Admin - System-wide table control settings"
+  },
+  {
+    "query": "SSYNCA",
+    "shortDescription": "BC: Sys Admin - Reset buffers"
+  },
+  {
+    "query": "STABLA",
+    "shortDescription": "BC: Maintain Tables"
+  },
+  {
+    "query": "STABLX",
+    "shortDescription": "BC: Maintain Tables"
+  },
+  {
+    "query": "SUSERA",
+    "shortDescription": "BC: Maintain Users"
+  },
+  {
+    "query": "SUSERB",
+    "shortDescription": "BC: Maintain Users"
+  },
+  {
+    "query": "SUSERP",
+    "shortDescription": "BC: Assign Roles/Profiles to Users"
+  },
+  {
+    "query": "SUSERQ",
+    "shortDescription": "BC: Assign Roles/Profiles to Users"
+  },
+  {
+    "query": "SUSERX",
+    "shortDescription": "BC: Maintain General User Adm. Functions"
+  },
+  {
+    "query": "SUSRBL",
+    "shortDescription": "BC: Change and Lock / Unlock Users"
+  },
+  {
+    "query": "VCONTA",
+    "shortDescription": "SD-PR: Maintain Sales Conditions Table"
+  },
+  {
+    "query": "VCUSMA",
+    "shortDescription": "SD-MD: Mass Maintain Customer Master Data"
+  },
+  {
+    "query": "VCUSTA",
+    "shortDescription": "SD-MD: Maintain Customer Master Data"
+  },
+  {
+    "query": "VCUSTB",
+    "shortDescription": "SD-MD: Block/Unblock Customer Master Data"
+  },
+  {
+    "query": "VCUSTU",
+    "shortDescription": "SD-MD: Update Customer Master Data"
+  },
+  {
+    "query": "VCUSTX",
+    "shortDescription": "SD-MD: Mark Customer Master Data for deletion"
+  },
+  {
+    "query": "XCUSMA",
+    "shortDescription": "XX-MD: Mass Maintain Customer Master Data"
+  },
+  {
+    "query": "XCUSTA",
+    "shortDescription": "XX-MD: Maintain Customer Master Data"
+  },
+  {
+    "query": "XMASTX",
+    "shortDescription": "FI-MM-SD: Delete Master Data (Vendors-Customers-GL)"
+  },
+  {
+    "query": "XMATXN",
+    "shortDescription": "MM-MD: Create Material Master Data"
+  },
+  {
+    "query": "XMATXX",
+    "shortDescription": "MM-MD: Delete Material Master Data"
+  },
+  {
+    "query": "XVENDA",
+    "shortDescription": "XX-MD: Maintain Vendor Master Data"
+  },
+  {
+    "query": "XVENMA",
+    "shortDescription": "XX-MD: Mass Maintain Vendor Master Data"
+  },
+  {
+    "query": "STABLA_ALL",
+    "shortDescription": "ALL_Variant - BC: Maintain Tables"
+  },
+  {
+    "query": "SSE16D_ALL",
+    "shortDescription": "ALL_Variant - BC: Display Tables"
+  },
+  {
+    "query": "SABAPA_ALL",
+    "shortDescription": "ALL_Variant - BC: Execute ABAPs Directly"
+  },
+  {
+    "query": "PPAMDA_0003",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0003"
+  },
+  {
+    "query": "PPAMDA_0007",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0007"
+  },
+  {
+    "query": "PPAMDA_0009",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0009"
+  },
+  {
+    "query": "PPAMDA_0011",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0011"
+  },
+  {
+    "query": "PPAMDA_0014",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0014"
+  },
+  {
+    "query": "PPAMDA_0015",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0015"
+  },
+  {
+    "query": "PPAMDA_0016",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0016"
+  },
+  {
+    "query": "PPAMDA_0027",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0027"
+  },
+  {
+    "query": "PPAMDA_0050",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0050"
+  },
+  {
+    "query": "PPAMDA_0100",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0100"
+  },
+  {
+    "query": "PPAMDA_0101",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0101"
+  },
+  {
+    "query": "PPAMDA_0107",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0107"
+  },
+  {
+    "query": "PPAMDA_0109",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0109"
+  },
+  {
+    "query": "PPAMDA_0315",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0315"
+  },
+  {
+    "query": "PPAMDA_0415",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0415"
+  },
+  {
+    "query": "PPAMDA_0439",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0439"
+  },
+  {
+    "query": "PPAMDA_0735",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0735"
+  },
+  {
+    "query": "PPAMDD_0008",
+    "shortDescription": "HR: Display PA Master Data - Infty 0008"
+  },
+  {
+    "query": "PPAMDD_0009",
+    "shortDescription": "HR: Display PA Master Data - Infty 0009"
+  },
+  {
+    "query": "PPAMDD_0011",
+    "shortDescription": "HR: Display PA Master Data - Infty 0011"
+  },
+  {
+    "query": "PPAMDD_0014",
+    "shortDescription": "HR: Display PA Master Data - Infty 0014"
+  },
+  {
+    "query": "PPAMDD_0015",
+    "shortDescription": "HR: Display PA Master Data - Infty 0015"
+  },
+  {
+    "query": "PPAMDD_0100",
+    "shortDescription": "HR: Display PA Master Data - Infty 0100"
+  },
+  {
+    "query": "PPAMDD_0101",
+    "shortDescription": "HR: Display PA Master Data - Infty 0101"
+  },
+  {
+    "query": "PPAMDD_0107",
+    "shortDescription": "HR: Display PA Master Data - Infty 0107"
+  },
+  {
+    "query": "PPAMDD_0442",
+    "shortDescription": "HR: Display PA Master Data - Infty 0442"
+  },
+  {
+    "query": "PPAMDD_0735",
+    "shortDescription": "HR: Display PA Master Data - Infty 0735"
+  },
+  {
+    "query": "STABNA",
+    "shortDescription": "BC: Maintain Tables (Client-Dependent)"
+  },
+  {
+    "query": "STABNA_ALL",
+    "shortDescription": "ALL_Variant - BC: Maintain Tables (Client-Dependent)"
+  },
+  {
+    "query": "PPAMDA_0008",
+    "shortDescription": "HR: Maintain PA Master Data - Infty 0008"
+  },
+  {
+    "query": "PPAMDD_0016",
+    "shortDescription": "HR: Display PA Master Data - Infty 0016"
+  },
+  {
+    "query": "PABAPD",
+    "shortDescription": "HR: All HR Reporting (independent check on infotype and org. assignment)"
+  },
+  {
+    "query": "SEXTCP",
+    "shortDescription": "BC: Executing external commands on hosts on OS level"
+  },
+  {
+    "query": "SBJOBU",
+    "shortDescription": "BC: Update Background Jobs"
+  },
+  {
+    "query": "FCUSMC",
+    "shortDescription": "FI-MD: Mass Create Customer Master Data"
+  },
+  {
+    "query": "FCUSMU",
+    "shortDescription": "FI-MD: Mass Update Customer Master Data"
+  },
+  {
+    "query": "FCUSMX",
+    "shortDescription": "FI-MD: Mass Delete Maintain Customer Master Data"
+  },
+  {
+    "query": "VCONTC",
+    "shortDescription": "SD-PR: Create Sales Conditions Table"
+  },
+  {
+    "query": "VCONTD",
+    "shortDescription": "SD-PR: Display Sales Conditions Table"
+  },
+  {
+    "query": "VCONTU",
+    "shortDescription": "SD-PR: Update Sales Conditions Table"
+  },
+  {
+    "query": "VCUSMC",
+    "shortDescription": "SD-MD: Mass Create Customer Master Data"
+  },
+  {
+    "query": "VCUSMU",
+    "shortDescription": "SD-MD: Mass Update Customer Master Data"
+  },
+  {
+    "query": "VCUSTC",
+    "shortDescription": "SD-MD: Create Customer Master Data"
+  },
+  {
+    "query": "VCUSTD",
+    "shortDescription": "SD-MD: Display Customer Master Data"
+  },
+  {
+    "query": "FCURRB",
+    "shortDescription": "FI-GEN: Maintain Exchange Rates"
+  },
+  {
+    "query": "S4SE16A",
+    "shortDescription": "BC: Maintain Tables Searches"
+  },
+  {
+    "query": "S4SE16D",
+    "shortDescription": "BC: Display Tables"
+  },
+  {
+    "query": "S4SE16R",
+    "shortDescription": "BC: Maintain Tables Roles Administration"
+  }
+]
