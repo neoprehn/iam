@@ -12,7 +12,7 @@
   * { box-sizing:border-box; }
   body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
   a { color:var(--accent); }
-  html[data-theme="light"] .tag.veryhigh { background:rgba(217,42,42,.14); color:#b3261e; }
+  html[data-theme="light"] .tag.verycritical { background:rgba(217,42,42,.14); color:#b3261e; }
   html[data-theme="light"] .tag.critical { background:rgba(229,72,77,.14); color:#c0392b; }
   html[data-theme="light"] .tag.high { background:rgba(235,123,46,.16); color:#a8590c; }
   html[data-theme="light"] .tag.medium { background:rgba(245,166,35,.18); color:#8a6300; }
@@ -66,7 +66,7 @@
   th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
   th { color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--bg); }
   .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
-  .tag.veryhigh { background:rgba(217,42,42,.30); color:#ff5c5c; }
+  .tag.verycritical { background:rgba(217,42,42,.30); color:#ff5c5c; }
   .tag.critical { background:rgba(229,72,77,.24); color:#ff7a66; }
   .tag.high { background:rgba(235,123,46,.20); color:#ffa552; }
   .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
@@ -237,7 +237,7 @@
         <span class="muted" style="font-size:12px">Kritikalit&auml;t:</span>
         <div class="pillgroup" id="ruleCritPills">
           <button type="button" class="pill active" data-value="">alle</button>
-          <button type="button" class="pill tag veryhigh" data-value="very-high">very-high</button>
+          <button type="button" class="pill tag verycritical" data-value="very-critical">very critical</button>
           <button type="button" class="pill tag critical" data-value="critical">critical</button>
           <button type="button" class="pill tag high" data-value="high">high</button>
           <button type="button" class="pill tag medium" data-value="medium">medium</button>
@@ -315,7 +315,7 @@
         <select id="minRank">
           <option value="0">alle</option><option value="2">ab medium</option>
           <option value="3">ab high</option><option value="4">ab critical</option>
-          <option value="5">nur very-high</option>
+          <option value="5">nur very critical</option>
         </select></div>
       <div><label for="runId">Run-ID (optional)</label><input id="runId" placeholder="z. B. dialog-active" /></div>
     </div>
@@ -674,7 +674,7 @@ function renderFindingsTable(findings) {
 function showFilterActive(text) { $('filterActiveText').textContent = text; $('filterActive').classList.add('show'); }
 function hideFilterActive() { $('filterActive').classList.remove('show'); }
 
-const CRIT_COLOR = { 'very-high': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
+const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
 
 let ruleCritValue = '', sleepingValue = '';
 function renderRuleCritPills() {

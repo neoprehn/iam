@@ -7,7 +7,7 @@
 // Sperr-Filter: $excludeLocked = true -> gesperrte User (`:Locked`, UFLAG) ausschliessen.
 //   (Nutzertyp und Sperre sind getrennte Achsen: A/S sagt nichts ueber gesperrt/aktiv.)
 // Sleeping-Flag: userSleeping = kein Logon in $sleepDays Tagen (oder nie).
-// Scope: $minCriticalityRank (0..5; nur Regeln >= Rang, 5=very-high) und $sodRules (Liste
+// Scope: $minCriticalityRank (0..5; nur Regeln >= Rang, 5=very-critical) und $sodRules (Liste
 // expliziter Regel-IDs; leer = alle) — so laufen z. B. „nur very-critical" oder einzelne Regeln.
 // Idempotent: alte Findings dieses (ruleset,dataset,runId) werden zuerst entfernt.
 // Parameter: $ruleset, $dataset, $asOf, $runId, $userTypes (list), $excludeLocked (bool),

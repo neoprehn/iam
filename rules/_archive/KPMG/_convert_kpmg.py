@@ -130,9 +130,9 @@ for row in sheet_rows("Table view SoD rule detail with query info.xlsx"):
 rules_list = sorted(rules.values(), key=lambda r: r["sodRule"])
 
 # ---- Normalisierte Kritikalitaet (einheitlich ueber alle Rulesets) -----------------
-# Skala: very-high(5) > critical(4) > high(3) > medium(2) > low(1).
+# Skala: very-critical(5) > critical(4) > high(3) > medium(2) > low(1).
 # Query: aus soxClassification (KPMG V/C/H/M/L). SoD: aus reasonCode-Suffix (z. B. SYS_C -> C).
-_CRIT = {"V": ("very-high", 5), "C": ("critical", 4), "H": ("high", 3), "M": ("medium", 2), "L": ("low", 1)}
+_CRIT = {"V": ("very-critical", 5), "C": ("critical", 4), "H": ("high", 3), "M": ("medium", 2), "L": ("low", 1)}
 def criticality(code):
     lvl = (code or "").rsplit("_", 1)[-1].strip().upper()
     return _CRIT.get(lvl, (None, None))

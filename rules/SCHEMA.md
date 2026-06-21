@@ -45,7 +45,7 @@ Volltext-Feld (z. B. fuer Tooltips/Export). Bis Kurzbezeichnungen gepflegt sind,
 ersatzweise die Langbezeichnung.
 
 **Normalisierte Kritikalitaet (einheitlich, ruleset-uebergreifend):**
-`very-high`(5) › `critical`(4) › `high`(3) › `medium`(2) › `low`(1). Damit „Very Critical" o. ae.
+`very-critical`(5) › `critical`(4) › `high`(3) › `medium`(2) › `low`(1). Damit „Very Critical" o. ae.
 ohne ruleset-spezifisches Springen ansprechbar (z. B. `criticalityRank >= 4`).
 
 ## Optionale Extras (ruleset-spezifisch — Loader ignoriert oder übernimmt generisch)

@@ -38,7 +38,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "",
     "moduleSource": ""
@@ -96,7 +96,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -179,7 +179,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -253,7 +253,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -454,7 +454,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -520,7 +520,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -934,7 +934,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -980,7 +980,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -1068,7 +1068,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -1114,7 +1114,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -1366,7 +1366,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"
@@ -3007,7 +3007,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Module",
     "moduleSource": "csi-tcode"
@@ -3057,7 +3057,7 @@
         "stad": true
       }
     ],
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "module": "Basis Module",
     "moduleSource": "csi-tcode"

@@ -47,7 +47,7 @@
     { "name": "all", "description": "alle Queries/Regeln (keine Einschraenkung)." },
     { "name": "fi-only", "description": "nur Financial Accounting (+ angrenzende FI-Bereiche).",
       "modules": ["Financial Accounting", "Asset Accounting", "Controlling"] },
-    { "name": "very-critical", "description": "nur hoechste Kritikalitaet (very-high + critical).",
+    { "name": "critical-up", "description": "nur hoechste Kritikalitaet (very-critical + critical).",
       "minCriticalityRank": 4 },
     { "name": "audit-required", "description": "nur Audit-Pflicht-Queries (queryType).",
       "queryTypes": ["AR", "XR"] }
@@ -75,7 +75,7 @@
   },
   "_scopeSelectors": {
     "modules": "Liste von module-Werten (CSI-Vokabular); leer = alle.",
-    "minCriticalityRank": "min. normalisierter Rang (5=very-high .. 1=low); 4 = critical+aufwaerts.",
+    "minCriticalityRank": "min. normalisierter Rang (5=very-critical .. 1=low); 4 = critical+aufwaerts.",
     "queryTypes": "Liste queryType-Codes (Audit/Monitoring-Scope).",
     "queries": "explizite Query-IDs (Einzelfilter).",
     "sodRules": "explizite SoD-Regel-IDs.",

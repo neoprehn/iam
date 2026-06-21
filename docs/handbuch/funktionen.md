@@ -57,7 +57,7 @@ Ob die Auswertung auf Organisationsebenen (z. B. Buchungskreis) eingeschränkt w
 
 - **Stichtag** — Bewertungsdatum (Rollen-Gültigkeit + Sleeping). Auf den Datenstand setzen.
 - **Sleeping (Tage)** — Schwelle „kein Logon seit X Tagen" (Standard 180), frei wählbar.
-- **Mindest-Kritikalität** — `alle` · ab `medium` · ab `high` · ab `critical` · nur `very-high`.
+- **Mindest-Kritikalität** — `alle` · ab `medium` · ab `high` · ab `critical` · nur `very-critical`.
 - **Materialisierung/Ruleset-Laden überspringen** — Beschleuniger für Wiederholungsläufe.
 
 ## 3 · Ergebnisse

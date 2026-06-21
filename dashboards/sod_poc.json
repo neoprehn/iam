@@ -67,8 +67,8 @@
         },
         {
           "id": "graph-vh",
-          "title": "Konfliktpfade (very-high): User -> Konflikt -> Regel",
-          "query": "MATCH p=(u:User)-[:VIOLATES]->(f:SoDConflict {runId:$neodash_runId})-[:BASED_ON]->(r:SoDRule)\nWHERE f.criticality = 'very-high'\nRETURN p LIMIT 40\n",
+          "title": "Konfliktpfade (very-critical): User -> Konflikt -> Regel",
+          "query": "MATCH p=(u:User)-[:VIOLATES]->(f:SoDConflict {runId:$neodash_runId})-[:BASED_ON]->(r:SoDRule)\nWHERE f.criticality = 'very-critical'\nRETURN p LIMIT 40\n",
           "width": 5, "height": 4, "x": 7, "y": 2,
           "type": "graph", "selection": {}, "settings": { "nodePositions": {} }
         }

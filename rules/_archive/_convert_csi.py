@@ -115,7 +115,7 @@ def convert(xml_rel, out_name, ruleset_id, name, note):
     # Normalisierte Kritikalitaet (einheitliche Skala wie KPMG): Query aus soxClassification
     # (CSI 'SOX_C/H/M/L'); SoD-reasonCode ist bei CSI ein Template-Code (A_F1+) -> KEINE Schwere
     # -> criticality bleibt null (CSI fuehrt keine native SoD-Schwere).
-    _CRIT = {"V": ("very-high", 5), "C": ("critical", 4), "H": ("high", 3), "M": ("medium", 2), "L": ("low", 1)}
+    _CRIT = {"V": ("very-critical", 5), "C": ("critical", 4), "H": ("high", 3), "M": ("medium", 2), "L": ("low", 1)}
     def criticality(code):
         lvl = (code or "").rsplit("_", 1)[-1].strip().upper()
         return _CRIT.get(lvl, (None, None))

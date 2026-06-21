@@ -40,7 +40,7 @@
       "QC": "1112_BC-DEV",
       "QD": "1111_BC-DEV"
     },
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "clauses": [
       [
@@ -67,7 +67,7 @@
       "QB": "1112_BC-DEV",
       "QC": "1107_BC-DEV"
     },
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "clauses": [
       [
@@ -491,7 +491,7 @@
       "QD": "3017_MM-PUR",
       "QE": "3100_MM-IM"
     },
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "clauses": [
       [
@@ -523,7 +523,7 @@
       "QF": "3200_MM-IV",
       "QG": "3201_MM-IV"
     },
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "clauses": [
       [
@@ -555,7 +555,7 @@
       "QB": "2201_FI-AP",
       "QC": "2405_FI-CM"
     },
-    "criticality": "very-high",
+    "criticality": "very-critical",
     "criticalityRank": 5,
     "clauses": [
       [
