@@ -75,8 +75,10 @@ jede Karte zeigt Bezeichnung, Stichtag und Erstellungs-Datum/-Zeit) und die **Fi
 ### Filter
 
 Links in der Sidebar: **Nutzertyp** (Ankreuz-Dropdown — A/B/S/C/L = Dialog/System/Service/
-Communication/Reference), **User**, **Einzelberechtigung** und **SoD** — Auswahl wendet über
-„Filtern" an bzw. sofort bei Klick auf eine Tabellenzelle.
+Communication/Reference), **User**, **Einzelberechtigung** und **SoD** — beide zeigen die
+**Bezeichnung** (Kurzbezeichnung, falls gepflegt, sonst die Langbezeichnung) statt nur der sonst
+wenig aussagekr&auml;ftigen ID; die ID steht in Klammern dahinter. Auswahl wendet über „Filtern"
+an bzw. sofort bei Klick auf eine Tabellenzelle.
 
 Über der Ergebnistabelle: **Kritikalität** und **Sleeping** als farbige Klick-Buttons (Pills) —
 wirken sofort als Ergebnisfilter, unabhängig vom Lauf-Parameter „Mindest-Kritikalität"/„Sleeping
@@ -109,12 +111,23 @@ Beide Aktionen fragen vor dem Ausführen nach.
 
 | Befehl | Wirkung |
 | --- | --- |
-| **Admin** | Zeigt die **geladenen Rulesets** (Name, ID, Standard-Markierung). |
+| **Admin** | Zeigt die **geladenen Rulesets** (Name, ID, Standard-Markierung) und **Einzelfilter nachjustieren** (Ruleset-Editor). |
+
+**Einzelfilter-Editor** — Ruleset w&auml;hlen, Query w&auml;hlen, **Kurz-/Langbezeichnung,
+Kritikalit&auml;t, Modul, Query-Typ, „TCode ignorieren"** bearbeiten und speichern, oder unten eine
+**neue Query aus der gew&auml;hlten ableiten** (Berechtigungen/TCodes werden 1:1 &uuml;bernommen,
+in dieser Stufe nicht editierbar). Die **Kurzbezeichnung** ist es, was sp&auml;ter in den
+Sidebar-Filtern als Name erscheint (Langbezeichnung bleibt das ausf&uuml;hrliche Feld).
+&Auml;nderungen schreiben **nie** in die Vendor-Datei (`queries.json`), sondern in ein separates
+Overlay (`queries.custom.json`) je Ruleset — Vendor-Updates &uuml;berschreiben eigene Anpassungen
+dadurch nicht. Speichern/Ableiten wirkt **sofort** (kein extra Reload-Schritt n&ouml;tig).
 
 **Geplant** in diesem Bereich:
 
-- **SoD-Filter nachjustieren** (Ruleset-Editor) — Regeln/Queries über die UI anpassen, Vendor-Basis
-  von eigenen Erweiterungen getrennt.
+- **Authorizations/TCodes im Editor bearbeitbar** — bisher nur 1:1-Kopie beim Ableiten.
+- **USOBT-gest&uuml;tzter Query-Builder** — neue Queries per Auswahl Transaktion&nbsp;&rarr;
+  Berechtigungsobjekte statt freier Eingabe.
+- **Stammdaten-Blatt: Query &rarr; System-Typ** (SAP R/3, S/4HANA, k&uuml;nftig weitere).
 - **Neues Filterset importieren** — weitere Systeme als eigenes Ruleset, perspektivisch
   **SAP S/4HANA, Azure AD / Entra, Microsoft Dynamics, Salesforce** (das Datenmodell bleibt gleich).
 

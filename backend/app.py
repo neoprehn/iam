@@ -45,6 +45,17 @@ app = FastAPI(title="IAM SoD Backend", version="0.1.0")
 jobs: dict[str, dict] = {}  # jobId -> status
 
 
+@app.middleware("http")
+async def no_cache_frontend(request, call_next):
+    """Statische UI aendert sich oft (laufende Entwicklung) -> Browser sollen IMMER
+    revalidieren (ETag/Last-Modified -> billiges 304 bei unveraendertem Inhalt) statt eine
+    alte index.html ungeprueft aus dem Cache zu zeigen."""
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.endswith(".html"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 def profiles() -> dict:
     return json.loads((CONFIG_DIR / "analysis_profiles.json").read_text(encoding="utf-8"))
 
@@ -67,6 +78,53 @@ def ruleset_dir(ruleset: str):
         if r["id"] == ruleset:
             return r["dir"]
     return None
+
+
+# --- Einzelfilter-Editor (Query-Metadaten) ----------------------------------------------
+# Schreibt NIE in die Vendor-Datei (queries.json) — Edits/abgeleitete Queries landen in einem
+# Overlay (queries.custom.json) je Ruleset-Ordner, das load_ruleset.cypher zusaetzlich einliest
+# (siehe dort: coalesce-Merge, Overlay gewinnt bei gesetzten Feldern). Bewusst nur Metadaten in
+# v1 (description/criticality/module/queryType/disregardTcode) — authorizations/transactions
+# werden bei "Ableiten" 1:1 von der Quelle kopiert, aber hier nicht editiert.
+def _ruleset_paths(ruleset: str) -> tuple[Path, Path]:
+    rdir = ruleset_dir(ruleset)
+    if not rdir:
+        raise HTTPException(404, f"Ruleset '{ruleset}' nicht gefunden")
+    base = RULES_DIR / rdir
+    return base / "queries.json", base / "queries.custom.json"
+
+
+def _load_json_list(path: Path) -> list[dict]:
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else []
+
+
+def ensure_custom_queries_file(ruleset: str) -> Path:
+    _, custom_path = _ruleset_paths(ruleset)
+    if not custom_path.is_file():
+        custom_path.write_text("[]", encoding="utf-8")
+    return custom_path
+
+
+def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
+    """Vendor-Queries + Overlay, Overlay-Felder gewinnen je id; neue ids = eigene/abgeleitete
+    Queries. Gibt (id -> effektive Query, Menge der ueberlagerten/eigenen ids) zurueck."""
+    vendor_path, custom_path = _ruleset_paths(ruleset)
+    merged = {q["query"]: dict(q) for q in _load_json_list(vendor_path)}
+    custom_ids = set()
+    for c in _load_json_list(custom_path):
+        qid = c["query"]
+        custom_ids.add(qid)
+        if qid in merged:
+            merged[qid] = {**merged[qid], **{k: v for k, v in c.items() if v is not None}}
+        else:
+            merged[qid] = c
+    return merged, custom_ids
+
+
+def reload_ruleset(ruleset: str):
+    rdir = ruleset_dir(ruleset)
+    with driver.session() as s:
+        run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
 
 
 def jsonable(v):
@@ -142,6 +200,7 @@ def do_run(job_id: str, req: RunReq):
                 if not rdir:
                     raise ValueError(f"Ruleset-Ordner fuer '{req.ruleset}' nicht gefunden")
                 jobs[job_id]["step"] = "ruleset"
+                ensure_custom_queries_file(req.ruleset)   # queries.custom.json muss existieren (apoc.load.json)
                 run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": req.ruleset})
             if not req.skipMaterialize:
                 jobs[job_id]["step"] = "materialize"
@@ -478,6 +537,86 @@ def profiles_meta():
     }
 
 
+@app.get("/admin/rulesets/{ruleset}/queries")
+def admin_list_queries(ruleset: str):
+    """Alle Queries eines Rulesets (Vendor + Overlay effektiv gemerged) fuer den
+    Einzelfilter-Editor; 'custom' markiert eigene Edits/abgeleitete Queries."""
+    merged, custom_ids = _merged_queries(ruleset)
+    return [{"id": qid, "description": q.get("description", ""),
+             "shortDescription": q.get("shortDescription", ""), "criticality": q.get("criticality"),
+             "module": q.get("module"), "queryType": q.get("queryType"),
+             "disregardTcode": bool(q.get("disregardTcode", False)), "custom": qid in custom_ids}
+            for qid, q in sorted(merged.items())]
+
+
+class QueryEditReq(BaseModel):
+    description: str | None = None
+    shortDescription: str | None = None
+    criticality: str | None = None
+    module: str | None = None
+    queryType: str | None = None
+    disregardTcode: bool | None = None
+
+
+@app.put("/admin/rulesets/{ruleset}/queries/{queryId}")
+def admin_update_query(ruleset: str, queryId: str, req: QueryEditReq):
+    """Bearbeitet Metadaten einer Query als Overlay-Eintrag (queries.custom.json) — Vendor-Datei
+    bleibt unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt)."""
+    merged, _ = _merged_queries(ruleset)
+    if queryId not in merged:
+        raise HTTPException(404, f"Query '{queryId}' nicht gefunden")
+    custom_path = ensure_custom_queries_file(ruleset)
+    custom = _load_json_list(custom_path)
+    entry = next((c for c in custom if c["query"] == queryId), None)
+    fields = {k: v for k, v in req.model_dump().items() if v is not None}
+    if entry:
+        entry.update(fields)
+    else:
+        custom.append({"query": queryId, **fields})
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    reload_ruleset(ruleset)
+    return {"query": queryId, "saved": fields}
+
+
+class QueryDeriveReq(BaseModel):
+    newId: str
+    fromId: str
+    description: str | None = None
+    shortDescription: str | None = None
+    criticality: str | None = None
+    module: str | None = None
+    queryType: str | None = None
+    disregardTcode: bool | None = None
+
+
+@app.post("/admin/rulesets/{ruleset}/queries/derive")
+def admin_derive_query(ruleset: str, req: QueryDeriveReq):
+    """Legt eine neue Query als Kopie einer bestehenden an (authorizations/transactions 1:1
+    uebernommen; nur Metadaten hier optional ueberschrieben) — landet im Overlay, die
+    Quell-Query bleibt unberuehrt. Ladet das Ruleset danach sofort neu."""
+    if not _SAFE_NAME.match(req.newId):
+        raise HTTPException(400, "ungueltige Query-ID (erlaubt: Buchstaben/Ziffern/._-)")
+    merged, _ = _merged_queries(ruleset)
+    if req.newId in merged:
+        raise HTTPException(409, f"Query-ID '{req.newId}' existiert bereits")
+    src = merged.get(req.fromId)
+    if not src:
+        raise HTTPException(404, f"Quell-Query '{req.fromId}' nicht gefunden")
+    new_q = dict(src)
+    new_q["query"] = req.newId
+    new_q["derivedFrom"] = req.fromId
+    for field in ("description", "shortDescription", "criticality", "module", "queryType", "disregardTcode"):
+        v = getattr(req, field)
+        if v is not None:
+            new_q[field] = v
+    custom_path = ensure_custom_queries_file(ruleset)
+    custom = _load_json_list(custom_path)
+    custom.append(new_q)
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    reload_ruleset(ruleset)
+    return {"query": req.newId, "derivedFrom": req.fromId}
+
+
 @app.get("/runs")
 def list_runs():
     with driver.session() as s:
@@ -552,7 +691,22 @@ def queries(runId: str):
         return [dict(r) for r in s.run(
             "MATCH (q:Query {ruleset:$ruleset}) "
             "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
-            "RETURN q.id AS id, q.criticality AS criticality, q.module AS module "
+            "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
+            "q.criticality AS criticality, q.module AS module ORDER BY id", ruleset=run["ruleset"])]
+
+
+@app.get("/sodrules")
+def sod_rules(runId: str):
+    """SoD-Regeln (mit Bezeichnung) des Rulesets eines Laufs — speist die SoD-Auswahl
+    in der Sidebar (Bezeichnung statt nur der Regel-ID)."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        return [dict(r) for r in s.run(
+            "MATCH (rule:SoDRule {ruleset:$ruleset}) "
+            "RETURN rule.id AS id, rule.description AS description, "
+            "rule.shortDescription AS shortDescription, rule.criticality AS criticality "
             "ORDER BY id", ruleset=run["ruleset"])]
 
 

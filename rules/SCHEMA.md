@@ -19,7 +19,9 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 ## Kern-Felder (über ALLE Rulesets identisch — der Loader baut hierauf)
 
 **Query** (`queries.json[]`):
-- `query` (str, ID) · `description` · `queryType` (Scope-Filter, **nicht** Operator)
+- `query` (str, ID) · `description` (Langbezeichnung) · `shortDescription` (Kurzbezeichnung,
+  **optional** — bisher in keiner Quelle gepflegt, daher meist leer; UI faellt auf `description`
+  zurueck, solange das so ist) · `queryType` (Scope-Filter, **nicht** Operator)
 - `soxClassification` (roh) · `criticality` (**normalisiert**) · `criticalityRank` (int 5..1)
 - `module` (Prozessbereich, CSI-Vokabular; bei KPMG via CSI-TCode abgeleitet, teils leer)
 - `gdprClassification` · `disregardTcode` (bool) · `multipleRun` (bool)
@@ -27,10 +29,17 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `transactions[]`: `{ tcode, audit (bool), stad (bool) }`
 
 **SoD-Regel** (`sod_rules.json[]`):
-- `sodRule` (str, ID) · `description` · `expression` (z. B. `"(QA OR QB) AND QC"`)
+- `sodRule` (str, ID) · `description` (Langbezeichnung, bei KPMG oft ein ganzer Satz inkl.
+  Query-Aufzaehlung) · `shortDescription` (Kurzbezeichnung, **optional**, s.o.) ·
+  `expression` (z. B. `"(QA OR QB) AND QC"`)
 - `reasonCode` · `variables` (`{ "QA": "<queryId>", … }`, Wert = **str**)
 - `criticality` (**normalisiert**) · `criticalityRank` — bei KPMG aus `reasonCode`-Suffix;
   **CSI fuehrt keine native SoD-Schwere** (reasonCode = Template) → `null`.
+
+**Kurz- vs. Langbezeichnung:** In Filtern/Dropdowns wird die **Kurzbezeichnung** angezeigt (kurz
+genug, um neben der ID in Klammern lesbar zu bleiben); die Langbezeichnung bleibt das fachliche
+Volltext-Feld (z. B. fuer Tooltips/Export). Bis Kurzbezeichnungen gepflegt sind, zeigt die UI
+ersatzweise die Langbezeichnung.
 
 **Normalisierte Kritikalitaet (einheitlich, ruleset-uebergreifend):**
 `very-high`(5) › `critical`(4) › `high`(3) › `medium`(2) › `low`(1). Damit „Very Critical" o. ae.

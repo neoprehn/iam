@@ -378,13 +378,53 @@
   <h2 style="margin-top:6px">Geladene Rulesets</h2>
   <ul class="runs" id="adminRulesets"></ul>
   <h2>Geplant</h2>
-  <button class="ghost" disabled title="kommt später">SoD-Filter nachjustieren (Ruleset-Editor)</button>
+  <button class="ghost" id="cmdQueryEditor">Einzelfilter nachjustieren (Ruleset-Editor)</button>
   <button class="ghost" disabled title="kommt später">Neues Filterset importieren</button>
   <div class="hint">Weitere Filtersets/Konnektoren perspektivisch: SAP&nbsp;S/4HANA,
     Azure&nbsp;AD&nbsp;/&nbsp;Entra, Microsoft&nbsp;Dynamics, Salesforce &hellip; &mdash; die App ist
     pro System ein eigenes Ruleset; das Datenmodell bleibt gleich.</div>
   <div class="hint" style="margin-top:8px">Kein eigenes Benutzer-/Berechtigungskonzept: die App
     läuft lokal bzw. wird als Container verteilt (Zugriff über die Umgebung abgesichert).</div>
+</div></div>
+
+<!-- Dialog: Einzelfilter-Editor -->
+<div class="overlay" id="dlg-queryeditor"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Einzelfilter-Editor</h3>
+  <div class="sub">Bearbeitet Metadaten bestehender Queries oder leitet neue daraus ab (Berechtigungen/
+    TCodes werden dabei 1:1 &uuml;bernommen, hier nicht editierbar). &Auml;nderungen landen in einem
+    Overlay (<code>queries.custom.json</code>) getrennt von der Vendor-Quelle und wirken nach dem
+    Speichern sofort.</div>
+  <label for="qeRuleset">Ruleset</label>
+  <select id="qeRuleset"></select>
+  <label for="qeQuery">Query</label>
+  <select id="qeQuery"></select>
+
+  <label for="qeShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
+  <input id="qeShortDescription" />
+  <label for="qeDescription">Langbezeichnung</label>
+  <input id="qeDescription" />
+  <div class="row">
+    <div><label for="qeCriticality">Kritikalit&auml;t</label>
+      <select id="qeCriticality">
+        <option value="">&ndash;</option>
+        <option value="very-high">very-high</option><option value="critical">critical</option>
+        <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
+      </select></div>
+    <div><label for="qeModule">Modul</label><input id="qeModule" /></div>
+  </div>
+  <label for="qeQueryType">Query-Typ</label>
+  <input id="qeQueryType" />
+  <div class="check"><input type="checkbox" id="qeDisregardTcode" />
+    <div><label for="qeDisregardTcode">TCode ignorieren (disregardTcode)</label></div></div>
+  <button class="ghost" id="qeSaveBtn">Speichern</button>
+  <div class="hint" id="qeCustomBadge"></div>
+
+  <div class="sep"></div>
+  <div class="sub">Neue Query aus der oben gew&auml;hlten ableiten — Bezeichnung/Kritikalit&auml;t/
+    Modul/Query-Typ oben ggf. vorher anpassen, sie werden mit &uuml;bernommen.</div>
+  <label for="qeNewId">Neue Query-ID</label>
+  <input id="qeNewId" placeholder="z. B. BC_EIGENE_01" />
+  <button class="ghost" id="qeDeriveBtn">Ableiten &amp; &uuml;bernehmen</button>
 </div></div>
 
 <script>
@@ -441,6 +481,83 @@ function renderAdminRulesets() {
     ul.appendChild(li);
   });
 }
+
+$('cmdQueryEditor').onclick = () => { closeDlg(); openDlg('dlg-queryeditor'); loadQueryEditorRulesets(); };
+
+let qeQueriesCache = [];
+
+function loadQueryEditorRulesets() {
+  const sel = $('qeRuleset'); const cur = sel.value; sel.innerHTML = '';
+  (metaCache.rulesets || []).forEach(r => opt(sel, r.id, r.name));
+  if ((metaCache.rulesets || []).some(r => r.id === cur)) sel.value = cur;
+  else if (metaCache.defaultRuleset) sel.value = metaCache.defaultRuleset;
+  loadQueryEditorQueries();
+}
+
+async function loadQueryEditorQueries() {
+  const rs = $('qeRuleset').value; if (!rs) return;
+  qeQueriesCache = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries');
+  const sel = $('qeQuery'); const cur = sel.value; sel.innerHTML = '';
+  qeQueriesCache.forEach(q => opt(sel, q.id, `${q.shortDescription || q.description || q.id} (${q.id})${q.custom ? ' · eigen' : ''}`));
+  if (qeQueriesCache.some(q => q.id === cur)) sel.value = cur;
+  loadQueryEditorForm();
+}
+
+function loadQueryEditorForm() {
+  const q = qeQueriesCache.find(x => x.id === $('qeQuery').value);
+  $('qeShortDescription').value = q ? (q.shortDescription || '') : '';
+  $('qeDescription').value = q ? (q.description || '') : '';
+  $('qeCriticality').value = q ? (q.criticality || '') : '';
+  $('qeModule').value = q ? (q.module || '') : '';
+  $('qeQueryType').value = q ? (q.queryType || '') : '';
+  $('qeDisregardTcode').checked = !!(q && q.disregardTcode);
+  $('qeCustomBadge').textContent = q ? (q.custom ? 'eigene Anpassung/Query' : 'Vendor-Original (unveraendert)') : '';
+}
+
+function qeFormFields() {
+  return {
+    shortDescription: $('qeShortDescription').value.trim() || null,
+    description: $('qeDescription').value.trim() || null,
+    criticality: $('qeCriticality').value || null,
+    module: $('qeModule').value.trim() || null,
+    queryType: $('qeQueryType').value.trim() || null,
+    disregardTcode: $('qeDisregardTcode').checked,
+  };
+}
+
+$('qeRuleset').addEventListener('change', loadQueryEditorQueries);
+$('qeQuery').addEventListener('change', loadQueryEditorForm);
+
+$('qeSaveBtn').addEventListener('click', async () => {
+  const rs = $('qeRuleset').value, id = $('qeQuery').value; if (!rs || !id) return;
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Speichern&hellip;';
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/' + encodeURIComponent(id),
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(qeFormFields()) });
+    st.className = ''; st.innerHTML = `${doneTag} Query <b>${id}</b> gespeichert.`;
+    await loadQueryEditorQueries(); $('qeQuery').value = id; loadQueryEditorForm();
+  } catch (err) {
+    st.className = 'err'; st.innerHTML = '<b>Fehler:</b> ' + (err.detail || JSON.stringify(err));
+  }
+});
+
+$('qeDeriveBtn').addEventListener('click', async () => {
+  const rs = $('qeRuleset').value, fromId = $('qeQuery').value, newId = $('qeNewId').value.trim();
+  if (!rs || !fromId || !newId) return;
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Ableiten&hellip;';
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/derive',
+      { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newId, fromId, ...qeFormFields() }) });
+    st.className = ''; st.innerHTML = `${doneTag} Query <b>${newId}</b> aus „${fromId}" abgeleitet.`;
+    $('qeNewId').value = '';
+    await loadQueryEditorQueries(); $('qeQuery').value = newId; loadQueryEditorForm();
+  } catch (err) {
+    st.className = 'err'; st.innerHTML = '<b>Fehler:</b> ' + (err.detail || JSON.stringify(err));
+  }
+});
 
 /* Daten laden */
 async function loadMeta() {
@@ -559,6 +676,7 @@ async function showFindings(runId) {
   setFindingsMeta(allFindingsForRun.length);
   loadRuns();
   loadQueriesForRun(runId);
+  loadSodRuleNames(runId);
 }
 
 function userTypeValues() {
@@ -602,6 +720,17 @@ function setFindingsMeta(n) {
 }
 
 let rulesCache = [];
+let sodRuleNames = {};
+
+async function loadSodRuleNames(runId) {
+  try {
+    const rules = await api('/sodrules?runId=' + encodeURIComponent(runId));
+    sodRuleNames = Object.fromEntries(rules.map(r => [r.id, r.shortDescription || r.description]));
+  } catch {
+    sodRuleNames = {};
+  }
+  renderRuleSelect();
+}
 
 function populateFilterSelects(findings) {
   const users = [...new Set(findings.map(f => f.user))].sort();
@@ -618,7 +747,7 @@ function renderRuleSelect() {
   sr.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
   rules.forEach(r => {
     const o = document.createElement('option');
-    o.value = r.rule; o.textContent = r.rule;
+    o.value = r.rule; o.textContent = `${sodRuleNames[r.rule] || r.rule} (${r.rule})`;
     if (CRIT_COLOR[r.criticality]) o.style.color = CRIT_COLOR[r.criticality];
     sr.appendChild(o);
   });
@@ -747,7 +876,8 @@ function renderQuerySelect() {
   sel.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
   qs.forEach(q => {
     const o = document.createElement('option');
-    o.value = q.id; o.textContent = `${q.id}${q.module ? ' · ' + q.module : ''}`;
+    const name = q.shortDescription || q.description || q.id;
+    o.value = q.id; o.textContent = `${name} (${q.id})${q.module ? ' · ' + q.module : ''}`;
     if (q.criticality) o.title = q.criticality;
     if (CRIT_COLOR[q.criticality]) o.style.color = CRIT_COLOR[q.criticality];
     sel.appendChild(o);

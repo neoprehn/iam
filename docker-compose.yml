@@ -62,7 +62,8 @@ services:
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
     volumes:
       - ./config:/app/config:ro
-      - ./rules:/app/rules:ro
+      - ./rules:/app/rules    # RW: Einzelfilter-Editor schreibt queries.custom.json (Overlay,
+                              # getrennt von der Vendor-Quelle); neo4j-Mount bleibt :ro (liest nur)
       - ./cypher:/app/cypher:ro       # Orchestrierte SoD-Statements (Treiber statt cypher-shell -f)
       - ./load:/app/load:ro           # Load-Skripte (Import-Job)
       - ./migrations:/app/migrations:ro  # Schema (idempotent, Import-Job)
