@@ -20,10 +20,12 @@ Lebendes Dokument: Checklisten (`[ ]` offen, `[~]` teilweise) als Fortschrittsan
 wandern nach [`ROADMAP-ARCHIV.md`](ROADMAP-ARCHIV.md). Die **Architektur-Entscheidungen** weiter unten
 sind verbindlich und sollten nicht ohne bewussten Grund verworfen werden.
 
-**Dokumentations-DoD (gilt für jede Phase/jeden Baustein).** Zur „Definition of Done" gehört, dass es
-in der Doku (`docs/`, Sphinx + MyST, Read the Docs) so dokumentiert ist, dass die Schritte auf einem
-frischen Rechner nachvollziehbar sind. Die Doku enthält ausschließlich Logik/Vorgehen — **niemals
-Mandantendaten** (auch keine konkreten Client-System-Zahlen; Beispiel-`dataset` = `acme`).
+**Leitprinzip — Dokumentations-DoD (gilt für JEDE Phase UND jeden Baustein/Feature).** Ein Punkt gilt
+erst als fertig, wenn er in der Doku (`docs/`, Sphinx + MyST) nachvollziehbar dokumentiert **und nach
+GitHub gepusht** ist — **Read the Docs baut nur aus dem Push** (kein Push = kein RTD-Update). Konkret:
+betroffene Handbuch-/Technik-Seite aktualisieren, committen, pushen. Die Doku enthält ausschließlich
+Logik/Vorgehen — **niemals Mandantendaten** (auch keine konkreten Client-System-Zahlen;
+Beispiel-`dataset` = `acme`; vor jedem Push `git grep`/`git log` gegen Name+Zahlen prüfen).
 
 ---
 
@@ -111,8 +113,8 @@ tief**. Vieles existiert als Backend-Parameter (`sodRules`, `userTypes`, `exclud
 `minCriticalityRank`) — es fehlt v. a. die **geführte Auswahl-UI** und etwas Backend.
 
 - [ ] **Katalog-Auswahl (Filter/Regeln):** Browser über Queries (Einzelfilter) **und** SoD-Regeln, **filterbar** nach Kritikalität (z. B. nur very-high), **Namensmuster** (z. B. `BC_*`), Modul, queryType. Mehrfachauswahl → Lauf nur über die Auswahl. *(Kritikalität/explizite Regel-IDs ✓ als Param; Muster-/Modul-Filter + UI neu.)*
-- [ ] **Zwei Auswertungsarten:** **(a) Einzelfilter / Can-Do** — „wer matcht Query X" (nur Materialisierung der gewählten Queries, ohne SoD); **(b) SoD-Konflikte** — bei Auswahl bestimmter SoD-Regeln **zuerst nur deren Einzelfilter** (Klausel-Queries) materialisieren, dann SoD → **scoped materialize** statt „alle SoD-Queries". *(neu.)*
-- [ ] **Org-Filter im App-Lauf wirksam machen (Voraussetzung für Varianten):** die Org-Filterlogik (AND/OR/RANGE, `*`, Bereiche) aus `query_match.cypher` in `materialize_matches` verdrahten (+ die bereits erledigte AGR_1252-Platzhalter-Auflösung nutzen). **Heute ignoriert der Auswertungspfad `orgFilters`** („Org-Feld egal") → Varianten wie „übergreifend" vs. „BUKRS 1000" lieferten sonst identische Findings.
+- [ ] **Zwei Auswertungsarten:** **(a) Einzelfilter / Can-Do** — „wer matcht Query X" (nur Materialisierung der gewählten Queries, ohne SoD); **(b) SoD-Konflikte** — bei Auswahl bestimmter SoD-Regeln **zuerst nur deren Einzelfilter** (Klausel-Queries) materialisieren, dann SoD → **scoped materialize** statt „alle SoD-Queries". *(neu.)* Damit auch **„Can-Do nach Org"**: „wer kann *Funktion* in *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/… (Matching-Seite ✓; braucht nur die Einzelfilter-Ansicht).
+- [x] **Org-Filter im App-Lauf wirksam machen — erledigt.** `materialize_matches.cypher` wertet jetzt `$orgMode` (`ignoreOrg`/`wildcardOnly`/`filtered`) + `$orgFilters` aus (Logik aus `query_match` + Modus `wildcardOnly` ergänzt; AGR_1252-Auflösung genutzt). **Allgemein über ALLE Org-Ebenen** (BUKRS, WERKS, EKORG, VKORG, GSBER, … — aus USORG) **und Kombinationen** (`orgFilters` = Map je Feld, z. B. `{BUKRS:…, EKORG:…}` = „Buchungskreis **und** Einkaufsorg"). Org-Modus + Filter werden auf `(:Run)` protokolliert (`run.orgMode`/`run.orgFilters`). Verifiziert: standard ≠ übergreifend (`wildcardOnly` schränkt ein). *Hinweis: USORG = Org-Feld-Registry (welche Felder Org-Ebenen sind); die bindenden Werte stehen in den Auths (AGR_1251/UST12/AGR_1252) — **nicht** in USOBT_C/USOBX_C (das ist die SU24-Vorschlags-/Prüfschicht, → `CHECKS`).*
 - [ ] **Multi-Varianten-Läufe:** vor dem Lauf **beliebig viele Varianten anlegen** (je ein Parameter-Satz, v. a. Org-Modus standard / übergreifend / `BUKRS=…` + Nutzer-Scope), benannt; **parallel starten** → je Variante ein `(:Run)` (eigene `runId`). In den Ergebnissen zwischen den Varianten **durchklicken**; zusammengehörige Läufe als **„Varianten-Set"** gruppieren. *(Org-Modi/Profile ✓ als Config; Batch-Anlage/-Start + Set-Gruppierung neu; setzt „Org-Filter wirksam" voraus.)*
 - [ ] **Nutzer-Scope verfeinern:** Nutzertypen (A/S…) ✓; **Sleeping** als Eingabefeld **+ Schnellwahl 90/180/360 Tage**; **Gesperrte nach Sperrtyp** auswählbar (failed_logons / admin_local / admin_global — Daten liegen als `lockReasons` vor) statt nur `excludeLocked`-Bool. *(Sperrtyp-Filter neu.)*
 - [ ] **Lauf verwalten:** einen einzelnen **Lauf löschen** (`(:Run)` + dessen Findings/VIA/MATCHES), optional **vorher sichern** (Findings-CSV als „Backup") oder einfach löschen. *(per-Run-Delete neu; CSV-Export ✓.)*

@@ -123,13 +123,13 @@ def do_run(job_id: str, req: RunReq):
         op = next((p for p in cfg["profiles"] if p["name"] == req.orgProfile), None)
         if not op:
             raise ValueError(f"orgProfile '{req.orgProfile}' unbekannt")
-        # orgProfile wird validiert + auf (:Run) protokolliert; die org-Feld-Filterung selbst ist
-        # in materialize/evaluate noch nicht verdrahtet (Platzhalter-Aufloesung via AGR_1252 offen,
-        # siehe config _runParameters.orgFilters) -> kein orgFilters-Param an die Cypher-Dateien.
+        org_mode = op["org"].get("mode", "ignoreOrg")
+        org_filters = op["org"].get("filters", {}) if org_mode == "filtered" else {}
         sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
         run_id = req.runId or f"{req.ruleset}-{datetime.datetime.now():%Y%m%d%H%M%S}"
         as_of = datetime.date.fromisoformat(req.asOf)
         base = {"ruleset": req.ruleset, "dataset": req.dataset, "asOf": as_of, "runId": run_id}
+        org = {"orgMode": org_mode, "orgFilters": org_filters}
         jobs[job_id].update(status="running", runId=run_id, step="start")
 
         with driver.session() as s:
@@ -141,10 +141,10 @@ def do_run(job_id: str, req: RunReq):
                 run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": req.ruleset})
             if not req.skipMaterialize:
                 jobs[job_id]["step"] = "materialize"
-                run_file(s, "sod/materialize_matches.cypher", base)
+                run_file(s, "sod/materialize_matches.cypher", {**base, **org})
             jobs[job_id]["step"] = "evaluate"
             run_file(s, "sod/evaluate_sod.cypher", {
-                **base,
+                **base, **org,
                 "userTypes": list(utp.get("userTypes", [])),
                 "excludeLocked": bool(utp.get("excludeLocked", False)),
                 "sleepDays": sleep_days,

@@ -24,7 +24,8 @@ MATCH (f:SoDConflict {ruleset:$ruleset, dataset:$dataset, runId:$runId}) DETACH 
 MERGE (run:Run {key: $ruleset + '|' + $dataset + '|' + $runId})
   SET run.runId = $runId, run.ruleset = $ruleset, run.dataset = $dataset, run.asOf = $asOf,
       run.userTypes = $userTypes, run.excludeLocked = $excludeLocked, run.sleepDays = $sleepDays,
-      run.minCriticalityRank = $minCriticalityRank, run.generatedAt = datetime();
+      run.minCriticalityRank = $minCriticalityRank, run.generatedAt = datetime(),
+      run.orgMode = $orgMode, run.orgFilters = apoc.convert.toJson($orgFilters);
 
 MATCH (rule:SoDRule {ruleset:$ruleset})
 WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() }
