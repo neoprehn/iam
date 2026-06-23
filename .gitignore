@@ -4,6 +4,9 @@
 .env
 *.dump
 
+# Übergabe-Pakete (Images/Archive) — lokal erzeugt, nicht versionieren
+/handoff/
+
 # Sphinx-Doku-Build
 docs/_build/
 

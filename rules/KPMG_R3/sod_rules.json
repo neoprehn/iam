@@ -25,7 +25,8 @@
         "1200_BC-USR",
         "1201_BC-USR"
       ]
-    ]
+    ],
+    "shortDescription": "Benutzerverwaltung (anlegen oder ändern) und Berechtigungszuweisung"
   },
   {
     "sodRule": "BCX_0002",
@@ -53,7 +54,8 @@
       [
         "1111_BC-DEV"
       ]
-    ]
+    ],
+    "shortDescription": "Systemänderbarkeit/Mandantenpflege und Anwendungentwicklung durchführen"
   },
   {
     "sodRule": "BCX_0003",
@@ -79,7 +81,8 @@
       [
         "1107_BC-DEV"
       ]
-    ]
+    ],
+    "shortDescription": "Systemänderbarkeit und Mandantenpflege und Customizing durchführen"
   },
   {
     "sodRule": "BCX_0004",
@@ -107,7 +110,8 @@
         "1300_BC-CTS",
         "1301_BC-CTS"
       ]
-    ]
+    ],
+    "shortDescription": "Transport initiieren über Umwege"
   },
   {
     "sodRule": "FIX_0001",
@@ -129,7 +133,8 @@
       [
         "2004_FI-GL"
       ]
-    ]
+    ],
+    "shortDescription": "Sachkontenstamm anlegen und Sachkonten buchen"
   },
   {
     "sodRule": "FIX_0002",
@@ -151,7 +156,8 @@
       [
         "2004_FI-GL"
       ]
-    ]
+    ],
+    "shortDescription": "Buchungsperioden öffnen und Sachkonten buchen"
   },
   {
     "sodRule": "OCX_0001",
@@ -177,7 +183,8 @@
         "2100_FI-AR",
         "2101_FI-AR"
       ]
-    ]
+    ],
+    "shortDescription": "Kundenstamm anlegen/ändern (V/X-Sicht) und Debitorenstamm anlegen/ändern (F/X-Sicht)"
   },
   {
     "sodRule": "OCX_0002",
@@ -203,7 +210,8 @@
         "4102_SD-SLS",
         "4103_SD-SLS"
       ]
-    ]
+    ],
+    "shortDescription": "Debitorenstamm anlegen (F/X-Sicht)/ändern und Kundenauftrag anlegen/ändern (V-Sicht)"
   },
   {
     "sodRule": "OCX_0003",
@@ -227,7 +235,8 @@
       [
         "4107_SD-SLS"
       ]
-    ]
+    ],
+    "shortDescription": "Kundenauftrag anlegen/ändern und Warenausgang/Auslieferung buchen"
   },
   {
     "sodRule": "OCX_0004",
@@ -251,7 +260,8 @@
       [
         "4008_SD-MD"
       ]
-    ]
+    ],
+    "shortDescription": "Kundenauftrag anlegen/ändern und Kreditmanagement pflegen"
   },
   {
     "sodRule": "OCX_0005",
@@ -275,7 +285,8 @@
       [
         "4009_SD-MD"
       ]
-    ]
+    ],
+    "shortDescription": "Debitorenstammdaten anlegen/ändern und Bonusabsprachen anlegen"
   },
   {
     "sodRule": "OCX_0006",
@@ -301,7 +312,8 @@
         "4009_SD-MD",
         "4205_SD-BIL"
       ]
-    ]
+    ],
+    "shortDescription": "Debitorenstamm anlegen/ändern und Bonusabsprache/Bonusabrechnung anlegen"
   },
   {
     "sodRule": "PPX_0001",
@@ -349,7 +361,8 @@
       [
         "3016_MM-PUR"
       ]
-    ]
+    ],
+    "shortDescription": "BANF anlegen und Bestellung auslösen"
   },
   {
     "sodRule": "PPX_0003",
@@ -375,7 +388,8 @@
         "3016_MM-PUR",
         "3017_MM-PUR"
       ]
-    ]
+    ],
+    "shortDescription": "Kreditorenstamm anlegen/ändern und Bestellung aulösen/ändern"
   },
   {
     "sodRule": "PPX_0004",
@@ -401,7 +415,8 @@
         "3200_MM-IV",
         "3201_MM-IV"
       ]
-    ]
+    ],
+    "shortDescription": "Kreditorenstamm anlegen/ändern und Rechnungen erfassen"
   },
   {
     "sodRule": "PPX_0005",
@@ -427,7 +442,8 @@
         "3200_MM-IV",
         "3201_MM-IV"
       ]
-    ]
+    ],
+    "shortDescription": "Bestellung auslösen/ändern und Rechnung erfassen"
   },
   {
     "sodRule": "PPX_0006",
@@ -451,7 +467,8 @@
       [
         "2405_FI-CM"
       ]
-    ]
+    ],
+    "shortDescription": "Rechnung erfassen und Zahllauf (Kreditor) starten"
   },
   {
     "sodRule": "PPX_0007",
@@ -475,7 +492,8 @@
       [
         "3100_MM-IM"
       ]
-    ]
+    ],
+    "shortDescription": "Bestellung auslösen/ändern und Wareneingang zur Bestellung buchen"
   },
   {
     "sodRule": "PPX_0008",
@@ -505,7 +523,8 @@
       [
         "3100_MM-IM"
       ]
-    ]
+    ],
+    "shortDescription": "Kreditorenstamm anlegen/ändern und Bestellung auslösen/ändern und Wareneingang zur Bestellung buchen"
   },
   {
     "sodRule": "PPX_0009",
@@ -541,7 +560,8 @@
         "3200_MM-IV",
         "3201_MM-IV"
       ]
-    ]
+    ],
+    "shortDescription": "Kreditorenstamm anlegen/ändern und Bestellung auslösen/ändern und Wareneingang zur Bestellung buchenn und Rechnung prüfen"
   },
   {
     "sodRule": "PPX_0010",
@@ -565,6 +585,7 @@
       [
         "2405_FI-CM"
       ]
-    ]
+    ],
+    "shortDescription": "Kreditorenstamm anlegen/ändern und Zahllauf starten"
   }
 ]

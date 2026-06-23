@@ -39,14 +39,25 @@ MERGE (ar:AuthReq {key: query.key + '|' + au.object + '|' + au.field})
 MERGE (query)-[:REQUIRES]->(ar);
 
 // --- SoD-Regeln + Variablen -> Query ---
-CALL apoc.load.json('file:///rules/' + $dir + '/sod_rules.json') YIELD value AS s
+// Zwei Durchlaeufe wie bei Queries oben: erst die Vendor-Datei (sod_rules.json), danach das
+// optionale Overlay (sod_rules.custom.json) — eigene Metadaten-Edits (Kurzbezeichnung/
+// Kritikalitaet/Risiko/Controls) ueber das Query Management (Modus "SoD"). coalesce() sorgt
+// dafuer, dass im Overlay nicht gesetzte Felder den Vendor-Wert behalten. Overlay-Datei wird vom
+// Backend bei Bedarf als [] angelegt (ensure_custom_sodrules_file in app.py).
+UNWIND ['sod_rules.json', 'sod_rules.custom.json'] AS sfile
+CALL apoc.load.json('file:///rules/' + $dir + '/' + sfile) YIELD value AS s
 MERGE (rule:SoDRule {key: $ruleset + '|' + s.sodRule})
   ON CREATE SET rule.ruleset = $ruleset, rule.id = s.sodRule
-  SET rule.expression = s.expression, rule.reasonCode = s.reasonCode,
-      rule.criticality = s.criticality, rule.criticalityRank = s.criticalityRank,
-      rule.description = s.description, rule.shortDescription = s.shortDescription
+  SET rule.expression = coalesce(s.expression, rule.expression),
+      rule.reasonCode = coalesce(s.reasonCode, rule.reasonCode),
+      rule.criticality = coalesce(s.criticality, rule.criticality),
+      rule.criticalityRank = coalesce(s.criticalityRank, rule.criticalityRank),
+      rule.description = coalesce(s.description, rule.description),
+      rule.shortDescription = coalesce(s.shortDescription, rule.shortDescription),
+      rule.risk = coalesce(s.risk, rule.risk),
+      rule.controls = coalesce(s.controls, rule.controls)
 WITH rule, s
-UNWIND keys(s.variables) AS var
+UNWIND keys(coalesce(s.variables, {})) AS var
 MATCH (q:Query {key: $ruleset + '|' + s.variables[var]})
 MERGE (rule)-[:USES {var: var}]->(q);
 

@@ -69,6 +69,12 @@
     color:var(--fg); border-radius:6px; font:inherit; cursor:pointer; }
   button:disabled { opacity:.5; cursor:default; }
 
+  .pillgroup { display:flex; flex-wrap:wrap; gap:6px; }
+  .pill { cursor:pointer; border:1px solid var(--line); background:var(--bg); color:var(--muted);
+    border-radius:20px; padding:6px 14px; font:inherit; font-size:12px; }
+  .pill:hover { border-color:var(--accent); }
+  .pill.active { color:var(--fg); border-color:var(--accent); background:rgba(76,139,245,.10); }
+
   .runs { list-style:none; padding:0; margin:0; max-height:55vh; overflow:auto; }
   .runs li { padding:8px 10px; border-radius:6px; margin-bottom:5px; cursor:pointer;
     border:1px solid var(--line); background:var(--bg); font-size:13px; }
@@ -147,25 +153,49 @@
       <div class="filterbox">
         <label for="amRuleset">Ruleset</label>
         <select id="amRuleset"></select>
+        <label>Modus</label>
+        <div class="pillgroup" id="modePills">
+          <button type="button" class="pill active" data-mode="query">Einzelfilter</button>
+          <button type="button" class="pill" data-mode="sod">SoD</button>
+        </div>
         <label for="amSearch">Suche <span class="muted">(z.&nbsp;B. „BC-SEC*")</span></label>
         <input id="amSearch" placeholder="ID oder Bezeichnung&hellip;" />
-        <div class="row">
-          <div><label for="amFilterModule">Modul</label><select id="amFilterModule"></select></div>
-          <div><label for="amFilterCriticality">Kritikalit&auml;t</label><select id="amFilterCriticality"></select></div>
+        <div id="queryFilterRow">
+          <div class="row">
+            <div><label for="amFilterModule">Modul</label><select id="amFilterModule"></select></div>
+            <div><label for="amFilterCriticality">Kritikalit&auml;t</label><select id="amFilterCriticality"></select></div>
+          </div>
+          <label for="amFilterQueryType">Query-Typ</label>
+          <select id="amFilterQueryType"></select>
         </div>
-        <label for="amFilterQueryType">Query-Typ</label>
-        <select id="amFilterQueryType"></select>
+        <div id="sodFilterRow" style="display:none">
+          <label for="srFilterCriticality">Kritikalit&auml;t</label>
+          <select id="srFilterCriticality"></select>
+        </div>
       </div>
-      <h2>Queries</h2>
+      <h2 id="listLabel">Queries</h2>
       <ul class="runs" id="amQueryList"></ul>
+      <ul class="runs" id="srSodList" style="display:none"></ul>
 
-      <h2>Neu ableiten</h2>
+      <div id="deriveSection">
+        <h2>Neu ableiten</h2>
+        <div class="filterbox">
+          <div class="hint">Kopiert die links gew&auml;hlte Query (Berechtigungen/TCodes 1:1) unter
+            neuer ID &mdash; Metadaten rechts vorher anpassen, sie werden mit &uuml;bernommen.</div>
+          <label for="amNewId">Neue Query-ID</label>
+          <input id="amNewId" placeholder="z. B. BC_EIGENE_01" />
+          <button class="ghost" id="amDeriveBtn" style="width:100%;margin-top:8px">Ableiten &amp; &uuml;bernehmen</button>
+        </div>
+      </div>
+
+      <h2>Geplant</h2>
       <div class="filterbox">
-        <div class="hint">Kopiert die links gew&auml;hlte Query (Berechtigungen/TCodes 1:1) unter
-          neuer ID &mdash; Metadaten rechts vorher anpassen, sie werden mit &uuml;bernommen.</div>
-        <label for="amNewId">Neue Query-ID</label>
-        <input id="amNewId" placeholder="z. B. BC_EIGENE_01" />
-        <button class="ghost" id="amDeriveBtn" style="width:100%;margin-top:8px">Ableiten &amp; &uuml;bernehmen</button>
+        <button class="ghost" disabled title="kommt sp&auml;ter" style="width:100%">Neues Filterset importieren</button>
+        <div class="hint" style="margin-top:8px">Weitere Filtersets/Konnektoren perspektivisch: SAP&nbsp;S/4HANA,
+          Azure&nbsp;AD&nbsp;/&nbsp;Entra, Microsoft&nbsp;Dynamics, Salesforce &hellip; &mdash; die App ist
+          pro System ein eigenes Ruleset; das Datenmodell bleibt gleich.</div>
+        <div class="hint" style="margin-top:8px">Kein eigenes Benutzer-/Berechtigungskonzept: die App
+          l&auml;uft lokal bzw. wird als Container verteilt (Zugriff &uuml;ber die Umgebung abgesichert).</div>
       </div>
     </div>
 
@@ -225,6 +255,56 @@
           <button class="ghost" id="amCancelBtn" disabled>Abbrechen</button>
         </div>
       </div>
+
+      <div id="srEmpty" class="empty" style="display:none">Links eine SoD-Regel w&auml;hlen.</div>
+      <div id="srDetail" style="display:none">
+        <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
+          <span id="srTitle"></span>
+          <span class="badge" id="srBadge"></span>
+        </h2>
+        <div id="tab-srmeta">
+          <label for="srShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
+          <input id="srShortDescription" />
+          <label for="srDescription">Langbezeichnung</label>
+          <input id="srDescription" />
+          <div class="row">
+            <div><label for="srCriticality">Kritikalit&auml;t</label>
+              <select id="srCriticality">
+                <option value="">&ndash;</option>
+                <option value="very-critical">very critical</option><option value="critical">critical</option>
+                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
+              </select></div>
+            <div><label for="srReasonCode">Reason-Code</label><input id="srReasonCode" disabled /></div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="sraufbau">Aufbau</button>
+          <button class="tab" data-tab="srrisiko">Risiko</button>
+          <button class="tab" data-tab="srcontrols">Controls</button>
+        </div>
+
+        <div class="tabpanel" id="tab-sraufbau">
+          <div class="hint">Nur Anzeige &mdash; Klausel-Struktur (CNF): jede Klausel braucht
+            mindestens eine erf&uuml;llte Query, alle Klauseln zusammen sind UND-verkn&uuml;pft.</div>
+          <div id="srClauses" style="margin-top:10px"></div>
+        </div>
+
+        <div class="tabpanel" id="tab-srrisiko" hidden>
+          <label for="srRisk">Potenzielles Risiko</label>
+          <textarea id="srRisk" placeholder="Beschreibung des Risikos&hellip;"></textarea>
+        </div>
+
+        <div class="tabpanel" id="tab-srcontrols" hidden>
+          <label for="srControls">Mitigierende Ma&szlig;nahmen</label>
+          <textarea id="srControls" placeholder="Beschreibung der Controls&hellip;"></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="srSaveBtn" disabled>Speichern</button>
+          <button class="ghost" id="srCancelBtn" disabled>Abbrechen</button>
+        </div>
+      </div>
     </div>
   </div>
 </main>
@@ -249,6 +329,9 @@ function setStatus(html, isErr) {
 }
 
 let queries = [], selectedId = null, dirty = false;
+let sodRules = [], selectedSodId = null;
+let mode = 'query';
+function isQueryMode() { return mode === 'query'; }
 
 async function loadRulesets() {
   const meta = await api('/profiles');
@@ -257,7 +340,14 @@ async function loadRulesets() {
   rulesets.forEach(r => { const o = document.createElement('option'); o.value = r.id; o.textContent = r.name; sel.appendChild(o); });
   if (rulesets.some(r => r.id === cur)) sel.value = cur;
   else if (meta.defaultRuleset) sel.value = meta.defaultRuleset;
+  await loadAll();
+}
+
+/* Beide Listen werden bei jedem Ruleset-Wechsel geladen (nicht erst bei Moduswechsel) — die
+   Queries werden ausserdem im SoD-Aufbau-Tab gebraucht (Klausel-Anzeige -> Query-Bezeichnung). */
+async function loadAll() {
   await loadQueries();
+  await loadSodRules();
 }
 
 async function loadQueries() {
@@ -268,6 +358,27 @@ async function loadQueries() {
   fillFilterSelect('amFilterQueryType', queries.map(q => q.queryType));
   renderQueryList();
 }
+
+/* Modus-Umschalter Einzelfilter/SoD — zeigt/versteckt die jeweils passenden Listen-/Filter-/
+   Detail-Bloecke, ohne den Auswahlzustand des anderen Modus zu verwerfen. */
+function applyMode() {
+  const q = isQueryMode();
+  $('listLabel').textContent = q ? 'Queries' : 'SoD-Regeln';
+  $('amQueryList').style.display = q ? '' : 'none';
+  $('srSodList').style.display = q ? 'none' : '';
+  $('queryFilterRow').style.display = q ? '' : 'none';
+  $('sodFilterRow').style.display = q ? 'none' : '';
+  $('deriveSection').style.display = q ? '' : 'none';
+  $('amEmpty').style.display = q && !selectedId ? '' : 'none';
+  $('amDetail').style.display = q && selectedId ? '' : 'none';
+  $('srEmpty').style.display = !q && !selectedSodId ? '' : 'none';
+  $('srDetail').style.display = !q && selectedSodId ? '' : 'none';
+}
+document.querySelectorAll('#modePills .pill').forEach(b => b.addEventListener('click', () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll('#modePills .pill').forEach(x => x.classList.toggle('active', x === b));
+  applyMode();
+}));
 
 function fillFilterSelect(id, values) {
   const sel = $(id); const cur = sel.value;
@@ -302,11 +413,12 @@ function renderQueryList() {
     ul.appendChild(li);
   });
 }
-$('amRuleset').addEventListener('change', loadQueries);
+$('amRuleset').addEventListener('change', loadAll);
 $('amFilterModule').addEventListener('change', renderQueryList);
 $('amFilterCriticality').addEventListener('change', renderQueryList);
 $('amFilterQueryType').addEventListener('change', renderQueryList);
-$('amSearch').addEventListener('input', renderQueryList);
+$('amSearch').addEventListener('input', () => isQueryMode() ? renderQueryList() : renderSodList());
+$('srFilterCriticality').addEventListener('change', renderSodList);
 
 async function selectQuery(id) {
   if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
@@ -347,10 +459,109 @@ function renderAufbau(q) {
   if (!(q.authorizations || []).length) ab.innerHTML = '<tr><td colspan="4" class="muted">keine</td></tr>';
 }
 
+/* --- SoD-Regel-Pflege (Modus "SoD") — analog zu den Query-Funktionen oben ----------------- */
+async function loadSodRules() {
+  const rs = $('amRuleset').value; if (!rs) return;
+  sodRules = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules');
+  fillFilterSelect('srFilterCriticality', sodRules.map(r => r.criticality));
+  renderSodList();
+}
+
+function renderSodList() {
+  const term = $('amSearch').value.trim().toLowerCase();
+  const crit = $('srFilterCriticality').value;
+  const ul = $('srSodList'); ul.innerHTML = '';
+  const filtered = sodRules.filter(r => matchesSearch(r, term) && (!crit || r.criticality === crit));
+  if (!filtered.length) { ul.innerHTML = '<li class="muted" style="cursor:default">keine Treffer</li>'; return; }
+  filtered.forEach(r => {
+    const li = document.createElement('li');
+    li.className = r.id === selectedSodId ? 'active' : '';
+    const name = r.shortDescription || r.description || '';
+    li.innerHTML = `<b>${r.id}</b>${r.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}<br><small>${name}</small>`;
+    li.onclick = () => selectSodRule(r.id);
+    ul.appendChild(li);
+  });
+}
+
+async function selectSodRule(id) {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  selectedSodId = id;
+  const rs = $('amRuleset').value;
+  const r = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/' + encodeURIComponent(id));
+  renderSodList();
+  $('srEmpty').style.display = 'none'; $('srDetail').style.display = '';
+  $('srTitle').textContent = `${r.sodRule} ${r.shortDescription || r.description || ''}`;
+  $('srBadge').textContent = r.custom ? 'eigene Anpassung' : 'Vendor-Original';
+  $('srBadge').classList.toggle('custom', !!r.custom);
+  $('srShortDescription').value = r.shortDescription || '';
+  $('srDescription').value = r.description || '';
+  $('srCriticality').value = r.criticality || '';
+  $('srReasonCode').value = r.reasonCode || '';
+  $('srRisk').value = r.risk || '';
+  $('srControls').value = r.controls || '';
+  renderSodAufbau(r);
+  setDirty(false);
+}
+
+/* Query-Bezeichnung fuer die Klausel-/Variablen-Anzeige — nutzt die bereits geladene Query-Liste
+   des aktuellen Rulesets (kein Extra-Request). */
+function queryLabel(id) {
+  const q = queries.find(x => x.id === id);
+  const name = q && (q.shortDescription || q.description);
+  return name ? `${id} &mdash; ${name}` : id;
+}
+
+function renderSodAufbau(r) {
+  const box = $('srClauses');
+  const clauses = r.clauses || [];
+  if (clauses.length) {
+    box.innerHTML = clauses.map((qids, i) =>
+      `<div class="filterbox" style="margin-bottom:10px"><b>Klausel ${i + 1}</b> <span class="muted">(mind. eine davon)</span>`
+      + `<ul style="margin:6px 0 0;padding-left:18px">${qids.map(qid => `<li>${queryLabel(qid)}</li>`).join('')}</ul></div>`
+    ).join('') + '<div class="hint">Alle Klauseln zusammen sind UND-verkn&uuml;pft — die Regel ist erst '
+      + 'verletzt, wenn jede Klausel mindestens eine gematchte Query enth&auml;lt.</div>';
+    return;
+  }
+  const varsHtml = Object.entries(r.variables || {})
+    .map(([v, qid]) => `<tr><td>${v}</td><td>${queryLabel(qid)}</td></tr>`).join('');
+  box.innerHTML = '<div class="hint">Noch keine CNF-Klauseln hinterlegt (Ausdruck/Variablen zur Information):</div>'
+    + `<p><code>${r.expression || ''}</code></p>`
+    + (varsHtml ? `<table class="auftable"><thead><tr><th>Variable</th><th>Query</th></tr></thead><tbody>${varsHtml}</tbody></table>` : '');
+}
+
+function formSodFields() {
+  return {
+    shortDescription: $('srShortDescription').value.trim() || null,
+    description: $('srDescription').value.trim() || null,
+    criticality: $('srCriticality').value || null,
+    risk: $('srRisk').value.trim() || null,
+    controls: $('srControls').value.trim() || null,
+  };
+}
+
+async function saveSodCurrent() {
+  if (!selectedSodId) return;
+  const rs = $('amRuleset').value;
+  setStatus('<span class="spin"></span> Speichern&hellip;');
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/' + encodeURIComponent(selectedSodId),
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formSodFields()) });
+    setStatus(`${doneTag} SoD-Regel <b>${selectedSodId}</b> gespeichert.`);
+    await loadSodRules();
+    await selectSodRule(selectedSodId);
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+}
+['srShortDescription', 'srDescription', 'srRisk', 'srControls']
+  .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
+$('srCriticality').addEventListener('change', () => setDirty(true));
+
 function setDirty(v) {
   dirty = v;
   $('amDirtyChip').style.display = v ? '' : 'none';
   $('amSaveBtn').disabled = !v; $('amCancelBtn').disabled = !v;
+  $('srSaveBtn').disabled = !v; $('srCancelBtn').disabled = !v;
   $('cmdSave').disabled = !v; $('cmdCancel').disabled = !v;
 }
 ['amShortDescription', 'amDescription', 'amModule', 'amQueryType', 'amRisk', 'amControls']
@@ -371,7 +582,7 @@ function formFields() {
   };
 }
 
-async function saveCurrent() {
+async function saveQueryCurrent() {
   if (!selectedId) return;
   const rs = $('amRuleset').value;
   setStatus('<span class="spin"></span> Speichern&hellip;');
@@ -385,10 +596,17 @@ async function saveCurrent() {
     setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
   }
 }
+
+/* Ribbon-weite Speichern/Abbrechen-Buttons wirken auf den jeweils aktiven Modus (Einzelfilter
+   oder SoD) — nur einer der beiden Detail-Bereiche ist je sichtbar/editierbar. */
+function saveCurrent() { return isQueryMode() ? saveQueryCurrent() : saveSodCurrent(); }
+function cancelCurrent() { return isQueryMode() ? selectQuery(selectedId) : selectSodRule(selectedSodId); }
 $('amSaveBtn').onclick = saveCurrent;
+$('srSaveBtn').onclick = saveCurrent;
 $('cmdSave').onclick = saveCurrent;
-$('amCancelBtn').onclick = () => selectQuery(selectedId);
-$('cmdCancel').onclick = () => selectQuery(selectedId);
+$('amCancelBtn').onclick = cancelCurrent;
+$('srCancelBtn').onclick = cancelCurrent;
+$('cmdCancel').onclick = cancelCurrent;
 
 $('amDeriveBtn').addEventListener('click', async () => {
   const rs = $('amRuleset').value, fromId = selectedId, newId = $('amNewId').value.trim();
@@ -408,22 +626,32 @@ $('amDeriveBtn').addEventListener('click', async () => {
 });
 
 $('cmdRefresh').onclick = async () => {
-  const keep = selectedId;
-  await loadQueries();
-  if (keep) await selectQuery(keep);
+  const keepQ = selectedId, keepS = selectedSodId;
+  await loadAll();
+  if (keepQ) await selectQuery(keepQ);
+  if (keepS) await selectSodRule(keepS);
   setStatus(`${doneTag} aktualisiert.`);
 };
 $('cmdDownloadOverlay').onclick = () => {
   const rs = $('amRuleset').value; if (!rs) return;
-  window.location.href = '/admin/rulesets/' + encodeURIComponent(rs) + '/overlay/download';
+  const path = isQueryMode() ? '/overlay/download' : '/sodrules/overlay/download';
+  window.location.href = '/admin/rulesets/' + encodeURIComponent(rs) + path;
 };
 
-document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
-  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
-  document.querySelectorAll('.tabpanel').forEach(p => p.hidden = p.id !== 'tab-' + t.dataset.tab);
-}));
+/* Tab-Klicks pro Detail-Bereich (#amDetail/#srDetail) scopen, sonst wuerde ein Klick auf einen
+   Query-Tab auch die SoD-Tabs/-Panels "active"/"hidden" umschalten (ids sind je Bereich
+   eindeutig, aber das globale ".tab"-Toggle wuerde beide Bereiche gleichzeitig anfassen). */
+function wireTabs(containerId) {
+  const container = $(containerId);
+  container.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    container.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+    container.querySelectorAll('.tabpanel').forEach(p => p.hidden = p.id !== 'tab-' + t.dataset.tab);
+  }));
+}
+wireTabs('amDetail');
+wireTabs('srDetail');
 
-loadRulesets().catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+loadRulesets().then(applyMode).catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
 </script>
 </body>
 </html>

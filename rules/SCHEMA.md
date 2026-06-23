@@ -11,7 +11,9 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 | Datei | Pflicht | Inhalt |
 | --- | --- | --- |
 | `queries.json` | ja | Liste Queries (Funktionsbausteine) |
+| `queries.custom.json` | optional | Overlay: eigene Metadaten-Edits/abgeleitete Queries (Query Management) |
 | `sod_rules.json` | ja | Liste SoD-Regeln (boolescher Ausdruck über Query-Variablen) |
+| `sod_rules.custom.json` | optional | Overlay: eigene Metadaten-Edits an SoD-Regeln (Query Management, Modus „SoD") |
 | `ruleset.json` | ja | Metadaten + `combinationSemantics` |
 | `legends.json` | ja | Wertelegenden (queryTypes, Klassifizierung, Reason-Codes …) |
 | `risks.json` | optional | nur wo vorhanden (CSI): Risiko-Objekte |
@@ -38,6 +40,14 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `reasonCode` · `variables` (`{ "QA": "<queryId>", … }`, Wert = **str**)
 - `criticality` (**normalisiert**) · `criticalityRank` — bei KPMG aus `reasonCode`-Suffix;
   **CSI fuehrt keine native SoD-Schwere** (reasonCode = Template) → `null`.
+- `risk` (str, **optional**) · `controls` (str, **optional**) — analog zu Query, gepflegt &uuml;ber
+  das Query Management (Modus „SoD", eigene Tabs); bisher in keiner Vendor-Quelle vorhanden.
+
+**Overlay (`sod_rules.custom.json`, optional, analog zu `queries.custom.json`):** Metadaten-Edits
+an bestehenden Vendor-Regeln (Kurzbezeichnung/Kritikalit&auml;t/Risiko/Controls) &uuml;ber das Query
+Management — Vendor-Datei (`sod_rules.json`) bleibt unber&uuml;hrt. **Keine** Struktur-Edits
+(`clauses`/`variables`) in v1 — neue/abgeleitete SoD-Regeln sind (anders als bei Queries) noch
+nicht &uuml;ber die UI anlegbar.
 
 **Kurz- vs. Langbezeichnung:** In Filtern/Dropdowns wird die **Kurzbezeichnung** angezeigt (kurz
 genug, um neben der ID in Klammern lesbar zu bleiben); die Langbezeichnung bleibt das fachliche

@@ -37,12 +37,34 @@ MIGRATIONS_DIR = Path(os.environ.get("MIGRATIONS_DIR", "/app/migrations"))
 DATA_DIR = Path(os.environ.get("DATA_DIR", "/app/data/import"))
 BACKUP_DIR = Path(os.environ.get("BACKUP_DIR", "/app/backups"))
 RUN_BACKUP_DIR = BACKUP_DIR / "runs"
+LOG_DIR = Path(os.environ.get("LOG_DIR", "/app/data/logs"))
+JOB_ERROR_LOG = LOG_DIR / "job_errors.jsonl"
 FRONTEND_DIR = Path(os.environ.get("FRONTEND_DIR", "/app/frontend"))
 DEFAULT_LANG = [c.strip() for c in os.environ.get("IMPORT_LANG", "DE,DEU,D").split(",") if c.strip()]
 
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 app = FastAPI(title="IAM SoD Backend", version="0.1.0")
 jobs: dict[str, dict] = {}  # jobId -> status
+
+
+# --- Fehlerprotokoll (Job-Fehler) -------------------------------------------------------
+# Persistiert fehlgeschlagene Jobs ueber Neustarts hinweg (jobs-Dict ist nur In-Memory).
+# JSONL unter data/logs (Bind-Mount, ueberlebt Container-Neustart) statt Graph: rein operative
+# Nachvollziehbarkeit, keine fachliche Ableitung (AE-10 betrifft die Findings-Schicht, nicht das).
+def _log_job_error(job_id: str, message: str) -> None:
+    entry = {
+        "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+        "jobId": job_id,
+        "kind": jobs.get(job_id, {}).get("kind"),
+        "request": jobs.get(job_id, {}).get("request"),
+        "message": message,
+    }
+    try:
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
+        with open(JOB_ERROR_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
 
 
 @app.middleware("http")
@@ -128,6 +150,8 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
 
 def reload_ruleset(ruleset: str):
     rdir = ruleset_dir(ruleset)
+    ensure_custom_queries_file(ruleset)    # beide Overlay-Dateien muessen existieren (apoc.load.json)
+    ensure_custom_sodrules_file(ruleset)
     with driver.session() as s:
         run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
 
@@ -205,7 +229,8 @@ def do_run(job_id: str, req: RunReq):
                 if not rdir:
                     raise ValueError(f"Ruleset-Ordner fuer '{req.ruleset}' nicht gefunden")
                 jobs[job_id]["step"] = "ruleset"
-                ensure_custom_queries_file(req.ruleset)   # queries.custom.json muss existieren (apoc.load.json)
+                ensure_custom_queries_file(req.ruleset)    # queries.custom.json muss existieren (apoc.load.json)
+                ensure_custom_sodrules_file(req.ruleset)   # sod_rules.custom.json ebenso
                 run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": req.ruleset})
             if not req.skipMaterialize:
                 jobs[job_id]["step"] = "materialize"
@@ -233,6 +258,7 @@ def do_run(job_id: str, req: RunReq):
                             rules=rec["rules"], sleeping=rec["sleeping"], intra=rec["intra"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 class ImportReq(BaseModel):
@@ -278,6 +304,7 @@ def do_import(job_id: str, req: ImportReq):
                             users=rec["users"], roles=rec["roles"], auths=rec["auths"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_explain(job_id: str, run_id: str):
@@ -300,6 +327,7 @@ def do_explain(job_id: str, run_id: str):
                             findings=rec["findings"], intra=rec["intra"], inter=rec["inter"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_delete_run(job_id: str, run_id: str):
@@ -311,6 +339,7 @@ def do_delete_run(job_id: str, run_id: str):
         jobs[job_id].update(status="done", step="done")
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_clear(job_id: str, dataset: str):
@@ -322,6 +351,7 @@ def do_clear(job_id: str, dataset: str):
         jobs[job_id].update(status="done", step="done", remaining=rec["remaining"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_reset(job_id: str):
@@ -337,6 +367,7 @@ def do_reset(job_id: str):
                             remaining=rec["remaining"], rulesetQueries=q["queries"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 # --- Backup/Restore (Quelldaten-Ebene) -------------------------------------------------
@@ -387,6 +418,7 @@ def do_backup(job_id: str, dataset: str, clear: bool):
         jobs[job_id].update(status="done", step="done")
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_restore(job_id: str, path: Path, dataset: str | None):
@@ -406,6 +438,7 @@ def do_restore(job_id: str, path: Path, dataset: str | None):
         do_import(job_id, ImportReq(dataset=target, skipConvert=True, skipSchema=False))
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 # --- Backup/Restore (Auswertungslauf-Ebene) --------------------------------------------
@@ -461,6 +494,7 @@ def do_backup_run(job_id: str, run_id: str):
                             sizeBytes=(RUN_BACKUP_DIR / name).stat().st_size)
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_restore_run(job_id: str, path: Path, force: bool):
@@ -485,6 +519,7 @@ def do_restore_run(job_id: str, path: Path, force: bool):
                             restored=rec["restored"], total=len(findings))
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
 
 
 def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], skip_schema: bool):
@@ -508,6 +543,7 @@ def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], 
                                     skipConvert=not has_txt, skipSchema=skip_schema))
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
     finally:
         try:
             os.remove(zip_path)
@@ -528,6 +564,27 @@ def datasets():
         return [r["id"] for r in s.run("MATCH (d:Dataset) RETURN d.id AS id ORDER BY id")]
 
 
+@app.get("/users/{userId}")
+def user_detail(userId: str, runId: str):
+    """Kurzprofil eines Users (Name/Typ/Status) fuer die Kontext-Chips bei nutzerzentrischer
+    Auswahl — dataset wird ueber den Lauf aufgeloest."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.dataset AS dataset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        rec = s.run(
+            "MATCH (u:User {id:$uid, dataset:$dataset}) "
+            "RETURN u.id AS id, coalesce(u.name,'') AS name, "
+            "  CASE WHEN 'Dialog' IN labels(u) THEN 'Dialog' WHEN 'System' IN labels(u) THEN 'System' "
+            "       WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Communication' "
+            "       WHEN 'Reference' IN labels(u) THEN 'Reference' ELSE '?' END AS typ, "
+            "  CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status",
+            uid=userId, dataset=run["dataset"]).single()
+        if not rec:
+            raise HTTPException(404, f"User '{userId}' nicht gefunden")
+        return dict(rec)
+
+
 @app.get("/profiles")
 def profiles_meta():
     """Speist die Formular-Dropdowns der UI (datengetrieben aus config + rules)."""
@@ -540,6 +597,20 @@ def profiles_meta():
         "scopeProfiles": [{"name": p["name"], "description": p.get("description", "")} for p in cfg.get("scopeProfiles", [])],
         "sleepDays": cfg["sleeping"]["sleepDays"],
     }
+
+
+@app.get("/admin/job-errors")
+def admin_job_errors(limit: int = Query(200, ge=1, le=2000)):
+    """Persistentes Fehlerprotokoll (Job-Fehler) ueber Container-Neustarts hinweg, neueste zuerst."""
+    if not JOB_ERROR_LOG.is_file():
+        return []
+    entries = []
+    for line in JOB_ERROR_LOG.read_text(encoding="utf-8").splitlines():
+        try:
+            entries.append(json.loads(line))
+        except ValueError:
+            continue
+    return list(reversed(entries))[:limit]
 
 
 @app.get("/admin/rulesets/{ruleset}/queries")
@@ -644,6 +715,101 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
     reload_ruleset(ruleset)
     return {"query": req.newId, "derivedFrom": req.fromId}
+
+
+# --- SoD-Regel-Editor (Query Management, Modus "SoD") ----------------------------------
+# Analog zum Einzelfilter-Editor oben, aber ohne Struktur-Edits/Ableiten: SoD-Regeln haben keine
+# eigene Authorizations/TCodes, nur Metadaten (Kurz-/Langbezeichnung, Kritikalitaet, Risiko,
+# Controls) plus die read-only Klausel-/Variablen-Struktur (clauses/variables/expression) fuer den
+# Aufbau-Tab. Overlay sod_rules.custom.json analog zu queries.custom.json.
+def _sodrule_paths(ruleset: str) -> tuple[Path, Path]:
+    rdir = ruleset_dir(ruleset)
+    if not rdir:
+        raise HTTPException(404, f"Ruleset '{ruleset}' nicht gefunden")
+    base = RULES_DIR / rdir
+    return base / "sod_rules.json", base / "sod_rules.custom.json"
+
+
+def ensure_custom_sodrules_file(ruleset: str) -> Path:
+    _, custom_path = _sodrule_paths(ruleset)
+    if not custom_path.is_file():
+        custom_path.write_text("[]", encoding="utf-8")
+    return custom_path
+
+
+def _merged_sodrules(ruleset: str) -> tuple[dict[str, dict], set[str]]:
+    """Vendor-SoD-Regeln + Overlay, Overlay-Felder gewinnen je id — analog zu _merged_queries.
+    'eigen' heisst: neue Regel (kein Vendor-Gegenstueck) oder clauses/variables wurden
+    ueberschrieben; reine Metadaten-Edits zaehlen nicht."""
+    vendor_path, custom_path = _sodrule_paths(ruleset)
+    merged = {r["sodRule"]: dict(r) for r in _load_json_list(vendor_path)}
+    custom_ids = set()
+    for c in _load_json_list(custom_path):
+        rid = c["sodRule"]
+        if rid not in merged or "clauses" in c or "variables" in c:
+            custom_ids.add(rid)
+        if rid in merged:
+            merged[rid] = {**merged[rid], **{k: v for k, v in c.items() if v is not None}}
+        else:
+            merged[rid] = c
+    return merged, custom_ids
+
+
+@app.get("/admin/rulesets/{ruleset}/sodrules")
+def admin_list_sodrules(ruleset: str):
+    """Alle SoD-Regeln eines Rulesets (Vendor + Overlay gemerged) fuer das Query Management
+    (Modus 'SoD'); 'custom' markiert eigene Edits."""
+    merged, custom_ids = _merged_sodrules(ruleset)
+    return [{"id": rid, "description": r.get("description", ""),
+             "shortDescription": r.get("shortDescription", ""), "criticality": r.get("criticality"),
+             "reasonCode": r.get("reasonCode"), "custom": rid in custom_ids}
+            for rid, r in sorted(merged.items())]
+
+
+@app.get("/admin/rulesets/{ruleset}/sodrules/{ruleId}")
+def admin_get_sodrule(ruleset: str, ruleId: str):
+    """Eine SoD-Regel vollstaendig (inkl. clauses/variables/expression, read-only) fuer den
+    'Aufbau'-Tab im Query Management."""
+    merged, custom_ids = _merged_sodrules(ruleset)
+    r = merged.get(ruleId)
+    if not r:
+        raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
+    return {**r, "custom": ruleId in custom_ids}
+
+
+@app.get("/admin/rulesets/{ruleset}/sodrules/overlay/download")
+def admin_download_sodrule_overlay(ruleset: str):
+    """Overlay-Datei (sod_rules.custom.json) eines Rulesets als Download."""
+    custom_path = ensure_custom_sodrules_file(ruleset)
+    return FileResponse(custom_path, filename=f"{ruleset}__sod_rules.custom.json", media_type="application/json")
+
+
+class SodRuleEditReq(BaseModel):
+    description: str | None = None
+    shortDescription: str | None = None
+    criticality: str | None = None
+    risk: str | None = None
+    controls: str | None = None
+
+
+@app.put("/admin/rulesets/{ruleset}/sodrules/{ruleId}")
+def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
+    """Bearbeitet Metadaten einer SoD-Regel als Overlay-Eintrag (sod_rules.custom.json) — Vendor-
+    Datei bleibt unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt)."""
+    merged, _ = _merged_sodrules(ruleset)
+    if ruleId not in merged:
+        raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
+    custom_path = ensure_custom_sodrules_file(ruleset)
+    custom = _load_json_list(custom_path)
+    entry = next((c for c in custom if c["sodRule"] == ruleId), None)
+    fields = {k: v for k, v in req.model_dump().items() if v is not None}
+    if entry:
+        entry.update(fields)
+    else:
+        custom.append({"sodRule": ruleId, **fields})
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    reload_ruleset(ruleset)
+    return {"sodRule": ruleId, "saved": fields}
 
 
 @app.get("/runs")
@@ -755,6 +921,114 @@ def matches(runId: str, query: str | None = None, user: str | None = None,
             "       CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status, "
             "       q.id AS query "
             "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType)]
+
+
+_SATISFIED_BY_CYPHER = (
+    "MATCH (u:User {id:$user, dataset:$dataset}) "
+    "OPTIONAL MATCH (u)-[g:ASSIGNED_TO]->(roleActor:Role) "
+    "  WHERE (g.validFrom IS NULL OR g.validFrom<=$asOf) AND (g.validTo IS NULL OR $asOf<=g.validTo) "
+    "OPTIONAL MATCH (u)-[:HAS_PROFILE]->(profActor:Profile) "
+    "WITH [x IN collect(DISTINCT roleActor) WHERE x IS NOT NULL] "
+    "   + [x IN collect(DISTINCT profActor) WHERE x IS NOT NULL] AS actors "
+    "UNWIND actors AS actor "
+    "MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:$object}) "
+    "WHERE all(r IN $reqs WHERE "
+    "  r.field IN $orgFields "
+    "  OR ( apoc.any.property(a,'f_'+r.field) IS NOT NULL "
+    "       AND ( '*' IN apoc.any.property(a,'f_'+r.field) "
+    "             OR CASE WHEN r.andLogic "
+    "                  THEN all(v IN r.values WHERE v IN apoc.any.property(a,'f_'+r.field) "
+    "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
+    "                  ELSE any(v IN r.values WHERE v IN apoc.any.property(a,'f_'+r.field) "
+    "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
+    "                END ) ) ) "
+    "RETURN DISTINCT labels(actor)[0] AS actorType, actor.id AS actorId, "
+    "  [k IN keys(a) WHERE k STARTS WITH 'f_' | {field: substring(k,2), values: apoc.any.property(a,k)}] AS authFields "
+    "ORDER BY actorType, actorId"
+)
+
+
+def _query_objects(s, ruleset: str, dataset: str, as_of, user: str, org_fields: list[str], query_id: str) -> list[dict]:
+    """Objekt-/TCode-Aufschluesselung einer einzelnen Query fuer einen User (Kernlogik von
+    Root-Cause) — wiederverwendet sowohl fuer den Einzelfilter- als auch den SoD-Regel-Aufruf."""
+    qrec = s.run(
+        "MATCH (q:Query {id:$qid, ruleset:$ruleset}) "
+        "OPTIONAL MATCH (q)-[:REQUIRES]->(ar:AuthReq) "
+        "RETURN q.tcodes AS tcodes, q.disregardTcode AS disregardTcode, "
+        "  collect(CASE WHEN ar IS NULL THEN null ELSE "
+        "    {object:ar.object, field:ar.field, andLogic:ar.andLogic, values:ar.values} END) AS reqs",
+        qid=query_id, ruleset=ruleset).single()
+    if qrec is None:
+        raise HTTPException(404, f"Query '{query_id}' nicht gefunden")
+    reqs = [r for r in qrec["reqs"] if r is not None]
+
+    def satisfied_by(obj: str, obj_reqs: list[dict]) -> list[dict]:
+        rows = s.run(_SATISFIED_BY_CYPHER, user=user, dataset=dataset, asOf=as_of,
+                     object=obj, reqs=obj_reqs, orgFields=org_fields)
+        return [{"actorType": r["actorType"], "actorId": r["actorId"],
+                 "authValues": [f"{f['field']}={','.join(f['values'])}" for f in r["authFields"]]}
+                for r in rows]
+
+    objects = sorted({r["object"] for r in reqs})
+    result_objects = [{"object": obj, "requirement": [r for r in reqs if r["object"] == obj],
+                        "satisfiedBy": satisfied_by(obj, [r for r in reqs if r["object"] == obj])}
+                       for obj in objects]
+
+    tcodes = qrec["tcodes"] or []
+    disregard = bool(qrec["disregardTcode"])
+    blocks = []
+    if not disregard and tcodes and "*" not in tcodes:
+        tcode_req = [{"field": "TCD", "andLogic": False, "values": tcodes}]
+        blocks.append({"object": "S_TCODE (TCode-Prüfung)", "requirement": tcode_req,
+                        "satisfiedBy": satisfied_by("S_TCODE", tcode_req)})
+    blocks += result_objects
+    return blocks
+
+
+@app.get("/root-cause")
+def root_cause(runId: str, user: str, query: str | None = None, rule: str | None = None):
+    """Root-Cause-Erklaerung fuer einen User: entweder fuer eine einzelne Query (Einzelfilter) oder
+    fuer eine SoD-Regel (alle Klauseln, je die vom User tatsaechlich gematchte(n) Query(s)). Pro
+    Berechtigungsobjekt (+ TCode-Pruefung als eigener Pseudo-Block) wird gezeigt, WELCHE Anforderung
+    galt und welche Rolle(n)/Profil(e) sie mit welcher konkreten Authorization erfuellen — macht
+    sichtbar, wenn unterschiedliche Objekte/Klauseln durch unterschiedliche Rollen gedeckt werden
+    (AE-03/AE-09), nicht nur 'welche Rolle' wie die Evidenz (VIA_ROLE/VIA_PROFILE, AE-11)."""
+    if not query and not rule:
+        raise HTTPException(400, "entweder 'query' oder 'rule' angeben")
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, r.dataset AS dataset, "
+                    "r.asOf AS asOf", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        ruleset, dataset, as_of = run["ruleset"], run["dataset"], run["asOf"]
+        org_fields = [r["field"] for r in s.run(
+            "MATCH (of:OrgField {dataset:$d}) RETURN of.field AS field", d=dataset)]
+
+        if query:
+            blocks = [{"label": f"Query {query}",
+                       "objects": _query_objects(s, ruleset, dataset, as_of, user, org_fields, query)}]
+        else:
+            clauses = s.run(
+                "MATCH (rule:SoDRule {id:$rid, ruleset:$ruleset})-[:HAS_CLAUSE]->(cl:Clause)-[:NEEDS]->(q:Query) "
+                "RETURN cl.idx AS idx, collect(q.id) AS qids ORDER BY idx",
+                rid=rule, ruleset=ruleset)
+            blocks = []
+            for c in clauses:
+                idx, qids = c["idx"], c["qids"]
+                matched = [r["qid"] for r in s.run(
+                    "MATCH (u:User {id:$user})-[:MATCHES {runId:$runId}]->(q:Query) "
+                    "WHERE q.id IN $qids RETURN q.id AS qid", user=user, runId=runId, qids=qids)]
+                if not matched:
+                    blocks.append({"label": f"Klausel {idx + 1}", "objects": [],
+                                   "note": "keine gematchte Query in dieser Klausel gefunden"})
+                    continue
+                for qid in matched:
+                    blocks.append({"label": f"Klausel {idx + 1} · Query {qid}",
+                                   "objects": _query_objects(s, ruleset, dataset, as_of, user, org_fields, qid)})
+            if not blocks:
+                raise HTTPException(404, f"SoD-Regel '{rule}' nicht gefunden")
+
+        return {"queryId": query, "ruleId": rule, "user": user, "blocks": blocks}
 
 
 @app.get("/findings/export")

@@ -92,6 +92,18 @@
     padding:5px 4px; margin:0; cursor:pointer; text-align:left; white-space:normal; color:var(--fg); }
   #filterUserTypePanel input[type=checkbox] { width:auto; margin:0 8px 0 0; vertical-align:middle; }
   .resultbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-bottom:10px; }
+  .resultcontext { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-bottom:12px; }
+  .resultcontext .chip { background:rgba(76,139,245,.12); border-color:var(--accent); color:var(--fg); }
+  .resultcontext .chip:empty { display:none; }
+  .causingbox { background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:10px 14px; margin-bottom:18px; }
+  .causingbox h2 { margin:0 0 8px; }
+  .rcobj { background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:10px 14px; margin-bottom:12px; }
+  .rcobj .rcreq { color:var(--muted); font-size:12.5px; margin-bottom:8px; }
+  .rcobj .rcactor { display:flex; justify-content:space-between; gap:10px; font-size:13px;
+    padding:5px 0; border-top:1px solid var(--line); }
+  .rcobj .rcactor:first-of-type { border-top:0; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .pill { cursor:pointer; border:1px solid transparent; }
   .pill:not(.tag) { background:var(--bg); color:var(--muted); border-color:var(--line); }
@@ -159,6 +171,7 @@
   </div>
   <div class="bctx">
     <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
+    <span class="chip" id="chipRuleset" title="Aktiv angewendetes Ruleset">&ndash;</span>
     <span class="chip" id="chipConn"><span class="dot">&#9679;</span> verbunden</span>
     <span class="chip" id="chipData">&ndash;</span>
   </div>
@@ -194,7 +207,8 @@
   </div>
   <div class="group">
     <div class="cmds">
-      <button class="cmd" id="cmdAdmin"><span class="ico">&#9881;</span>Admin</button>
+      <a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a>
+      <button class="cmd" id="cmdErrorLog"><span class="ico">&#128220;</span>Fehlerprotokoll</button>
     </div><div class="lbl">6 &middot; Admin</div>
   </div>
 </nav>
@@ -202,7 +216,11 @@
 <div id="status"></div>
 
 <main>
+  <div id="resultContext" class="resultcontext" style="display:none">
+    <span class="chip" id="ctxRule"></span>
+  </div>
   <div class="kpis" id="kpis"></div>
+  <div id="causingActors" style="display:none"></div>
   <div class="cols">
     <div>
       <h2 style="margin-top:0">Filter</h2>
@@ -243,21 +261,31 @@
           <button type="button" class="pill tag medium" data-value="medium">medium</button>
           <button type="button" class="pill tag low" data-value="low">low</button>
         </div>
-        <span class="muted" style="font-size:12px">Sleeping:</span>
+        <span class="muted" style="font-size:12px" id="resultTypeLabel">Ergebnistyp:</span>
+        <div class="pillgroup" id="resultTypePills">
+          <button type="button" class="pill active" data-value="">alle</button>
+          <button type="button" class="pill" data-value="query">Einzelfilter</button>
+          <button type="button" class="pill" data-value="sod">SoD</button>
+        </div>
+        <span class="muted" style="font-size:12px" id="sleepingLabel">Sleeping:</span>
         <div class="pillgroup" id="sleepingPills">
           <button type="button" class="pill active" data-value="">alle</button>
           <button type="button" class="pill" data-value="true">nur sleeping</button>
           <button type="button" class="pill" data-value="false">nicht sleeping</button>
         </div>
+        <div class="pillgroup" id="viewTogglePills" style="margin-left:auto">
+          <button type="button" class="pill active" data-value="table">Tabelle</button>
+          <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (NVL/React)">Graph</button>
+        </div>
       </div>
       <div id="filterActive"><span class="muted" id="filterActiveText"></span>
         <button class="ghost" id="filterActiveClear" style="margin:0;width:auto;padding:4px 10px">zur&uuml;cksetzen</button></div>
       <table id="findingsTable">
-        <thead><tr><th>User</th><th>Regel</th><th>Kritikalit&auml;t</th><th>Typ</th><th>Verursacht durch</th><th>Sleeping</th></tr></thead>
+        <thead><tr><th>User</th><th>Regel</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Typ</th><th>Root-Cause</th></tr></thead>
         <tbody id="findingsBody"><tr><td colspan="6" class="muted">Lauf w&auml;hlen oder „Neuer Lauf"&hellip;</td></tr></tbody>
       </table>
       <table id="matchesTable" style="display:none">
-        <thead><tr><th>User</th><th>Name</th><th>Typ</th><th>Status</th></tr></thead>
+        <thead><tr><th>User</th><th>Name</th><th>Query</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Root-Cause</th></tr></thead>
         <tbody id="matchesBody"></tbody>
       </table>
     </div>
@@ -371,21 +399,24 @@
   <button class="ghost danger" id="clearRunBtn">Diesen Lauf l&ouml;schen</button>
 </div></div>
 
-<!-- Dialog: Admin -->
-<div class="overlay" id="dlg-admin"><div class="dialog">
-  <span class="x" data-close>&times;</span><h3>Admin</h3>
-  <div class="sub">Regelwerke &amp; Konnektoren. Aktuell aktiv: geladene Rulesets; weitere Funktionen geplant.</div>
-  <h2 style="margin-top:6px">Geladene Rulesets</h2>
-  <ul class="runs" id="adminRulesets"></ul>
-  <h2>Einzelfilter</h2>
-  <a class="ghost" href="/admin.html" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">Query Management &rarr;</a>
-  <h2>Geplant</h2>
-  <button class="ghost" disabled title="kommt später">Neues Filterset importieren</button>
-  <div class="hint">Weitere Filtersets/Konnektoren perspektivisch: SAP&nbsp;S/4HANA,
-    Azure&nbsp;AD&nbsp;/&nbsp;Entra, Microsoft&nbsp;Dynamics, Salesforce &hellip; &mdash; die App ist
-    pro System ein eigenes Ruleset; das Datenmodell bleibt gleich.</div>
-  <div class="hint" style="margin-top:8px">Kein eigenes Benutzer-/Berechtigungskonzept: die App
-    läuft lokal bzw. wird als Container verteilt (Zugriff über die Umgebung abgesichert).</div>
+<!-- Dialog: Fehlerprotokoll -->
+<div class="overlay" id="dlg-errorlog"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Fehlerprotokoll</h3>
+  <div class="sub">Fehlgeschlagene Jobs (Import/Lauf/Backup/Restore/Bereinigen) &mdash; persistent,
+    &uuml;berlebt einen Container-Neustart. Neueste zuerst.</div>
+  <ul class="runs" id="errorLogList"></ul>
+</div></div>
+
+<!-- Dialog: Root-Cause -->
+<div class="overlay" id="dlg-rootcause"><div class="dialog" style="max-width:640px">
+  <span class="x" data-close>&times;</span><h3>Root-Cause</h3>
+  <div class="sub">Pro Berechtigungsobjekt (bzw. TCode-Pr&uuml;fung): welche Anforderung galt &mdash;
+    und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
+    Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
+  <div class="bctx" style="margin:4px 0 14px">
+    <span class="chip" id="rcUser"></span><span class="chip" id="rcQuery"></span>
+  </div>
+  <div id="rcObjects"></div>
 </div></div>
 
 <script>
@@ -429,16 +460,17 @@ $('cmdExplain').onclick = () => {
     `Evidenz für „${activeRunId}" berechnen? Das kann einige Minuten dauern.`,
     j => `${doneTag} Evidenz fertig — ${j.intra} intra-Rolle, ${j.inter} inter-Rolle (von ${j.findings}).`);
 };
-$('cmdAdmin').onclick = () => { renderAdminRulesets(); openDlg('dlg-admin'); };
+$('cmdErrorLog').onclick = () => { renderErrorLog(); openDlg('dlg-errorlog'); };
 
-function renderAdminRulesets() {
-  const ul = $('adminRulesets');
-  const rs = metaCache.rulesets || [];
-  ul.innerHTML = rs.length ? '' : '<li class="muted" style="cursor:default">keine Rulesets gefunden</li>';
-  rs.forEach(r => {
+async function renderErrorLog() {
+  const ul = $('errorLogList');
+  ul.innerHTML = '<li class="muted" style="cursor:default">l&auml;dt&hellip;</li>';
+  const entries = await api('/admin/job-errors');
+  ul.innerHTML = entries.length ? '' : '<li class="muted" style="cursor:default">keine Fehler protokolliert</li>';
+  entries.forEach(e => {
     const li = document.createElement('li'); li.style.cursor = 'default';
-    li.innerHTML = `<span><b>${r.name}</b><br><small class="muted">${r.id} &middot; ${r.dir}</small></span>`
-      + (r.id === metaCache.defaultRuleset ? '<span class="tag low">Standard</span>' : '');
+    li.innerHTML = `<div><b>${e.kind || '?'}</b> <span class="muted">${fmtDateTime(e.ts)}</span></div>`
+      + `<div style="margin-top:4px">${e.message}</div>`;
     ul.appendChild(li);
   });
 }
@@ -503,11 +535,19 @@ function fmtDateTime(iso) {
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+/* KPI-Kacheln: Findings/betroffene Regeln (SoD) bzw. Treffer (Einzelfilter) + Stammdaten-Kachel
+   (User-Identitaet) statt "davon sleeping", sobald ein User aktiv ist (ersetzt den Platz). */
+let activeUserInfo = null;
 function setKpis(j) {
-  $('kpis').innerHTML =
-    `<div class="kpi"><b>${j.findings ?? '–'}</b><span>Findings</span></div>`
-  + `<div class="kpi"><b>${j.rules ?? '–'}</b><span>betroffene Regeln</span></div>`
-  + `<div class="kpi"><b>${j.sleeping ?? '–'}</b><span>davon sleeping</span></div>`;
+  const tiles = [];
+  if (j.findings !== undefined) tiles.push(`<div class="kpi"><b>${j.findings ?? '–'}</b><span>Findings</span></div>`);
+  if (j.rules !== undefined) tiles.push(`<div class="kpi"><b>${j.rules ?? '–'}</b><span>betroffene Regeln</span></div>`);
+  if (j.matches !== undefined) tiles.push(`<div class="kpi"><b>${j.matches ?? '–'}</b><span>Treffer</span></div>`);
+  if (activeUserInfo) {
+    tiles.push(`<div class="kpi"><b>${activeUserInfo.id}</b>`
+      + `<span>${activeUserInfo.name || '–'} &middot; ${activeUserInfo.typ} &middot; ${activeUserInfo.status}</span></div>`);
+  }
+  $('kpis').innerHTML = tiles.join('');
 }
 
 async function loadRuns() {
@@ -547,16 +587,20 @@ async function showFindings(runId) {
   $('cmdExport').disabled = false;
   document.querySelectorAll('.run-card').forEach(li => li.classList.remove('active'));
   $('cmdExplain').disabled = false;
+  const run = runsById[runId];
+  const rs = run && (metaCache.rulesets || []).find(x => x.id === run.ruleset);
+  $('chipRuleset').textContent = rs ? rs.name : (run ? run.ruleset : '–');
   $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
   resetUserTypeFilter();
-  ruleCritValue = ''; sleepingValue = ''; renderRuleCritPills(); renderSleepingPills();
-  hideFilterActive();
+  ruleCritValue = ''; resultTypeValue = ''; sleepingValue = ''; userMatchedQueryIds = null;
+  renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
+  hideFilterActive(); updateResultContext('', ''); renderCausingActors(null);
   refreshKpis({});
   allFindingsForRun = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
   rulesCache = [...new Map(allFindingsForRun.map(f => [f.rule, f.criticality])).entries()]
     .map(([rule, criticality]) => ({ rule, criticality }));
   populateFilterSelects(allFindingsForRun);
-  renderFindingsTable(allFindingsForRun);
+  renderFindingsTable(allFindingsForRun, true);
   setFindingsMeta(allFindingsForRun.length);
   loadRuns();
   loadQueriesForRun(runId);
@@ -592,8 +636,8 @@ async function refreshKpis(f) {
   if (f.user) url += '&user=' + encodeURIComponent(f.user);
   if (f.rule) url += '&rule=' + encodeURIComponent(f.rule);
   (f.userTypes || []).forEach(t => url += '&userType=' + encodeURIComponent(t));
-  if (f.sleeping) url += '&sleeping=' + f.sleeping;
   if (f.ruleCriticality) url += '&ruleCriticality=' + encodeURIComponent(f.ruleCriticality);
+  if (f.sleeping) url += '&sleeping=' + f.sleeping;
   setKpis(await api(url));
 }
 
@@ -623,9 +667,14 @@ function populateFilterSelects(findings) {
   renderRuleSelect();
 }
 
+/* Kaskadierender Filter: ist ein User gewaehlt, schraenken sich Einzelberechtigung- (s. u.)
+   und SoD-Dropdown auf das fuer ihn tatsaechlich Gefundene ein, statt immer den vollen
+   Katalog/alle Lauf-Regeln zu zeigen. */
 function renderRuleSelect() {
   const crit = ruleCritValue;
-  const rules = rulesCache.filter(r => !crit || r.criticality === crit)
+  const u = $('filterUser').value;
+  const userRuleIds = u ? new Set(allFindingsForRun.filter(f => f.user === u).map(f => f.rule)) : null;
+  const rules = rulesCache.filter(r => (!crit || r.criticality === crit) && (!userRuleIds || userRuleIds.has(r.rule)))
     .sort((a, b) => a.rule.localeCompare(b.rule));
   const sr = $('filterRule'); const cur = sr.value;
   sr.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
@@ -639,36 +688,80 @@ function renderRuleSelect() {
   if (rules.some(r => r.rule === cur)) sr.value = cur;
 }
 
-function renderFindingsTable(findings) {
+/* isEntry = Einstiegstabelle (kein Filter aktiv): letzte Spalte ist hier "Sleeping" statt
+   "Root-Cause" (zu viele Zeilen fuer einen sinnvollen Root-Cause-Absprung, das lohnt sich erst
+   sobald gefiltert ist) und die Ergebnistyp-Pillzeile ist ausgeblendet (s. toggleEntryUi()). */
+function renderFindingsTable(findings, isEntry) {
   $('matchesTable').style.display = 'none'; $('findingsTable').style.display = '';
+  toggleEntryUi(isEntry);
+  document.querySelector('#findingsTable thead th:last-child').textContent = isEntry ? 'Sleeping' : 'Root-Cause';
   const body = $('findingsBody');
   body.innerHTML = findings.length ? '' : '<tr><td colspan="6" class="muted">keine Findings</td></tr>';
   findings.forEach(f => {
     const tr = document.createElement('tr');
-    const via = [...(f.roles || []), ...((f.profiles || []).map(p => p + ' (P)'))];
-    const viaHtml = via.length
-      ? `<span title="${via.join(', ')}">${via.slice(0, 2).join(', ')}${via.length > 2 ? ` +${via.length - 2}` : ''}</span>`
-      : '<span class="muted">&ndash;</span>';
     const typ = f.conflictType
       ? `<span class="tag ${f.conflictType === 'intra' ? 'medium' : 'critical'}">${f.conflictType === 'intra' ? 'intra-Rolle' : 'inter-Rolle'}</span>`
       : '<span class="muted">&ndash;</span>';
+    const lastCell = isEntry
+      ? `<td>${f.sleeping ? '<span class="tag medium">sleeping</span>' : '&ndash;'}</td>`
+      : `<td><button type="button" class="ghost" style="padding:3px 10px">Root-Cause</button></td>`;
     tr.innerHTML = `<td class="click" data-user="${f.user}" title="nach diesem User filtern">${f.user}</td>`
-      + `<td class="click" data-rule="${f.rule}" title="nach dieser Regel filtern">${f.rule}</td>`
+      + `<td>${f.rule}</td>`
+      + `<td class="muted">${sodRuleNames[f.rule] || ''}</td>`
       + `<td>${critTag(f.criticality)}</td>`
-      + `<td>${typ}</td><td>${viaHtml}</td>`
-      + `<td>${f.sleeping ? '<span class="tag medium">sleeping</span>' : '&ndash;'}</td>`;
+      + `<td>${typ}</td>`
+      + lastCell;
+    if (!isEntry) tr.querySelector('button').onclick = () => openRootCause(f.user, { rule: f.rule });
     tr.querySelector('[data-user]').onclick = () => {
       $('filterUser').value = f.user; $('filterQuery').value = '';
       ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = '';
       applyFilters();
     };
-    tr.querySelector('[data-rule]').onclick = () => {
-      ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = f.rule;
-      $('filterUser').value = ''; $('filterQuery').value = '';
-      applyFilters();
-    };
     body.appendChild(tr);
   });
+}
+
+function toggleEntryUi(isEntry) {
+  $('resultTypeLabel').style.display = isEntry ? 'none' : '';
+  $('resultTypePills').style.display = isEntry ? 'none' : '';
+}
+
+/* Regel-Chip oben + Stammdaten (User-Identitaet, ueber /users/{id}) fuer die KPI-Kachel —
+   sichtbar/geladen, sobald User und/oder Regel als Filter aktiv sind ("nutzerzentrische Auswahl"). */
+async function updateResultContext(u, r) {
+  const box = $('resultContext');
+  box.style.display = r ? '' : 'none';
+  $('ctxRule').textContent = r ? `Regel: ${r}` : '';
+  if (!u) { activeUserInfo = null; return; }
+  try {
+    activeUserInfo = await api('/users/' + encodeURIComponent(u) + '?runId=' + encodeURIComponent(activeRunId));
+  } catch {
+    activeUserInfo = null;
+  }
+}
+document.querySelectorAll('#viewTogglePills .pill').forEach(b => b.addEventListener('click', () => {
+  if (b.disabled) return;
+  document.querySelectorAll('#viewTogglePills .pill').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+}));
+
+/* Verursachende Rollen/Profile — ersetzt die fruehere Tabellenspalte "Verursacht durch";
+   nur sinnvoll im Nutzer+Regel-Kontext (genau ein Finding). Root-Cause-Button daneben erklaert,
+   warum dieser User diese SoD-Regel verletzt (Objekt-/Klausel-Aufschluesselung je Query). */
+function renderCausingActors(finding) {
+  const box = $('causingActors');
+  if (!finding) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const via = [...(finding.roles || []).map(id => ({ kind: 'Rolle', id })),
+               ...(finding.profiles || []).map(id => ({ kind: 'Profil', id }))];
+  box.style.display = '';
+  box.innerHTML = '<div class="causingbox"><h2 style="display:flex;align-items:center;justify-content:space-between">'
+    + 'Verursachende Rollen/Profile'
+    + '<button type="button" class="ghost" id="causingRootCauseBtn" style="padding:3px 10px">Root-Cause</button></h2>'
+    + (via.length
+        ? via.map(v => `<span class="chip-mini">${v.kind}: ${v.id}</span>`).join(' ')
+        : '<span class="muted">keine Evidenz berechnet — über „Evidenz" im Ribbon nachrechnen</span>')
+    + '</div>';
+  $('causingRootCauseBtn').onclick = () => openRootCause(finding.user, { rule: finding.rule });
 }
 
 function showFilterActive(text) { $('filterActiveText').textContent = text; $('filterActive').classList.add('show'); }
@@ -676,9 +769,19 @@ function hideFilterActive() { $('filterActive').classList.remove('show'); }
 
 const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
 
-let ruleCritValue = '', sleepingValue = '';
+let ruleCritValue = '', resultTypeValue = '', sleepingValue = '';
 function renderRuleCritPills() {
   document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === ruleCritValue));
+}
+function renderResultTypePills() {
+  document.querySelectorAll('#resultTypePills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === resultTypeValue));
+  /* Sleeping ist nur fuer "alle" (= unverfaelschte SoD-Findings-Sicht) sinnvoll; bei
+     "Einzelfilter" gibt es ohnehin kein Sleeping-Konzept, bei "SoD" ausdruecklich nicht mehr
+     anwendbar gewuenscht. */
+  const showSleeping = resultTypeValue === '';
+  $('sleepingLabel').style.display = showSleeping ? '' : 'none';
+  $('sleepingPills').style.display = showSleeping ? '' : 'none';
+  if (!showSleeping && sleepingValue) { sleepingValue = ''; renderSleepingPills(); }
 }
 function renderSleepingPills() {
   document.querySelectorAll('#sleepingPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === sleepingValue));
@@ -686,62 +789,127 @@ function renderSleepingPills() {
 document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.addEventListener('click', () => {
   ruleCritValue = b.dataset.value; renderRuleCritPills(); renderRuleSelect(); applyFilters();
 }));
+document.querySelectorAll('#resultTypePills .pill').forEach(b => b.addEventListener('click', () => {
+  resultTypeValue = b.dataset.value; renderResultTypePills(); applyFilters();
+}));
 document.querySelectorAll('#sleepingPills .pill').forEach(b => b.addEventListener('click', () => {
   sleepingValue = b.dataset.value; renderSleepingPills(); applyFilters();
 }));
 
+function renderMatchesTable(rows) {
+  $('findingsTable').style.display = 'none'; $('matchesTable').style.display = '';
+  const body = $('matchesBody');
+  body.innerHTML = rows.length ? '' : '<tr><td colspan="6" class="muted">keine Treffer</td></tr>';
+  const qMeta = new Map(queriesCache.map(q => [q.id, q]));
+  rows.forEach(m => {
+    const tr = document.createElement('tr');
+    const meta = qMeta.get(m.query) || {};
+    tr.innerHTML = `<td>${m.user}</td><td>${m.name || '&ndash;'}</td><td>${m.query}</td>`
+      + `<td class="muted">${meta.shortDescription || meta.description || ''}</td>`
+      + `<td>${critTag(meta.criticality)}</td>`
+      + `<td><button type="button" class="ghost" style="padding:3px 10px">Root-Cause</button></td>`;
+    tr.querySelector('button').onclick = () => openRootCause(m.user, { query: m.query });
+    body.appendChild(tr);
+  });
+}
+
 async function applyFilters() {
   if (!activeRunId) return;
   const u = $('filterUser').value, r = $('filterRule').value, q = $('filterQuery').value;
-  const uts = userTypeValues(), sl = sleepingValue;
+  const uts = userTypeValues();
   const rc = ruleCritValue;
-  if (q) {
-    let url = '/matches?runId=' + encodeURIComponent(activeRunId) + '&query=' + encodeURIComponent(q);
+  await updateResultContext(u, r);
+  await updateQueryCascade(u);
+  renderRuleSelect();
+  if (q || resultTypeValue === 'query') {
+    let url = '/matches?runId=' + encodeURIComponent(activeRunId);
+    if (q) url += '&query=' + encodeURIComponent(q);
     if (u) url += '&user=' + encodeURIComponent(u);
     uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
     const rows = await api(url);
-    $('findingsTable').style.display = 'none'; $('matchesTable').style.display = '';
-    const body = $('matchesBody');
-    body.innerHTML = rows.length ? '' : '<tr><td colspan="4" class="muted">keine Treffer</td></tr>';
-    rows.forEach(m => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${m.user}</td><td>${m.name || '&ndash;'}</td><td>${m.typ}</td><td>${m.status}</td>`;
-      body.appendChild(tr);
-    });
+    renderMatchesTable(rows);
     setFindingsMeta(rows.length);
-    showFilterActive(`Query „${q}"${u ? ' · User „' + u + '"' : ''}${uts.length ? ' · Typ ' + uts.join('+') : ''} &mdash; wer matcht`);
+    showFilterActive(`${q ? 'Query „' + q + '"' : 'Einzelfilter'}${u ? ' · User „' + u + '"' : ''}${uts.length ? ' · Typ ' + uts.join('+') : ''} — wer matcht`);
+    setKpis({ matches: rows.length });
+    renderCausingActors(null);
     return;
   }
-  if (!u && !r && !uts.length && !sl && !rc) {
-    renderFindingsTable(allFindingsForRun); setFindingsMeta(allFindingsForRun.length);
-    hideFilterActive(); refreshKpis({}); return;
+  const sl = sleepingValue;
+  if (!u && !r && !uts.length && !rc && !sl) {
+    renderFindingsTable(allFindingsForRun, true); setFindingsMeta(allFindingsForRun.length);
+    hideFilterActive(); refreshKpis({}); renderCausingActors(null); return;
   }
   let url = '/findings?runId=' + encodeURIComponent(activeRunId) + '&limit=500';
   if (u) url += '&user=' + encodeURIComponent(u);
   if (r) url += '&rule=' + encodeURIComponent(r);
   uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
-  if (sl) url += '&sleeping=' + sl;
   if (rc) url += '&ruleCriticality=' + encodeURIComponent(rc);
+  if (sl) url += '&sleeping=' + sl;
   const rows = await api(url);
   renderFindingsTable(rows);
   setFindingsMeta(rows.length);
   showFilterActive([u && `User „${u}"`, r && `Regel „${r}"`, uts.length && `Typ ${uts.join('+')}`,
-    sl && (sl === 'true' ? 'nur sleeping' : 'nicht sleeping'), rc && `Kritikalität „${rc}"`]
+    rc && `Kritikalität „${rc}"`, sl && (sl === 'true' ? 'nur sleeping' : 'nicht sleeping')]
     .filter(Boolean).join(' · '));
-  refreshKpis({ user: u, rule: r, userTypes: uts, sleeping: sl, ruleCriticality: rc });
+  refreshKpis({ user: u, rule: r, userTypes: uts, ruleCriticality: rc, sleeping: sl });
+  renderCausingActors((u && r && rows.length === 1) ? rows[0] : null);
 }
 $('filterApplyBtn').onclick = applyFilters;
 $('filterResetBtn').onclick = () => {
   $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
   resetUserTypeFilter();
-  ruleCritValue = ''; sleepingValue = ''; renderRuleCritPills(); renderSleepingPills();
+  ruleCritValue = ''; resultTypeValue = ''; sleepingValue = ''; userMatchedQueryIds = null;
+  renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
   renderRuleSelect(); renderQuerySelect();
-  renderFindingsTable(allFindingsForRun); setFindingsMeta(allFindingsForRun.length);
-  hideFilterActive(); refreshKpis({});
+  renderFindingsTable(allFindingsForRun, true); setFindingsMeta(allFindingsForRun.length);
+  hideFilterActive(); updateResultContext('', ''); renderCausingActors(null); refreshKpis({});
 };
 $('filterActiveClear').onclick = () => $('filterResetBtn').onclick();
 
+/* Root-Cause: pro Berechtigungsobjekt (+ TCode-Pruefung) Anforderung + erfuellende Rolle(n)/
+   Profil(e) mit konkreter Authorization. Aufruf entweder mit { query } (Matches-Tabelle, "wer
+   matcht") oder { rule } (SoD-Kontext, aus "Verursachende Rollen/Profile" — erklaert dann jede
+   Klausel der Regel einzeln, je die vom User tatsaechlich gematchte Query). */
+async function openRootCause(user, { query, rule }) {
+  $('rcUser').textContent = `Nutzer: ${user}`;
+  $('rcQuery').textContent = query ? `Query: ${query}` : `Regel: ${rule}`;
+  $('rcObjects').innerHTML = '<div class="muted">lädt&hellip;</div>';
+  openDlg('dlg-rootcause');
+  try {
+    let url = '/root-cause?runId=' + encodeURIComponent(activeRunId) + '&user=' + encodeURIComponent(user);
+    url += query ? '&query=' + encodeURIComponent(query) : '&rule=' + encodeURIComponent(rule);
+    renderRootCause(await api(url));
+  } catch (err) {
+    $('rcObjects').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
+  }
+}
+
+function renderRootCause(data) {
+  const box = $('rcObjects');
+  if (!data.blocks.length) {
+    box.innerHTML = '<div class="muted">Keine Berechtigungsanforderungen gefunden.</div>';
+    return;
+  }
+  box.innerHTML = data.blocks.map(blk => {
+    const heading = data.ruleId ? `<h2 style="margin-top:18px">${blk.label}</h2>` : '';
+    if (blk.note) return `${heading}<div class="muted">${blk.note}</div>`;
+    if (!blk.objects.length) return `${heading}<div class="muted">keine Berechtigungsanforderungen für diese Query.</div>`;
+    const objHtml = blk.objects.map(o => {
+      const reqText = o.requirement
+        .map(r => `${r.field} ${r.andLogic ? 'UND' : 'ODER'} ${r.values.join(', ')}`).join(' · ');
+      const actors = o.satisfiedBy.length
+        ? o.satisfiedBy.map(a => `<div class="rcactor"><span>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}</span>`
+            + `<span class="muted">${a.authValues.join(', ')}</span></div>`).join('')
+        : '<div class="rcactor muted">keine erfüllende Rolle/Profil gefunden</div>';
+      return `<div class="rcobj"><div><b>${o.object}</b></div>`
+        + `<div class="rcreq">Anforderung: ${reqText}</div>${actors}</div>`;
+    }).join('');
+    return heading + objHtml;
+  }).join('');
+}
+
 let queriesCache = [];
+let userMatchedQueryIds = null;
 
 async function loadQueriesForRun(runId) {
   try {
@@ -752,11 +920,31 @@ async function loadQueriesForRun(runId) {
   renderQuerySelect();
 }
 
+/* Kaskadierender Filter (Einzelberechtigung-Seite): bei gewaehltem User nur die Queries, die er
+   tatsaechlich matcht — geladen ueber /matches ohne 'query' (alle Matches dieses Users). */
+async function updateQueryCascade(u) {
+  if (!u) { userMatchedQueryIds = null; renderQuerySelect(); return; }
+  try {
+    const rows = await api('/matches?runId=' + encodeURIComponent(activeRunId) + '&user=' + encodeURIComponent(u));
+    userMatchedQueryIds = new Set(rows.map(r => r.query));
+  } catch {
+    userMatchedQueryIds = new Set();
+  }
+  renderQuerySelect();
+}
+$('filterUser').addEventListener('change', () => {
+  updateQueryCascade($('filterUser').value);
+  renderRuleSelect();
+});
+
 function renderQuerySelect() {
   const sel = $('filterQuery'); const cur = sel.value;
-  const qs = queriesCache;
+  const qs = userMatchedQueryIds ? queriesCache.filter(q => userMatchedQueryIds.has(q.id)) : queriesCache;
   if (!queriesCache.length) {
     sel.innerHTML = '<option value="">&ndash; nicht verf&uuml;gbar &ndash;</option>'; return;
+  }
+  if (userMatchedQueryIds && !qs.length) {
+    sel.innerHTML = '<option value="">&ndash; keine Treffer f&uuml;r diesen User &ndash;</option>'; return;
   }
   sel.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
   qs.forEach(q => {
