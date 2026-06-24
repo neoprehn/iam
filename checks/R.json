@@ -1,0 +1,164 @@
+[
+  {
+    "id": "R1",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Rollen ohne generiertes Profil (AGR_DEFINE ohne AGR_PROF)",
+    "description": "Rolle wurde nie generiert → trägt zur Laufzeit keine Berechtigung. Unfertige Rolle oder Karteileiche; Zuweisungsempfänger haben evtl. weniger Rechte als angenommen.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "R2",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Rollen ohne Berechtigungsdaten (keine AGR_1251)",
+    "description": "Menürolle ohne Objekte — TCodes im Menü, aber nichts gepflegt. Design-Fehler oder reine „Navigationsrolle\".",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R3",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Veraltet generierte / nicht lauffähige Rollen (Rolle nach letzter Profilgenerierung geändert — „rot\" in PFCG)",
+    "description": "Klassische „ungültige\" Rolle: die laufzeitwirksame Berechtigung weicht von der gepflegten Definition ab. Auswertung auf Definitionsbasis täuscht dann.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "R4",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Sammelrolle ohne Einzelrollen (Composite ohne CONTAINS)",
+    "description": "Leere Sammelrolle ohne Wirkung. Designfehler oder Rest aus einem Umbau.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "R5",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Abgeleitete Rolle ohne gültigen Master (Derived ohne DERIVED_FROM)",
+    "description": "Gebrochene Ableitung; zentrale Master-Pflege greift nicht durch, Org-Werte laufen ins Leere.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R6",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Abgeleitete Rolle weicht über Org-Ebenen hinaus vom Master ab",
+    "description": "Ableitungskonzept verletzt — eine Ableitung sollte sich nur in Org-Werten unterscheiden. Abweichungen deuten auf manuelle Eingriffe und Wildwuchs.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R7",
+    "category": "R",
+    "group": "Struktur & Generierung",
+    "title": "Master-Rolle mit direkt gepflegten Org-Werten statt Org-Variablen",
+    "description": "Hebelt das Ableitungskonzept aus: feste Org-Werte im Master verhindern saubere Ableitungen. Wartbarkeitsrisiko.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "R8",
+    "category": "R",
+    "group": "Zuordnung & Reichweite",
+    "title": "Rollen ohne jegliche Nutzerzuordnung (keine aktive AGR_USERS, auch nicht über eine Sammelrolle)",
+    "description": "Tote Rollen → Aufräumkandidaten. Reduzieren Komplexität und Angriffsfläche im Rollenbestand. Großer Anteil deutet auf fehlende Rollen-Lifecycle-Pflege.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R9",
+    "category": "R",
+    "group": "Zuordnung & Reichweite",
+    "title": "Rollen nur mit abgelaufenen Zuordnungen (alle AGR_USERS außerhalb der Gültigkeit)",
+    "description": "Faktisch ungenutzt, am Stichtag aber leicht als „zugewiesen\" fehlgezählt. Validiert zugleich die Stichtagslogik.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R10",
+    "category": "R",
+    "group": "Zuordnung & Reichweite",
+    "title": "Top-N Rollen nach Anzahl Nutzerzuordnungen",
+    "description": "Reichweitenstärkste Rollen — hier wirkt jede Änderung am breitesten. Priorisierungssicht für Review, Rezertifizierung und Risikoeinschätzung.",
+    "prio": "Analytik",
+    "implemented": false
+  },
+  {
+    "id": "R11",
+    "category": "R",
+    "group": "Zuordnung & Reichweite",
+    "title": "Rollen mit genau einem Nutzer (personengebundene Sonderrollen)",
+    "description": "„1:1\"-Rollen sind oft manueller Wildwuchs oder Schattenlösungen am Rollenkonzept vorbei; Konsolidierungs-/Bereinigungskandidaten.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "R12",
+    "category": "R",
+    "group": "Zuordnung & Reichweite",
+    "title": "„Mega\"-Sammelrollen (auffällig viele Einzelrollen / sehr breite Berechtigungsmenge)",
+    "description": "Hohe Komplexität erschwert Nachvollziehbarkeit und begünstigt unbeabsichtigte SoD-Kombinationen. Kandidaten für Aufteilung.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R13",
+    "category": "R",
+    "group": "Risiko & SoD",
+    "title": "Rollen mit Intra-Rollen-SoD-Konflikt (built-in / conflicting-by-design)",
+    "description": "Die Rolle bündelt selbst zwei konfligierende Funktionen — jeder Träger erbt den Konflikt. Design-Fehler an der Wurzel, hoch wiederverwendbar als Befund.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "R14",
+    "category": "R",
+    "group": "Risiko & SoD",
+    "title": "Top-N Rollen nach Anzahl built-in SoD-Konflikte",
+    "description": "Rangliste der problematischsten Rollendesigns. Steuert, wo Redesign den größten Hebel hat.",
+    "prio": "Analytik",
+    "implemented": false
+  },
+  {
+    "id": "R15",
+    "category": "R",
+    "group": "Risiko & SoD",
+    "title": "Konflikt-Hotspot-Rollen (am häufigsten an Inter-Rollen-Konflikten beteiligt)",
+    "description": "Rollen, die in Kombination mit vielen anderen Konflikte erzeugen. Auch wenn jede für sich sauber ist, sind sie die wirksamsten Stellschrauben zur Konfliktreduktion.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "R16",
+    "category": "R",
+    "group": "Risiko & SoD",
+    "title": "Rollen mit kritischen Inhalten (enthalten SAP_ALL-äquivalente Profile, weite S_TABU_DIS/S_TABU_NAM, Debug-Replace S_DEVELOP ACTVT 02, * auf kritischen Org-Ebenen)",
+    "description": "Hochrisiko-Berechtigung gebündelt in einer Rolle — verteilt sich über jede Zuweisung. Erstrangige Review-Kandidaten.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "R17",
+    "category": "R",
+    "group": "Wartbarkeit & Design",
+    "title": "Redundante Rollen (identische bzw. nahezu identische Berechtigungsmenge unter verschiedenen Namen)",
+    "description": "Dubletten blähen den Bestand auf, erschweren Pflege und führen zu inkonsistenten Änderungen. Konsolidierungskandidaten.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "R18",
+    "category": "R",
+    "group": "Wartbarkeit & Design",
+    "title": "Stark überlappende Rollen (großer gemeinsamer Berechtigungsanteil)",
+    "description": "Hinweis auf fehlende Modularisierung; Kandidaten für eine gemeinsame Basisrolle. Senkt langfristig SoD-Risiko und Pflegeaufwand.",
+    "prio": "Niedrig",
+    "implemented": false
+  }
+]

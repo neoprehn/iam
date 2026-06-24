@@ -1,0 +1,34 @@
+[
+  {
+    "id": "D1",
+    "category": "D",
+    "title": "Abgelaufene Zuweisungen, die noch als „aktiv\" gezählt werden",
+    "description": "Direkter Fehler in der Stichtagslogik; führt zu falsch-positiven Berechtigungen. Validiert zugleich die Pfad-Gültigkeitsschnittmenge.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "D2",
+    "category": "D",
+    "title": "Widersprüchliche Gültigkeit (validFrom > validTo)",
+    "description": "Datenfehler aus Quelle oder Import. Kann Stichtagsabfragen unbemerkt verzerren.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "D3",
+    "category": "D",
+    "title": "Zukünftige, noch nicht wirksame Zuweisungen",
+    "description": "Dürfen am aktuellen Stichtag nicht zählen — Prüfung, dass die Logik sie korrekt ausblendet.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "D4",
+    "category": "D",
+    "title": "Veraltete Profilgenerierung (Rolle nach letzter Profilgenerierung geändert — „rot\" in PFCG)",
+    "description": "Die laufzeitwirksame Berechtigung weicht von der gepflegten Rollendefinition ab. Auswertung auf Basis der Definition kann dann täuschen.",
+    "prio": "Mittel",
+    "implemented": false
+  }
+]

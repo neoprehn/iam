@@ -63,6 +63,10 @@ Ob die Auswertung auf Organisationsebenen (z. B. Buchungskreis) eingeschränkt w
 
 ## 3 · Ergebnisse
 
+Gruppen mit mehreren Befehlen (hier sowie unter „Admin") klappen als **Menü** auf — Klick auf die
+Gruppe öffnet eine Liste der Befehle, Klick daneben oder auf einen Befehl schließt sie wieder
+(verhält sich wie ein gewohntes Anwendungsmenü statt nebeneinanderliegender Buttons).
+
 | Befehl | Wirkung |
 | --- | --- |
 | **Aktualisieren** | lädt Läufe, Datasets, Backups neu. |
@@ -132,7 +136,54 @@ Stammdaten-Kachel), stattdessen ist auf einen Blick erkennbar, **welche** Query 
 Kritikalität** gematcht wurde. Die Findings-Tabelle hat **keine klickbare Regel-Zelle** mehr (der
 Root-Cause-Button deckt diesen Absprung jetzt ab) und zeigt keine Sleeping-Spalte mehr.
 
-## 4 · Sichern
+## 4 · Konsistenzchecks
+
+Menü mit zwei Punkten — beide wechseln im Hauptbereich (anstelle von Filter/Ergebnisse) auf den
+Check-Katalog des jeweiligen Bereichs; „&larr; zurück zu Ergebnisse" wechselt zurück.
+
+| Befehl | Wirkung |
+| --- | --- |
+| **User-spezifisch** | Check-Katalog Kategorien A/B/C/D/E (kritische Berechtigungen, Benutzerstamm-Hygiene, Zuweisungskonsistenz, Gültigkeit/Zeitbezug, referenzielle Integrität). |
+| **Rollen-spezifisch** | Check-Katalog Kategorie R (Rollendesign/-qualität — Struktur/Generierung, Zuordnung/Reichweite, Risiko/SoD, Wartbarkeit). |
+
+Adressiert die **Qualität und allgemeinen Risiken des geladenen Berechtigungskonzepts selbst** —
+unabhängig von einer konkreten SoD-Regel. **Je Raster-Box eine eigene, umrahmte Tabelle** — im
+User-Bereich gerastert nach Kategorie: Layout 2×2 (A·B / C·D) plus **E zentriert darunter** mit
+**Kategorie-Pills A–E** (+ „alle") darüber; im Rollen-Bereich gerastert nach Thema (Struktur &
+Generierung, Zuordnung & Reichweite, Risiko & SoD, Wartbarkeit & Design), ebenfalls 2×2 mit
+Themen-Pills darüber — statt einer einzigen langen Tabelle. Je Zeile steht die **Prüfung fett
+mit der Begründung darunter klein** — auch ohne Fachwissen verständlich, nicht nur der Kurztitel.
+Die letzte Spalte **„Ergebnisse"** zeigt die zuletzt in dieser Session gesehene Trefferzahl je
+Check, sonst **„noch nicht ausgeführt"**, solange keine Check-Logik existiert.
+
+Klick auf eine Zeile **wechselt** (kein Pop-up/Dialog, derselbe Grundsatz wie beim Katalog
+selbst) auf eine **eigene Ergebnis-Ansicht**: der Check-Titel links, **ID/Kategorie/Prio-Chips +
+„← zurück zum Katalog"** rechtsbündig auf Höhe der Überschrift; darunter **zweispaltig wie die
+Findings-Ansicht**. **Links:** Begründung (immer sichtbar, auch bei noch nicht implementierten
+Checks), darunter — sobald die Check-Logik existiert — ein schmales Formular
+**Dataset/Stichtag** (vorbelegt aus dem aktiven Lauf) mit **„Ausführen"** (zeigt während der
+Anfrage einen Spinner), darunter eine **Schnellauswahl „Weitere Checks · …"** mit allen Checks
+derselben Box (Kategorie bzw. Thema, analog zur Läufe-Liste, funktioniert auch von einem noch
+nicht implementierten Check aus) — Klick wechselt direkt zum nächsten Check, ohne zurück zum
+Katalog zu müssen; Dataset/Stichtag bleiben dabei erhalten, sodass sich eine ganze Box mit
+denselben Werten durchklicken lässt. **Rechts** das Ergebnis mit einem **Tabelle/Graph-Pill** oben rechts
+(Graph deaktiviert, „kommt später", analog zu den SoD-Ergebnissen): hat der Check eine
+Zusammenfassung **und** eine Detailliste (z. B. „Wer hat SAP_ALL"), zeigt die Tabellenansicht
+oben **Summary-Kacheln** (Werte menschenlesbar, z. B. „aktiv"/„gesperrt" statt roher
+Spaltennamen), darunter die **Detailtabelle** (Spalten variieren je Check); Checks ohne
+Zusammenfassung zeigen nur die Detailtabelle. „← zurück zum Katalog" wechselt zurück. Noch nicht
+implementierte Checks zeigen rechts nur einen Hinweis statt eines Ergebnisses.
+
+**Keine Persistenz (bewusst):** ein Check-Lauf erzeugt keinen `(:Run)`-Knoten und wird nirgends
+gespeichert — das Ergebnis lebt nur im Browser für die Dauer der Session. Die zuletzt gesehene
+**Trefferzahl** wird clientseitig zwischengespeichert und ersetzt danach in der Katalog-Tabelle
+den Platzhalter „noch nicht ausgeführt" — das ist ein reiner UI-Cache, kein Server-Zustand, und
+geht beim Neuladen der Seite verloren. Der vollständige Katalog mit
+Begründung steht in
+[`KONSISTENZCHECKS.md`](../../KONSISTENZCHECKS.md), der technische Rahmen in
+[`ROADMAP.md`](../../ROADMAP.md), Phase 7.
+
+## 5 · Sichern
 
 | Befehl | Wirkung |
 | --- | --- |
@@ -147,7 +198,7 @@ neu berechenbar) als eigenes ZIP. Jedes Dataset trägt dafür eine **Dataset-uid
 Wiederherstellen mit der im Lauf-Backup gespeicherten uid verglichen wird: weicht sie ab (das
 Dataset wurde seither neu befüllt), fragt die App vor dem Restore ausdrücklich nach.
 
-## 5 · Verwalten
+## 6 · Verwalten
 
 | Befehl | Wirkung |
 | --- | --- |
@@ -155,7 +206,7 @@ Dataset wurde seither neu befüllt), fragt die App vor dem Restore ausdrücklich
 
 Beide Aktionen fragen vor dem Ausführen nach.
 
-## 6 · Admin
+## 7 · Admin
 
 | Befehl | Wirkung |
 | --- | --- |
@@ -164,7 +215,7 @@ Beide Aktionen fragen vor dem Ausführen nach.
 
 ### Query Management (eigene Seite, eigene Ribbon-Bar)
 
-Erreichbar direkt &uuml;ber den Ribbon-Punkt „Query Management" (Gruppe „6 &middot; Admin").
+Erreichbar &uuml;ber das Men&uuml; „Admin" (Gruppe „7 &middot; Admin") &rarr; „Query Management".
 Eigene Ribbon-Gruppen: **Anzeige**
 (Aktualisieren), **Editieren** (Speichern/Abbrechen, aktiv sobald etwas ge&auml;ndert wurde),
 **Backup** (Overlay-Datei des gew&auml;hlten Rulesets herunterladen) und **Zur&uuml;ck** (zur

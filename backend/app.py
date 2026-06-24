@@ -31,6 +31,8 @@ NEO4J_USER = os.environ.get("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "/app/config"))
 RULES_DIR = Path(os.environ.get("RULES_DIR", "/app/rules"))
+CHECKS_DIR = Path(os.environ.get("CHECKS_DIR", "/app/checks"))
+CHECK_AREAS = {"user": ["A", "B", "C", "D", "E"], "role": ["R"]}
 CYPHER_DIR = Path(os.environ.get("CYPHER_DIR", "/app/cypher"))
 LOAD_DIR = Path(os.environ.get("LOAD_DIR", "/app/load"))
 MIGRATIONS_DIR = Path(os.environ.get("MIGRATIONS_DIR", "/app/migrations"))
@@ -597,6 +599,64 @@ def profiles_meta():
         "scopeProfiles": [{"name": p["name"], "description": p.get("description", "")} for p in cfg.get("scopeProfiles", [])],
         "sleepDays": cfg["sleeping"]["sleepDays"],
     }
+
+
+def _load_check_category(cat: str) -> list[dict]:
+    path = CHECKS_DIR / f"{cat}.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else []
+
+
+@app.get("/consistency-checks")
+def consistency_checks(area: str = Query("user")):
+    """Katalog der Konsistenzchecks (Qualitaet/Risiko des geladenen Berechtigungskonzepts,
+    ruleset-unabhaengig) -- ein JSON je Kategorie unter checks/, Schema in checks/SCHEMA.md.
+    Ausfuehrliche Begruendung je Check steht in KONSISTENZCHECKS.md (Quelle fuer Menschen).
+    area='user' (Ribbon "User-spezifisch", Kategorien A-E) oder 'role' ("Rollen-spezifisch", R)."""
+    cats = CHECK_AREAS.get(area, CHECK_AREAS["user"])
+    catalog = []
+    for cat in cats:
+        catalog.extend(_load_check_category(cat))
+    return catalog
+
+
+def _find_check(check_id: str) -> dict:
+    for cats in CHECK_AREAS.values():
+        for cat in cats:
+            for c in _load_check_category(cat):
+                if c["id"] == check_id:
+                    return c
+    raise HTTPException(404, f"Check '{check_id}' nicht gefunden")
+
+
+def run_cypher_path_capturing(session, path: Path, params: dict) -> list[list[dict]]:
+    """Wie run_cypher_path, sammelt aber die Zeilen jedes Statements statt sie zu verwerfen --
+    Konsistenzcheck-Dateien koennen mehrere ;-getrennte Statements haben (z. B. Zusammenfassung +
+    Detailliste, s. sap_all.cypher); jedes Statement liefert ein eigenes Zeilen-Set."""
+    return [[jsonable(dict(r)) for r in session.run(stmt, **params)]
+            for stmt in split_statements(path.read_text(encoding="utf-8"))]
+
+
+class ConsistencyRunReq(BaseModel):
+    dataset: str
+    asOf: str   # 'YYYY-MM-DD'
+
+
+@app.post("/consistency-checks/{checkId}/run")
+def run_consistency_check(checkId: str, req: ConsistencyRunReq):
+    """Fuehrt die hinterlegte cypherFile eines Checks gegen ein Dataset/Stichtag aus und gibt
+    die Zeilen je Statement zurueck (results[0] = erstes Statement, ... ); nur fuer Checks mit
+    implemented=true und gesetztem cypherFile (s. checks/SCHEMA.md)."""
+    check = _find_check(checkId)
+    cypher_file = check.get("cypherFile")
+    if not check.get("implemented") or not cypher_file:
+        raise HTTPException(409, f"Check '{checkId}' ist noch nicht implementiert (kein Cypher vorhanden).")
+    path = CYPHER_DIR / cypher_file.removeprefix("cypher/")
+    if not path.is_file():
+        raise HTTPException(500, f"Cypher-Datei fuer '{checkId}' fehlt: {cypher_file}")
+    as_of = datetime.date.fromisoformat(req.asOf)
+    with driver.session() as s:
+        results = run_cypher_path_capturing(s, path, {"dataset": req.dataset, "asOf": as_of})
+    return {"checkId": checkId, "results": results}
 
 
 @app.get("/admin/job-errors")

@@ -77,22 +77,76 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 
 ## Offene Arbeit
 
-### Phase 7 — Verteilung & Reproduzierbarkeit
-**Ziel:** Weitergabe an andere Rechner/User ohne Datenweitergabe.
+### Phase 7 — Konsistenzchecks (Qualität & Risiko des Berechtigungskonzepts)
+**Ziel:** Über die SoD-Funktionstrennung hinaus die strukturelle **Qualität und allgemeinen
+Risiken des geladenen Berechtigungskonzepts selbst** sichtbar machen — unabhängig von einer
+konkreten SoD-Regel. Ergebnis ist ein **Katalog einzeln auswählbarer Checks**, strukturiert
+abarbeitbar (analog zur Einzelfilter-/SoD-Auswahl), mit eigenem Ribbon-Einstieg.
 
-- [ ] `docker-compose.yml` mit gepinnten Versionen finalisieren.
-- [ ] Onboarding-`README`: klonen → `docker compose up` → eigene SAP-Extrakte (Ordner/ZIP) → App.
-- [ ] Klarstellen: Über Repo/Compose wandert nur Logik/Umgebung, nie Mandantendaten.
-- [ ] Verfahren für Ergebnisübergabe (`neo4j-admin database dump`, verschlüsselt, unter Auflagen) dokumentieren — Ausnahmefall.
+Der **vollständige, laufend erweiterbare Check-Katalog** steht mit Begründungstext in eigener
+Datei: [`KONSISTENZCHECKS.md`](KONSISTENZCHECKS.md) — wird unabhängig von dieser Roadmap
+gepflegt, neue Checks dort einfach ergänzen. Zwei Bereiche, je ein Ribbon-Punkt:
+**„User-spezifisch"** (Kategorien A/B/C/D/E — kritische Berechtigungen, Benutzerstamm-Hygiene,
+Zuweisungskonsistenz, Gültigkeit/Zeitbezug, referenzielle Integrität) und
+**„Rollen-spezifisch"** (Kategorie `R`, 18 Checks zu Rollendesign/-qualität — Kategorie `C` wurde
+um die rollenstrukturzentrierten Checks bereinigt, die dort aufgegangen sind). Hier nur der
+technische Rahmen:
 
-**Deployment-Optionen.** Verteilungseinheit ist heute **Docker Compose** (lokal, ein Befehl). Der Stack
-ist **Kubernetes-fähig** (interner, abgesicherter Cluster):
-- **neo4j** als `StatefulSet` mit **PVC** (Community = Single-Instance), Passwort als `Secret`.
-- **backend** als `Deployment` (vorerst **1 Replica** — Jobs in-memory; für Skalierung Job-Status in Shared Store). Code/Config ins Image backen; `data/import` + `backups` als **PVC**. Hinweis: `neo4j` braucht Import-Verzeichnis und `rules/` ebenfalls als Volume.
-- **Zugang** über `Service`/`Ingress` **nur clusterintern bzw. hinter Unternehmens-Auth** (SSO/OIDC, NetworkPolicy). „public" = interner, gesicherter Cluster — **nicht** offenes Internet.
-- Optional: Helm-Chart/Kustomize.
+- [~] **Checks-Katalog (Datenmodell) — Katalog persistiert, Check-Logik teilweise da.** Jeder
+  Check aus `KONSISTENZCHECKS.md` liegt zusätzlich strukturiert (id/category/title/description/
+  prio/`implemented`/optional `cypherFile`) als **JSON je Kategorie** unter [`checks/`](checks/)
+  (Schema: [`checks/SCHEMA.md`](checks/SCHEMA.md)) — analog zur Ruleset-Struktur, aber
+  **ruleset-unabhängig**, ohne Vendor/Overlay-Trennung. **Kategorie A (7/7 Checks) hat Cypher**
+  unter `cypher/checks/` (`sap_all`/`sap_new`/`critical_profiles`/`critical_single_auths`/
+  `batch_rfc_on_dialog`/`org_wildcard_critical_objects`/`role_profile_count_outliers.cypher`;
+  Details/Festlegungen je Check in `KONSISTENZCHECKS.md`, Abschnitt „Implementierungsnotizen
+  Kategorie A"). Über die App ausführbar (s. API/UI). **Offen:** Cypher für Kategorien B–E und
+  `R` (41 von 48 Checks noch `implemented: false`).
+- [x] **API/UI — Katalog + Ausführung erledigt (für Checks mit Cypher).** `GET
+  /consistency-checks?area=user|role` liefert den gemergten Katalog des jeweiligen Bereichs.
+  Ribbon-Gruppe **„Konsistenzchecks"** (Gruppe 4, zwischen Ergebnisse und Sichern) ist jetzt ein
+  **Menü mit zwei Punkten** — **„User-spezifisch"** und **„Rollen-spezifisch"** — beide
+  **wechseln im Hauptbereich** (kein Overlay/Dialog, analog zur Findings-Ansicht) auf **je eine
+  umrahmte Tabelle pro Raster-Box** (User-Bereich gerastert nach Kategorie: Layout 2×2 + E
+  zentriert darunter mit Kategorie-Pills A–E + „alle"; Rollen-Bereich gerastert nach dem Feld
+  `group` der einzigen Kategorie `R`, ebenfalls 2×2 mit Themen-Pills — Struktur & Generierung,
+  Zuordnung & Reichweite, Risiko & SoD, Wartbarkeit & Design statt einer 18-Zeilen-Tabelle). Je
+  Zeile **Prüfung fett + Begründung darunter klein** (auch für fachlich nicht
+  Kundige lesbar). Klick auf eine Zeile **wechselt** (kein Overlay/Dialog, wie der Katalog
+  selbst) auf eine **eigene Ergebnis-Ansicht**: Titel links, **ID/Kategorie/Prio-Chips +
+  „← zurück zum Katalog"** rechtsbündig auf Höhe der Überschrift (keine eigene Zeile); darunter
+  **zweispaltig wie die Findings-Ansicht** (320px + Rest). **Links:** Begründung (immer
+  sichtbar, auch bei nicht implementierten Checks), darunter bei `implemented: true` das
+  Formular **Dataset/Stichtag** (vorbelegt aus dem aktiven Lauf) + „Ausführen" (Spinner während
+  der Anfrage) → `POST /consistency-checks/{id}/run` (führt die hinterlegte `cypherFile` aus,
+  genau **ein** Check pro Lauf, keine Mehrfachauswahl in v1) — **darunter eine
+  Schnellauswahl-Liste „Weitere Checks · …"** mit allen Checks derselben Raster-Box (Kategorie
+  bzw. `group`) (analog zur Läufe-Liste, funktioniert auch ausgehend von einem nicht
+  implementierten Check), Klick wechselt direkt ohne Umweg über den Katalog, Dataset/Stichtag
+  bleiben dabei erhalten.
+  **Rechts** das Ergebnis mit **Tabelle/Graph-Pill** oben rechts (Graph deaktiviert, „kommt
+  später", analog zu den SoD-Ergebnissen): hat die Cypher-Datei mehrere Statements
+  (Zusammenfassung + Detailliste, z. B. `sap_all.cypher`), erscheinen oben **Summary-Kacheln**
+  (Werte menschenlesbar übersetzt, z. B. `Active`→„aktiv", `Locked`→„gesperrt", ohne rohe
+  Spaltennamen), darunter die **Detailtabelle** (dynamische Spalten je Check);
+  Einzelstatement-Checks zeigen nur die Detailtabelle. „← zurück zum Katalog" wechselt zurück,
+  ohne den Lauf zu verlassen. Nicht implementierte Checks zeigen rechts nur einen Hinweis statt
+  eines Ergebnisses. **Keine Persistenz (bewusst):** kein `(:Run)`-Knoten, Ergebnis lebt nur im
+  Browser für die Session; die zuletzt gesehene Trefferzahl wird clientseitig zwischengespeichert
+  und ersetzt in der Katalog-Tabelle den Platzhalter „noch nicht ausgeführt" — UI-Cache, kein
+  Server-Zustand, geht beim Neuladen verloren. **Offen:** Export, echter Graph,
+  Server-seitige Persistenz/Historie (falls künftig gewünscht).
+- [ ] **Export:** Konsistenz-Report (CSV, später Teil des Gesamt-Reports zusammen mit
+  Import-Evidenz).
+- [x] **Ribbon-Layout: Gruppen mit mehreren Befehlen als Menü — erledigt.** Gruppen mit mehr als
+  einem Befehl („Ergebnisse", „Admin", „Konsistenzchecks") klappen als **aufklappbares Menü** auf
+  (Klick öffnet, Klick daneben/auf einen Befehl schließt) statt alle Befehle nebeneinander zu
+  zeigen. Gruppen mit nur einem Befehl bleiben ein direkter Button. Ribbon-Gruppen durchnummeriert
+  (1 Daten · 2 Auswertung · 3 Ergebnisse · 4 Konsistenzchecks · 5 Sichern · 6 Verwalten · 7 Admin).
 
-**DoD:** Ein Kollege bringt das Projekt identisch zum Laufen, ohne dass Mandantendaten das Repo berühren.
+**DoD:** Ein strukturierter, erweiterbarer Katalog an Qualitäts-/Risiko-Checks ist über die UI
+auswählbar, ausführbar und mit Drill-down auf die betroffenen Objekte einsehbar — unabhängig von
+der SoD-Funktionstrennungsprüfung.
 
 ---
 
@@ -153,7 +207,7 @@ Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mi
   - [ ] **USOBT-gestützter Query-Builder** (v2, "Profilgenerator-Logik"): neue Queries durch **kontextbasierte Auswahl von Transaktion → Berechtigungsobjekten** bauen statt freier Eingabe — USOBT/USOBX als eigener, vom Dataset getrennter Graph-Layer (ist je Berechtigungskonzept/Set stabil, aber bei Bedarf gegen das aktuelle Set **abzugleichen/neu zu laden**, wenn neue Queries gebaut werden).
   - [ ] **Stammdaten-Blatt: Query → System-Typ-Zuordnung** (v2, „für die Zukunft"): welche Query zu welchem Quellsystem-Typ gehört (SAP R/3, SAP S/4HANA, künftig weitere) — Vorstufe für system-übergreifende/-spezifische Rulesets, ohne das Datenmodell zu verzweigen.
   - [ ] **Filterset-/Konnektor-Import** für weitere Systeme — perspektivisch **SAP S/4HANA, Azure AD/Entra, Microsoft Dynamics, Salesforce** (je System ein eigenes Ruleset; Datenmodell bleibt gleich).
-- [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusste Entscheidung): die App läuft lokal bzw. wird als Container verteilt; Zugriff über die (lokale/Unternehmens-)Umgebung abgesichert. Eine Auth-Schicht (SSO/OIDC am Ingress) kommt erst, wenn die App **mehrbenutzerfähig zentral** betrieben wird — siehe Deployment-Notiz (Phase 7).
+- [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusste Entscheidung): die App läuft lokal bzw. wird als Container verteilt; Zugriff über die (lokale/Unternehmens-)Umgebung abgesichert. Eine Auth-Schicht (SSO/OIDC am Ingress) kommt erst, wenn die App **mehrbenutzerfähig zentral** betrieben wird — siehe Deployment-Notiz (Phase 10).
 
 **DoD (Phase 9):** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich, Anzeige, Export und Backup/Restore ohne JSON-Pflege bedienbar sind — lokal, ohne dass Mandantendaten die Umgebung verlassen.
 
@@ -169,6 +223,25 @@ Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mi
 - [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): Pseudonymisierung der User-ID; Klartext nur im begründeten Einzelfall.
 
 **DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
+
+---
+
+### Phase 10 — Verteilung & Reproduzierbarkeit
+**Ziel:** Weitergabe an andere Rechner/User ohne Datenweitergabe.
+
+- [ ] `docker-compose.yml` mit gepinnten Versionen finalisieren.
+- [ ] Onboarding-`README`: klonen → `docker compose up` → eigene SAP-Extrakte (Ordner/ZIP) → App.
+- [ ] Klarstellen: Über Repo/Compose wandert nur Logik/Umgebung, nie Mandantendaten.
+- [ ] Verfahren für Ergebnisübergabe (`neo4j-admin database dump`, verschlüsselt, unter Auflagen) dokumentieren — Ausnahmefall.
+
+**Deployment-Optionen.** Verteilungseinheit ist heute **Docker Compose** (lokal, ein Befehl). Der Stack
+ist **Kubernetes-fähig** (interner, abgesicherter Cluster):
+- **neo4j** als `StatefulSet` mit **PVC** (Community = Single-Instance), Passwort als `Secret`.
+- **backend** als `Deployment` (vorerst **1 Replica** — Jobs in-memory; für Skalierung Job-Status in Shared Store). Code/Config ins Image backen; `data/import` + `backups` als **PVC**. Hinweis: `neo4j` braucht Import-Verzeichnis und `rules/` ebenfalls als Volume.
+- **Zugang** über `Service`/`Ingress` **nur clusterintern bzw. hinter Unternehmens-Auth** (SSO/OIDC, NetworkPolicy). „public" = interner, gesicherter Cluster — **nicht** offenes Internet.
+- Optional: Helm-Chart/Kustomize.
+
+**DoD:** Ein Kollege bringt das Projekt identisch zum Laufen, ohne dass Mandantendaten das Repo berühren.
 
 ---
 

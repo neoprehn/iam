@@ -66,4 +66,4 @@ nur lokal ein.
 Verteilungseinheit ist **Docker Compose**. Der Stack ist **Kubernetes-fähig** (interner,
 abgesicherter Cluster): Neo4j als `StatefulSet` mit `PVC`, Backend als `Deployment` (vorerst eine
 Replica — Jobs liegen in-memory), Passwort als `Secret`, `data/import` + `backups` als `PVC`,
-Zugang nur clusterintern bzw. hinter Unternehmens-Auth. Details: Phase 7 in der ROADMAP.
+Zugang nur clusterintern bzw. hinter Unternehmens-Auth. Details: Phase 10 in der ROADMAP.

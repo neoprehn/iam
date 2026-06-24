@@ -17,6 +17,7 @@
   html[data-theme="light"] .tag.high { background:rgba(235,123,46,.16); color:#a8590c; }
   html[data-theme="light"] .tag.medium { background:rgba(245,166,35,.18); color:#8a6300; }
   html[data-theme="light"] .tag.low { background:rgba(70,167,88,.16); color:#1f7a37; }
+  html[data-theme="light"] .tag.info { background:rgba(76,139,245,.14); color:#2f6fe0; }
   html[data-theme="light"] header { background:linear-gradient(110deg,#eef2f7 0%,#ffffff 60%); }
 
   /* Banner */
@@ -51,6 +52,17 @@
   .cmd.danger:hover { background:rgba(229,72,77,.14); }
   .cmd:disabled { opacity:.4; cursor:default; background:transparent; border-color:transparent; }
 
+  /* Ribbon-Gruppen mit mehreren Befehlen: aufklappbares Menue statt nebeneinander */
+  .group.menu { position:relative; }
+  .group.menu .menu-trigger { position:relative; }
+  .group.menu .menu-trigger .caret { font-size:9px; color:var(--muted); margin-left:1px; }
+  .group.menu .cmds.dropdown { display:none; position:fixed; flex-direction:column;
+    gap:2px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:6px;
+    box-shadow:0 8px 20px rgba(0,0,0,.35); z-index:30; min-width:190px; }
+  .group.menu.open .cmds.dropdown { display:flex; }
+  .group.menu .cmds.dropdown .cmd { flex-direction:row; justify-content:flex-start; width:100%;
+    min-width:0; gap:8px; padding:7px 9px; }
+
   #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
     border:1px solid var(--line); background:var(--panel); }
   #status.err { border-color:var(--crit); color:#ffb3b5; }
@@ -71,6 +83,7 @@
   .tag.high { background:rgba(235,123,46,.20); color:#ffa552; }
   .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
   .tag.low { background:rgba(70,167,88,.18); color:#7bd690; }
+  .tag.info { background:rgba(76,139,245,.20); color:#8ab4f8; }
   td.click, th.click { cursor:pointer; }
   td.click:hover { color:var(--accent); text-decoration:underline; }
   .runsbox { border:1px solid var(--line); border-radius:8px; padding:10px; }
@@ -105,6 +118,12 @@
     padding:5px 0; border-top:1px solid var(--line); }
   .rcobj .rcactor:first-of-type { border-top:0; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .cc-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
+  .cc-grid.single { grid-template-columns:1fr; max-width:600px; margin:4px auto 0; }
+  .cc-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px 6px; background:var(--panel); }
+  .cc-box.full { grid-column:1 / -1; max-width:600px; margin:0 auto; }
+  .cc-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  .cc-box table { margin:0; }
   .pill { cursor:pointer; border:1px solid transparent; }
   .pill:not(.tag) { background:var(--bg); color:var(--muted); border-color:var(--line); }
   .pill:not(.tag):hover { border-color:var(--accent); }
@@ -188,28 +207,46 @@
       <button class="cmd" id="cmdRun"><span class="ico">&#9654;</span>Neuer Lauf</button>
     </div><div class="lbl">2 &middot; Auswertung</div>
   </div>
-  <div class="group">
+  <div class="group menu" id="grpErgebnisse">
     <div class="cmds">
+      <button type="button" class="cmd menu-trigger" data-menu="grpErgebnisse">
+        <span class="ico">&#128202;</span>Ergebnisse<span class="caret">&#9662;</span></button>
+    </div><div class="lbl">3 &middot; Ergebnisse</div>
+    <div class="cmds dropdown">
       <button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button>
       <button class="cmd" id="cmdExplain" disabled><span class="ico">&#128270;</span>Evidenz</button>
       <button class="cmd" id="cmdExport" disabled><span class="ico">&#128202;</span>Export CSV</button>
-    </div><div class="lbl">3 &middot; Ergebnisse</div>
+    </div>
+  </div>
+  <div class="group menu" id="grpConsistency">
+    <div class="cmds">
+      <button type="button" class="cmd menu-trigger" data-menu="grpConsistency">
+        <span class="ico">&#128737;</span>Konsistenzchecks<span class="caret">&#9662;</span></button>
+    </div><div class="lbl">4 &middot; Konsistenzchecks</div>
+    <div class="cmds dropdown">
+      <button class="cmd" id="cmdConsistencyUser"><span class="ico">&#128100;</span>User-spezifisch</button>
+      <button class="cmd" id="cmdConsistencyRole"><span class="ico">&#127917;</span>Rollen-spezifisch</button>
+    </div>
   </div>
   <div class="group">
     <div class="cmds">
       <button class="cmd" id="cmdBackup"><span class="ico">&#128190;</span>Backup / Restore</button>
-    </div><div class="lbl">4 &middot; Sichern</div>
+    </div><div class="lbl">5 &middot; Sichern</div>
   </div>
   <div class="group">
     <div class="cmds">
       <button class="cmd danger" id="cmdManage"><span class="ico">&#129529;</span>Bereinigen</button>
-    </div><div class="lbl">5 &middot; Verwalten</div>
+    </div><div class="lbl">6 &middot; Verwalten</div>
   </div>
-  <div class="group">
+  <div class="group menu" id="grpAdmin">
     <div class="cmds">
+      <button type="button" class="cmd menu-trigger" data-menu="grpAdmin">
+        <span class="ico">&#9881;</span>Admin<span class="caret">&#9662;</span></button>
+    </div><div class="lbl">7 &middot; Admin</div>
+    <div class="cmds dropdown">
       <a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a>
       <button class="cmd" id="cmdErrorLog"><span class="ico">&#128220;</span>Fehlerprotokoll</button>
-    </div><div class="lbl">6 &middot; Admin</div>
+    </div>
   </div>
 </nav>
 
@@ -288,6 +325,64 @@
         <thead><tr><th>User</th><th>Name</th><th>Query</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Root-Cause</th></tr></thead>
         <tbody id="matchesBody"></tbody>
       </table>
+    </div>
+  </div>
+  <div id="consistencyView" style="display:none">
+    <h2 style="margin-top:0"><span id="ccViewTitle">Konsistenzchecks</span>
+      <button class="ghost" id="ccBackBtn" style="width:auto;display:inline-block;margin-left:10px;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck zu Ergebnisse</button>
+    </h2>
+    <div class="sub" style="margin-bottom:14px" id="ccViewSub">Qualit&auml;t und allgemeine Risiken
+      des geladenen Berechtigungskonzepts selbst &mdash; unabh&auml;ngig von einer konkreten
+      SoD-Regel. Klick auf eine Zeile zeigt das Detail samt Ausf&uuml;hrung.</div>
+    <div class="resultbar" id="ccCatBar">
+      <span class="muted" style="font-size:12px">Kategorie:</span>
+      <div class="pillgroup" id="ccCatPills"></div>
+    </div>
+    <div id="ccGrid" class="cc-grid"><div class="muted">l&auml;dt&hellip;</div></div>
+  </div>
+  <div id="consistencyResultView" style="display:none">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:4px">
+      <h2 style="margin:0"><span id="ccdTitle">Check</span></h2>
+      <div class="bctx" style="margin:0">
+        <span class="chip" id="ccdId"></span><span class="chip" id="ccdCat"></span><span class="chip" id="ccdPrio"></span>
+        <button class="ghost" id="ccrBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck zum Katalog</button>
+      </div>
+    </div>
+    <div class="sub" id="ccdDescription" style="margin-bottom:14px"></div>
+    <div class="cols">
+      <div>
+        <div id="ccdRunFormWrap">
+          <h2 style="margin-top:0">Ausf&uuml;hren</h2>
+          <div class="filterbox">
+            <label for="ccdDataset">Dataset</label>
+            <select id="ccdDataset"></select>
+            <label for="ccdAsOf">Stichtag</label>
+            <input type="date" id="ccdAsOf" />
+            <button class="ghost" type="button" id="ccdRunBtn" style="margin-top:14px">Ausf&uuml;hren</button>
+            <div class="hint" id="ccdRunError" style="display:none"></div>
+          </div>
+        </div>
+
+        <h2 id="ccdQuickNavTitle">Weitere Checks</h2>
+        <div class="runsbox"><ul class="runs" id="ccdQuickNav"></ul></div>
+      </div>
+      <div>
+        <h2 style="margin-top:0">Ergebnis <span class="muted" id="ccdResultMeta"></span></h2>
+        <div class="hint" id="ccdNotImplemented" style="display:none"></div>
+        <div id="ccdResultBody">
+          <div class="resultbar">
+            <div class="pillgroup" style="margin-left:auto">
+              <button type="button" class="pill active" data-value="table">Tabelle</button>
+              <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (NVL/React)">Graph</button>
+            </div>
+          </div>
+          <div id="ccdSummary" class="kpis" style="display:none"></div>
+          <div id="ccdNoResultYet" class="muted">Noch keine Ausf&uuml;hrung &mdash; links Dataset/Stichtag w&auml;hlen und „Ausf&uuml;hren" klicken.</div>
+          <div id="ccdResult" style="display:none; max-height:480px; overflow:auto">
+            <table id="ccdDetailTable"><thead></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </main>
@@ -461,6 +556,250 @@ $('cmdExplain').onclick = () => {
     j => `${doneTag} Evidenz fertig — ${j.intra} intra-Rolle, ${j.inter} inter-Rolle (von ${j.findings}).`);
 };
 $('cmdErrorLog').onclick = () => { renderErrorLog(); openDlg('dlg-errorlog'); };
+$('cmdConsistencyUser').onclick = async () => { await loadConsistencyCatalog('user'); showConsistencyView('user'); };
+$('cmdConsistencyRole').onclick = async () => { await loadConsistencyCatalog('role'); showConsistencyView('role'); };
+$('ccBackBtn').onclick = () => showResultsView();
+
+const CC_AREA_META = {
+  user: { title: 'Konsistenzchecks &middot; User-spezifisch',
+    sub: 'Qualit&auml;t und allgemeine Risiken des geladenen Berechtigungskonzepts selbst (Userbezug) &mdash; unabh&auml;ngig von einer konkreten SoD-Regel. Klick auf eine Zeile zeigt das Detail samt Ausf&uuml;hrung.',
+    catOrder: ['A', 'B', 'C', 'D', 'E'],
+    catLabels: { A: 'A · Kritische Rechte', B: 'B · Benutzerstamm', C: 'C · Struktur',
+      D: 'D · Gültigkeit', E: 'E · Integrität' } },
+  role: { title: 'Konsistenzchecks &middot; Rollen-spezifisch',
+    sub: 'Qualit&auml;t und Design des Rollenbestands selbst &mdash; Struktur/Generierung, Zuordnung/Reichweite, Risiko/SoD, Wartbarkeit. Klick auf eine Zeile zeigt das Detail samt Ausf&uuml;hrung.' },
+};
+let ccArea = 'user';
+let consistencyCatalog = { user: [], role: [] };
+let ccCatFilter = '';
+
+// Raster-Schluessel je Zeile: bei "user" nach Kategorie (A-E, statisch); bei "role" nach dem
+// optionalen Feld "group" (Themen-Unterteilung innerhalb der einzigen Kategorie R, s.
+// checks/SCHEMA.md) -- faellt group, sollte es das mal nicht geben, auf category zurueck.
+function ccGroupKey(c) { return ccArea === 'role' ? (c.group || c.category) : c.category; }
+function ccGroupLabel(g) { return ccArea === 'user' ? CC_AREA_META.user.catLabels[g] : g; }
+function ccGroupOrder() {
+  if (ccArea === 'user') return CC_AREA_META.user.catOrder;
+  const seen = [];
+  consistencyCatalog.role.forEach(c => { const g = ccGroupKey(c); if (!seen.includes(g)) seen.push(g); });
+  return seen;
+}
+
+function renderCcCatPills() {
+  const order = ccGroupOrder();
+  const bar = $('ccCatBar');
+  if (order.length < 2) { bar.style.display = 'none'; return; }
+  bar.style.display = '';
+  const pg = $('ccCatPills');
+  pg.innerHTML = '<button type="button" class="pill active" data-value="">alle</button>'
+    + order.map(g => `<button type="button" class="pill" data-value="${escapeHtml(g)}">${escapeHtml(ccGroupLabel(g))}</button>`).join('');
+  pg.querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => {
+    ccCatFilter = b.dataset.value;
+    pg.querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
+    renderConsistencyTable();
+  }));
+}
+
+async function loadConsistencyCatalog(area) {
+  if (!consistencyCatalog[area].length) {
+    consistencyCatalog[area] = await api('/consistency-checks?area=' + encodeURIComponent(area));
+  }
+}
+function prioTagClass(prio) {
+  return prio === 'Hoch' ? 'critical' : prio === 'Mittel' ? 'medium' : prio === 'Analytik' ? 'info' : 'low';
+}
+function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function renderConsistencyTable() {
+  const grid = $('ccGrid');
+  const order = ccGroupOrder();
+  const groups = ccCatFilter ? [ccCatFilter] : order;
+  grid.className = 'cc-grid' + (ccCatFilter || order.length < 2 ? ' single' : '');
+  grid.innerHTML = '';
+  groups.forEach((g, i) => {
+    const rows = consistencyCatalog[ccArea].filter(c => ccGroupKey(c) === g);
+    if (!rows.length) return;
+    const box = document.createElement('div');
+    // ungerade Anzahl Gruppen im Raster: letzte Box ueber volle Breite + zentriert statt im 2x2-Raster.
+    const isLastOdd = !ccCatFilter && order.length >= 2 && groups.length % 2 === 1 && i === groups.length - 1;
+    box.className = 'cc-box' + (isLastOdd || order.length < 2 ? ' full' : '');
+    // Rollen-Boxen auf einheitliche Hoehe bringen (ca. 7 Zeilen) statt je Gruppengroesse (7/5/4/2)
+    // unterschiedlich hoch im 2x2-Raster zu stehen -- kuerzere Gruppen zeigen dann Leerraum/
+    // Scroll-Reserve, laengere scrollen innerhalb der Box statt die Box zu strecken.
+    const tableHtml = `<table><thead><tr><th>ID</th><th>Pr&uuml;fung</th><th>Prio</th><th>Ergebnisse</th></tr></thead><tbody></tbody></table>`;
+    box.innerHTML = ccArea === 'role'
+      ? `<h3>${escapeHtml(ccGroupLabel(g))}</h3><div style="max-height:430px; overflow-y:auto">${tableHtml}</div>`
+      : `<h3>${escapeHtml(ccGroupLabel(g))}</h3>${tableHtml}`;
+    const tb = box.querySelector('tbody');
+    rows.forEach(c => {
+      const tr = document.createElement('tr');
+      // Titel fett + Begruendung darunter klein -- soll auch fachlich nicht Kundigen verstaendlich sein,
+      // nicht nur der Kurztitel. "Ergebnisse" zeigt die Trefferzahl, sobald die Check-Logik existiert
+      // (s. ROADMAP Phase 7) -- bis dahin Platzhalter, da noch nichts ausgefuehrt wird.
+      const lastCount = ccdLastCounts[c.id];
+      const ergebnisCell = lastCount !== undefined ? `<b>${lastCount}</b> Treffer`
+        : c.implemented ? '&ndash;' : 'noch nicht ausgef&uuml;hrt';
+      tr.innerHTML = `<td>${c.id}</td>`
+        + `<td class="click"><b>${escapeHtml(c.title)}</b>`
+        + `<div class="muted" style="font-size:11px;margin-top:2px">${escapeHtml(c.description)}</div></td>`
+        + `<td><span class="tag ${prioTagClass(c.prio)}">${c.prio}</span></td>`
+        + `<td class="muted">${ergebnisCell}</td>`;
+      tr.querySelector('.click').addEventListener('click', () => openConsistencyDetail(c));
+      tb.appendChild(tr);
+    });
+    grid.appendChild(box);
+  });
+  if (!grid.children.length) grid.innerHTML = '<div class="muted">keine Treffer</div>';
+}
+
+let ccdCurrentCheck = null;
+function renderCcdQuickNav() {
+  const g = ccGroupKey(ccdCurrentCheck);
+  $('ccdQuickNavTitle').textContent = `Weitere Checks · ${ccArea === 'role' ? g : 'Kategorie ' + g}`;
+  const ul = $('ccdQuickNav');
+  ul.innerHTML = '';
+  consistencyCatalog[ccArea].filter(c => ccGroupKey(c) === g).forEach(c => {
+    const li = document.createElement('li');
+    li.className = 'run-card' + (c.id === ccdCurrentCheck.id ? ' active' : '');
+    li.innerHTML = `<div class="run-card-top"><span class="run-id">${c.id}</span>
+        <span class="tag ${prioTagClass(c.prio)}">${c.prio}</span></div>
+      <div style="font-size:12px;margin-top:4px">${escapeHtml(c.title)}</div>`;
+    li.addEventListener('click', () => openConsistencyDetail(c));
+    ul.appendChild(li);
+  });
+}
+function openConsistencyDetail(c) {
+  ccdCurrentCheck = c;
+  $('ccdTitle').textContent = c.title;
+  $('ccdId').textContent = c.id;
+  $('ccdCat').textContent = 'Kategorie ' + c.category;
+  $('ccdPrio').textContent = 'Prio ' + c.prio;
+  $('ccdDescription').textContent = c.description;
+  $('ccdResult').style.display = 'none';
+  $('ccdNoResultYet').style.display = '';
+  $('ccdSummary').style.display = 'none';
+  $('ccdResultMeta').textContent = '';
+  $('ccdRunError').style.display = 'none';
+  renderCcdQuickNav();
+  if (!c.implemented) {
+    $('ccdNotImplemented').style.display = '';
+    $('ccdNotImplemented').textContent = 'Noch nicht implementiert — siehe KONSISTENZCHECKS.md / ROADMAP Phase 7.';
+    $('ccdRunFormWrap').style.display = 'none';
+    $('ccdResultBody').style.display = 'none';
+  } else {
+    $('ccdNotImplemented').style.display = 'none';
+    $('ccdRunFormWrap').style.display = '';
+    $('ccdResultBody').style.display = '';
+    // Dataset/Stichtag beim Wechsel innerhalb der Kategorie (Schnellauswahl) erhalten, nur beim
+    // allerersten Oeffnen aus dem aktiven Lauf vorbelegen -- so kann man Checks einer Kategorie
+    // mit denselben Werten durchklicken, ohne sie jedes Mal neu zu setzen.
+    if (!$('ccdDataset').value || !$('ccdAsOf').value) {
+      const run = activeRunId && runsById[activeRunId];
+      if (run) { $('ccdDataset').value = run.dataset; $('ccdAsOf').value = run.asOf; }
+    }
+  }
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = '';
+}
+$('ccrBackBtn').onclick = () => {
+  $('consistencyResultView').style.display = 'none';
+  $('consistencyView').style.display = '';
+};
+
+// Bekannte Label-Tokens aus labels(u) (Userlabels) menschenlesbar/deutsch machen, statt der
+// rohen Spaltenbezeichnung ("typ_status: Active+Dialog") -- nur Werte zeigen, uebersetzt.
+const CC_LABEL_MAP = { Active: 'aktiv', Locked: 'gesperrt' };
+function ccFmtLabelValue(v) {
+  const tr = x => CC_LABEL_MAP[x] || x;
+  return Array.isArray(v) ? v.map(tr).join(' · ') : tr(v);
+}
+function renderCcdSummary(rows) {
+  const box = $('ccdSummary');
+  if (!rows || !rows.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  box.style.display = 'flex';
+  const cols = Object.keys(rows[0]);
+  const big = cols[cols.length - 1], rest = cols.slice(0, -1);
+  box.innerHTML = rows.map(r => `<div class="kpi"><b>${escapeHtml(r[big])}</b><span>${
+    rest.map(c => escapeHtml(ccFmtLabelValue(r[c]))).join(' · ')
+  }</span></div>`).join('');
+}
+function renderCcdDetailTable(rows) {
+  const t = $('ccdDetailTable');
+  if (!rows || !rows.length) { t.innerHTML = '<tbody><tr><td class="muted">keine Treffer</td></tr></tbody>'; return; }
+  const cols = Object.keys(rows[0]);
+  const fmt = v => Array.isArray(v) ? v.map(x => typeof x === 'object' ? JSON.stringify(x) : x).join(', ')
+    : (typeof v === 'object' && v !== null) ? JSON.stringify(v) : String(v);
+  t.innerHTML = `<thead><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${escapeHtml(fmt(r[c]))}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+// Zuletzt gesehene Trefferzahl je Check, nur im Browser-Speicher (kein Backend-Run/-Persistenz
+// fuer Konsistenzchecks, s. KONSISTENZCHECKS.md) -- erlaubt aber, im Katalog die "Ergebnisse"-
+// Spalte mit dem letzten bekannten Stand der laufenden Session zu fuellen statt nur "–"/"noch
+// nicht ausgefuehrt" zu zeigen.
+let ccdLastCounts = {};
+$('ccdRunBtn').onclick = async () => {
+  const dataset = $('ccdDataset').value, asOf = $('ccdAsOf').value;
+  if (!dataset || !asOf) { $('ccdRunError').style.display = ''; $('ccdRunError').textContent = 'Dataset und Stichtag angeben.'; return; }
+  $('ccdRunError').style.display = 'none';
+  $('ccdRunBtn').disabled = true; $('ccdRunBtn').innerHTML = '<span class="spin"></span> läuft…';
+  try {
+    const res = await api('/consistency-checks/' + encodeURIComponent(ccdCurrentCheck.id) + '/run', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataset, asOf }) });
+    const detail = res.results[res.results.length - 1];
+    const summary = res.results.length > 1 ? res.results[0] : null;
+    renderCcdSummary(summary);
+    renderCcdDetailTable(detail);
+    $('ccdResultMeta').textContent = `· ${detail.length} Treffer · ${dataset} · Stichtag ${asOf}`;
+    $('ccdNoResultYet').style.display = 'none';
+    $('ccdResult').style.display = '';
+    ccdLastCounts[ccdCurrentCheck.id] = detail.length;
+  } catch (e) {
+    $('ccdRunError').style.display = ''; $('ccdRunError').textContent = e.detail || 'Fehler beim Ausführen.';
+  } finally {
+    $('ccdRunBtn').disabled = false; $('ccdRunBtn').textContent = 'Ausführen';
+  }
+};
+
+function showConsistencyView(area) {
+  ccArea = area; ccCatFilter = '';
+  $('ccViewTitle').innerHTML = CC_AREA_META[area].title;
+  $('ccViewSub').innerHTML = CC_AREA_META[area].sub;
+  renderCcCatPills();
+  renderConsistencyTable();
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  document.querySelector('main .cols').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  $('consistencyView').style.display = '';
+}
+function showResultsView() {
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  document.querySelector('main .cols').style.display = '';
+  if (activeRunId) applyFilters(); else $('kpis').style.display = '';
+}
+
+/* Ribbon-Menues (Gruppen mit mehreren Befehlen, z. B. "Ergebnisse"/"Admin") */
+document.querySelectorAll('.menu-trigger').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const grp = $(btn.dataset.menu);
+    const isOpen = grp.classList.contains('open');
+    document.querySelectorAll('.group.menu.open').forEach(g => g.classList.remove('open'));
+    if (!isOpen) {
+      const r = btn.getBoundingClientRect();
+      const dd = grp.querySelector('.cmds.dropdown');
+      dd.style.left = Math.round(r.left) + 'px';
+      dd.style.top = Math.round(r.bottom + 6) + 'px';
+      grp.classList.add('open');
+    }
+  });
+});
+document.querySelectorAll('.group.menu .cmds.dropdown').forEach(dd => {
+  dd.addEventListener('click', () => dd.closest('.group.menu').classList.remove('open'));
+});
+document.addEventListener('click', () => document.querySelectorAll('.group.menu.open').forEach(g => g.classList.remove('open')));
 
 async function renderErrorLog() {
   const ul = $('errorLogList');
@@ -509,7 +848,7 @@ function updateCtxChip() {
 
 async function refreshDatasets() {
   const datasets = await api('/datasets');
-  for (const id of ['runDataset', 'clrDataset', 'bkpDataset']) {
+  for (const id of ['runDataset', 'clrDataset', 'bkpDataset', 'ccdDataset']) {
     const sel = $(id), cur = sel.value; sel.innerHTML = '';
     datasets.forEach(d => opt(sel, d, d));
     if (datasets.includes(cur)) sel.value = cur;

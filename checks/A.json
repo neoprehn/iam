@@ -1,0 +1,65 @@
+[
+  {
+    "id": "A1",
+    "category": "A",
+    "title": "Wer hat SAP_ALL",
+    "description": "Vollzugriff auf praktisch alles — höchstes Einzelrisiko. Muss auf wenige, begründete (idealerweise Notfall-)User beschränkt und nachweisbar sein. Klassischer Erstbefund jeder Prüfung.",
+    "prio": "Hoch",
+    "implemented": true,
+    "cypherFile": "cypher/checks/sap_all.cypher"
+  },
+  {
+    "id": "A2",
+    "category": "A",
+    "title": "Wer hat SAP_NEW",
+    "description": "Überbrückt neue Berechtigungsprüfungen nach Upgrades. Produktiv/dauerhaft zugewiesen hebelt es Sicherheitsverschärfungen aus — gehört nur temporär in der Übergangsphase eingesetzt.",
+    "prio": "Hoch",
+    "implemented": true,
+    "cypherFile": "cypher/checks/sap_new.cypher"
+  },
+  {
+    "id": "A3",
+    "category": "A",
+    "title": "Wer hat SAP-Standardprofile außer SAP_ALL/SAP_NEW (z. B. S_A.SYSTEM, S_A.ADMIN, S_A.DEVELOP)",
+    "description": "Weitreichende Admin-/Entwickler-Rechte über Auslieferungsprofile. Sollten nicht breit gestreut sein; oft unbemerkt mitgeschleppt.",
+    "prio": "Hoch",
+    "implemented": true,
+    "cypherFile": "cypher/checks/critical_profiles.cypher"
+  },
+  {
+    "id": "A4",
+    "category": "A",
+    "title": "User mit kritischen Einzelberechtigungen aus dem Regelkatalog (z. B. Debug-Replace S_DEVELOP ACTVT 02, weite S_TABU_DIS/S_TABU_NAM, S_USER_GRP)",
+    "description": "Gezielte Hochrisiko-Objekte/-Aktivitäten unterhalb der Profilebene. Debug-Replace etwa erlaubt Laufzeit-Manipulation und umgeht fachliche Kontrollen.",
+    "prio": "Hoch",
+    "implemented": true,
+    "cypherFile": "cypher/checks/critical_single_auths.cypher"
+  },
+  {
+    "id": "A5",
+    "category": "A",
+    "title": "Berechtigung weiter als der Benutzertyp es nahelegt (z. B. Batch-/RFC-Profil auf Dialog-User oder umgekehrt)",
+    "description": "Typkonflikt; deutet auf Fehlzuweisung und erschwert die saubere Trennung technischer vs. menschlicher Konten.",
+    "prio": "Mittel",
+    "implemented": true,
+    "cypherFile": "cypher/checks/batch_rfc_on_dialog.cypher"
+  },
+  {
+    "id": "A6",
+    "category": "A",
+    "title": "User mit * auf kritischen Org-Ebenen (z. B. BUKRS=*) bei sensiblen Objekten",
+    "description": "Unbeschränkter Scope (siehe *-Normalisierung): ein scheinbar harmloser Treffer ist real unternehmensweit wirksam und verbreitert jeden Konflikt.",
+    "prio": "Hoch",
+    "implemented": true,
+    "cypherFile": "cypher/checks/org_wildcard_critical_objects.cypher"
+  },
+  {
+    "id": "A7",
+    "category": "A",
+    "title": "Ausreißer bei Rollen-/Profilanzahl je User",
+    "description": "Ungewöhnlich viele Zuweisungen im Vergleich zur Nutzerpopulation — typischer Bereinigungs-/Re-Zertifizierungskandidat, oft historisch gewachsen statt bewusst vergeben.",
+    "prio": "Mittel",
+    "implemented": true,
+    "cypherFile": "cypher/checks/role_profile_count_outliers.cypher"
+  }
+]

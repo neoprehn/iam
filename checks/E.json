@@ -1,0 +1,58 @@
+[
+  {
+    "id": "E1",
+    "category": "E",
+    "title": "Authorization ohne FOR_OBJECT (Objekt nicht im TOBJ-Import)",
+    "description": "Importlücke — die Berechtigung hängt „in der Luft\". Verfälscht jede objektbasierte Auswertung.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "E2",
+    "category": "E",
+    "title": "AGR_1251-Objekt, das nicht in TOBJ existiert",
+    "description": "Dangling Reference; oft veraltetes oder kundeneigenes (Z-)Objekt. Hinweis auf unvollständigen Stammdaten-Import.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "E3",
+    "category": "E",
+    "title": "TCode in AGR_TCODES, der nicht in TSTC existiert",
+    "description": "Menüeintrag auf eine nicht (mehr) existierende Transaktion — Rollenmenü-Leiche oder fehlende Import-Tabelle.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "E4",
+    "category": "E",
+    "title": "Transaction ohne CHECKS-Kante (kein USOBX_C/SU24-Eintrag)",
+    "description": "TCode ohne Vorschlagswerte → Brücke TCode→Objekt fehlt, Berechtigungsbezug unklar. Relevant für die Vollständigkeit der Can-Do-Kette.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "E5",
+    "category": "E",
+    "title": "Doppelte Knoten je Business-Key",
+    "description": "Sollte durch Constraints verhindert sein; als Absicherung wertvoll, weil Dubletten Zähler und Pfade verfälschen.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "E6",
+    "category": "E",
+    "title": "Rowcount-Abgleich Knoten/Kanten gegen Quell-CSV",
+    "description": "Bestätigt die Import-Vollständigkeit (Phase-2-DoD). Ohne diesen Abgleich sind alle anderen Befunde nur so verlässlich wie der Import.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "E7",
+    "category": "E",
+    "title": "Verwaiste Authorization-Knoten ohne erreichbaren Rollen-/Profilpfad",
+    "description": "Berechtigung existiert im Graph, aber kein Role/Profile verweist (mehr) darauf — Karteileiche aus Reorganisation/Teil-Import, verzerrt Auswertungen über alle Authorization-Knoten.",
+    "prio": "Mittel",
+    "implemented": false
+  }
+]

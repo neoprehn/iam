@@ -1,0 +1,42 @@
+[
+  {
+    "id": "C1",
+    "category": "C",
+    "title": "User mit direkt zugewiesenen Profilen (UST04, ohne Rolle)",
+    "description": "Umgeht die PFCG-Pflege; schwer wartbar, oft Altlast aus R/3-Zeiten oder manuelle „Schnellschüsse\". Direktprofile entziehen sich dem Rollenkonzept und werden bei Auswertungen leicht übersehen.",
+    "prio": "Hoch",
+    "implemented": false
+  },
+  {
+    "id": "C2",
+    "category": "C",
+    "title": "Verwaiste Profile (generiertes Profil ohne zugehörige Rolle)",
+    "description": "Inkonsistenz zwischen USR10/AGR_PROF; Hinweis auf fehlerhafte Generierung oder unsaubere Reorganisation. Kann Auswertungen verfälschen.",
+    "prio": "Mittel",
+    "implemented": false
+  },
+  {
+    "id": "C3",
+    "category": "C",
+    "title": "User ohne jegliche Berechtigung (kein Rollen- und kein Profilbezug)",
+    "description": "„Leere\" Konten — neu angelegt, ungenutzt oder fehlerhaft. Lizenz- und Aufräumkandidaten; in Summe ein Indikator für mangelnde User-Lifecycle-Pflege.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "C4",
+    "category": "C",
+    "title": "Einzelrolle ohne jede Verwendung (in keiner Sammelrolle, keine direkte Zuweisung)",
+    "description": "Ungenutzte Rolle → Aufräumkandidat. Reduziert Komplexität und Angriffsfläche im Rollenbestand.",
+    "prio": "Niedrig",
+    "implemented": false
+  },
+  {
+    "id": "C5",
+    "category": "C",
+    "title": "Rollen ohne Beschreibung/Dokumentation",
+    "description": "Erschwert Re-Zertifizierung und Nachvollziehbarkeit „wofür ist diese Rolle gedacht\" — Basis-Hygiene für jedes Rollenkonzept.",
+    "prio": "Niedrig",
+    "implemented": false
+  }
+]
