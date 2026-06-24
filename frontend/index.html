@@ -356,8 +356,8 @@
           <div class="filterbox">
             <label for="ccdDataset">Dataset</label>
             <select id="ccdDataset"></select>
-            <label for="ccdAsOf">Stichtag</label>
-            <input type="date" id="ccdAsOf" />
+            <div class="hint">Stichtag (Datenstand): <b id="ccdAsOfDisplay">&ndash;</b>
+              <a href="#" id="ccdAsOfEdit" style="margin-left:6px">&auml;ndern&hellip;</a></div>
             <button class="ghost" type="button" id="ccdRunBtn" style="margin-top:14px">Ausf&uuml;hren</button>
             <div class="hint" id="ccdRunError" style="display:none"></div>
           </div>
@@ -370,14 +370,15 @@
         <h2 style="margin-top:0">Ergebnis <span class="muted" id="ccdResultMeta"></span></h2>
         <div class="hint" id="ccdNotImplemented" style="display:none"></div>
         <div id="ccdResultBody">
+          <div id="ccdSummary" class="kpis" style="display:none"></div>
           <div class="resultbar">
+            <div id="ccdParams" style="display:contents"></div>
             <div class="pillgroup" style="margin-left:auto">
               <button type="button" class="pill active" data-value="table">Tabelle</button>
               <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (NVL/React)">Graph</button>
             </div>
           </div>
-          <div id="ccdSummary" class="kpis" style="display:none"></div>
-          <div id="ccdNoResultYet" class="muted">Noch keine Ausf&uuml;hrung &mdash; links Dataset/Stichtag w&auml;hlen und „Ausf&uuml;hren" klicken.</div>
+          <div id="ccdNoResultYet" class="muted">Noch keine Ausf&uuml;hrung &mdash; links Dataset w&auml;hlen und „Ausf&uuml;hren" klicken.</div>
           <div id="ccdResult" style="display:none; max-height:480px; overflow:auto">
             <table id="ccdDetailTable"><thead></thead><tbody></tbody></table>
           </div>
@@ -398,6 +399,11 @@
       <div><label for="upDataset">Dataset-Name</label><input id="upDataset" placeholder="aus Dateiname" /></div>
       <div><label for="upLang">Sprachen</label><input id="upLang" value="DE,DEU,D" /></div>
     </div>
+    <label for="upAsOf">Stichtag (Downloaddatum der Extrakte)</label>
+    <input type="date" id="upAsOf" />
+    <small>Wird einmalig bei Erst-Import gesetzt (gilt dann global für alle Läufe/Checks dieses
+      Datasets); leer = automatisch aus den Dateizeitstempeln der Extrakte abgeleitet, sonst
+      heute. Spätere Korrektur über „ändern…" beim Dataset.</small>
     <div class="check"><input type="checkbox" id="upSkipSchema" />
       <div><label for="upSkipSchema">Schema &uuml;berspringen</label>
         <small>Constraints/Indizes sind schon angelegt.</small></div></div>
@@ -407,6 +413,10 @@
   <form id="formFolder">
     <label for="impDataset">oder vorhandener Ordner (data/import/&hellip;)</label>
     <select id="impDataset"></select>
+    <label for="impAsOf">Stichtag (Downloaddatum der Extrakte)</label>
+    <input type="date" id="impAsOf" />
+    <small>Nur bei Erst-Import dieses Datasets wirksam; leer = automatisch aus den
+      Dateizeitstempeln der Extrakte abgeleitet, sonst heute.</small>
     <div class="check"><input type="checkbox" id="impSkipConvert" />
       <div><label for="impSkipConvert">Konvertierung &uuml;berspringen</label>
         <small>.csv liegen bereits vor.</small></div></div>
@@ -424,7 +434,11 @@
       <div><label for="runDataset">System (dataset)</label><select id="runDataset"></select></div>
     </div>
     <div class="row">
-      <div><label for="asOf">Stichtag</label><input type="date" id="asOf" value="2023-12-31" /></div>
+      <div><label>Stichtag</label>
+        <div class="hint">Datenstand: <b id="runAsOfDisplay">&ndash;</b>
+          <a href="#" id="runAsOfEdit" style="margin-left:6px">&auml;ndern&hellip;</a></div>
+        <small>= Downloaddatum der SAP-Extrakte, Eigenschaft des Datasets &mdash; kein
+          Lauf-Filter. &Auml;nderung wirkt global auf alle Laeufe/Checks dieses Datasets.</small></div>
       <div><label for="sleepDays">Sleeping (Tage)</label><input type="number" id="sleepDays" min="0" step="1" /></div>
     </div>
     <label for="userTypeProfile">Nutzertyp-Profil</label>
@@ -544,7 +558,7 @@ document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e
 document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
 $('cmdImport').onclick = () => openDlg('dlg-import');
-$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); openDlg('dlg-run'); };
+$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); openDlg('dlg-run'); };
 $('cmdBackup').onclick = () => openDlg('dlg-backup');
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
@@ -667,6 +681,32 @@ function renderCcdQuickNav() {
     ul.appendChild(li);
   });
 }
+let ccdParamValues = {};
+// Pill-Reihe auf Hoehe der KPI-Kacheln/Ergebnis (wie bei den Findings: Kritikalitaet/
+// Ergebnistyp/Sleeping-Pills oberhalb der Tabelle, nicht im linken Ausfuehren-Formular
+// versteckt) -- auf Nutzer-Feedback aus dem linken Formular hierher verschoben. Klick auf
+// einen Pill aendert den Wert UND loest sofort einen neuen Lauf aus, sofern bereits ein
+// Ergebnis angezeigt wird (sonst nur Wert merken, "Ausfuehren" startet den ersten Lauf).
+function renderCcdParams(c) {
+  const box = $('ccdParams');
+  ccdParamValues = {};
+  if (!c.params || !c.params.length) { box.innerHTML = ''; return; }
+  box.innerHTML = c.params.map(p => {
+    ccdParamValues[p.name] = p.default;
+    return `<span class="muted" style="font-size:12px">${escapeHtml(p.label || p.name)}:</span>
+      <div class="pillgroup" data-param="${escapeHtml(p.name)}">
+        ${p.options.map(v => `<button type="button" class="pill${v === p.default ? ' active' : ''}" data-value="${v}">${v}</button>`).join('')}
+      </div>`;
+  }).join('');
+  box.querySelectorAll('.pillgroup').forEach(pg => {
+    pg.querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => {
+      pg.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      ccdParamValues[pg.dataset.param] = isNaN(b.dataset.value) ? b.dataset.value : Number(b.dataset.value);
+      if ($('ccdResult').style.display !== 'none') runConsistencyCheck();
+    }));
+  });
+}
 function openConsistencyDetail(c) {
   ccdCurrentCheck = c;
   $('ccdTitle').textContent = c.title;
@@ -689,13 +729,16 @@ function openConsistencyDetail(c) {
     $('ccdNotImplemented').style.display = 'none';
     $('ccdRunFormWrap').style.display = '';
     $('ccdResultBody').style.display = '';
-    // Dataset/Stichtag beim Wechsel innerhalb der Kategorie (Schnellauswahl) erhalten, nur beim
+    renderCcdParams(c);
+    // Dataset beim Wechsel innerhalb der Kategorie (Schnellauswahl) erhalten, nur beim
     // allerersten Oeffnen aus dem aktiven Lauf vorbelegen -- so kann man Checks einer Kategorie
-    // mit denselben Werten durchklicken, ohne sie jedes Mal neu zu setzen.
-    if (!$('ccdDataset').value || !$('ccdAsOf').value) {
+    // mit denselben Werten durchklicken, ohne sie jedes Mal neu zu setzen. Stichtag ist keine
+    // Eingabe mehr, sondern eine Dataset-Eigenschaft (s. refreshCcdAsOfDisplay()).
+    if (!$('ccdDataset').value) {
       const run = activeRunId && runsById[activeRunId];
-      if (run) { $('ccdDataset').value = run.dataset; $('ccdAsOf').value = run.asOf; }
+      if (run) { $('ccdDataset').value = run.dataset; }
     }
+    refreshCcdAsOfDisplay();
   }
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = '';
@@ -722,33 +765,131 @@ function renderCcdSummary(rows) {
     rest.map(c => escapeHtml(ccFmtLabelValue(r[c]))).join(' · ')
   }</span></div>`).join('');
 }
-function renderCcdDetailTable(rows) {
-  const t = $('ccdDetailTable');
-  if (!rows || !rows.length) { t.innerHTML = '<tbody><tr><td class="muted">keine Treffer</td></tr></tbody>'; return; }
-  const cols = Object.keys(rows[0]);
+// Spaltennamen aus den Cypher-RETURN-Aliasen (camelCase, ASCII statt Umlaute, z. B.
+// "gueltigVon") sind als Tabellen-Header unprofessionell -- auf Nutzer-Feedback: feste
+// Uebersetzungstabelle fuer alle bekannten Spalten + generischer camelCase-Fallback
+// (Wortgrenzen aufsplitten + Anfangsbuchstabe gross) fuer alles, was hier (noch) fehlt.
+const CC_COLUMN_LABELS = {
+  user: 'User', name: 'Name', typ: 'Typ', status: 'Status', letzterLogon: 'Letzter Logon',
+  anzahl: 'Anzahl', gesamt: 'Gesamt', gesamtAnzahl: 'Gesamtanzahl', abgelaufen: 'Abgelaufen',
+  gueltigVon: 'Gültig von', gueltigBis: 'Gültig bis', spaetesteGueltigkeit: 'Späteste Gültigkeit',
+  objekt: 'Objekt', objekte: 'Objekte', objektAnzahl: 'Anzahl Objekte',
+  authAnzahl: 'Anzahl Authorizations', rollenAnzahl: 'Anzahl Rollen', rollen: 'Rollen',
+  rolle: 'Rolle', rolleA: 'Rolle A', rolleB: 'Rolle B', tcode: 'TCode',
+  tcodeAnzahl: 'Anzahl TCodes', imRollenmenue: 'Im Rollenmenü',
+  dublettenAnzahl: 'Anzahl Dubletten', label: 'Label', id: 'ID', text: 'Text',
+  profil: 'Profil', profile: 'Profile', profilAnzahl: 'Anzahl Profile',
+  profilVorschau: 'Profile (Vorschau)', profilGeneriert: 'Profil generiert',
+  profilStatus: 'Profil-Status', profilInfo: 'Info', schwelleInfo: 'Info', verteilung: 'Verteilung',
+  nutzerAnzahl: 'Anzahl Nutzer', userAnzahl: 'Anzahl User', info: 'Info',
+  sperrgruende: 'Sperrgründe', befunde: 'Befunde', befund: 'Befund', muster: 'Muster',
+  lauf: 'Lauf', regeln: 'Regeln', konfliktAnzahl: 'Anzahl Konflikte',
+  jaccard: 'Ähnlichkeit (Jaccard)', gemeinsameObjekte: 'Gemeinsame Objekte',
+  einzelrollenAnzahl: 'Anzahl Einzelrollen', perzentil95: 'P95', p95: 'P95',
+  schwelle95: 'P95-Schwelle', hatAuchRollen: 'Hat auch Rollen',
+  hatBerechtigungen: 'Hat Berechtigungen', hatBerechtigungsdaten: 'Hat Berechtigungsdaten',
+  hatGeneriertesProfil: 'Hat generiertes Profil', hatMenue: 'Hat Menü',
+  personalnummer: 'Personalnummer', pwdInitial: 'Passwort-Status', gesetztAm: 'Gesetzt am',
+  geaendertAm: 'Geändert am', akteurTyp: 'Typ', akteurId: 'Rolle/Profil',
+  gesperrt: 'Gesperrt', subtyp: 'Subtyp', direkteUserAnzahl: 'Anzahl direkter User',
+  zuordnungsAnzahl: 'Anzahl Zuordnungen', ausreisserAnzahl: 'Anzahl Ausreißer',
+  kontenAnzahl: 'Anzahl Konten', gruppenAnzahl: 'Anzahl Gruppen', paarAnzahl: 'Anzahl Paare',
+  ohneText: 'Ohne Text', felder: 'Feldwerte', ueberRollen: 'Über Rollen', ueberProfile: 'Über Profile',
+  auth: 'Auth-Instanz',
+};
+function ccColumnLabel(c) {
+  if (CC_COLUMN_LABELS[c]) return CC_COLUMN_LABELS[c];
+  const spaced = c.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+// Sortierbare Spalten (Klick auf Header, kleines Dreieck zeigt auf/absteigend) -- auf Nutzer-
+// Feedback ergaenzt. ccdDetailRows haelt den aktuell angezeigten (ggf. sortierten) Datensatz,
+// damit ein erneuter Klick re-sortieren kann, ohne neu vom Server zu laden.
+let ccdDetailRows = [], ccdSortState = { col: null, dir: 1 };
+function ccdSortKey(v) {
+  if (v === null || v === undefined) return '';
+  if (Array.isArray(v)) return v.length;
+  if (typeof v === 'object') return JSON.stringify(v);
+  return v;
+}
+function ccdCompare(a, b, col) {
+  const av = ccdSortKey(a[col]), bv = ccdSortKey(b[col]);
+  const an = typeof av === 'number' ? av : parseFloat(av);
+  const bn = typeof bv === 'number' ? bv : parseFloat(bv);
+  if (av !== '' && bv !== '' && !isNaN(an) && !isNaN(bn)) return an - bn;
+  return String(av).localeCompare(String(bv), 'de');
+}
+function renderCcdDetailBody(cols, hasRootCause) {
   const fmt = v => Array.isArray(v) ? v.map(x => typeof x === 'object' ? JSON.stringify(x) : x).join(', ')
     : (typeof v === 'object' && v !== null) ? JSON.stringify(v) : String(v);
-  t.innerHTML = `<thead><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${escapeHtml(fmt(r[c]))}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  const tbody = $('ccdDetailTable').querySelector('tbody');
+  tbody.innerHTML = ccdDetailRows.map(r => `<tr>${cols.map(c => `<td>${escapeHtml(fmt(r[c]))}</td>`).join('')}${
+    hasRootCause ? '<td><button type="button" class="ghost" style="padding:3px 10px">Root-Cause</button></td>' : ''
+  }</tr>`).join('');
+  if (hasRootCause) {
+    tbody.querySelectorAll('tr').forEach((tr, i) => {
+      tr.querySelector('button').onclick = () => openConsistencyRootCause(ccdCurrentCheck.id, ccdDetailRows[i].user);
+    });
+  }
+}
+function ccdUpdateSortIndicators(t) {
+  t.querySelectorAll('th[data-col]').forEach(th => {
+    th.querySelector('.sort-ind').textContent = th.dataset.col === ccdSortState.col
+      ? (ccdSortState.dir === 1 ? ' ▲' : ' ▼') : '';
+  });
+}
+function renderCcdDetailTable(rows) {
+  ccdDetailRows = rows || [];
+  ccdSortState = { col: null, dir: 1 };
+  const t = $('ccdDetailTable');
+  if (!ccdDetailRows.length) { t.innerHTML = '<tbody><tr><td class="muted">keine Treffer</td></tr></tbody>'; return; }
+  const cols = Object.keys(ccdDetailRows[0]);
+  const hasRootCause = !!(ccdCurrentCheck && ccdCurrentCheck.rootCauseFile) && cols.includes('user');
+  t.innerHTML = `<thead><tr>${cols.map(c =>
+    `<th data-col="${escapeHtml(c)}" style="cursor:pointer; user-select:none">${escapeHtml(ccColumnLabel(c))}<span class="sort-ind"></span></th>`
+  ).join('')}${hasRootCause ? '<th></th>' : ''}</tr></thead><tbody></tbody>`;
+  t.querySelectorAll('th[data-col]').forEach(th => th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    ccdSortState = { col, dir: ccdSortState.col === col ? -ccdSortState.dir : 1 };
+    ccdDetailRows.sort((a, b) => ccdSortState.dir * ccdCompare(a, b, col));
+    renderCcdDetailBody(cols, hasRootCause);
+    ccdUpdateSortIndicators(t);
+  }));
+  renderCcdDetailBody(cols, hasRootCause);
+}
+async function openConsistencyRootCause(checkId, user) {
+  $('rcUser').textContent = `Nutzer: ${user}`;
+  $('rcQuery').textContent = `Check: ${checkId}`;
+  $('rcObjects').innerHTML = '<div class="muted">lädt&hellip;</div>';
+  openDlg('dlg-rootcause');
+  try {
+    const data = await api('/consistency-checks/' + encodeURIComponent(checkId) + '/root-cause', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataset: $('ccdDataset').value, user }) });
+    renderRootCause(data);
+  } catch (err) {
+    $('rcObjects').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
+  }
 }
 // Zuletzt gesehene Trefferzahl je Check, nur im Browser-Speicher (kein Backend-Run/-Persistenz
 // fuer Konsistenzchecks, s. KONSISTENZCHECKS.md) -- erlaubt aber, im Katalog die "Ergebnisse"-
 // Spalte mit dem letzten bekannten Stand der laufenden Session zu fuellen statt nur "–"/"noch
 // nicht ausgefuehrt" zu zeigen.
 let ccdLastCounts = {};
-$('ccdRunBtn').onclick = async () => {
-  const dataset = $('ccdDataset').value, asOf = $('ccdAsOf').value;
-  if (!dataset || !asOf) { $('ccdRunError').style.display = ''; $('ccdRunError').textContent = 'Dataset und Stichtag angeben.'; return; }
+async function runConsistencyCheck() {
+  const dataset = $('ccdDataset').value;
+  if (!dataset) { $('ccdRunError').style.display = ''; $('ccdRunError').textContent = 'Dataset angeben.'; return; }
   $('ccdRunError').style.display = 'none';
   $('ccdRunBtn').disabled = true; $('ccdRunBtn').innerHTML = '<span class="spin"></span> läuft…';
   try {
     const res = await api('/consistency-checks/' + encodeURIComponent(ccdCurrentCheck.id) + '/run', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dataset, asOf }) });
+      body: JSON.stringify({ dataset, params: ccdParamValues }) });
     const detail = res.results[res.results.length - 1];
     const summary = res.results.length > 1 ? res.results[0] : null;
     renderCcdSummary(summary);
     renderCcdDetailTable(detail);
+    const asOf = $('ccdAsOfDisplay').textContent;
     $('ccdResultMeta').textContent = `· ${detail.length} Treffer · ${dataset} · Stichtag ${asOf}`;
     $('ccdNoResultYet').style.display = 'none';
     $('ccdResult').style.display = '';
@@ -758,7 +899,8 @@ $('ccdRunBtn').onclick = async () => {
   } finally {
     $('ccdRunBtn').disabled = false; $('ccdRunBtn').textContent = 'Ausführen';
   }
-};
+}
+$('ccdRunBtn').onclick = runConsistencyCheck;
 
 function showConsistencyView(area) {
   ccArea = area; ccCatFilter = '';
@@ -855,8 +997,43 @@ async function refreshDatasets() {
     else if (!datasets.length) opt(sel, '', '— keine —');
   }
   ctx.datasets = datasets.length; updateCtxChip();
+  refreshRunAsOfDisplay(); refreshCcdAsOfDisplay();
   return datasets;
 }
+
+// Stichtag (asOf) ist eine Eigenschaft des Datasets (= Downloaddatum der SAP-Extrakte), kein
+// Lauf-/Check-Filter mehr -- nur anzeigen + ueber PUT /datasets/{id}/asof gezielt korrigierbar
+// (globale Variable, wirkt auf alle folgenden Laeufe/Checks dieses Datasets).
+async function fetchDatasetAsOf(id) {
+  if (!id) return null;
+  try { return (await api('/datasets/' + encodeURIComponent(id) + '/asof')).asOf; }
+  catch (e) { return null; }
+}
+async function refreshRunAsOfDisplay() {
+  $('runAsOfDisplay').textContent = (await fetchDatasetAsOf($('runDataset').value)) || '–';
+}
+async function refreshCcdAsOfDisplay() {
+  $('ccdAsOfDisplay').textContent = (await fetchDatasetAsOf($('ccdDataset').value)) || '–';
+}
+async function editDatasetAsOf(datasetSelId, displayElId) {
+  const id = $(datasetSelId).value;
+  if (!id) return;
+  const cur = $(displayElId).textContent;
+  const val = prompt(
+    `Stichtag (Datenstand) für Dataset "${id}" ändern (YYYY-MM-DD).\n` +
+    `Wirkt global auf ALLE folgenden Läufe/Checks dieses Datasets, nicht nur den nächsten.`,
+    cur && cur !== '–' ? cur : '');
+  if (!val) return;
+  try {
+    await api('/datasets/' + encodeURIComponent(id) + '/asof', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ asOf: val }) });
+    await Promise.all([refreshRunAsOfDisplay(), refreshCcdAsOfDisplay()]);
+  } catch (e) { alert('Fehler: ' + (e.detail || JSON.stringify(e))); }
+}
+$('runDataset').addEventListener('change', refreshRunAsOfDisplay);
+$('ccdDataset').addEventListener('change', refreshCcdAsOfDisplay);
+$('runAsOfEdit').onclick = e => { e.preventDefault(); editDatasetAsOf('runDataset', 'runAsOfDisplay'); };
+$('ccdAsOfEdit').onclick = e => { e.preventDefault(); editDatasetAsOf('ccdDataset', 'ccdAsOfDisplay'); };
 async function loadImportFolders() {
   const folders = await api('/import-folders');
   const sel = $('impDataset'); sel.innerHTML = '';
@@ -1398,6 +1575,7 @@ $('formUpload').addEventListener('submit', async e => {
     const fd = new FormData();
     fd.append('file', f); fd.append('dataset', $('upDataset').value.trim());
     fd.append('lang', $('upLang').value.trim()); fd.append('skipSchema', $('upSkipSchema').checked);
+    fd.append('asOf', $('upAsOf').value);
     const { jobId } = await api('/imports/upload', { method: 'POST', body: fd });
     await poll(jobId, importDone);
   } catch (err) {
@@ -1408,13 +1586,14 @@ $('formUpload').addEventListener('submit', async e => {
 $('formFolder').addEventListener('submit', e => {
   e.preventDefault();
   const d = $('impDataset').value; if (!d) return;
-  runJob('/imports', json({ dataset: d, skipConvert: $('impSkipConvert').checked }), null, importDone);
+  runJob('/imports', json({ dataset: d, skipConvert: $('impSkipConvert').checked,
+                            asOf: $('impAsOf').value || null }), null, importDone);
 });
 
 $('formRun').addEventListener('submit', e => {
   e.preventDefault();
   runJob('/runs', json({
-    ruleset: $('ruleset').value, dataset: $('runDataset').value, asOf: $('asOf').value,
+    ruleset: $('ruleset').value, dataset: $('runDataset').value,
     userTypeProfile: $('userTypeProfile').value, orgProfile: $('orgProfile').value,
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
     runId: $('runId').value.trim() || null, title: $('runTitle').value.trim() || null,

@@ -33,7 +33,8 @@
     "description": "Gezielte Hochrisiko-Objekte/-Aktivitäten unterhalb der Profilebene. Debug-Replace etwa erlaubt Laufzeit-Manipulation und umgeht fachliche Kontrollen.",
     "prio": "Hoch",
     "implemented": true,
-    "cypherFile": "cypher/checks/critical_single_auths.cypher"
+    "cypherFile": "cypher/checks/critical_single_auths.cypher",
+    "rootCauseFile": "cypher/checks/critical_single_auths_root_cause.cypher"
   },
   {
     "id": "A5",

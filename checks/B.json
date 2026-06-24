@@ -5,7 +5,11 @@
     "title": "Aktive Dialog-User ohne Logon seit X Tagen (USR02-Last-Logon bzw. Did-Do)",
     "description": "Ruhende, aber offene Konten sind Angriffsfläche und Lizenzkosten. Verbindet sich gut mit der Did-Do-Sicht (nie genutzt + berechtigt = Entzugskandidat).",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/dormant_active_dialog_users.cypher",
+    "params": [
+      {"name": "sleepDays", "label": "Tage ohne Logon", "type": "int", "options": [90, 180, 360], "default": 180}
+    ]
   },
   {
     "id": "B2",
@@ -13,7 +17,8 @@
     "title": "Standard-/Default-User (SAP*, DDIC, SAPCPIC, EARLYWATCH, TMSADM): Status & Logon",
     "description": "Bekannte Default-Accounts mit bekannten Passwörtern. Müssen gesichert, mit Profil ausgestattet bzw. gesperrt sein — ein Pflicht-Check jeder Basis-Prüfung.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/default_users.cypher"
   },
   {
     "id": "B3",
@@ -21,7 +26,8 @@
     "title": "Initial-/schwache Passwortstände (USR02-Kennzeichen)",
     "description": "Konten mit nie geändertem Initialpasswort sind leicht übernehmbar. Indikator für lückenhaftes Onboarding.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/initial_passwords.cypher"
   },
   {
     "id": "B4",
@@ -29,7 +35,12 @@
     "title": "Gesperrte User mit weiterhin kritischen Rollen",
     "description": "Eine Sperre verdeckt Risiko nur, beseitigt es nicht — bei Entsperrung ist der Vollzugriff sofort wieder da. Saubere Praxis: Rechte entziehen statt nur sperren.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/locked_users_with_critical_access.cypher",
+    "params": [
+      {"name": "lockReason", "label": "Sperrgrund", "type": "str",
+       "options": ["alle", "failed_logons", "admin_local", "admin_global"], "default": "alle"}
+    ]
   },
   {
     "id": "B5",
@@ -37,7 +48,11 @@
     "title": "Mehrfach-Konten derselben Person (gleiche Person via ADRP/Namensgleichheit)",
     "description": "Zwei Konten können eine SoD-Trennung umgehen (Funktion A auf Konto 1, Funktion B auf Konto 2). Schwer zu finden, prüferisch wertvoll.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/duplicate_persons_by_name.cypher",
+    "params": [
+      {"name": "status", "label": "Status", "type": "str", "options": ["alle", "aktiv", "gesperrt"], "default": "alle"}
+    ]
   },
   {
     "id": "B6",
@@ -45,7 +60,8 @@
     "title": "Sleeping-User mit hochkritischen Berechtigungen",
     "description": "Eigener Blickwinkel unabhängig von SoD (nutzt den bestehenden sleepDays-Parameter): wer lange nicht angemeldet war, aber weiterhin sehr kritische Rechte trägt, ist ein vorrangiger Entzugskandidat.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/sleeping_users_with_critical_access.cypher"
   },
   {
     "id": "B7",
@@ -53,6 +69,7 @@
     "title": "Generische/Sammel-User mit produktiven Berechtigungen",
     "description": "Namensmuster (TEST*/ADMIN*/…) abseits der bekannten SAP-Defaults (s. B2): kundeneigene Sammel-IDs ohne 1:1-Personenbezug, oft schlecht nachverfolgbar, mit produktiven Rechten ein Mitbestimmungs-/Nachweisrisiko.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/generic_users_with_access.cypher"
   }
 ]

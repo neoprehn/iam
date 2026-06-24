@@ -6,7 +6,8 @@
     "title": "Rollen ohne generiertes Profil (AGR_DEFINE ohne AGR_PROF)",
     "description": "Rolle wurde nie generiert → trägt zur Laufzeit keine Berechtigung. Unfertige Rolle oder Karteileiche; Zuweisungsempfänger haben evtl. weniger Rechte als angenommen.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_without_generated_profile.cypher"
   },
   {
     "id": "R2",
@@ -15,16 +16,18 @@
     "title": "Rollen ohne Berechtigungsdaten (keine AGR_1251)",
     "description": "Menürolle ohne Objekte — TCodes im Menü, aber nichts gepflegt. Design-Fehler oder reine „Navigationsrolle\".",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_without_auth_data.cypher"
   },
   {
     "id": "R3",
     "category": "R",
     "group": "Struktur & Generierung",
     "title": "Veraltet generierte / nicht lauffähige Rollen (Rolle nach letzter Profilgenerierung geändert — „rot\" in PFCG)",
-    "description": "Klassische „ungültige\" Rolle: die laufzeitwirksame Berechtigung weicht von der gepflegten Definition ab. Auswertung auf Definitionsbasis täuscht dann.",
+    "description": "In SAP wird eine Rolle erst nach dem Generieren des Profils zur Laufzeit wirksam — die Pflege der Berechtigungen allein reicht nicht. Eine Rolle mit gepflegten Berechtigungen, aber ohne (vollständige) Generierung, ist das klassische „rote Ampelsymbol\" in PFCG: was in der Rolle steht, ist nicht das, was beim User tatsächlich geprüft wird. Zweite KPI-Kachel „betroffene User\" (Ideal: 0) zeigt, ob das aktuell jemanden betrifft — eine nicht generierte Rolle ohne Zuweisung ist nur ein Aufräumkandidat ohne akute Auswirkung.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/stale_profile_generation.cypher"
   },
   {
     "id": "R4",
@@ -33,7 +36,8 @@
     "title": "Sammelrolle ohne Einzelrollen (Composite ohne CONTAINS)",
     "description": "Leere Sammelrolle ohne Wirkung. Designfehler oder Rest aus einem Umbau.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/composite_roles_without_children.cypher"
   },
   {
     "id": "R5",
@@ -69,7 +73,8 @@
     "title": "Rollen ohne jegliche Nutzerzuordnung (keine aktive AGR_USERS, auch nicht über eine Sammelrolle)",
     "description": "Tote Rollen → Aufräumkandidaten. Reduzieren Komplexität und Angriffsfläche im Rollenbestand. Großer Anteil deutet auf fehlende Rollen-Lifecycle-Pflege.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_without_user_reach.cypher"
   },
   {
     "id": "R9",
@@ -78,7 +83,8 @@
     "title": "Rollen nur mit abgelaufenen Zuordnungen (alle AGR_USERS außerhalb der Gültigkeit)",
     "description": "Faktisch ungenutzt, am Stichtag aber leicht als „zugewiesen\" fehlgezählt. Validiert zugleich die Stichtagslogik.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_only_expired_assignments.cypher"
   },
   {
     "id": "R10",
@@ -87,7 +93,8 @@
     "title": "Top-N Rollen nach Anzahl Nutzerzuordnungen",
     "description": "Reichweitenstärkste Rollen — hier wirkt jede Änderung am breitesten. Priorisierungssicht für Review, Rezertifizierung und Risikoeinschätzung.",
     "prio": "Analytik",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/top_roles_by_user_count.cypher"
   },
   {
     "id": "R11",
@@ -96,7 +103,8 @@
     "title": "Rollen mit genau einem Nutzer (personengebundene Sonderrollen)",
     "description": "„1:1\"-Rollen sind oft manueller Wildwuchs oder Schattenlösungen am Rollenkonzept vorbei; Konsolidierungs-/Bereinigungskandidaten.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/single_user_roles.cypher"
   },
   {
     "id": "R12",
@@ -105,7 +113,8 @@
     "title": "„Mega\"-Sammelrollen (auffällig viele Einzelrollen / sehr breite Berechtigungsmenge)",
     "description": "Hohe Komplexität erschwert Nachvollziehbarkeit und begünstigt unbeabsichtigte SoD-Kombinationen. Kandidaten für Aufteilung.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/mega_composite_roles.cypher"
   },
   {
     "id": "R13",
@@ -114,7 +123,8 @@
     "title": "Rollen mit Intra-Rollen-SoD-Konflikt (built-in / conflicting-by-design)",
     "description": "Die Rolle bündelt selbst zwei konfligierende Funktionen — jeder Träger erbt den Konflikt. Design-Fehler an der Wurzel, hoch wiederverwendbar als Befund.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_with_intra_conflict.cypher"
   },
   {
     "id": "R14",
@@ -123,7 +133,8 @@
     "title": "Top-N Rollen nach Anzahl built-in SoD-Konflikte",
     "description": "Rangliste der problematischsten Rollendesigns. Steuert, wo Redesign den größten Hebel hat.",
     "prio": "Analytik",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/top_roles_by_intra_conflicts.cypher"
   },
   {
     "id": "R15",
@@ -132,7 +143,8 @@
     "title": "Konflikt-Hotspot-Rollen (am häufigsten an Inter-Rollen-Konflikten beteiligt)",
     "description": "Rollen, die in Kombination mit vielen anderen Konflikte erzeugen. Auch wenn jede für sich sauber ist, sind sie die wirksamsten Stellschrauben zur Konfliktreduktion.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/inter_conflict_hotspot_roles.cypher"
   },
   {
     "id": "R16",
@@ -141,7 +153,8 @@
     "title": "Rollen mit kritischen Inhalten (enthalten SAP_ALL-äquivalente Profile, weite S_TABU_DIS/S_TABU_NAM, Debug-Replace S_DEVELOP ACTVT 02, * auf kritischen Org-Ebenen)",
     "description": "Hochrisiko-Berechtigung gebündelt in einer Rolle — verteilt sich über jede Zuweisung. Erstrangige Review-Kandidaten.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_with_critical_content.cypher"
   },
   {
     "id": "R17",
@@ -150,7 +163,8 @@
     "title": "Redundante Rollen (identische bzw. nahezu identische Berechtigungsmenge unter verschiedenen Namen)",
     "description": "Dubletten blähen den Bestand auf, erschweren Pflege und führen zu inkonsistenten Änderungen. Konsolidierungskandidaten.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/redundant_roles.cypher"
   },
   {
     "id": "R18",
@@ -159,6 +173,7 @@
     "title": "Stark überlappende Rollen (großer gemeinsamer Berechtigungsanteil)",
     "description": "Hinweis auf fehlende Modularisierung; Kandidaten für eine gemeinsame Basisrolle. Senkt langfristig SoD-Risiko und Pflegeaufwand.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/overlapping_roles.cypher"
   }
 ]

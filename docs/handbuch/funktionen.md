@@ -56,7 +56,11 @@ Ob die Auswertung auf Organisationsebenen (z. B. Buchungskreis) eingeschränkt w
 
 ### Weitere Parameter
 
-- **Stichtag** — Bewertungsdatum (Rollen-Gültigkeit + Sleeping). Auf den Datenstand setzen.
+- **Stichtag** — Bewertungsdatum (Rollen-Gültigkeit + Sleeping). **Keine Eingabe mehr**, sondern
+  eine Eigenschaft des gewählten Datasets (= Downloaddatum der SAP-Extrakte): wird beim
+  Erst-Import automatisch aus den Dateizeitstempeln der Extrakte ermittelt und nur angezeigt;
+  eine bewusste Korrektur läuft über „ändern…" neben der Anzeige und wirkt **global** auf alle
+  künftigen Läufe/Checks dieses Datasets, nicht nur den nächsten.
 - **Sleeping (Tage)** — Schwelle „kein Logon seit X Tagen" (Standard 180), frei wählbar.
 - **Mindest-Kritikalität** — `alle` · ab `medium` · ab `high` · ab `critical` · nur `very-critical`.
 - **Materialisierung/Ruleset-Laden überspringen** — Beschleuniger für Wiederholungsläufe.
@@ -160,19 +164,30 @@ Klick auf eine Zeile **wechselt** (kein Pop-up/Dialog, derselbe Grundsatz wie be
 selbst) auf eine **eigene Ergebnis-Ansicht**: der Check-Titel links, **ID/Kategorie/Prio-Chips +
 „← zurück zum Katalog"** rechtsbündig auf Höhe der Überschrift; darunter **zweispaltig wie die
 Findings-Ansicht**. **Links:** Begründung (immer sichtbar, auch bei noch nicht implementierten
-Checks), darunter — sobald die Check-Logik existiert — ein schmales Formular
-**Dataset/Stichtag** (vorbelegt aus dem aktiven Lauf) mit **„Ausführen"** (zeigt während der
-Anfrage einen Spinner), darunter eine **Schnellauswahl „Weitere Checks · …"** mit allen Checks
-derselben Box (Kategorie bzw. Thema, analog zur Läufe-Liste, funktioniert auch von einem noch
-nicht implementierten Check aus) — Klick wechselt direkt zum nächsten Check, ohne zurück zum
-Katalog zu müssen; Dataset/Stichtag bleiben dabei erhalten, sodass sich eine ganze Box mit
-denselben Werten durchklicken lässt. **Rechts** das Ergebnis mit einem **Tabelle/Graph-Pill** oben rechts
-(Graph deaktiviert, „kommt später", analog zu den SoD-Ergebnissen): hat der Check eine
-Zusammenfassung **und** eine Detailliste (z. B. „Wer hat SAP_ALL"), zeigt die Tabellenansicht
-oben **Summary-Kacheln** (Werte menschenlesbar, z. B. „aktiv"/„gesperrt" statt roher
-Spaltennamen), darunter die **Detailtabelle** (Spalten variieren je Check); Checks ohne
-Zusammenfassung zeigen nur die Detailtabelle. „← zurück zum Katalog" wechselt zurück. Noch nicht
-implementierte Checks zeigen rechts nur einen Hinweis statt eines Ergebnisses.
+Checks), darunter — sobald die Check-Logik existiert — ein schmales Formular mit
+**Dataset-Auswahl** und der Anzeige des **Stichtags** (= Downloaddatum der SAP-Extrakte, eine
+Eigenschaft des Datasets, kein Lauf-Filter mehr — über „ändern…" global korrigierbar, wirkt dann
+auf alle künftigen Läufe/Checks dieses Datasets) mit **„Ausführen"** (zeigt während der Anfrage
+einen Spinner), darunter eine **Schnellauswahl „Weitere Checks · …"** mit allen Checks derselben
+Box (Kategorie bzw. Thema, analog zur Läufe-Liste, funktioniert auch von einem noch nicht
+implementierten Check aus) — Klick wechselt direkt zum nächsten Check, ohne zurück zum Katalog
+zu müssen; die Dataset-Auswahl bleibt dabei erhalten, sodass sich eine ganze Box mit demselben
+Dataset durchklicken lässt. **Rechts** das Ergebnis: einige Checks zeigen über der Tabelle eine
+**Pill-Filterzeile** (z. B. Sperrgrund bei „Gesperrte User mit kritischen Rollen", Status
+aktiv/gesperrt, Sleeping-Tage 90/180/360) — Klick auf einen Pill startet bei bereits sichtbarem
+Ergebnis sofort einen neuen Lauf, ohne erneut „Ausführen" klicken zu müssen — daneben ein
+**Tabelle/Graph-Pill** (Graph deaktiviert, „kommt später", analog zu den SoD-Ergebnissen). Hat
+der Check eine Zusammenfassung **und** eine Detailliste (z. B. „Wer hat SAP_ALL"), zeigt die
+Tabellenansicht oben **Summary-Kacheln** (Werte menschenlesbar, z. B. „aktiv"/„gesperrt" statt
+roher Spaltennamen), darunter die **Detailtabelle** (Spalten variieren je Check, Überschriften
+ebenfalls menschenlesbar übersetzt statt der rohen Cypher-Spaltennamen) — **Spaltenköpfe sind
+klickbar und sortieren die Tabelle** (numerisch oder alphabetisch je nach Inhalt), ein kleines
+Dreieck (▲/▼) zeigt Spalte und Richtung; erneuter Klick dreht um. Bei manchen Checks (aktuell
+A4) erscheint je Zeile zusätzlich ein **„Root-Cause"-Button**, der in einem Dialog zeigt, welche
+konkrete(n) Rolle(n)/Profil(e) mit welchen Berechtigungswerten den Treffer auslösen — derselbe
+Dialog wie beim SoD-Root-Cause. Checks ohne Zusammenfassung zeigen nur die Detailtabelle.
+„← zurück zum Katalog" wechselt zurück. Noch nicht implementierte Checks zeigen rechts nur
+einen Hinweis statt eines Ergebnisses.
 
 **Keine Persistenz (bewusst):** ein Check-Lauf erzeugt keinen `(:Run)`-Knoten und wird nirgends
 gespeichert — das Ergebnis lebt nur im Browser für die Dauer der Session. Die zuletzt gesehene

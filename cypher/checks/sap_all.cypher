@@ -39,6 +39,6 @@ RETURN u.id AS user, coalesce(u.name, '') AS name,
             WHEN 'Service' IN labels(u) THEN 'Service'
             WHEN 'Reference' IN labels(u) THEN 'Reference' ELSE '?' END AS typ,
        CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status,
-       pfade
+       u.lastLogon AS letzterLogon, pfade
 ORDER BY CASE WHEN 'Dialog' IN labels(u) AND NOT 'Locked' IN labels(u) THEN 0 ELSE 1 END,
          typ, status, user;

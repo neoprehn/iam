@@ -5,7 +5,8 @@
     "title": "User mit direkt zugewiesenen Profilen (UST04, ohne Rolle)",
     "description": "Umgeht die PFCG-Pflege; schwer wartbar, oft Altlast aus R/3-Zeiten oder manuelle „Schnellschüsse\". Direktprofile entziehen sich dem Rollenkonzept und werden bei Auswertungen leicht übersehen.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/direct_profile_assignments.cypher"
   },
   {
     "id": "C2",
@@ -13,7 +14,8 @@
     "title": "Verwaiste Profile (generiertes Profil ohne zugehörige Rolle)",
     "description": "Inkonsistenz zwischen USR10/AGR_PROF; Hinweis auf fehlerhafte Generierung oder unsaubere Reorganisation. Kann Auswertungen verfälschen.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/orphaned_profiles.cypher"
   },
   {
     "id": "C3",
@@ -21,7 +23,11 @@
     "title": "User ohne jegliche Berechtigung (kein Rollen- und kein Profilbezug)",
     "description": "„Leere\" Konten — neu angelegt, ungenutzt oder fehlerhaft. Lizenz- und Aufräumkandidaten; in Summe ein Indikator für mangelnde User-Lifecycle-Pflege.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/users_without_access.cypher",
+    "params": [
+      {"name": "status", "label": "Status", "type": "str", "options": ["alle", "aktiv", "gesperrt"], "default": "alle"}
+    ]
   },
   {
     "id": "C4",
@@ -29,7 +35,8 @@
     "title": "Einzelrolle ohne jede Verwendung (in keiner Sammelrolle, keine direkte Zuweisung)",
     "description": "Ungenutzte Rolle → Aufräumkandidat. Reduziert Komplexität und Angriffsfläche im Rollenbestand.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/unused_single_roles.cypher"
   },
   {
     "id": "C5",
@@ -37,6 +44,7 @@
     "title": "Rollen ohne Beschreibung/Dokumentation",
     "description": "Erschwert Re-Zertifizierung und Nachvollziehbarkeit „wofür ist diese Rolle gedacht\" — Basis-Hygiene für jedes Rollenkonzept.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/roles_without_description.cypher"
   }
 ]

@@ -5,7 +5,8 @@
     "title": "Abgelaufene Zuweisungen, die noch als „aktiv\" gezählt werden",
     "description": "Direkter Fehler in der Stichtagslogik; führt zu falsch-positiven Berechtigungen. Validiert zugleich die Pfad-Gültigkeitsschnittmenge.",
     "prio": "Hoch",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/expired_assignments_audit.cypher"
   },
   {
     "id": "D2",
@@ -13,7 +14,8 @@
     "title": "Widersprüchliche Gültigkeit (validFrom > validTo)",
     "description": "Datenfehler aus Quelle oder Import. Kann Stichtagsabfragen unbemerkt verzerren.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/contradictory_validity.cypher"
   },
   {
     "id": "D3",
@@ -21,14 +23,16 @@
     "title": "Zukünftige, noch nicht wirksame Zuweisungen",
     "description": "Dürfen am aktuellen Stichtag nicht zählen — Prüfung, dass die Logik sie korrekt ausblendet.",
     "prio": "Niedrig",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/future_assignments_audit.cypher"
   },
   {
     "id": "D4",
     "category": "D",
     "title": "Veraltete Profilgenerierung (Rolle nach letzter Profilgenerierung geändert — „rot\" in PFCG)",
-    "description": "Die laufzeitwirksame Berechtigung weicht von der gepflegten Rollendefinition ab. Auswertung auf Basis der Definition kann dann täuschen.",
+    "description": "In SAP wird eine Rolle erst nach dem Generieren des Profils zur Laufzeit wirksam — die Pflege der Berechtigungen allein reicht nicht. Eine Rolle mit gepflegten Berechtigungen, aber ohne (vollständige) Generierung, ist das klassische „rote Ampelsymbol\" in PFCG: was in der Rolle steht, ist nicht das, was beim User tatsächlich geprüft wird. Zweite KPI-Kachel „betroffene User\" (Ideal: 0) zeigt, ob das aktuell jemanden betrifft — eine nicht generierte Rolle ohne Zuweisung ist nur ein Aufräumkandidat ohne akute Auswirkung.",
     "prio": "Mittel",
-    "implemented": false
+    "implemented": true,
+    "cypherFile": "cypher/checks/stale_profile_generation.cypher"
   }
 ]

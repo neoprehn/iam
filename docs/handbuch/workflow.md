@@ -32,7 +32,7 @@ Ribbon **Auswertung → Neuer Lauf**. Das Formular füllt intern die Parameter �
 | --- | --- |
 | **Ruleset** | welches Regelwerk gilt (z. B. KPMG R/3). |
 | **System (dataset)** | welcher Datenstand ausgewertet wird. |
-| **Stichtag** | Bewertungsdatum — bestimmt Rollen-Gültigkeit und Sleeping. **Auf das Datum des Datenstands setzen**, nicht „heute". |
+| **Stichtag** | Bewertungsdatum — bestimmt Rollen-Gültigkeit und Sleeping. **Keine Eingabe**: wird beim Import automatisch aus dem Downloaddatum der Extrakte ermittelt und nur angezeigt; Korrektur nur bewusst über „ändern…" (wirkt global für das Dataset). |
 | **Nutzertyp-Profil** | welche Benutzer zählen (siehe [Funktionsreferenz](funktionen.md)). |
 | **Org-Profil** | Org-Einschränkung (Standard: keine). |
 | **Sleeping (Tage)** | ab wann ein Benutzer als „schlafend" gilt (kein Logon seit X Tagen). |

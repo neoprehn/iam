@@ -84,6 +84,9 @@ benötigten **Spalten je Tabelle** stehen unten.
 | `GLTGB` | gültig bis (`date`) |
 | `TRDAT` | letzter Logon (`date`, optional) |
 | `CLASS` | Benutzergruppe (optional) |
+| `PWDINITIAL` | Passwort-Status-Kennzeichen (`0`/`1`/`2`, **kein Hash**) → `pwdInitial`, s. u. |
+| `PWDCHGDATE` | letzte Passwortänderung (`date`, **kein Hash**) → `pwdChgDate` |
+| `PWDSETDATE` | Datum der (Erst-/Neu-)Vergabe (`date`, **kein Hash**) → `pwdSetDate` |
 
 **Sperrgründe aus `UFLAG`** (Bit-Flags, beim Import via `apoc.bitwise.op` zerlegt; ⚠️ Werte
 gegen euer System bestätigen): `0` = nicht gesperrt; Bit `32` = durch Fehlanmeldungen; Bit `64`
@@ -91,14 +94,25 @@ gegen euer System bestätigen): `0` = nicht gesperrt; Bit `32` = durch Fehlanmel
 möglich (Summe der Bits, z. B. `192` = `64`+`128`). Gespeichert als Property `lockReasons`
 (Liste) + `uflag` (Rohwert); Subtyp-Label `Active` (UFLAG = 0) bzw. `Locked` (sonst).
 
-**Bewusst NICHT extrahieren:** `BCODE`, `PASSCODE`, `PWDSALTEDHASH`, `CODVN`, `OCOD*` und alle
-weiteren Passwort-/Hash-Felder. Klartextname/Adressdaten (USR21/ADRP) sind für Can-Do nicht
-nötig — optional und separat (Did-Do-Phase: Pseudonymisierung beachten).
+**`PWDINITIAL`-Kennzeichen** (⚠️ von SAP nicht einheitlich öffentlich dokumentiert, vor
+Produktivnutzung gegen das eigene System verifizieren — empirisch hergeleitet aus dem
+Testdatenbestand, s. `KONSISTENZCHECKS.md` B3): `1` korreliert dort zu 100 % mit
+`PWDCHGDATE = PWDSETDATE` („Passwort seit Vergabe nie geändert" — der belastbare Befund); `2` ist
+ein Mischfall (z. B. admin-gesetztes/zurückgesetztes Passwort, schwächeres Signal); `0` = regulär
+geändert.
 
-> **Defense in Depth:** Falls diese Spalten doch mitexportiert wurden, verwirft sie der
+**Bewusst NICHT extrahieren — nur die echten Hash-/Algorithmus-Felder:** `BCODE*`, `BCDA*`,
+`OCOD*`, `CODV*`, `PASSCODE`, `PWDSALTEDHASH`, `PWDHISTORY` (Konverter-Denyliste
+`convert.py:DROP_DEFAULT`). **Nicht** ausgeschlossen sind reine Status-/Datumsfelder wie
+`PWDINITIAL`/`PWDCHGDATE`/`PWDSETDATE` — diese sind keine Hashes und lassen das Passwort selbst
+nicht rekonstruieren (analog zu `UFLAG`/`TRDAT`, die schon länger geladen werden). Klartextname/
+Adressdaten (USR21/ADRP) sind für Can-Do nicht nötig — optional und separat (Did-Do-Phase:
+Pseudonymisierung beachten).
+
+> **Defense in Depth:** Falls die Hash-Spalten doch mitexportiert wurden, verwirft sie der
 > Konverter (`Convert-Se16Export.ps1`, Parameter `-DropColumnsLike`) bereits bei der
 > Umwandlung — sie landen in keiner CSV. Die Load-Skripte lesen ohnehin nur die benötigten
-> Spalten, sodass Passwort-/Hash-Daten den Graphen nie erreichen.
+> Spalten, sodass die eigentlichen Hash-Daten den Graphen nie erreichen.
 
 ### 02 — AGR_DEFINE (Rollen) → `:Role`
 | Spalte | Verwendung |

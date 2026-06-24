@@ -43,6 +43,16 @@ schnelle, dataset-gefilterte Lookups und den Versionsvergleich.
 | Label | Fachliche `id` | Quelle | Subtyp-Labels (Schichtung) |
 | --- | --- | --- | --- |
 | `Dataset` | Extrakt-Name (global eindeutig) | — (Registry/Provenienz) | — |
+
+`Dataset` trägt neben `id`/`uid` auch **`asOf`** (Neo4j-`date`) — der Stichtag des Extrakts, in
+aller Regel das Downloaddatum der SAP-Tabellen (AE-16). `asOf` ist **keine Lauf-/Filter-Eingabe**:
+er wird einmalig bei Erst-Import gesetzt (`load/00_dataset.cypher`, ON CREATE) und von allen
+Auswertungen/Konsistenzchecks serverseitig aus dem Dataset gelesen (`backend/app.py`,
+`_dataset_asof()`, lazy Backfill für ältere Importe ohne den Wert: aus den Dateizeitstempeln
+des Import-Ordners abgeleitet — `_infer_dataset_asof()`, alle Tabellen eines Extrakts teilen
+sich praktisch immer denselben Exporttag —, nur falls der Ordner fehlt als letzter Ausweg
+`heute`). Eine bewusste
+Korrektur läuft ausschließlich global über `PUT /datasets/{id}/asof`.
 | `User` | `BNAME` | USR02 | `User:Dialog\|System\|Communication`, `User:Active\|Locked` |
 | `Role` | `AGR_NAME` | AGR_DEFINE | `Role:Composite\|Single\|Derived` |
 | `Profile` | `PROFN` | USR10/UST10 | `Profile:Single\|Collective\|Critical` |

@@ -73,6 +73,8 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 
 **AE-15 — Container-only auf Windows.** Neo4j/NeoDash/`neo4j-migrations` als Container; keine lokale Neo4j-/Java-Installation. `cypher-shell` über den Container.
 
+**AE-16 — Der Stichtag (`asOf`) ist eine Eigenschaft des Datasets, kein Lauf-/Check-Parameter.** Ein Dataset ist ein SAP-Extrakt zu einem festen Downloaddatum — eine Auswertung gegen ein *anderes* Datum als den eigenen Extraktstand ergibt ohne Änderungs-Tracking (`RSUSR100N`/Change Documents über die Zeit im selben Dataset) keinen Erkenntnisgewinn. `(:Dataset).asOf` wird einmalig bei Erst-Import gesetzt — explizit übergeben oder automatisch aus den Dateizeitstempeln des Import-Ordners abgeleitet (`_infer_dataset_asof()`: alle Tabellen eines Extrakts teilen sich praktisch immer denselben Exporttag), nur falls der Quellordner fehlt als letzter Ausweg `heute` — und bleibt über Re-Importe stabil. Ältere Datasets ohne den Wert (vor Einführung dieses Felds importiert) bekommen ihn lazy über denselben Mechanismus nachgetragen. `RunReq`/`ConsistencyRunReq` nehmen kein `asOf` mehr vom Client an, sondern lösen es serverseitig über `_dataset_asof()` auf. Bewusste Korrektur ausschließlich global über `PUT /datasets/{id}/asof` — wirkt auf alle folgenden Läufe/Checks dieses Datasets.
+
 ---
 
 ## Offene Arbeit
@@ -92,16 +94,27 @@ Zuweisungskonsistenz, Gültigkeit/Zeitbezug, referenzielle Integrität) und
 um die rollenstrukturzentrierten Checks bereinigt, die dort aufgegangen sind). Hier nur der
 technische Rahmen:
 
-- [~] **Checks-Katalog (Datenmodell) — Katalog persistiert, Check-Logik teilweise da.** Jeder
-  Check aus `KONSISTENZCHECKS.md` liegt zusätzlich strukturiert (id/category/title/description/
-  prio/`implemented`/optional `cypherFile`) als **JSON je Kategorie** unter [`checks/`](checks/)
-  (Schema: [`checks/SCHEMA.md`](checks/SCHEMA.md)) — analog zur Ruleset-Struktur, aber
-  **ruleset-unabhängig**, ohne Vendor/Overlay-Trennung. **Kategorie A (7/7 Checks) hat Cypher**
-  unter `cypher/checks/` (`sap_all`/`sap_new`/`critical_profiles`/`critical_single_auths`/
-  `batch_rfc_on_dialog`/`org_wildcard_critical_objects`/`role_profile_count_outliers.cypher`;
-  Details/Festlegungen je Check in `KONSISTENZCHECKS.md`, Abschnitt „Implementierungsnotizen
-  Kategorie A"). Über die App ausführbar (s. API/UI). **Offen:** Cypher für Kategorien B–E und
-  `R` (41 von 48 Checks noch `implemented: false`).
+- [x] **Checks-Katalog (Datenmodell) — Katalog persistiert, Check-Logik für alle Kategorien
+  nachgezogen.** Jeder Check aus `KONSISTENZCHECKS.md` liegt zusätzlich strukturiert
+  (id/category/title/description/prio/`implemented`/optional `cypherFile`) als **JSON je
+  Kategorie** unter [`checks/`](checks/) (Schema: [`checks/SCHEMA.md`](checks/SCHEMA.md)) —
+  analog zur Ruleset-Struktur, aber **ruleset-unabhängig**, ohne Vendor/Overlay-Trennung.
+  **42 von 48 Checks haben Cypher** unter `cypher/checks/`: A (7/7), B (7/7), C (5/5), D (4/4),
+  E (6/7), R (15/18). Details/Festlegungen je Check in `KONSISTENZCHECKS.md`, Abschnitt
+  „Implementierungsnotizen Kategorie A"–„…R". Über die App ausführbar (s. API/UI). **B3 (Passwort-
+  Kennzeichen) war zunächst fälschlich als „nicht umsetzbar" eingestuft** — auf Nutzer-Rückfrage
+  korrigiert: USR02 enthält neben den Hash-Feldern auch reine Status-/Datumsfelder
+  (`PWDINITIAL`/`PWDCHGDATE`/`PWDSETDATE`), die nicht ausgeschlossen sind; Loader nachgezogen,
+  Check implementiert. **Bewusst zurückgestellt (nicht nur „offen"):** E6 (Rowcount-Abgleich,
+  setzt die noch nicht gebaute Import-Evidenz voraus) und R5–R7 (abgeleitete Rollen/
+  `DERIVED_FROM` — laut `docs/extraktionsleitfaden.md` keine bestätigte Quelle in den
+  extrahierten Tabellen, `PARENT_AGR` ist die Sammelrolle, nicht die Ableitungsvorlage). E1–E3
+  laufen als dokumentierte Proxy-Operationalisierung (`[~]`): der
+  Loader hat kein TOBJ/TSTC-Stammdaten-Import, daher fehlender Objekt-/TCode-Text als
+  Ersatzkriterium statt „nicht im Stammdaten-Import"; R13–R15 (SoD-Konflikt-Checks) verwenden
+  automatisch den jüngsten `(:Run)` des Datasets, da der generische Check-Endpoint keine
+  `runId` kennt. R17/R18 (redundante/überlappende Rollen) sind bewusst auf skalierbare
+  Fingerprint- bzw. größenbegrenzte Ansätze reduziert (kein `O(n²)`-Vollvergleich).
 - [x] **API/UI — Katalog + Ausführung erledigt (für Checks mit Cypher).** `GET
   /consistency-checks?area=user|role` liefert den gemergten Katalog des jeweiligen Bereichs.
   Ribbon-Gruppe **„Konsistenzchecks"** (Gruppe 4, zwischen Ergebnisse und Sichern) ist jetzt ein
@@ -136,6 +149,44 @@ technische Rahmen:
   und ersetzt in der Katalog-Tabelle den Platzhalter „noch nicht ausgeführt" — UI-Cache, kein
   Server-Zustand, geht beim Neuladen verloren. **Offen:** Export, echter Graph,
   Server-seitige Persistenz/Historie (falls künftig gewünscht).
+- [x] **Auf Nutzer-Feedback: generische Schwellwert-Parameter + Root-Cause-Drilldown.** Zwei
+  neue, wiederverwendbare Erweiterungen des Check-Schemas (`checks/SCHEMA.md`): **`params`**
+  (z. B. B1 „Tage ohne Logon" als Pill-Buttons 90/180/360 statt hart codiertem Literal — ersetzt
+  bei Bedarf den in mehreren Checks verwendeten Literal-Workaround, B6 hat denselben Kandidaten)
+  und **`rootCauseFile`** (eigene `.cypher`-Datei + `POST /consistency-checks/{id}/root-cause`,
+  zeigt für einen einzelnen User aus der Detailtabelle die konkrete(n) Rolle(n)/Profil(e) samt
+  Authorization-Feldwerten — Antwortformat identisch zum SoD-Root-Cause, UI nutzt denselben
+  Dialog; aktuell nur für A4 umgesetzt, generisch für weitere Checks nutzbar). Außerdem:
+  KPI-Kacheln, die nur eine nackte Zahl/Code ohne Kontext zeigten (A5, A7), liefern jetzt
+  selbsterklärende Texte.
+- [x] **Zweite Feedback-Runde: KPI-Spaltenreihenfolge-Bugfix + weitere Filter/Spalten.**
+  Systematischer Bug gefunden und behoben: in mehreren Checks (B1, B2, C1, C3, D4/R3, E3, E4,
+  R13) zeigte die KPI-Kachel die **falsche** Spalte groß (Sekundärwert statt Haupttreffer-
+  zahl, in R13 sogar einen Lauf-**Namen** statt einer Zahl) — Konvention jetzt explizit in
+  `KONSISTENZCHECKS.md` festgehalten: die letzte Spalte eines Summary-Statements ist immer die
+  Treffer-Zahl. Außerdem auf Nutzer-Feedback: B2 zeigt Benutzertyp statt der wenig aussagekräftigen
+  „Muster"-Spalte; B4 hat einen `$lockReason`-Pill-Filter (Sperrgrund); B5 zeigt `letzterLogon` +
+  `personalnummer` als eigene Spalten, Status ist in einen Pill-Filter gewandert; C3 hat einen
+  `$status`-Pill-Filter (aktiv/gesperrt); C1 zeigt Profilanzahl + Kurzvorschau statt einer
+  teils >200 Einträge langen Profilliste je Zelle; A1 zeigt zusätzlich `letzterLogon`.
+  Verifiziert (keine Bugs, sondern echte Datenlage): B6s viele `NULL`-Werte bei `letzterLogon`
+  sind korrekt („nie angemeldet" zählt als sleeping) — auffällig hoher Anteil (~47 % der
+  Dialog-User) im Testdatenbestand, ggf. gegen die Quelle zu prüfen; B7s 0 Treffer sind korrekt
+  (keine User-IDs mit den geprüften Namensmustern in diesem Mandanten vorhanden).
+- [x] **Dritte Feedback-Runde: B3 fälschlich als „nicht umsetzbar" korrigiert, C1-Logikfehler
+  behoben, Pill-Filter ans Ergebnis verschoben.** B3 jetzt implementiert (s. „Bewusst
+  zurückgestellt" oben). **C1 hatte einen echten Denkfehler:** „direkt zugewiesenes Profil" wurde
+  als jede `HAS_PROFILE`-Kante vom User gelesen — tatsächlich schreibt SAP beim
+  Benutzerabgleich generierte Rollenprofile (`T-*`) zusätzlich in `UST04` zurück, sodass `UST04`
+  die **effektive**, nicht die rein manuelle Zuweisung abbildet. Im Testdatenbestand waren 582
+  von 651 direkten `T-*`-Profil-Kanten (89 %) zugleich das generierte Profil einer aktuell
+  zugewiesenen Rolle desselben Users — `direct_profile_assignments.cypher` schließt solche über
+  eine gültige Rollenzuweisung erklärbaren Profile jetzt aus (377 statt 1349 betroffene User,
+  deutlich präziser). **UI-Layout:** die `params`-Pills (B1/B4/B5/C3) sitzen jetzt — wie bei den
+  SoD-Findings (Kritikalität/Ergebnistyp/Sleeping-Pills über der Tabelle) — in einer Pill-Zeile
+  direkt am Ergebnis (über der Detailtabelle, unter den KPI-Kacheln) statt im linken
+  „Ausführen"-Formular; Klick auf einen Pill löst bei bereits sichtbarem Ergebnis sofort einen
+  neuen Lauf aus.
 - [ ] **Export:** Konsistenz-Report (CSV, später Teil des Gesamt-Reports zusammen mit
   Import-Evidenz).
 - [x] **Ribbon-Layout: Gruppen mit mehreren Befehlen als Menü — erledigt.** Gruppen mit mehr als

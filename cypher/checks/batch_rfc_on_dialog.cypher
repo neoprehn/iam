@@ -22,7 +22,7 @@ WHERE 'Dialog' IN labels(u)
     WHERE type(asg) = 'HAS_PROFILE'
        OR ((asg.validFrom IS NULL OR asg.validFrom <= $asOf) AND (asg.validTo IS NULL OR $asOf <= asg.validTo))
   }
-RETURN obj AS objekt, count(DISTINCT u) AS anzahl
+RETURN ('Dialog-User mit ' + obj) AS befund, count(DISTINCT u) AS anzahl
 ORDER BY anzahl DESC;
 
 // --- 2) Detailliste ---

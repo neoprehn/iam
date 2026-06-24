@@ -191,7 +191,9 @@ def run_file(session, rel_path: str, params: dict):
 class RunReq(BaseModel):
     ruleset: str = "kpmg_r3"
     dataset: str
-    asOf: str                       # 'YYYY-MM-DD' (Snapshot-Stichtag)
+    # Kein asOf mehr hier: der Stichtag ist eine Eigenschaft des Datasets (= Downloaddatum der
+    # SAP-Extrakte), keine Lauf-/Filter-Eingabe. Wird ueber _dataset_asof() aufgeloest; Korrektur
+    # nur global ueber PUT /datasets/{id}/asof.
     userTypeProfile: str = "all"
     orgProfile: str = "standard"
     sleepDays: int | None = None
@@ -220,12 +222,12 @@ def do_run(job_id: str, req: RunReq):
         sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
         run_id = req.runId or f"{req.ruleset}-{datetime.datetime.now():%Y%m%d%H%M%S}"
         title = req.title or run_id
-        as_of = datetime.date.fromisoformat(req.asOf)
-        base = {"ruleset": req.ruleset, "dataset": req.dataset, "asOf": as_of, "runId": run_id}
         org = {"orgMode": org_mode, "orgFilters": org_filters}
         jobs[job_id].update(status="running", runId=run_id, step="start")
 
         with driver.session() as s:
+            as_of = _dataset_asof(s, req.dataset)
+            base = {"ruleset": req.ruleset, "dataset": req.dataset, "asOf": as_of, "runId": run_id}
             if not req.skipRulesetLoad:
                 rdir = ruleset_dir(req.ruleset)
                 if not rdir:
@@ -268,6 +270,9 @@ class ImportReq(BaseModel):
     lang: list[str] = []            # Sprach-Schalter (SPRAS/LANGU); leer = Default (IMPORT_LANG)
     skipConvert: bool = False       # .csv liegen schon vor -> Konvertierung ueberspringen
     skipSchema: bool = False        # Migrationen (Constraints/Indizes) ueberspringen
+    asOf: str | None = None         # 'YYYY-MM-DD' Stichtag (= Downloaddatum der SAP-Extrakte);
+                                     # nur bei Erst-Import wirksam (ON CREATE), Default = heute.
+                                     # Spaetere Korrektur ueber PUT /datasets/{id}/asof.
 
 
 def do_import(job_id: str, req: ImportReq):
@@ -276,6 +281,8 @@ def do_import(job_id: str, req: ImportReq):
         if not folder.is_dir():
             raise ValueError(f"Import-Ordner fehlt: data/import/{req.dataset}")
         lang = req.lang or DEFAULT_LANG
+        as_of = (datetime.date.fromisoformat(req.asOf) if req.asOf
+                 else (_infer_dataset_asof(req.dataset) or datetime.date.today()))
         jobs[job_id].update(status="running", dataset=req.dataset, step="start")
 
         # 1. Konvertieren (SE16-.txt -> .csv; Minimalset-Pruefung + Credential-Denylist im Konverter)
@@ -291,10 +298,11 @@ def do_import(job_id: str, req: ImportReq):
                 jobs[job_id]["step"] = "schema"
                 for f in sorted(MIGRATIONS_DIR.glob("*.cypher")):
                     run_cypher_path(s, f, {})
-            # 3. Laden (Reihenfolge = Dateiname), mit dataset + lang
+            # 3. Laden (Reihenfolge = Dateiname), mit dataset + lang + asOf (nur 00_dataset.cypher
+            # nutzt asOf, ungenutzte gebundene Parameter in den anderen Loadern sind unschaedlich)
             for f in sorted(LOAD_DIR.glob("*.cypher")):
                 jobs[job_id]["step"] = f"load {f.name}"
-                run_cypher_path(s, f, {"dataset": req.dataset, "lang": lang})
+                run_cypher_path(s, f, {"dataset": req.dataset, "lang": lang, "asOf": as_of})
             # 4. Validieren (eigene Zaehler statt Konsolen-Output)
             jobs[job_id]["step"] = "validate"
             rec = s.run(
@@ -465,6 +473,42 @@ def _dataset_uid(s, dataset: str) -> str | None:
     return rec["uid"] if rec else None
 
 
+def _infer_dataset_asof(dataset: str) -> datetime.date | None:
+    """Leitet den Stichtag (= Downloaddatum der SAP-Extrakte) aus den Dateizeitstempeln des
+    Import-Ordners ab -- bevorzugt die rohen SE16-.txt-Exporte (alle Tabellen eines Extrakts
+    teilen sich praktisch immer denselben Exporttag, da sie in einer Sitzung gezogen werden),
+    sonst ersatzweise die konvertierten .csv. None, wenn der Ordner fehlt/leer ist (z. B. der
+    Quellordner wurde nach dem Import geloescht) -- dann faellt der Aufrufer auf 'heute' zurueck.
+    Nimmt bewusst den FRUEHESTEN Zeitstempel (nicht den spaetesten): einzelne Tabellen koennen
+    minimal nacheinander exportiert/konvertiert worden sein, der frueheste liegt am naechsten am
+    eigentlichen Download-Zeitpunkt."""
+    folder = DATA_DIR / dataset
+    if not folder.is_dir():
+        return None
+    files = list(folder.glob("*.txt")) or list(folder.glob("*.csv"))
+    if not files:
+        return None
+    return datetime.date.fromtimestamp(min(f.stat().st_mtime for f in files))
+
+
+def _dataset_asof(s, dataset: str):
+    """Stichtag des Datasets (= Downloaddatum der SAP-Extrakte, Neo4j-date) -- KEIN Lauf-/Check-
+    Parameter mehr, sondern eine Eigenschaft des Datasets selbst (s. load/00_dataset.cypher).
+    Legt ihn nach (lazy backfill), falls ein aelterer Import noch keinen hat: bevorzugt aus den
+    Dateizeitstempeln des Import-Ordners abgeleitet (_infer_dataset_asof), nur wenn der Ordner
+    nicht mehr existiert als letzter Ausweg 'heute'. Aendern danach nur bewusst ueber PUT
+    /datasets/{id}/asof (globale Variable), nicht je Lauf/Check."""
+    rec = s.run("MATCH (d:Dataset {id:$id}) RETURN d.asOf AS asOf", id=dataset).single()
+    if not rec:
+        raise HTTPException(404, f"Dataset '{dataset}' nicht gefunden")
+    if rec["asOf"] is not None:
+        return rec["asOf"]
+    inferred = _infer_dataset_asof(dataset) or datetime.date.today()
+    rec2 = s.run("MATCH (d:Dataset {id:$id}) SET d.asOf = coalesce(d.asOf, $asOf) "
+                 "RETURN d.asOf AS asOf", id=dataset, asOf=inferred).single()
+    return rec2["asOf"]
+
+
 def do_backup_run(job_id: str, run_id: str):
     try:
         jobs[job_id].update(status="running", step="backup", runId=run_id)
@@ -524,7 +568,8 @@ def do_restore_run(job_id: str, path: Path, force: bool):
         _log_job_error(job_id, str(e))
 
 
-def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], skip_schema: bool):
+def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], skip_schema: bool,
+                      as_of: str | None = None):
     """Entpackt ein hochgeladenes ZIP (.csv und/oder .txt) nach data/import/<dataset> und importiert.
     .txt vorhanden -> konvertieren; nur .csv -> Konvertierung ueberspringen."""
     try:
@@ -542,7 +587,7 @@ def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], 
         if not extracted:
             raise ValueError("ZIP enthielt keine .csv/.txt-Dateien")
         do_import(job_id, ImportReq(dataset=dataset, lang=lang,
-                                    skipConvert=not has_txt, skipSchema=skip_schema))
+                                    skipConvert=not has_txt, skipSchema=skip_schema, asOf=as_of))
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -564,6 +609,33 @@ def health():
 def datasets():
     with driver.session() as s:
         return [r["id"] for r in s.run("MATCH (d:Dataset) RETURN d.id AS id ORDER BY id")]
+
+
+class DatasetAsOfReq(BaseModel):
+    asOf: str   # 'YYYY-MM-DD'
+
+
+@app.get("/datasets/{datasetId}/asof")
+def dataset_asof(datasetId: str):
+    """Stichtag des Datasets (= Downloaddatum der SAP-Extrakte) -- globale Eigenschaft, kein
+    Lauf-/Check-Filter mehr (s. _dataset_asof()). UI zeigt diesen Wert nur an/erlaubt ihn
+    gezielt zu korrigieren (PUT), nicht je Auswertung neu zu waehlen."""
+    with driver.session() as s:
+        return {"dataset": datasetId, "asOf": jsonable(_dataset_asof(s, datasetId))}
+
+
+@app.put("/datasets/{datasetId}/asof")
+def set_dataset_asof(datasetId: str, req: DatasetAsOfReq):
+    """Bewusste Korrektur des Dataset-Stichtags (globale Variable) -- z. B. falls beim Import
+    ein falsches Downloaddatum gesetzt wurde. Wirkt auf ALLE folgenden Laeufe/Checks dieses
+    Datasets, nicht nur auf den naechsten."""
+    as_of = datetime.date.fromisoformat(req.asOf)
+    with driver.session() as s:
+        rec = s.run("MATCH (d:Dataset {id:$id}) SET d.asOf = $asOf RETURN d.asOf AS asOf",
+                    id=datasetId, asOf=as_of).single()
+        if not rec:
+            raise HTTPException(404, f"Dataset '{datasetId}' nicht gefunden")
+    return {"dataset": datasetId, "asOf": jsonable(rec["asOf"])}
 
 
 @app.get("/users/{userId}")
@@ -638,14 +710,18 @@ def run_cypher_path_capturing(session, path: Path, params: dict) -> list[list[di
 
 class ConsistencyRunReq(BaseModel):
     dataset: str
-    asOf: str   # 'YYYY-MM-DD'
+    # Kein asOf mehr hier: Stichtag kommt aus dem Dataset selbst (_dataset_asof()), s. RunReq.
+    params: dict[str, int | str] = {}   # nur deklarierte Namen aus check["params"] wirksam (s. u.)
 
 
 @app.post("/consistency-checks/{checkId}/run")
 def run_consistency_check(checkId: str, req: ConsistencyRunReq):
-    """Fuehrt die hinterlegte cypherFile eines Checks gegen ein Dataset/Stichtag aus und gibt
-    die Zeilen je Statement zurueck (results[0] = erstes Statement, ... ); nur fuer Checks mit
-    implemented=true und gesetztem cypherFile (s. checks/SCHEMA.md)."""
+    """Fuehrt die hinterlegte cypherFile eines Checks gegen ein Dataset aus (Stichtag = der
+    Dataset-eigene asOf-Wert, s. _dataset_asof()) und gibt die Zeilen je Statement zurueck
+    (results[0] = erstes Statement, ... ); nur fuer Checks mit implemented=true und gesetztem
+    cypherFile (s. checks/SCHEMA.md). Optionale, vom Check deklarierte Schwellwerte (z. B.
+    sleepDays bei B1) kommen aus check["params"] (Default) bzw. req.params (Override) -- nur
+    deklarierte Namen werden als Cypher-Parameter durchgereicht."""
     check = _find_check(checkId)
     cypher_file = check.get("cypherFile")
     if not check.get("implemented") or not cypher_file:
@@ -653,10 +729,75 @@ def run_consistency_check(checkId: str, req: ConsistencyRunReq):
     path = CYPHER_DIR / cypher_file.removeprefix("cypher/")
     if not path.is_file():
         raise HTTPException(500, f"Cypher-Datei fuer '{checkId}' fehlt: {cypher_file}")
-    as_of = datetime.date.fromisoformat(req.asOf)
+    extra_params = {}
+    for p in check.get("params", []):
+        name = p["name"]
+        extra_params[name] = req.params.get(name, p.get("default"))
     with driver.session() as s:
-        results = run_cypher_path_capturing(s, path, {"dataset": req.dataset, "asOf": as_of})
+        as_of = _dataset_asof(s, req.dataset)
+        results = run_cypher_path_capturing(s, path, {"dataset": req.dataset, "asOf": as_of, **extra_params})
     return {"checkId": checkId, "results": results}
+
+
+# Anforderungstext je Befund fuer den A4-Root-Cause (s. critical_single_auths.cypher /
+# critical_single_auths_root_cause.cypher) -- dieselben Kriterien, nur fuer die Anzeige
+# aufbereitet (analog zur AuthReq-Anzeige im SoD-Root-Cause). Bei Aenderung der Kriterien dort
+# auch hier nachziehen.
+_A4_REQUIREMENT_TEXT = {
+    "Debug-Replace (S_DEVELOP)": [
+        {"field": "ACTVT", "andLogic": True, "values": ["02", "03"]},
+        {"field": "OBJTYPE", "andLogic": True, "values": ["DEBUG"]},
+    ],
+    "Breiter Tabellenzugriff, aendern (S_TABU_DIS)": [
+        {"field": "ACTVT", "andLogic": True, "values": ["02"]},
+        {"field": "DICBERCLS", "andLogic": False, "values": ["*", "$"]},
+    ],
+    "Breiter Tabellenzugriff, aendern (S_TABU_NAM)": [
+        {"field": "ACTVT", "andLogic": True, "values": ["02"]},
+        {"field": "TABLE", "andLogic": True, "values": ["*"]},
+    ],
+    "Benutzergruppen-Verwaltung (S_USER_GRP)": [
+        {"field": "(jede Ausprägung)", "andLogic": False, "values": ["*"]},
+    ],
+}
+
+
+class ConsistencyRootCauseReq(BaseModel):
+    dataset: str
+    user: str
+
+
+@app.post("/consistency-checks/{checkId}/root-cause")
+def consistency_root_cause(checkId: str, req: ConsistencyRootCauseReq):
+    """Root-Cause-Drilldown fuer einen einzelnen User innerhalb eines Konsistenzchecks -- zeigt,
+    welche Rolle(n)/Profil(e) mit welchen konkreten Authorization-Feldwerten den Befund
+    ausloesen. Nur fuer Checks mit gesetztem rootCauseFile (s. checks/SCHEMA.md). Antwortformat
+    identisch zum SoD-Root-Cause (GET /root-cause, {blocks:[...]}), damit die UI denselben
+    Dialog/dieselbe Render-Funktion wiederverwenden kann."""
+    check = _find_check(checkId)
+    rc_file = check.get("rootCauseFile")
+    if not rc_file:
+        raise HTTPException(409, f"Check '{checkId}' hat keinen Root-Cause-Drilldown.")
+    path = CYPHER_DIR / rc_file.removeprefix("cypher/")
+    if not path.is_file():
+        raise HTTPException(500, f"Root-Cause-Cypher fuer '{checkId}' fehlt: {rc_file}")
+    with driver.session() as s:
+        as_of = _dataset_asof(s, req.dataset)
+        stmt = split_statements(path.read_text(encoding="utf-8"))[0]
+        rows = [jsonable(dict(r)) for r in s.run(stmt, dataset=req.dataset, asOf=as_of, user=req.user)]
+    by_befund: dict[str, dict] = {}
+    for r in rows:
+        entry = by_befund.setdefault(r["befund"], {"object": r["objekt"], "satisfiedBy": []})
+        felder_text = ", ".join(
+            f"{k}: {','.join(v) if isinstance(v, list) else v}" for k, v in r["felder"].items())
+        entry["satisfiedBy"].append({"actorType": r["akteurTyp"], "actorId": r["akteurId"],
+                                      "authValues": [felder_text] if felder_text else []})
+    blocks = [{"label": befund, "objects": [{
+                  "object": data["object"],
+                  "requirement": _A4_REQUIREMENT_TEXT.get(befund, []),
+                  "satisfiedBy": data["satisfiedBy"],
+               }]} for befund, data in by_befund.items()]
+    return {"ruleId": checkId, "blocks": blocks}
 
 
 @app.get("/admin/job-errors")
@@ -1127,7 +1268,8 @@ def start_import(req: ImportReq):
 
 @app.post("/imports/upload")
 async def upload_import(file: UploadFile = File(...), dataset: str = Form(""),
-                        lang: str = Form(""), skipSchema: bool = Form(False)):
+                        lang: str = Form(""), skipSchema: bool = Form(False),
+                        asOf: str = Form("")):
     """Import per ZIP-Upload: .csv/.txt im ZIP -> data/import/<dataset> -> Import-Job."""
     ds = re.sub(r"[^A-Za-z0-9._-]", "_", dataset or Path(file.filename or "import").stem)
     if not ds:
@@ -1139,7 +1281,7 @@ async def upload_import(file: UploadFile = File(...), dataset: str = Form(""),
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "queued", "kind": "import",
                     "request": {"dataset": ds, "upload": file.filename}}
-    threading.Thread(target=do_upload_import, args=(job_id, str(tmp), ds, langs, skipSchema),
+    threading.Thread(target=do_upload_import, args=(job_id, str(tmp), ds, langs, skipSchema, asOf or None),
                      daemon=True).start()
     return {"jobId": job_id, "dataset": ds}
 
