@@ -95,8 +95,9 @@ statt immer den vollen Katalog/alle Lauf-Regeln zu zeigen.
 **Ergebnistyp** (`alle` / `Einzelfilter` / `SoD`) **nur außerhalb der Einstiegstabelle** (s. u.)
 und — nur bei Ergebnistyp „alle" — **Sleeping** (`alle` / `nur sleeping` / `nicht sleeping`) als
 farbige Klick-Buttons (Pills), wirken sofort. Rechtsbündig in derselben Zeile: der **Tabelle/
-Graph-Umschalter** (Graph ist als Vorgriff auf das künftige NVL/React-Frontend angelegt, aktuell
-aber deaktiviert — „kommt später"). „Einzelfilter" zeigt die **Matches-Tabelle** („wer matcht
+Graph-Umschalter** (Graph ist als Vorgriff auf das künftige Cytoscape.js-Frontend angelegt,
+für SoD-Konfliktpfade aktuell noch deaktiviert — „kommt später"; für die Konsistenzchecks A1–A3
+bereits scharf, s. Kapitel Konsistenzchecks). „Einzelfilter" zeigt die **Matches-Tabelle** („wer matcht
 welche Query") auch **ohne** vorher eine konkrete Einzelberechtigung in der Sidebar zu wählen —
 dann für alle Queries, sonst nur für die gewählte.
 
@@ -176,7 +177,9 @@ Dataset durchklicken lässt. **Rechts** das Ergebnis: einige Checks zeigen über
 **Pill-Filterzeile** (z. B. Sperrgrund bei „Gesperrte User mit kritischen Rollen", Status
 aktiv/gesperrt, Sleeping-Tage 90/180/360) — Klick auf einen Pill startet bei bereits sichtbarem
 Ergebnis sofort einen neuen Lauf, ohne erneut „Ausführen" klicken zu müssen — daneben ein
-**Tabelle/Graph-Pill** (Graph deaktiviert, „kommt später", analog zu den SoD-Ergebnissen). Hat
+**Tabelle/Graph-Pill**: für **A1–A3** (SAP_ALL/SAP_NEW/kritische Standardprofile) scharf — zeigt
+den User→(Rolle→)Profil-Pfad als Graph (Cytoscape.js, User-Knoten blau, Profil-Knoten grün), für
+alle anderen Checks weiterhin deaktiviert („kommt später", analog zu den SoD-Ergebnissen). Hat
 der Check eine Zusammenfassung **und** eine Detailliste (z. B. „Wer hat SAP_ALL"), zeigt die
 Tabellenansicht oben **Summary-Kacheln** (Werte menschenlesbar, z. B. „aktiv"/„gesperrt" statt
 roher Spaltennamen), darunter die **Detailtabelle** (Spalten variieren je Check, Überschriften

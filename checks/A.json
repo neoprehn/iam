@@ -6,7 +6,8 @@
     "description": "Vollzugriff auf praktisch alles — höchstes Einzelrisiko. Muss auf wenige, begründete (idealerweise Notfall-)User beschränkt und nachweisbar sein. Klassischer Erstbefund jeder Prüfung.",
     "prio": "Hoch",
     "implemented": true,
-    "cypherFile": "cypher/checks/sap_all.cypher"
+    "cypherFile": "cypher/checks/sap_all.cypher",
+    "graphFile": "cypher/checks/sap_all_graph.cypher"
   },
   {
     "id": "A2",
@@ -15,7 +16,8 @@
     "description": "Überbrückt neue Berechtigungsprüfungen nach Upgrades. Produktiv/dauerhaft zugewiesen hebelt es Sicherheitsverschärfungen aus — gehört nur temporär in der Übergangsphase eingesetzt.",
     "prio": "Hoch",
     "implemented": true,
-    "cypherFile": "cypher/checks/sap_new.cypher"
+    "cypherFile": "cypher/checks/sap_new.cypher",
+    "graphFile": "cypher/checks/sap_new_graph.cypher"
   },
   {
     "id": "A3",
@@ -24,7 +26,8 @@
     "description": "Weitreichende Admin-/Entwickler-Rechte über Auslieferungsprofile. Sollten nicht breit gestreut sein; oft unbemerkt mitgeschleppt.",
     "prio": "Hoch",
     "implemented": true,
-    "cypherFile": "cypher/checks/critical_profiles.cypher"
+    "cypherFile": "cypher/checks/critical_profiles.cypher",
+    "graphFile": "cypher/checks/critical_profiles_graph.cypher"
   },
   {
     "id": "A4",

@@ -800,6 +800,48 @@ def consistency_root_cause(checkId: str, req: ConsistencyRootCauseReq):
     return {"ruleId": checkId, "blocks": blocks}
 
 
+class ConsistencyGraphReq(BaseModel):
+    dataset: str
+
+
+@app.post("/consistency-checks/{checkId}/graph")
+def consistency_graph(checkId: str, req: ConsistencyGraphReq):
+    """Graph-Ansicht eines Konsistenzchecks (Pilot fuer die Tabelle/Graph-Umschaltung, s.
+    ROADMAP.md) -- nur fuer Checks mit gesetztem graphFile (s. checks/SCHEMA.md). Erwartet feste
+    Spalten user/userType/userStatus/pathType/role/profile (role nullable bei direkter Zuweisung)
+    und baut daraus generisch Cytoscape-Knoten/Kanten; dieselbe Spaltenform ist auf weitere
+    User->(Rolle->)Profil-Checks uebertragbar, ohne den Konvertierungscode zu duplizieren."""
+    check = _find_check(checkId)
+    graph_file = check.get("graphFile")
+    if not graph_file:
+        raise HTTPException(409, f"Check '{checkId}' hat keine Graph-Ansicht.")
+    path = CYPHER_DIR / graph_file.removeprefix("cypher/")
+    if not path.is_file():
+        raise HTTPException(500, f"Graph-Cypher fuer '{checkId}' fehlt: {graph_file}")
+    with driver.session() as s:
+        as_of = _dataset_asof(s, req.dataset)
+        stmt = split_statements(path.read_text(encoding="utf-8"))[0]
+        rows = [jsonable(dict(r)) for r in s.run(stmt, dataset=req.dataset, asOf=as_of)]
+    nodes: dict[str, dict] = {}
+    edges: dict[str, dict] = {}
+    def add_node(node_id: str, label: str, kind: str, **extra):
+        nodes.setdefault(node_id, {"data": {"id": node_id, "label": label, "kind": kind, **extra}})
+    def add_edge(src: str, tgt: str, label: str):
+        edges.setdefault(f"{src}->{tgt}", {"data": {"id": f"{src}->{tgt}", "source": src, "target": tgt, "label": label}})
+    for r in rows:
+        u_id, p_id = f"u:{r['user']}", f"p:{r['profile']}"
+        add_node(u_id, r["user"], "User", userType=r["userType"], userStatus=r["userStatus"])
+        add_node(p_id, r["profile"], "Profile")
+        if r.get("role"):
+            r_id = f"r:{r['role']}"
+            add_node(r_id, r["role"], "Role")
+            add_edge(u_id, r_id, "ASSIGNED_TO")
+            add_edge(r_id, p_id, "HAS_PROFILE")
+        else:
+            add_edge(u_id, p_id, "HAS_PROFILE")
+    return {"checkId": checkId, "elements": list(nodes.values()) + list(edges.values())}
+
+
 @app.get("/admin/job-errors")
 def admin_job_errors(limit: int = Query(200, ge=1, le=2000)):
     """Persistentes Fehlerprotokoll (Job-Fehler) ueber Container-Neustarts hinweg, neueste zuerst."""
@@ -1429,8 +1471,8 @@ def job_status(job_id: str):
 
 
 # Minimale UI (Phase 9, Bau-Schritt 2): statische Single-Page, vom Backend ausgeliefert.
-# Bewusst leichtgewichtig (kein Node/React-Build, ein Container) — das gebrandete NVL/React-
-# Frontend bleibt der spaetere "Fancy"-Schritt. MUSS nach allen API-Routen gemountet werden,
-# damit "/" die UI liefert, ohne /health, /runs, ... zu ueberdecken.
+# Bewusst leichtgewichtig (kein Node/React-Build, ein Container) — das gebrandete Frontend mit
+# Cytoscape.js-Graph bleibt der spaetere "Fancy"-Schritt. MUSS nach allen API-Routen gemountet
+# werden, damit "/" die UI liefert, ohne /health, /runs, ... zu ueberdecken.
 if FRONTEND_DIR.exists():
     app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="ui")

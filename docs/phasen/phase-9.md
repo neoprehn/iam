@@ -122,7 +122,9 @@ ZIP-Upload, Ribbon-Oberfläche nach Lebenszyklus, Ergebnisse + CSV-Export, Backu
 Backup & Clear, Download), Clear/Reset.
 
 **Offen:** Mandanten-**Vergleich** (zwei `dataset`, Delta), natives **`.xlsx`**, gebrandetes
-**NVL/React**-Frontend mit Konfliktpfad-Graph (die NeoDash-Karten-Cypher aus Phase 6 sind die
+**Cytoscape.js**-Frontend mit Konfliktpfad-Graph (Lib-Entscheidung am Konsistenzcheck-Graph-Pilot
+A1–A3 erprobt, s. Phase 7 — NVL verworfen, Lizenz nur für Aura/kommerzielle Neo4j-Subscription,
+nicht für die hier genutzte Community Edition; die NeoDash-Karten-Cypher aus Phase 6 sind die
 Vorlage), **Ruleset-Editor** (Vendor-Basis vs. Custom, Round-Trip auf die JSON).
 
 **DoD (Phase 9):** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich,

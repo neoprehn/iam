@@ -312,7 +312,7 @@
         </div>
         <div class="pillgroup" id="viewTogglePills" style="margin-left:auto">
           <button type="button" class="pill active" data-value="table">Tabelle</button>
-          <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (NVL/React)">Graph</button>
+          <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (Cytoscape.js)">Graph</button>
         </div>
       </div>
       <div id="filterActive"><span class="muted" id="filterActiveText"></span>
@@ -373,15 +373,16 @@
           <div id="ccdSummary" class="kpis" style="display:none"></div>
           <div class="resultbar">
             <div id="ccdParams" style="display:contents"></div>
-            <div class="pillgroup" style="margin-left:auto">
+            <div class="pillgroup" id="ccdViewTogglePills" style="margin-left:auto">
               <button type="button" class="pill active" data-value="table">Tabelle</button>
-              <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (NVL/React)">Graph</button>
+              <button type="button" class="pill" data-value="graph" disabled title="nur f&uuml;r Checks mit Graph-Ansicht">Graph</button>
             </div>
           </div>
           <div id="ccdNoResultYet" class="muted">Noch keine Ausf&uuml;hrung &mdash; links Dataset w&auml;hlen und „Ausf&uuml;hren" klicken.</div>
           <div id="ccdResult" style="display:none; max-height:480px; overflow:auto">
             <table id="ccdDetailTable"><thead></thead><tbody></tbody></table>
           </div>
+          <div id="ccdGraph" style="display:none; height:480px; border:1px solid var(--line); border-radius:8px"></div>
         </div>
       </div>
     </div>
@@ -528,6 +529,7 @@
   <div id="rcObjects"></div>
 </div></div>
 
+<script src="vendor/cytoscape/cytoscape.min.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
@@ -719,6 +721,13 @@ function openConsistencyDetail(c) {
   $('ccdSummary').style.display = 'none';
   $('ccdResultMeta').textContent = '';
   $('ccdRunError').style.display = 'none';
+  ccdDestroyGraph();
+  ccdViewMode = 'table';
+  $('ccdGraph').style.display = 'none';
+  $('ccdViewTogglePills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x.dataset.value === 'table'));
+  const graphPill = $('ccdViewTogglePills').querySelector('[data-value="graph"]');
+  graphPill.disabled = !c.graphFile;
+  graphPill.title = c.graphFile ? '' : 'nur für Checks mit Graph-Ansicht';
   renderCcdQuickNav();
   if (!c.implemented) {
     $('ccdNotImplemented').style.display = '';
@@ -876,6 +885,60 @@ async function openConsistencyRootCause(checkId, user) {
 // Spalte mit dem letzten bekannten Stand der laufenden Session zu fuellen statt nur "–"/"noch
 // nicht ausgefuehrt" zu zeigen.
 let ccdLastCounts = {};
+// Graph-Ansicht (Pilot fuer A1-A3, s. ROADMAP.md "Umschalter Tabelle/Graph") -- cytoscape.js
+// (vendored, MIT, frontend/vendor/cytoscape/) statt NVL: NVL ist lizenzrechtlich nur mit Aura
+// oder einer kommerziellen Neo4j-Subscription nutzbar, der Stack hier laeuft auf Community
+// Edition. Knoten/Kanten kommen fertig aufbereitet vom Backend (POST .../graph), die Cypher-
+// Spaltenform ist generisch (s. checks/SCHEMA.md graphFile) -- dieselbe renderCcdGraph() ist
+// auf weitere Checks mit derselben Spaltenform anwendbar, ohne Aenderung hier.
+let ccdViewMode = 'table', ccdCyInstance = null;
+function ccdDestroyGraph() {
+  if (ccdCyInstance) { ccdCyInstance.destroy(); ccdCyInstance = null; }
+}
+const CC_KIND_COLOR = { User: '#4c8bf5', Role: '#e0a23c', Profile: '#46a758' };
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function renderCcdGraph(elements) {
+  ccdDestroyGraph();
+  const fg = cssVar('--fg'), muted = cssVar('--muted'), line = cssVar('--line');
+  ccdCyInstance = cytoscape({
+    container: $('ccdGraph'),
+    elements,
+    style: [
+      { selector: 'node', style: {
+          'background-color': ele => CC_KIND_COLOR[ele.data('kind')] || muted,
+          label: 'data(label)', color: fg, 'font-size': 11,
+          'text-valign': 'bottom', 'text-margin-y': 6, width: 26, height: 26 } },
+      { selector: 'edge', style: {
+          width: 1.5, 'line-color': line, 'target-arrow-color': line,
+          'target-arrow-shape': 'triangle', 'curve-style': 'bezier',
+          label: 'data(label)', 'font-size': 9, color: muted } },
+    ],
+    layout: { name: 'cose', animate: false },
+  });
+}
+async function loadConsistencyGraph() {
+  const dataset = $('ccdDataset').value;
+  $('ccdGraph').style.display = '';
+  $('ccdResult').style.display = 'none';
+  if (!dataset) { $('ccdGraph').innerHTML = '<div class="muted" style="padding:14px">Dataset angeben.</div>'; return; }
+  $('ccdGraph').innerHTML = '<div class="muted" style="padding:14px">lädt&hellip;</div>';
+  try {
+    const res = await api('/consistency-checks/' + encodeURIComponent(ccdCurrentCheck.id) + '/graph', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataset }) });
+    $('ccdGraph').innerHTML = '';
+    renderCcdGraph(res.elements);
+  } catch (e) {
+    $('ccdGraph').innerHTML = '<div class="muted" style="padding:14px">Fehler: ' + (e.detail || 'Graph konnte nicht geladen werden.') + '</div>';
+  }
+}
+$('ccdViewTogglePills').querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => {
+  if (b.disabled || b.classList.contains('active')) return;
+  ccdViewMode = b.dataset.value;
+  $('ccdViewTogglePills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
+  if (ccdViewMode === 'graph') { loadConsistencyGraph(); }
+  else { ccdDestroyGraph(); $('ccdGraph').style.display = 'none'; $('ccdResult').style.display = ''; }
+}));
 async function runConsistencyCheck() {
   const dataset = $('ccdDataset').value;
   if (!dataset) { $('ccdRunError').style.display = ''; $('ccdRunError').textContent = 'Dataset angeben.'; return; }
@@ -892,7 +955,8 @@ async function runConsistencyCheck() {
     const asOf = $('ccdAsOfDisplay').textContent;
     $('ccdResultMeta').textContent = `· ${detail.length} Treffer · ${dataset} · Stichtag ${asOf}`;
     $('ccdNoResultYet').style.display = 'none';
-    $('ccdResult').style.display = '';
+    ccdDestroyGraph();
+    if (ccdViewMode === 'graph') { loadConsistencyGraph(); } else { $('ccdResult').style.display = ''; }
     ccdLastCounts[ccdCurrentCheck.id] = detail.length;
   } catch (e) {
     $('ccdRunError').style.display = ''; $('ccdRunError').textContent = e.detail || 'Fehler beim Ausführen.';
