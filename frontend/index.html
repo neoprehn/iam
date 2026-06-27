@@ -130,6 +130,9 @@
   .pill.active:not(.tag) { color:var(--fg); border-color:var(--accent); }
   .pill.tag { opacity:.55; }
   .pill.tag.active { opacity:1; box-shadow:0 0 0 2px currentColor inset; }
+  .ccd-graph-box { height:480px; }
+  #ccdGraphWrap:fullscreen { background:var(--bg); padding:16px; }
+  #ccdGraphWrap:fullscreen .ccd-graph-box { height:calc(100vh - 32px); }
   #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
   #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
@@ -382,7 +385,13 @@
           <div id="ccdResult" style="display:none; max-height:480px; overflow:auto">
             <table id="ccdDetailTable"><thead></thead><tbody></tbody></table>
           </div>
-          <div id="ccdGraph" style="display:none; height:480px; border:1px solid var(--line); border-radius:8px"></div>
+          <div id="ccdGraphWrap" style="display:none; position:relative">
+            <div id="ccdGraph" class="ccd-graph-box" style="border:1px solid var(--line); border-radius:8px"></div>
+            <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:5">
+              <button type="button" class="pill" id="ccdGraphFit" title="Einpassen / Zoom zur&uuml;cksetzen">Einpassen</button>
+              <button type="button" class="pill" id="ccdGraphFullscreen" title="Vollbild">Vollbild</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -723,7 +732,7 @@ function openConsistencyDetail(c) {
   $('ccdRunError').style.display = 'none';
   ccdDestroyGraph();
   ccdViewMode = 'table';
-  $('ccdGraph').style.display = 'none';
+  $('ccdGraphWrap').style.display = 'none';
   $('ccdViewTogglePills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x.dataset.value === 'table'));
   const graphPill = $('ccdViewTogglePills').querySelector('[data-value="graph"]');
   graphPill.disabled = !c.graphFile;
@@ -891,8 +900,35 @@ let ccdLastCounts = {};
 // Edition. Knoten/Kanten kommen fertig aufbereitet vom Backend (POST .../graph), die Cypher-
 // Spaltenform ist generisch (s. checks/SCHEMA.md graphFile) -- dieselbe renderCcdGraph() ist
 // auf weitere Checks mit derselben Spaltenform anwendbar, ohne Aenderung hier.
-let ccdViewMode = 'table', ccdCyInstance = null;
+let ccdViewMode = 'table', ccdCyInstance = null, ccdJitterRaf = null;
+function ccdStopJitter() {
+  if (ccdJitterRaf) { cancelAnimationFrame(ccdJitterRaf); ccdJitterRaf = null; }
+}
+// Leichtes, kontinuierliches Wackeln um die vom concentric-Layout gesetzte Ruheposition
+// (kleine Sinus-Auslenkung je Knoten, eigene Phase/Geschwindigkeit) -- das "lebendige"
+// Bloom-Gefuehl, ohne den auf Abstand gehaltenen Ring durch ein erneutes Kraft-Layout wieder
+// zu verklumpen (s. renderCcdGraph). Gezogene Knoten werden waehrend des Ziehens ausgespart.
+function ccdStartJitter() {
+  ccdStopJitter();
+  const t0 = performance.now();
+  const tick = () => {
+    if (!ccdCyInstance) return;
+    const t = (performance.now() - t0) / 1000;
+    ccdCyInstance.nodes().forEach(n => {
+      if (n.scratch('_dragging')) return;
+      const base = n.scratch('_basePos'), ph = n.scratch('_phase');
+      if (!base || !ph) return;
+      n.position({
+        x: base.x + Math.sin(t * ph.speed + ph.x) * ph.amp,
+        y: base.y + Math.cos(t * ph.speed * 0.85 + ph.y) * ph.amp,
+      });
+    });
+    ccdJitterRaf = requestAnimationFrame(tick);
+  };
+  ccdJitterRaf = requestAnimationFrame(tick);
+}
 function ccdDestroyGraph() {
+  ccdStopJitter();
   if (ccdCyInstance) { ccdCyInstance.destroy(); ccdCyInstance = null; }
 }
 const CC_KIND_COLOR = { User: '#4c8bf5', Role: '#e0a23c', Profile: '#46a758' };
@@ -906,19 +942,44 @@ function renderCcdGraph(elements) {
     style: [
       { selector: 'node', style: {
           'background-color': ele => CC_KIND_COLOR[ele.data('kind')] || muted,
-          label: 'data(label)', color: fg, 'font-size': 11,
-          'text-valign': 'bottom', 'text-margin-y': 6, width: 26, height: 26 } },
+          label: 'data(label)', color: fg, 'font-size': 10,
+          'text-valign': 'bottom', 'text-margin-y': 6, width: 22, height: 22,
+          'text-background-color': cssVar('--bg'), 'text-background-opacity': 0.85,
+          'text-background-padding': 2 } },
       { selector: 'edge', style: {
           width: 1.5, 'line-color': line, 'target-arrow-color': line,
           'target-arrow-shape': 'triangle', 'curve-style': 'bezier',
           label: 'data(label)', 'font-size': 9, color: muted } },
     ],
-    layout: { name: 'cose', animate: false },
+    // Erster Aufbau bewusst mit 'concentric' statt 'cose': A1-A3 sind ein Hub (Profil) mit
+    // 30+ direkten Leaf-Kanten (User) -- bei gleichem Grad aller Leaves liefert cose nur eine
+    // kraftbasierte Annaeherung, die ungleiche Teil-Ringe/Ueberlappungen erzeugen kann.
+    // 'concentric' setzt stattdessen erzwungen einen Mindestabstand (minNodeSpacing) auf dem
+    // Ring durch und vergroessert den Radius automatisch, statt sich nur kraeftebasiert
+    // einzupendeln. Grad-basiert (Default-Metrik) landet der Hub automatisch im Zentrum.
+    layout: { name: 'concentric', animate: true, animationDuration: 600, minNodeSpacing: 55 },
+  });
+  // Sobald der concentric-Lauf fertig ist: Ruhepositionen + zufaellige Phase je Knoten merken,
+  // dann das Jitter starten (s. ccdStartJitter oben). Kein automatisches Re-Layout nach dem
+  // Ziehen eines Knotens (anders als zunaechst versucht): ein erneuter cose-Lauf zieht den
+  // sorgfaeltig auf Abstand gehaltenen Ring wieder zu einem ueberlappenden Klumpen zusammen.
+  ccdCyInstance.one('layoutstop', () => {
+    ccdCyInstance.nodes().forEach(n => {
+      n.scratch('_basePos', { x: n.position('x'), y: n.position('y') });
+      n.scratch('_phase', { speed: 0.5 + Math.random() * 0.5, x: Math.random() * Math.PI * 2, y: Math.random() * Math.PI * 2, amp: 3 + Math.random() * 3 });
+    });
+    ccdStartJitter();
+  });
+  ccdCyInstance.on('grab', 'node', e => e.target.scratch('_dragging', true));
+  ccdCyInstance.on('free', 'node', e => {
+    const n = e.target;
+    n.scratch('_basePos', { x: n.position('x'), y: n.position('y') });
+    n.scratch('_dragging', false);
   });
 }
 async function loadConsistencyGraph() {
   const dataset = $('ccdDataset').value;
-  $('ccdGraph').style.display = '';
+  $('ccdGraphWrap').style.display = '';
   $('ccdResult').style.display = 'none';
   if (!dataset) { $('ccdGraph').innerHTML = '<div class="muted" style="padding:14px">Dataset angeben.</div>'; return; }
   $('ccdGraph').innerHTML = '<div class="muted" style="padding:14px">lädt&hellip;</div>';
@@ -937,8 +998,29 @@ $('ccdViewTogglePills').querySelectorAll('.pill').forEach(b => b.addEventListene
   ccdViewMode = b.dataset.value;
   $('ccdViewTogglePills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
   if (ccdViewMode === 'graph') { loadConsistencyGraph(); }
-  else { ccdDestroyGraph(); $('ccdGraph').style.display = 'none'; $('ccdResult').style.display = ''; }
+  else { ccdDestroyGraph(); $('ccdGraphWrap').style.display = 'none'; $('ccdResult').style.display = ''; }
 }));
+$('ccdGraphFit').addEventListener('click', () => { if (ccdCyInstance) ccdCyInstance.fit(undefined, 30); });
+$('ccdGraphFullscreen').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    $('ccdGraphWrap').requestFullscreen().catch(err => {
+      console.error('Vollbild fehlgeschlagen:', err);
+      alert('Vollbild konnte nicht aktiviert werden: ' + err.message);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  if (!ccdCyInstance) return;
+  // Doppelter rAF: die CSS-Hoehenaenderung (#ccdGraphWrap:fullscreen #ccdGraph) muss erst
+  // gerendert sein, bevor resize()/fit() die neue Containergroesse messen -- sonst bleibt das
+  // Canvas in der alten, kleinen Box stehen (Browser ist zwar im Vollbild, der Graph aber nicht).
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    ccdCyInstance.resize();
+    ccdCyInstance.fit(undefined, 30);
+  }));
+});
 async function runConsistencyCheck() {
   const dataset = $('ccdDataset').value;
   if (!dataset) { $('ccdRunError').style.display = ''; $('ccdRunError').textContent = 'Dataset angeben.'; return; }
