@@ -80,8 +80,28 @@ async def no_cache_frontend(request, call_next):
     return response
 
 
+ORG_PROFILES_VENDOR_PATH = CONFIG_DIR / "analysis_profiles.json"
+ORG_PROFILES_CUSTOM_PATH = CONFIG_DIR / "analysis_profiles.custom.json"
+PROTECTED_ORG_PROFILES = {"standard", "uebergreifend"}
+
+
+def ensure_custom_org_profiles_file() -> Path:
+    if not ORG_PROFILES_CUSTOM_PATH.is_file():
+        ORG_PROFILES_CUSTOM_PATH.write_text("[]", encoding="utf-8")
+    return ORG_PROFILES_CUSTOM_PATH
+
+
 def profiles() -> dict:
-    return json.loads((CONFIG_DIR / "analysis_profiles.json").read_text(encoding="utf-8"))
+    """Liest die Vendor-Profile UND merged die Org-Profile-Overlay-Datei
+    (analysis_profiles.custom.json, vom Admin-Editor "Org-Varianten" geschrieben) hinein —
+    analog zum Ruleset-Overlay-Mechanismus (queries.custom.json/sod_rules.custom.json), aber
+    global statt pro Ruleset. Overlay-Namen, die mit einem Vendor-Profil kollidieren, werden
+    beim Schreiben verhindert (s. admin_create_org_profile), hier nur defensiv gefiltert."""
+    cfg = json.loads(ORG_PROFILES_VENDOR_PATH.read_text(encoding="utf-8"))
+    vendor_names = {p["name"] for p in cfg["profiles"]}
+    custom = _load_json_list(ORG_PROFILES_CUSTOM_PATH)
+    cfg["profiles"] = cfg["profiles"] + [p for p in custom if p["name"] not in vendor_names]
+    return cfg
 
 
 def list_rulesets() -> list[dict]:
@@ -208,58 +228,135 @@ class RunReq(BaseModel):
                                      # Default aus; per Formular oder POST /runs/{id}/explain anfordern
 
 
+def _slug(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def _humanize_profile_name(name: str) -> str:
+    """Kurzer, lesbarer Lauf-Titel aus dem Org-Profil-Namen (z. B. 'bukrs-1000-und-2000' ->
+    'Bukrs 1000 Und 2000') — analog zu defaultRunTitle() im Frontend (frontend/index.html), damit
+    Einzel- und Batch-Laeufe denselben Titel-Stil haben (die volle Beschreibung waere als
+    Run-Listen-Label zu lang)."""
+    return " ".join(w[:1].upper() + w[1:] for w in re.split(r"[-_]+", name) if w)
+
+
+def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type_profile: str,
+             org_profile: str, sleep_days: int, min_criticality_rank: int, sod_rules: list[str],
+             run_id: str, title: str, skip_ruleset_load: bool, skip_materialize: bool,
+             skip_explain: bool, step_prefix: str = "") -> dict:
+    """Ein einzelner Lauf (Profile aufloesen -> materialize -> evaluate -> optional explain ->
+    Ergebnis-Zaehlung). Von do_run() (1 Variante) UND do_run_batch() (mehrere Varianten,
+    gemeinsame Session) genutzt — step_prefix erlaubt dem Batch, den Fortschritt je Variante
+    anzuzeigen (z. B. "Variante 2/3: uebergreifend - materialize")."""
+    utp = next((p for p in cfg["userTypeProfiles"] if p["name"] == user_type_profile), None)
+    if not utp:
+        raise ValueError(f"userTypeProfile '{user_type_profile}' unbekannt")
+    op = next((p for p in cfg["profiles"] if p["name"] == org_profile), None)
+    if not op:
+        raise ValueError(f"orgProfile '{org_profile}' unbekannt")
+    org_mode = op["org"].get("mode", "ignoreOrg")
+    org_filters = op["org"].get("filters", {}) if org_mode == "filtered" else {}
+    org = {"orgMode": org_mode, "orgFilters": org_filters}
+
+    as_of = _dataset_asof(s, dataset)
+    base = {"ruleset": ruleset, "dataset": dataset, "asOf": as_of, "runId": run_id}
+    if not skip_ruleset_load:
+        rdir = ruleset_dir(ruleset)
+        if not rdir:
+            raise ValueError(f"Ruleset-Ordner fuer '{ruleset}' nicht gefunden")
+        jobs[job_id]["step"] = step_prefix + "ruleset"
+        ensure_custom_queries_file(ruleset)    # queries.custom.json muss existieren (apoc.load.json)
+        ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
+        run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
+    if not skip_materialize:
+        jobs[job_id]["step"] = step_prefix + "materialize"
+        run_file(s, "sod/materialize_matches.cypher", {**base, **org})
+    jobs[job_id]["step"] = step_prefix + "evaluate"
+    run_file(s, "sod/evaluate_sod.cypher", {
+        **base, **org,
+        "userTypes": list(utp.get("userTypes", [])),
+        "excludeLocked": bool(utp.get("excludeLocked", False)),
+        "sleepDays": sleep_days,
+        "minCriticalityRank": min_criticality_rank,
+        "sodRules": sod_rules,
+        "title": title,
+    })
+    if not skip_explain:
+        jobs[job_id]["step"] = step_prefix + "explain"
+        run_file(s, "sod/explain_sod.cypher", base)
+    rec = s.run(
+        "MATCH (f:SoDConflict {runId:$r}) "
+        "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
+        "sum(CASE WHEN f.userSleeping THEN 1 ELSE 0 END) AS sleeping, "
+        "sum(CASE WHEN f.conflictType='intra' THEN 1 ELSE 0 END) AS intra", r=run_id,
+    ).single()
+    return {"runId": run_id, "title": title, "findings": rec["findings"], "rules": rec["rules"],
+            "sleeping": rec["sleeping"], "intra": rec["intra"]}
+
+
 def do_run(job_id: str, req: RunReq):
     try:
         cfg = profiles()
-        utp = next((p for p in cfg["userTypeProfiles"] if p["name"] == req.userTypeProfile), None)
-        if not utp:
-            raise ValueError(f"userTypeProfile '{req.userTypeProfile}' unbekannt")
-        op = next((p for p in cfg["profiles"] if p["name"] == req.orgProfile), None)
-        if not op:
-            raise ValueError(f"orgProfile '{req.orgProfile}' unbekannt")
-        org_mode = op["org"].get("mode", "ignoreOrg")
-        org_filters = op["org"].get("filters", {}) if org_mode == "filtered" else {}
         sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
         run_id = req.runId or f"{req.ruleset}-{datetime.datetime.now():%Y%m%d%H%M%S}"
         title = req.title or run_id
-        org = {"orgMode": org_mode, "orgFilters": org_filters}
         jobs[job_id].update(status="running", runId=run_id, step="start")
-
         with driver.session() as s:
-            as_of = _dataset_asof(s, req.dataset)
-            base = {"ruleset": req.ruleset, "dataset": req.dataset, "asOf": as_of, "runId": run_id}
-            if not req.skipRulesetLoad:
-                rdir = ruleset_dir(req.ruleset)
-                if not rdir:
-                    raise ValueError(f"Ruleset-Ordner fuer '{req.ruleset}' nicht gefunden")
-                jobs[job_id]["step"] = "ruleset"
-                ensure_custom_queries_file(req.ruleset)    # queries.custom.json muss existieren (apoc.load.json)
-                ensure_custom_sodrules_file(req.ruleset)   # sod_rules.custom.json ebenso
-                run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": req.ruleset})
-            if not req.skipMaterialize:
-                jobs[job_id]["step"] = "materialize"
-                run_file(s, "sod/materialize_matches.cypher", {**base, **org})
-            jobs[job_id]["step"] = "evaluate"
-            run_file(s, "sod/evaluate_sod.cypher", {
-                **base, **org,
-                "userTypes": list(utp.get("userTypes", [])),
-                "excludeLocked": bool(utp.get("excludeLocked", False)),
-                "sleepDays": sleep_days,
-                "minCriticalityRank": req.minCriticalityRank,
-                "sodRules": req.sodRules,
-                "title": title,
-            })
-            if not req.skipExplain:
-                jobs[job_id]["step"] = "explain"
-                run_file(s, "sod/explain_sod.cypher", base)
-            rec = s.run(
-                "MATCH (f:SoDConflict {runId:$r}) "
-                "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
-                "sum(CASE WHEN f.userSleeping THEN 1 ELSE 0 END) AS sleeping, "
-                "sum(CASE WHEN f.conflictType='intra' THEN 1 ELSE 0 END) AS intra", r=run_id,
-            ).single()
-        jobs[job_id].update(status="done", step="done", findings=rec["findings"],
-                            rules=rec["rules"], sleeping=rec["sleeping"], intra=rec["intra"])
+            result = _run_one(s, job_id, cfg, ruleset=req.ruleset, dataset=req.dataset,
+                               user_type_profile=req.userTypeProfile, org_profile=req.orgProfile,
+                               sleep_days=sleep_days, min_criticality_rank=req.minCriticalityRank,
+                               sod_rules=req.sodRules, run_id=run_id, title=title,
+                               skip_ruleset_load=req.skipRulesetLoad, skip_materialize=req.skipMaterialize,
+                               skip_explain=req.skipExplain)
+        jobs[job_id].update(status="done", step="done", **result)
+    except Exception as e:  # noqa: BLE001
+        jobs[job_id].update(status="error", error=str(e))
+        _log_job_error(job_id, str(e))
+
+
+class RunBatchReq(BaseModel):
+    ruleset: str = "kpmg_r3"
+    dataset: str
+    userTypeProfile: str = "all"
+    orgProfiles: list[str]           # >=1 Org-Varianten; je Variante ein eigener Lauf
+    sleepDays: int | None = None
+    minCriticalityRank: int = 0
+    sodRules: list[str] = []
+    skipRulesetLoad: bool = True
+    skipMaterialize: bool = False
+    skipExplain: bool = True
+
+
+def do_run_batch(job_id: str, req: RunBatchReq):
+    try:
+        if not req.orgProfiles:
+            raise ValueError("orgProfiles darf nicht leer sein")
+        cfg = profiles()
+        sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
+        ts = f"{datetime.datetime.now():%Y%m%d%H%M%S}"
+        jobs[job_id].update(status="running", step="start", runs=[])
+        results = []
+        n = len(req.orgProfiles)
+        with driver.session() as s:
+            for i, profile_name in enumerate(req.orgProfiles, start=1):
+                op = next((p for p in cfg["profiles"] if p["name"] == profile_name), None)
+                if not op:
+                    raise ValueError(f"orgProfile '{profile_name}' unbekannt")
+                run_id = f"{req.ruleset}-{ts}-{i}-{_slug(profile_name)}"
+                title = _humanize_profile_name(profile_name)
+                result = _run_one(
+                    s, job_id, cfg, ruleset=req.ruleset, dataset=req.dataset,
+                    user_type_profile=req.userTypeProfile, org_profile=profile_name,
+                    sleep_days=sleep_days, min_criticality_rank=req.minCriticalityRank,
+                    sod_rules=req.sodRules, run_id=run_id, title=title,
+                    # Ruleset nur einmal laden (idempotent, aber unnoetig fuer jede Variante)
+                    skip_ruleset_load=req.skipRulesetLoad or i > 1,
+                    skip_materialize=req.skipMaterialize, skip_explain=req.skipExplain,
+                    step_prefix=f"Variante {i}/{n} ({profile_name}): ",
+                )
+                results.append(result)
+                jobs[job_id]["runs"] = results
+        jobs[job_id].update(status="done", step="done", runs=results)
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -671,6 +768,122 @@ def profiles_meta():
         "scopeProfiles": [{"name": p["name"], "description": p.get("description", "")} for p in cfg.get("scopeProfiles", [])],
         "sleepDays": cfg["sleeping"]["sleepDays"],
     }
+
+
+# --- Org-Varianten-Editor (Admin) -------------------------------------------------------
+# Schreibt NIE in die Vendor-Datei (analysis_profiles.json) — neue/bearbeitete Org-Profile landen
+# in einem globalen Overlay (analysis_profiles.custom.json), das profiles() zusaetzlich einliest
+# (s. oben). "standard"/"uebergreifend" sind die zwei garantierten Basis-Varianten und bewusst
+# geschuetzt (nicht editierbar/loeschbar) — PROTECTED_ORG_PROFILES.
+class OrgCriterionReq(BaseModel):
+    field: str
+    op: str                      # AND | OR | RANGE
+    values: list[str] | None = None
+    rangeFrom: str | None = None
+    rangeTo: str | None = None
+
+
+class OrgProfileEditReq(BaseModel):
+    description: str | None = None
+    criteria: list[OrgCriterionReq] = []
+
+
+class OrgProfileCreateReq(OrgProfileEditReq):
+    name: str
+
+
+def _org_filters_from_criteria(criteria: list[OrgCriterionReq]) -> dict:
+    filters: dict = {}
+    for c in criteria:
+        if c.op == "RANGE":
+            filters[c.field] = {"op": "RANGE", "from": c.rangeFrom, "to": c.rangeTo}
+        else:
+            filters[c.field] = {"op": c.op, "values": c.values or []}
+    return filters
+
+
+@app.get("/admin/org-profiles")
+def admin_list_org_profiles():
+    """Org-Profile (Vendor + Overlay) fuer die Admin-Seite 'Org-Varianten'; 'protected' markiert
+    die zwei garantierten Basis-Varianten (nicht editierbar/loeschbar)."""
+    cfg = profiles()
+    custom_names = {p["name"] for p in _load_json_list(ORG_PROFILES_CUSTOM_PATH)}
+    return [{"name": p["name"], "description": p.get("description", ""), "org": p["org"],
+             "protected": p["name"] in PROTECTED_ORG_PROFILES,
+             "source": "custom" if p["name"] in custom_names else "vendor"}
+            for p in cfg["profiles"]]
+
+
+@app.get("/admin/org-profiles/org-fields")
+def admin_org_fields(dataset: str):
+    """Org-Felder (USORG-Registry) eines Datasets — speist die Feld-Auswahl beim Anlegen eines
+    Org-Kriteriums."""
+    with driver.session() as s:
+        rows = s.run("MATCH (of:OrgField {dataset:$d}) RETURN of.field AS field ORDER BY of.field", d=dataset)
+        return [r["field"] for r in rows]
+
+
+@app.get("/admin/org-profiles/org-field-values")
+def admin_org_field_values(dataset: str, field: str):
+    """Tatsaechlich im Dataset vorkommende Werte eines Org-Felds (aus den Authorization-
+    Feldwerten) — speist die Werte-Auswahl beim Anlegen eines Org-Kriteriums, statt Freitext."""
+    with driver.session() as s:
+        rows = s.run(
+            "MATCH (a:Authorization {dataset:$d}) "
+            "WHERE apoc.any.property(a,'f_'+$field) IS NOT NULL "
+            "UNWIND apoc.any.property(a,'f_'+$field) AS v "
+            "WITH DISTINCT v WHERE v <> '*' "
+            "RETURN v ORDER BY v LIMIT 500", d=dataset, field=field,
+        )
+        return [r["v"] for r in rows]
+
+
+@app.post("/admin/org-profiles")
+def admin_create_org_profile(req: OrgProfileCreateReq):
+    name = req.name
+    if not _SAFE_NAME.match(name):
+        raise HTTPException(400, "ungueltiger Name (erlaubt: Buchstaben/Ziffern/._-)")
+    cfg = profiles()
+    if any(p["name"] == name for p in cfg["profiles"]):
+        raise HTTPException(409, f"Org-Profil '{name}' existiert bereits")
+    if not req.criteria:
+        raise HTTPException(400, "mindestens ein Org-Kriterium erforderlich")
+    custom_path = ensure_custom_org_profiles_file()
+    custom = _load_json_list(custom_path)
+    custom.append({"name": name, "description": req.description or "",
+                   "org": {"mode": "filtered", "filters": _org_filters_from_criteria(req.criteria)}})
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"name": name, "saved": True}
+
+
+@app.put("/admin/org-profiles/{name}")
+def admin_update_org_profile(name: str, req: OrgProfileEditReq):
+    if name in PROTECTED_ORG_PROFILES:
+        raise HTTPException(400, f"Org-Profil '{name}' ist geschuetzt und nicht editierbar")
+    custom_path = ensure_custom_org_profiles_file()
+    custom = _load_json_list(custom_path)
+    entry = next((c for c in custom if c["name"] == name), None)
+    if not entry:
+        raise HTTPException(404, f"Org-Profil '{name}' nicht gefunden (oder ist ein Vendor-Profil)")
+    if not req.criteria:
+        raise HTTPException(400, "mindestens ein Org-Kriterium erforderlich")
+    entry["description"] = req.description or ""
+    entry["org"] = {"mode": "filtered", "filters": _org_filters_from_criteria(req.criteria)}
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"name": name, "saved": True}
+
+
+@app.delete("/admin/org-profiles/{name}")
+def admin_delete_org_profile(name: str):
+    if name in PROTECTED_ORG_PROFILES:
+        raise HTTPException(400, f"Org-Profil '{name}' ist geschuetzt und nicht loeschbar")
+    custom_path = ensure_custom_org_profiles_file()
+    custom = _load_json_list(custom_path)
+    remaining = [c for c in custom if c["name"] != name]
+    if len(remaining) == len(custom):
+        raise HTTPException(404, f"Org-Profil '{name}' nicht gefunden (oder ist ein Vendor-Profil)")
+    custom_path.write_text(json.dumps(remaining, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"name": name, "deleted": True}
 
 
 def _load_check_category(cat: str) -> list[dict]:
@@ -1460,6 +1673,17 @@ def start_run(req: RunReq):
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "queued", "kind": "run", "request": req.model_dump()}
     threading.Thread(target=do_run, args=(job_id, req), daemon=True).start()
+    return {"jobId": job_id}
+
+
+@app.post("/runs/batch")
+def start_run_batch(req: RunBatchReq):
+    """Mehrere Org-Varianten in einem Schritt anlegen — je Variante ein eigener (:Run) mit dem
+    Variantennamen als Titel (s. ROADMAP.md, 'Multi-Varianten-Laeufe'). Ein Job, sequenziell
+    abgearbeitet (gemeinsame Neo4j-Session, kein paralleles Schreiben auf dasselbe Dataset)."""
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {"status": "queued", "kind": "run_batch", "request": req.model_dump()}
+    threading.Thread(target=do_run_batch, args=(job_id, req), daemon=True).start()
     return {"jobId": job_id}
 
 

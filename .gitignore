@@ -4,6 +4,10 @@
 .env
 *.dump
 
+# Org-Varianten-Overlay (Admin-Seite "Org-Varianten") — enthaelt echte Mandanten-Org-Codes
+# (z. B. Buchungskreise), anders als die generischen Query-/SoD-Metadaten-Overlays unter rules/
+config/analysis_profiles.custom.json
+
 # Übergabe-Pakete (Images/Archive) — lokal erzeugt, nicht versionieren
 /handoff/
 

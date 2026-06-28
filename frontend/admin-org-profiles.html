@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Org-Varianten — IAM</title>
+<style>
+  :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
+          --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
+  html[data-theme="light"] { --bg:#f5f7fa; --panel:#ffffff; --line:#d7dee6; --fg:#1b232c;
+          --muted:#5b6b7a; --accent:#2f6fe0; --crit:#c0392b; --ok:#1f7a37; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+  a { color:var(--accent); }
+  html[data-theme="light"] header { background:linear-gradient(110deg,#eef2f7 0%,#ffffff 60%); }
+
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 22px; background:linear-gradient(110deg,#141d2b 0%,#0f1419 60%);
+    border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:13px; }
+  .brand .mark { width:38px; height:38px; border-radius:9px; flex:none;
+    background:linear-gradient(135deg,var(--accent),#7b5cf5); display:flex; align-items:center;
+    justify-content:center; font-weight:800; font-size:17px; color:#fff; letter-spacing:.5px;
+    box-shadow:0 2px 10px rgba(76,139,245,.35); }
+  .brand .title { font-size:18px; font-weight:700; line-height:1.15; }
+  .brand .title b { color:var(--accent); font-weight:700; }
+  .brand .tag { color:var(--muted); font-size:12px; margin-top:1px; }
+  .bctx { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .chip { font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    border-radius:20px; padding:3px 11px; white-space:nowrap; }
+  .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
+    background:var(--panel); margin-top:8px; overflow-x:auto; }
+  .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
+    border-right:1px solid var(--line); }
+  .group:last-child { border-right:0; }
+  .group .cmds { display:flex; gap:6px; }
+  .group .lbl { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+    margin-top:5px; }
+  .cmd { display:flex; flex-direction:column; align-items:center; gap:3px; min-width:64px;
+    padding:7px 10px; background:transparent; color:var(--fg); border:1px solid transparent;
+    border-radius:7px; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap;
+    text-decoration:none; }
+  .cmd:hover { background:rgba(76,139,245,.12); border-color:var(--line); }
+  .cmd .ico { font-size:18px; line-height:1; }
+  .cmd:disabled { opacity:.4; cursor:default; background:transparent; border-color:transparent; }
+
+  #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
+    border:1px solid var(--line); background:var(--panel); }
+  #status.err { border-color:var(--crit); color:#ffb3b5; }
+
+  main { padding:16px 20px 28px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 10px; }
+  .cols { display:grid; grid-template-columns:340px 1fr; gap:22px; align-items:start; }
+  .filterbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
+  label:first-child { margin-top:0; }
+  input, select, textarea { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
+    border:1px solid var(--line); border-radius:6px; font:inherit; }
+  select[multiple] { padding:4px; }
+  .row { display:flex; gap:10px; } .row > div { flex:1; }
+  .muted { color:var(--muted); }
+  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
+  button.primary { padding:9px 18px; background:var(--accent); color:#fff;
+    border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+  button.ghost { padding:9px 14px; background:transparent; border:1px solid var(--line);
+    color:var(--fg); border-radius:6px; font:inherit; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+
+  .runs { list-style:none; padding:0; margin:0; }
+  .runs li { padding:8px 10px; border-radius:6px; margin-bottom:5px; cursor:pointer;
+    border:1px solid var(--line); background:var(--bg); font-size:13px; }
+  .runs li:hover { border-color:var(--accent); }
+  .runs li.active { border-color:var(--accent); background:rgba(76,139,245,.10); }
+  .runs li small { color:var(--muted); }
+  .lock-badge { font-size:10px; color:var(--muted); }
+  .custom-badge { font-size:10px; color:var(--accent); }
+
+  .criterion { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-bottom:10px;
+    background:var(--bg); }
+  .criterion .top { display:flex; justify-content:space-between; align-items:baseline; }
+  .actions { display:flex; gap:8px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+  .badge { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
+    border-radius:10px; padding:3px 9px; white-space:nowrap; }
+  .badge.custom { color:var(--accent); border-color:var(--accent); }
+  .badge.protected { color:var(--ok); border-color:var(--ok); }
+  .empty { color:var(--muted); padding:40px; text-align:center; }
+  .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
+    border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark">IAM</div>
+    <div>
+      <div class="title"><b>IAM</b> &middot; Org-Varianten</div>
+      <div class="tag">Org-spezifische Auswertungsvarianten f&uuml;r den "Neuer Lauf"-Dialog</div>
+    </div>
+  </div>
+  <div class="bctx">
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
+    <span class="chip" id="opDirtyChip" style="display:none">&#9679; ungespeichert</span>
+  </div>
+</header>
+
+<nav class="ribbon">
+  <div class="group">
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
+    <div class="lbl">Anzeige</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
+      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+    </div>
+    <div class="lbl">Editieren</div>
+  </div>
+  <div class="group">
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
+    <div class="lbl">Zur&uuml;ck</div>
+  </div>
+</nav>
+
+<div id="status"></div>
+
+<main>
+  <div class="cols">
+    <div>
+      <h2>Dataset <span class="muted">(nur f&uuml;r die Werte-Auswahl)</span></h2>
+      <div class="filterbox">
+        <label for="opDataset">System (dataset)</label>
+        <select id="opDataset"></select>
+        <div class="hint">Liefert die w&auml;hlbaren Org-Felder/-Werte. Eine gespeicherte Variante
+          ist nicht an dieses Dataset gebunden.</div>
+      </div>
+      <h2>Varianten</h2>
+      <ul class="runs" id="opList"></ul>
+      <button class="ghost" id="opNewBtn" style="width:100%;margin-top:8px">+ Neue Variante</button>
+    </div>
+
+    <div>
+      <div id="opEmpty" class="empty">Links eine Variante w&auml;hlen oder eine neue anlegen.</div>
+      <div id="opDetail" style="display:none">
+        <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
+          <span id="opTitle"></span>
+          <span class="badge" id="opBadge"></span>
+        </h2>
+
+        <div id="opProtectedInfo" class="filterbox" style="display:none">
+          <div id="opProtectedText"></div>
+        </div>
+
+        <div id="opForm">
+          <label for="opName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
+          <input id="opName" placeholder="z. B. bukrs-3000" />
+          <label for="opDescription">Beschreibung</label>
+          <input id="opDescription" placeholder="z. B. Buchungskreis 3000" />
+
+          <h2>Org-Kriterien</h2>
+          <div id="criteriaList"></div>
+          <button class="ghost" id="opAddCriterionBtn" type="button" style="width:100%">+ Kriterium hinzuf&uuml;gen</button>
+
+          <div class="actions">
+            <button class="primary" id="opSaveBtn" disabled>Speichern</button>
+            <button class="ghost" id="opCancelBtn" disabled>Abbrechen</button>
+            <button class="ghost" id="opDeleteBtn" style="margin-left:auto;display:none">L&ouml;schen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
+const doneTag = '<span style="color:var(--ok)">&#10003;</span>';
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+}
+applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
+$('themeToggle').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', next); applyTheme(next);
+};
+
+function setStatus(html, isErr) {
+  const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
+}
+
+let profiles = [], selectedName = null, isNew = false, dirty = false;
+let orgFields = [];
+const valueCache = {};   // field -> string[] (gecacht pro Dataset-Auswahl)
+let criteria = [];        // [{field, op, values, rangeFrom, rangeTo}]
+
+function setDirty(v) {
+  dirty = v;
+  $('opDirtyChip').style.display = v ? '' : 'none';
+  $('opSaveBtn').disabled = !v; $('opCancelBtn').disabled = !v;
+  $('cmdSave').disabled = !v; $('cmdCancel').disabled = !v;
+}
+
+async function loadDatasets() {
+  const list = await api('/datasets');
+  const sel = $('opDataset'); const cur = sel.value; sel.innerHTML = '';
+  (list || []).forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o); });
+  if (list.includes(cur)) sel.value = cur;
+}
+
+async function loadOrgFields() {
+  const ds = $('opDataset').value; if (!ds) { orgFields = []; return; }
+  orgFields = await api('/admin/org-profiles/org-fields?dataset=' + encodeURIComponent(ds));
+  Object.keys(valueCache).forEach(k => delete valueCache[k]);
+}
+$('opDataset').addEventListener('change', async () => { await loadOrgFields(); renderCriteria(); });
+
+async function valuesForField(field) {
+  if (!field) return [];
+  if (valueCache[field]) return valueCache[field];
+  const ds = $('opDataset').value; if (!ds) return [];
+  const vals = await api('/admin/org-profiles/org-field-values?dataset=' + encodeURIComponent(ds)
+    + '&field=' + encodeURIComponent(field));
+  valueCache[field] = vals;
+  return vals;
+}
+
+async function loadProfiles() {
+  profiles = await api('/admin/org-profiles');
+  renderList();
+}
+
+function renderList() {
+  const ul = $('opList'); ul.innerHTML = '';
+  const sorted = [...profiles].sort((a, b) => (a.protected === b.protected) ? 0 : (a.protected ? -1 : 1));
+  sorted.forEach(p => {
+    const li = document.createElement('li');
+    li.className = p.name === selectedName ? 'active' : '';
+    const badge = p.protected ? ' <span class="lock-badge">&#128274; geschützt</span>'
+      : (p.source === 'custom' ? ' <span class="custom-badge">&#9679; eigen</span>' : '');
+    li.innerHTML = `<b>${p.name}</b>${badge}<br><small>${p.description || ''}</small>`;
+    li.onclick = () => selectProfile(p.name);
+    ul.appendChild(li);
+  });
+}
+
+function criterionToFilter(c) {
+  return c.op === 'RANGE' ? { op: 'RANGE', from: c.rangeFrom, to: c.rangeTo }
+                          : { op: c.op, values: c.values || [] };
+}
+
+function filtersToCriteria(filters) {
+  return Object.entries(filters || {}).map(([field, f]) => ({
+    field, op: f.op, values: f.values || [], rangeFrom: f.from || '', rangeTo: f.to || '',
+  }));
+}
+
+async function selectProfile(name) {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  selectedName = name; isNew = false;
+  const p = profiles.find(x => x.name === name);
+  renderList();
+  $('opEmpty').style.display = 'none'; $('opDetail').style.display = '';
+  $('opTitle').textContent = p.name;
+  $('opDeleteBtn').style.display = p.protected ? 'none' : '';
+  if (p.protected) {
+    $('opBadge').textContent = 'geschützt'; $('opBadge').className = 'badge protected';
+    $('opForm').style.display = 'none';
+    $('opProtectedInfo').style.display = '';
+    const mode = p.org.mode === 'ignoreOrg' ? 'keine Org-Einschränkung (Queries wie gebaut)'
+      : 'nur echtes „*“ / Vollbereich (übergreifend)';
+    $('opProtectedText').innerHTML = `<b>${p.description || ''}</b><div class="hint" style="margin-top:6px">`
+      + `Org-Modus: ${mode}. Diese Basis-Variante ist fest vorgegeben und nicht editierbar.</div>`;
+    setDirty(false);
+    return;
+  }
+  $('opBadge').textContent = 'eigene Variante'; $('opBadge').className = 'badge custom';
+  $('opProtectedInfo').style.display = 'none';
+  $('opForm').style.display = '';
+  $('opName').value = p.name; $('opName').disabled = true;
+  $('opDescription').value = p.description || '';
+  criteria = filtersToCriteria(p.org.filters);
+  await Promise.all(criteria.map(c => valuesForField(c.field)));
+  renderCriteria();
+  setDirty(false);
+}
+
+function newProfile() {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  selectedName = null; isNew = true;
+  renderList();
+  $('opEmpty').style.display = 'none'; $('opDetail').style.display = '';
+  $('opTitle').textContent = 'Neue Variante';
+  $('opBadge').textContent = 'neu'; $('opBadge').className = 'badge custom';
+  $('opDeleteBtn').style.display = 'none';
+  $('opProtectedInfo').style.display = 'none';
+  $('opForm').style.display = '';
+  $('opName').value = ''; $('opName').disabled = false;
+  $('opDescription').value = '';
+  criteria = [];
+  renderCriteria();
+  setDirty(false);
+}
+$('opNewBtn').onclick = newProfile;
+
+function addCriterion() {
+  const field = orgFields[0] || '';
+  criteria.push({ field, op: 'AND', values: [], rangeFrom: '', rangeTo: '' });
+  valuesForField(field).then(renderCriteria);
+  renderCriteria();
+  setDirty(true);
+}
+$('opAddCriterionBtn').onclick = addCriterion;
+
+function renderCriteria() {
+  const box = $('criteriaList'); box.innerHTML = '';
+  if (!criteria.length) {
+    box.innerHTML = '<div class="hint">Noch kein Kriterium — ohne Kriterium ist die Variante nicht speicherbar.</div>';
+    return;
+  }
+  criteria.forEach((c, i) => {
+    const vals = valueCache[c.field] || [];
+    const div = document.createElement('div');
+    div.className = 'criterion';
+    div.innerHTML = `
+      <div class="row">
+        <div><label>Org-Feld</label><select class="critField" data-i="${i}">
+          ${orgFields.map(f => `<option value="${f}" ${f === c.field ? 'selected' : ''}>${f}</option>`).join('')}
+        </select></div>
+        <div><label>Operator</label><select class="critOp" data-i="${i}">
+          <option value="AND" ${c.op === 'AND' ? 'selected' : ''}>UND (alle Werte)</option>
+          <option value="OR" ${c.op === 'OR' ? 'selected' : ''}>ODER (mind. einer)</option>
+          <option value="RANGE" ${c.op === 'RANGE' ? 'selected' : ''}>Bereich (von/bis)</option>
+        </select></div>
+      </div>
+      ${c.op === 'RANGE' ? `
+      <div class="row">
+        <div><label>von</label><select class="critFrom" data-i="${i}">
+          <option value="">–</option>${vals.map(v => `<option value="${v}" ${v === c.rangeFrom ? 'selected' : ''}>${v}</option>`).join('')}
+        </select></div>
+        <div><label>bis</label><select class="critTo" data-i="${i}">
+          <option value="">–</option>${vals.map(v => `<option value="${v}" ${v === c.rangeTo ? 'selected' : ''}>${v}</option>`).join('')}
+        </select></div>
+      </div>` : `
+      <label>Werte <span class="muted">(Mehrfachauswahl)</span></label>
+      <select class="critValues" data-i="${i}" multiple size="6">
+        ${vals.map(v => `<option value="${v}" ${(c.values || []).includes(v) ? 'selected' : ''}>${v}</option>`).join('')}
+      </select>`}
+      <div class="top" style="margin-top:8px"><span></span>
+        <button type="button" class="ghost critRemove" data-i="${i}">Entfernen</button></div>`;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('.critField').forEach(sel => sel.addEventListener('change', async e => {
+    const i = +e.target.dataset.i;
+    criteria[i].field = e.target.value; criteria[i].values = []; criteria[i].rangeFrom = ''; criteria[i].rangeTo = '';
+    await valuesForField(criteria[i].field);
+    renderCriteria(); setDirty(true);
+  }));
+  box.querySelectorAll('.critOp').forEach(sel => sel.addEventListener('change', e => {
+    const i = +e.target.dataset.i;
+    criteria[i].op = e.target.value;
+    renderCriteria(); setDirty(true);
+  }));
+  box.querySelectorAll('.critValues').forEach(sel => sel.addEventListener('change', e => {
+    const i = +e.target.dataset.i;
+    criteria[i].values = [...e.target.selectedOptions].map(o => o.value);
+    setDirty(true);
+  }));
+  box.querySelectorAll('.critFrom').forEach(sel => sel.addEventListener('change', e => {
+    criteria[+e.target.dataset.i].rangeFrom = e.target.value; setDirty(true);
+  }));
+  box.querySelectorAll('.critTo').forEach(sel => sel.addEventListener('change', e => {
+    criteria[+e.target.dataset.i].rangeTo = e.target.value; setDirty(true);
+  }));
+  box.querySelectorAll('.critRemove').forEach(btn => btn.addEventListener('click', e => {
+    criteria.splice(+e.target.dataset.i, 1);
+    renderCriteria(); setDirty(true);
+  }));
+}
+
+['opDescription'].forEach(id => $(id).addEventListener('input', () => setDirty(true)));
+$('opName').addEventListener('input', () => setDirty(true));
+
+function formPayload() {
+  return {
+    description: $('opDescription').value.trim() || null,
+    criteria: criteria.map(c => ({
+      field: c.field, op: c.op,
+      values: c.op === 'RANGE' ? null : (c.values || []),
+      rangeFrom: c.op === 'RANGE' ? c.rangeFrom : null,
+      rangeTo: c.op === 'RANGE' ? c.rangeTo : null,
+    })),
+  };
+}
+
+async function saveCurrent() {
+  if (!criteria.length) { setStatus('<b>Fehler:</b> mindestens ein Org-Kriterium erforderlich.', true); return; }
+  setStatus('<span class="spin"></span> Speichern&hellip;');
+  try {
+    if (isNew) {
+      const name = $('opName').value.trim();
+      if (!name) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
+      await api('/admin/org-profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, ...formPayload() }) });
+      setStatus(`${doneTag} Variante <b>${name}</b> angelegt.`);
+      await loadProfiles();
+      await selectProfile(name);
+    } else {
+      await api('/admin/org-profiles/' + encodeURIComponent(selectedName),
+        { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formPayload()) });
+      setStatus(`${doneTag} Variante <b>${selectedName}</b> gespeichert.`);
+      await loadProfiles();
+      await selectProfile(selectedName);
+    }
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+}
+function cancelCurrent() {
+  if (isNew) { newProfile(); } else { selectProfile(selectedName); }
+}
+$('opSaveBtn').onclick = saveCurrent;
+$('cmdSave').onclick = saveCurrent;
+$('opCancelBtn').onclick = cancelCurrent;
+$('cmdCancel').onclick = cancelCurrent;
+
+$('opDeleteBtn').onclick = async () => {
+  if (!selectedName || !confirm(`Variante "${selectedName}" wirklich löschen?`)) return;
+  setStatus('<span class="spin"></span> L&ouml;schen&hellip;');
+  try {
+    await api('/admin/org-profiles/' + encodeURIComponent(selectedName), { method: 'DELETE' });
+    setStatus(`${doneTag} Variante gel&ouml;scht.`);
+    selectedName = null;
+    $('opDetail').style.display = 'none'; $('opEmpty').style.display = '';
+    await loadProfiles();
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+};
+
+$('cmdRefresh').onclick = async () => {
+  const keep = selectedName;
+  await loadDatasets(); await loadOrgFields(); await loadProfiles();
+  if (keep) await selectProfile(keep);
+  setStatus(`${doneTag} aktualisiert.`);
+};
+
+(async function init() {
+  await loadDatasets();
+  await loadOrgFields();
+  await loadProfiles();
+})().catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+</script>
+</body>
+</html>

@@ -104,6 +104,15 @@
   #filterUserTypePanel label { display:block; width:100%; box-sizing:border-box; font-size:12px;
     padding:5px 4px; margin:0; cursor:pointer; text-align:left; white-space:normal; color:var(--fg); }
   #filterUserTypePanel input[type=checkbox] { width:auto; margin:0 8px 0 0; vertical-align:middle; }
+  .ddcheck-panel { display:none; position:absolute; z-index:20; top:100%; left:0; right:0;
+    width:100%; box-sizing:border-box; margin-top:2px; background:var(--panel); border:1px solid var(--line);
+    border-radius:6px; padding:6px 8px; box-shadow:0 6px 16px rgba(0,0,0,.35); text-align:left;
+    max-height:220px; overflow:auto; }
+  .ddcheck-panel.open { display:block; }
+  .ddcheck-panel label { display:block; width:100%; box-sizing:border-box; font-size:12px;
+    padding:5px 4px; margin:0; cursor:pointer; text-align:left; white-space:normal; color:var(--fg); }
+  .ddcheck-panel input[type=checkbox] { width:auto; margin:0 8px 0 0; vertical-align:middle; }
+  .ddcheck-panel small { display:block; color:var(--muted); margin-left:20px; }
   .resultbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-bottom:10px; }
   .resultcontext { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-bottom:12px; }
   .resultcontext .chip { background:rgba(76,139,245,.12); border-color:var(--accent); color:var(--fg); }
@@ -248,6 +257,7 @@
     </div><div class="lbl">7 &middot; Admin</div>
     <div class="cmds dropdown">
       <a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a>
+      <a class="cmd" href="/admin-org-profiles.html"><span class="ico">&#127757;</span>Org-Varianten</a>
       <button class="cmd" id="cmdErrorLog"><span class="ico">&#128220;</span>Fehlerprotokoll</button>
     </div>
   </div>
@@ -453,10 +463,18 @@
     </div>
     <label for="userTypeProfile">Nutzertyp-Profil</label>
     <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
-    <label for="orgProfile">Org-Profil</label>
-    <select id="orgProfile"></select>
-    <label for="runTitle">Titel (optional)</label>
-    <input id="runTitle" placeholder="Variantenname" />
+    <label for="orgProfileBtn">Org-Varianten <span class="muted">(Mehrfachauswahl m&ouml;glich)</span></label>
+    <div class="ddcheck" id="orgProfileDD">
+      <button type="button" class="ddcheck-btn" id="orgProfileBtn">&ndash; w&auml;hlen &ndash;</button>
+      <div class="ddcheck-panel" id="orgProfilePanel"></div>
+    </div>
+    <div id="orgProfileSingleHint" class="hint"></div>
+    <div id="orgProfileBatchHint" class="hint" style="display:none">Mehrere Varianten gew&auml;hlt:
+      je Variante ein eigener Lauf, Titel = Variantenname. "Titel"/"Run-ID" entfallen dann.</div>
+    <div id="runTitleRow">
+      <label for="runTitle">Titel (optional)</label>
+      <input id="runTitle" placeholder="Variantenname" />
+    </div>
     <div class="row">
       <div><label for="minRank">Mindest-Kritikalit&auml;t</label>
         <select id="minRank">
@@ -464,7 +482,7 @@
           <option value="3">ab high</option><option value="4">ab critical</option>
           <option value="5">nur very critical</option>
         </select></div>
-      <div><label for="runId">Run-ID (optional)</label><input id="runId" placeholder="z. B. dialog-active" /></div>
+      <div id="runIdRow"><label for="runId">Run-ID (optional)</label><input id="runId" placeholder="z. B. dialog-active" /></div>
     </div>
     <div class="check"><input type="checkbox" id="skipMaterialize" />
       <div><label for="skipMaterialize">Materialisierung &uuml;berspringen</label>
@@ -1108,7 +1126,7 @@ async function loadMeta() {
   meta.rulesets.forEach(r => opt($('ruleset'), r.id, r.name));
   if (meta.defaultRuleset) $('ruleset').value = meta.defaultRuleset;
   meta.userTypeProfiles.forEach(p => opt($('userTypeProfile'), p.name, p.name, p.description));
-  meta.orgProfiles.forEach(p => opt($('orgProfile'), p.name, p.name, p.description));
+  renderOrgProfilePanel(meta.orgProfiles);
   $('sleepDays').value = meta.sleepDays;
   metaCache = meta; showUtHint();
 }
@@ -1118,15 +1136,55 @@ function showUtHint() {
 }
 $('userTypeProfile').addEventListener('change', showUtHint);
 
+/* Org-Varianten-Mehrfachauswahl ("Neuer Lauf") — gleiches ddcheck-Pattern wie der
+   Nutzertyp-Filter in der Ergebnis-Sidebar, aber dynamisch aus /profiles befuellt (Admin-Seite
+   "Org-Varianten" kann jederzeit neue Varianten hinzufuegen). Bei genau einer Auswahl verhaelt
+   sich der Dialog wie bisher (Titel/Run-ID nutzbar); bei mehreren entsteht je Variante ein
+   eigener Lauf (POST /runs/batch), Titel/Run-ID werden dafuer ausgeblendet. */
+function renderOrgProfilePanel(orgProfiles) {
+  const panel = $('orgProfilePanel'); panel.innerHTML = '';
+  orgProfiles.forEach((p, i) => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" value="${p.name}" ${i === 0 ? 'checked' : ''}> ${p.name}`
+      + (p.description ? `<small>${p.description}</small>` : '');
+    panel.appendChild(label);
+  });
+  panel.querySelectorAll('input').forEach(cb => cb.addEventListener('change', refreshOrgProfileSelection));
+  refreshOrgProfileSelection();
+}
+function selectedOrgProfiles() {
+  return Array.from(document.querySelectorAll('#orgProfilePanel input:checked')).map(c => c.value);
+}
+function refreshOrgProfileSelection() {
+  const sel = selectedOrgProfiles();
+  $('orgProfileBtn').textContent = sel.length ? sel.join(' + ') : '– wählen –';
+  const multi = sel.length > 1;
+  $('runTitleRow').style.display = multi ? 'none' : '';
+  $('runIdRow').style.display = multi ? 'none' : '';
+  $('orgProfileBatchHint').style.display = multi ? '' : 'none';
+  if (!multi) {
+    const p = metaCache.orgProfiles && metaCache.orgProfiles.find(x => x.name === sel[0]);
+    $('orgProfileSingleHint').textContent = p ? p.description : '';
+    refreshRunTitleDefault();
+  } else {
+    $('orgProfileSingleHint').textContent = '';
+  }
+}
+$('orgProfileBtn').addEventListener('click', e => {
+  e.stopPropagation(); $('orgProfilePanel').classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#orgProfileDD')) $('orgProfilePanel').classList.remove('open');
+});
+
 let titleAutoFilled = true;
 function defaultRunTitle() {
-  const p = $('orgProfile').value || 'standard';
+  const p = selectedOrgProfiles()[0] || 'standard';
   return p.split(/[-_]/).filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
 }
 function refreshRunTitleDefault() {
   if (titleAutoFilled) $('runTitle').value = defaultRunTitle();
 }
-$('orgProfile').addEventListener('change', refreshRunTitleDefault);
 $('runTitle').addEventListener('input', () => { titleAutoFilled = false; });
 
 let ctx = { datasets: 0, runs: 0 };
@@ -1738,16 +1796,29 @@ $('formFolder').addEventListener('submit', e => {
 
 $('formRun').addEventListener('submit', e => {
   e.preventDefault();
-  runJob('/runs', json({
+  const orgProfiles = selectedOrgProfiles();
+  if (!orgProfiles.length) { alert('Bitte mindestens eine Org-Variante wählen.'); return; }
+  const common = {
     ruleset: $('ruleset').value, dataset: $('runDataset').value,
-    userTypeProfile: $('userTypeProfile').value, orgProfile: $('orgProfile').value,
+    userTypeProfile: $('userTypeProfile').value,
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
-    runId: $('runId').value.trim() || null, title: $('runTitle').value.trim() || null,
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
     skipExplain: !$('withExplain').checked,
-  }), null, async j => { activeRunId = j.runId;
-    return `${doneTag} Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings`
-      + (j.intra != null ? ` (${j.intra} intra-Rolle)` : '') + '.'; });
+  };
+  if (orgProfiles.length === 1) {
+    runJob('/runs', json({
+      ...common, orgProfile: orgProfiles[0],
+      runId: $('runId').value.trim() || null, title: $('runTitle').value.trim() || null,
+    }), null, async j => { activeRunId = j.runId;
+      return `${doneTag} Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings`
+        + (j.intra != null ? ` (${j.intra} intra-Rolle)` : '') + '.'; });
+  } else {
+    runJob('/runs/batch', json({ ...common, orgProfiles }), null, async j => {
+      const last = j.runs[j.runs.length - 1]; activeRunId = last.runId;
+      return `${doneTag} ${j.runs.length} Läufe angelegt: `
+        + j.runs.map(r => `<b>${r.title}</b> (${r.findings})`).join(', ') + '.';
+    });
+  }
 });
 
 $('backupBtn').addEventListener('click', () => {
