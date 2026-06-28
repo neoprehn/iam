@@ -5,10 +5,11 @@
 //   wildcardOnly-> nur wenn der Auth-Wert echtes '*' traegt (uebergreifend/Vollbereich)
 //   filtered    -> je Org-Feld eine Bedingung aus $orgFilters {op: AND|OR|RANGE, values/from/to};
 //                  nicht gelistete Org-Felder bleiben egal ('*' deckt ohnehin alles, AE-06).
-// Idempotent: alte MATCHES dieses Rulesets werden zuerst geloescht.
+// Idempotent: alte MATCHES dieses Laufs werden zuerst geloescht (MATCHES ist pro runId
+// gescoped, nicht ruleset-weit geteilt -- sonst ueberschreiben sich parallele Varianten-Laeufe).
 // Parameter: $ruleset, $dataset, $asOf, $runId, $orgMode, $orgFilters (Map; {} = keine Filter).
 
-MATCH (:User {dataset:$dataset})-[m:MATCHES {ruleset:$ruleset}]->() DELETE m;
+MATCH (:User {dataset:$dataset})-[m:MATCHES {ruleset:$ruleset, runId:$runId}]->() DELETE m;
 
 CALL apoc.periodic.iterate(
   "MATCH (q:Query {ruleset:$ruleset}) WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } RETURN q",
@@ -72,7 +73,7 @@ CALL apoc.periodic.iterate(
                         OR any(rg IN apoc.any.property(a,'f_TCD') WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=tc AND tc<=split(rg,'..')[1])) )
        }
      )
-   MERGE (u)-[mm:MATCHES {ruleset:$ruleset}]->(q) SET mm.asOf=$asOf, mm.runId=$runId",
+   MERGE (u)-[mm:MATCHES {ruleset:$ruleset, runId:$runId}]->(q) SET mm.asOf=$asOf",
   {batchSize:1, parallel:false, params:{ruleset:$ruleset, dataset:$dataset, asOf:$asOf, runId:$runId, orgMode:$orgMode, orgFilters:$orgFilters}}
 ) YIELD batches, total, committedOperations, failedOperations, errorMessages
 RETURN batches, total, committedOperations, failedOperations, errorMessages;

@@ -44,7 +44,7 @@ MATCH (u:User {dataset:$dataset})
 WHERE ( size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u)) )
   AND ( NOT $excludeLocked OR NOT 'Locked' IN labels(u) )
   AND all( cl IN [(rule)-[:HAS_CLAUSE]->(c) | c]
-           WHERE EXISTS { MATCH (cl)-[:NEEDS]->(q)<-[:MATCHES {ruleset:$ruleset}]-(u) } )
+           WHERE EXISTS { MATCH (cl)-[:NEEDS]->(q)<-[:MATCHES {ruleset:$ruleset, runId:$runId}]-(u) } )
 MERGE (u)-[:VIOLATES]->(f:SoDConflict {key: $ruleset + '|' + $dataset + '|' + $runId + '|' + rule.id + '|' + u.id})
   SET f.ruleset = $ruleset, f.dataset = $dataset, f.runId = $runId, f.asOf = $asOf,
       f.ruleId = rule.id, f.reasonCode = rule.reasonCode,
