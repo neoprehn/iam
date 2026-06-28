@@ -128,21 +128,46 @@ Liste.
 Sowohl die **Findings-Tabelle** (SoD) als auch die **Matches-Tabelle** („wer matcht", Einzelfilter)
 haben pro Zeile einen **„Root-Cause"**-Button. Er wechselt (kein Dialog/Overlay, wie die
 Findings-/Konsistenzcheck-Ansicht) auf eine **eigene Seite** mit „← zurück" — oben die gesuchte
-**Query bzw. SoD-Regel**, darunter gruppiert **pro Berechtigungsobjekt** der Query (und ggf. einen
-eigenen Block für die TCode-Prüfung) — bei einer SoD-Regel zusätzlich **pro Klausel** (für die
-tatsächlich vom User gematchte Query dieser Klausel): je Objekt zunächst die **Anforderung** (Feld,
-UND/ODER-Logik, geforderte Werte), darunter die **Rolle(n)/Profil(e)**, die genau dieses Objekt mit
-welcher konkreten Authorization erfüllen. Anders als die Evidenz (die nur „welche Rolle" zeigt)
-macht das sichtbar, wenn **verschiedene Objekte/Klauseln durch verschiedene Rollen** gedeckt werden
-— der eigentliche Root-Cause, nicht nur der Träger des Konflikts.
+**Query bzw. SoD-Regel** mitsamt ihrer Kurz-/Langbezeichnung (aus dem bereits geladenen
+Queries-/SoD-Cache, keine neue Anfrage), darunter der allgemeine Erklärtext und gruppiert **pro
+Berechtigungsobjekt** der Query (Überschrift mit Klammerzusatz „(Berechtigungsobjekt-Prüfung)",
+analog „S_TCODE (TCode-Prüfung)") — bei einer SoD-Regel zusätzlich **pro Klausel** (für die
+tatsächlich vom User gematchte Query dieser Klausel, Block-Überschrift zeigt zusätzlich deren
+Bezeichnung): je Objekt zunächst die **Anforderung** — `FELD (UND/ODER): Wert1, Wert2, …` —,
+darunter die **Rolle(n)/Profil(e)**, die genau dieses Objekt mit welcher konkreten Authorization
+erfüllen; der jeweils tatsächlich zutreffende Wert (bzw. `*`/ein abdeckender Bereich) ist darin
+grün hervorgehoben — auf einen Blick erkennbar, **warum** eine Zeile matcht, ohne Anforderung und
+Werte manuell zu vergleichen. Anders als die Evidenz (die nur „welche Rolle" zeigt) macht das
+sichtbar, wenn **verschiedene Objekte/Klauseln durch verschiedene Rollen** gedeckt werden — der
+eigentliche Root-Cause, nicht nur der Träger des Konflikts.
 
-Ein Umschalter **„ohne technische" / „alle (inkl. technische)"** über der Ergebnisliste blendet
-SAP-generierte Profile aus (Default) bzw. ein: ein direkt zugewiesenes Profil gilt als „technisch",
-wenn es zugleich das vom SAP-Benutzerabgleich generierte Profil einer aktuell gültigen
-Rollenzuweisung desselben Users ist — redundant zur ohnehin gezeigten Rolle. Ist eine Rolle
-zwischenzeitlich entzogen/abgelaufen, aber ihr generiertes Profil noch in `UST04` vorhanden
-("Karteileiche"), zählt das Profil **nicht** als technisch und bleibt sichtbar (eigenständig
-interessanter Befund). Ein Hinweistext zeigt, wie viele Profile aktuell ausgeblendet sind.
+Ein Umschalter **„ohne technische" / „alle (inkl. technisch generierte)"** über der Ergebnisliste
+blendet SAP-generierte Profile aus (Default) bzw. ein: ein direkt zugewiesenes Profil gilt als
+„technisch", wenn irgendeine Rolle im Datenbestand dieses Profil erzeugt (Role-`HAS_PROFILE`,
+unabhängig vom betrachteten User) **oder** der Name mit `T-` beginnt (Namens-Fallback für
+„verwaiste" generierte Profile, deren erzeugende Rolle im Extrakt nicht mehr existiert — die
+Berechtigung bleibt laut `UST04` trotzdem aktiv, daher bewusst **nicht** verborgen, sondern mit
+Hinweistext versehen). Ein Zähler zeigt, wie viele Profile aktuell ausgeblendet sind.
+
+**Quellenkennzeichnung.** Derselbe Akteur kann einen Treffer über **mehrere Quellen** erreichen —
+das wird je Zeile als kurze Anmerkung kenntlich gemacht, statt sie stillschweigend zusammenzufassen
+(zwei Zeilen für dieselbe Rolle sind also kein Anzeige-Fehler):
+
+| Anmerkung | Bedeutung |
+| --- | --- |
+| **(eigene Definition)** | Die Rolle trägt die Berechtigung direkt selbst (`AGR_1251` → Role-`HAS_AUTH`) — erscheint nur, wenn es für denselben Akteur zusätzlich eine zweite Quelle gibt. |
+| **(über generiertes Profil X)** | Kommt über das von der Rolle generierte Profil X (Role-`HAS_PROFILE`→Profile-`HAS_AUTH`) — das, was beim Benutzerabgleich tatsächlich in `UST04` geschrieben und zur Laufzeit geprüft wird. |
+| **(über enthaltene Rolle X)** | Die angezeigte Rolle ist eine **Sammelrolle**, die Rolle X als Einzelrolle bündelt (`CONTAINS`); X selbst trägt die Berechtigung. |
+
+Fallen „eigene Definition" und „generiertes Profil" für **dasselbe** Berechtigungsobjekt
+**auseinander** (unterschiedliche Werte je Feld), erscheint zusätzlich ein roter Link
+**„weicht vom generierten Profil ab · D4"**, der direkt zur Detailansicht des Konsistenzchecks
+**D4** („veraltete/nicht generierte Profile") springt. Hintergrund: in SAP wird eine Rolle erst
+nach dem Generieren des Profils zur Laufzeit wirksam — weicht die gepflegte Definition vom
+generierten Profil ab, zeigt die „eigene Definition"-Zeile etwas, das ggf. **nicht** (mehr) aktiv
+ist. Diese Annahme (Rollendefinition ≈ generiertes Profil) ist keine Root-Cause-Eigenheit, sondern
+gilt für die gesamte Can-Do-/SoD-Auswertung der App (`materialize_matches.cypher`); D4 ist der
+dafür vorgesehene Konsistenzcheck.
 
 Die Matches-Tabelle zeigt dafür **User · Name · Query · Bezeichnung (Kurzbezeichnung der Query) ·
 Kritikalität · Root-Cause** — Nutzertyp/Status sind hier bewusst weggelassen (stehen ggf. in der
