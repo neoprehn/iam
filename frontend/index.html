@@ -123,11 +123,11 @@
   .rcobj { background:var(--panel); border:1px solid var(--line); border-radius:8px;
     padding:10px 14px; margin-bottom:12px; overflow-wrap:anywhere; }
   .rcobj .rcreq { color:var(--muted); font-size:12.5px; margin-bottom:8px; overflow-wrap:anywhere; }
-  .rcobj .rcactor { display:flex; flex-wrap:wrap; justify-content:space-between; gap:2px 10px;
+  .rcobj .rcactor { display:grid; grid-template-columns:260px 1fr; align-items:start; gap:2px 12px;
     font-size:13px; padding:5px 0; border-top:1px solid var(--line); }
   .rcobj .rcactor:first-of-type { border-top:0; }
-  .rcobj .rcactor > span { min-width:0; overflow-wrap:anywhere; flex:1 1 auto; }
-  .rcobj .rcactor > span:last-child { text-align:right; }
+  .rcobj .rcactor > span { overflow-wrap:anywhere; }
+  .rcobj .rcactor > span:last-child { color:var(--muted); }
   .rcobj mark.rcHit { background:rgba(70,167,88,.28); color:var(--ok); border-radius:3px;
     padding:0 2px; font-weight:600; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
@@ -426,7 +426,7 @@
       <span class="muted" style="font-size:12px">Profile:</span>
       <div class="pillgroup" id="rcTechPills">
         <button type="button" class="pill active" data-value="hide">ohne technische</button>
-        <button type="button" class="pill" data-value="show">alle (inkl. technische)</button>
+        <button type="button" class="pill" data-value="show">alle (inkl. technisch generierte)</button>
       </div>
     </div>
     <div id="rcObjects"></div>
@@ -1709,7 +1709,7 @@ function renderRootCause(data) {
             + `<span class="muted">${highlightAuthValues(a.authValues, reqValuesByField)}</span></div>`).join('')
         : '<div class="rcactor muted">keine erfüllende Rolle/Profil gefunden</div>';
       const hiddenHint = hiddenCount
-        ? `<div class="hint">${hiddenCount} technische(s) Profil(e) ausgeblendet &mdash; „alle (inkl. technische)" oben einschalten.</div>` : '';
+        ? `<div class="hint">${hiddenCount} technische(s) Profil(e) ausgeblendet &mdash; „alle (inkl. technisch generierte)" oben einschalten.</div>` : '';
       const objLabel = o.object.includes('(') ? o.object : `${o.object} (Berechtigungsobjekt-Prüfung)`;
       return `<div class="rcobj"><div><b>${objLabel}</b></div>`
         + `<div class="rcreq">Anforderung: ${reqText}</div>${actors}${hiddenHint}</div>`;
