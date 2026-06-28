@@ -1408,15 +1408,18 @@ _SATISFIED_BY_CYPHER = (
     "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
     "                END ) ) ) "
     "RETURN DISTINCT labels(actor)[0] AS actorType, actor.id AS actorId, "
-    # "technisch" = direkt zugewiesenes Profil, das ZUGLEICH das von SAP beim Benutzerabgleich
-    # generierte Profil einer aktuell gueltigen Rollenzuweisung dieses Users ist (identische
-    # Definition wie im Konsistenzcheck C1, cypher/checks/direct_profile_assignments.cypher --
-    # dort als "T-*"-Profile bekannt, aber strukturell statt namensbasiert ermittelt). Redundant
-    # zur bereits angezeigten Rolle, daher in der UI standardmaessig ausblendbar.
-    "  (labels(actor)[0] = 'Profile' AND EXISTS { "
-    "    MATCH (u)-[a2:ASSIGNED_TO]->(:Role)-[:HAS_PROFILE]->(actor) "
-    "    WHERE (a2.validFrom IS NULL OR a2.validFrom<=$asOf) AND (a2.validTo IS NULL OR $asOf<=a2.validTo) "
-    "  }) AS technical, "
+    # "technisch" = ein generiertes Profil (PFCG-Artefakt einer Rolle), keine eigenstaendig
+    # gepflegte Berechtigung -- redundant zur ohnehin angezeigten Rolle. Bewusst NICHT auf die
+    # Rollen DIESES Users beschraenkt (erste Version tat das und uebersah "verwaiste" generierte
+    # Profile, deren erzeugende Rolle im Extrakt nicht mehr existiert, z. B. geloescht/umbenannt
+    # -- Nutzer-Beispiel T-EC37002026): EXISTS { (:Role)-[:HAS_PROFILE]->(actor) } prueft, ob
+    # IRGENDEINE Rolle dieses Profil erzeugt (im Graphen unabhaengig vom betrachteten User/
+    # Zeitpunkt) -- Stichprobe sachsenenergie: erfasst 3737/3829 T-*-Profile strukturell sowie
+    # 1171 generierte Profile ohne "T-"-Praefix. Der Praefix-Fallback faengt die restlichen
+    # verwaisten T-*-Profile (92 von 3829) ab, deren erzeugende Rolle fehlt.
+    "  (labels(actor)[0] = 'Profile' AND ( "
+    "    EXISTS { MATCH (:Role)-[:HAS_PROFILE]->(actor) } OR actor.id STARTS WITH 'T-' "
+    "  )) AS technical, "
     "  [k IN keys(a) WHERE k STARTS WITH 'f_' | {field: substring(k,2), values: apoc.any.property(a,k)}] AS authFields "
     "ORDER BY actorType, actorId"
 )
