@@ -1396,7 +1396,7 @@ _SATISFIED_BY_CYPHER = (
     "WITH u, [x IN collect(DISTINCT roleActor) WHERE x IS NOT NULL] "
     "   + [x IN collect(DISTINCT profActor) WHERE x IS NOT NULL] AS actors "
     "UNWIND actors AS actor "
-    "MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:$object}) "
+    "MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->(via)-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:$object}) "
     "WHERE all(r IN $reqs WHERE "
     "  r.field IN $orgFields "
     "  OR ( apoc.any.property(a,'f_'+r.field) IS NOT NULL "
@@ -1408,6 +1408,16 @@ _SATISFIED_BY_CYPHER = (
     "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
     "                END ) ) ) "
     "RETURN DISTINCT labels(actor)[0] AS actorType, actor.id AS actorId, "
+    # "via" = der Knoten, von dem die tatsaechlich treffende Authorization ausgeht. Ist via der
+    # Akteur selbst (Pfadlaenge 0), kommt der Treffer aus dessen EIGENER, gepflegter Definition
+    # (z. B. Role-HAS_AUTH aus AGR_1251). Ist via ein anderer Knoten (z. B. das generierte Profil
+    # der Rolle, oder eine ueber CONTAINS enthaltene Sammelrolle), kommt der Treffer aus DIESEM
+    # Pfad -- mit ggf. abweichenden Werten zur eigenen Definition (Design vs. tatsaechlich
+    # Generiertes, vgl. Konsistenzcheck D4 stale_profile_generation.cypher). Beide Faelle sind
+    # eigenstaendige Belege und werden NICHT zusammengefasst (Nutzer-Entscheidung) -- die UI
+    # kennzeichnet stattdessen die Quelle je Zeile.
+    "  (CASE WHEN via = actor THEN null ELSE labels(via)[0] END) AS viaType, "
+    "  (CASE WHEN via = actor THEN null ELSE via.id END) AS viaId, "
     # "technisch" = ein generiertes Profil (PFCG-Artefakt einer Rolle), keine eigenstaendig
     # gepflegte Berechtigung -- redundant zur ohnehin angezeigten Rolle. Bewusst NICHT auf die
     # Rollen DIESES Users beschraenkt (erste Version tat das und uebersah "verwaiste" generierte
@@ -1443,11 +1453,15 @@ def _query_objects(s, ruleset: str, dataset: str, as_of, user: str, org_fields: 
     def satisfied_by(obj: str, obj_reqs: list[dict]) -> list[dict]:
         rows = s.run(_SATISFIED_BY_CYPHER, user=user, dataset=dataset, asOf=as_of,
                      object=obj, reqs=obj_reqs, orgFields=org_fields)
+        # Ein Akteur kann denselben Treffer ueber MEHRERE Authorization-Knoten erreichen -- z. B.
+        # eine Rolle ueber ihre eigene, gepflegte Definition (AGR_1251 -> Role-HAS_AUTH) UND
+        # zusaetzlich ueber ihr generiertes Profil (Role-HAS_PROFILE->Profile-HAS_AUTH), mit ggf.
+        # abweichenden Werten (Design vs. tatsaechlich Generiertes -- vgl. Konsistenzcheck D4,
+        # stale_profile_generation.cypher). Bewusst NICHT zusammengefasst: beide sind
+        # eigenstaendige Belege; "via" zeigt der UI, aus welcher Quelle eine Zeile stammt.
         return [{"actorType": r["actorType"], "actorId": r["actorId"], "technical": r["technical"],
-                 # "verwaist" = generiertes Profil, dessen erzeugende Rolle im Extrakt nicht (mehr)
-                 # existiert (nur ueber den Namens-Fallback als technisch erkannt) -- die
-                 # Berechtigung selbst bleibt laut UST04 trotzdem aktiv (s. Nutzer-Rueckfrage).
                  "orphaned": bool(r["technical"]) and not bool(r["hasGeneratingRole"]),
+                 "via": {"type": r["viaType"], "id": r["viaId"]} if r["viaId"] else None,
                  "authValues": [f"{f['field']}={','.join(f['values'])}" for f in r["authFields"]]}
                 for r in rows]
 
