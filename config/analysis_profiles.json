@@ -82,9 +82,9 @@
     "_note": "Selektoren UND-verknuepft ueber Dimensionen, ODER innerhalb einer Liste. Orthogonal zum org-Profil: ein Lauf waehlt EIN scopeProfile UND EIN org-Profil."
   },
   "_orgModes": {
-    "ignoreOrg": "Org-Felder nicht einschraenken (Standardauswertung).",
-    "wildcardOnly": "nur Auths, deren Org-Feld echtes '*'/Vollbereich ist (AE-06).",
-    "filtered": "je Org-Feld eine Bedingung mit op AND|OR|RANGE; nicht gelistete Org-Felder bleiben unbeschraenkt."
+    "ignoreOrg": "Org-Felder nicht einschraenken (Standardauswertung); ALLE Queries des Rulesets laufen.",
+    "wildcardOnly": "NUR Queries, die ueberhaupt ein Org-Feld referenzieren, laufen; davon nur Auths, deren Org-Feld echtes '*'/Vollbereich ist (AE-06). Queries ohne Org-Feld-Bezug werden nicht ausgewertet/angezeigt.",
+    "filtered": "NUR Queries, die mindestens eines der hier gelisteten Org-Felder referenzieren, laufen; je Feld eine Bedingung mit op AND|OR|RANGE. Queries ohne Bezug zu einem gelisteten Feld werden nicht ausgewertet/angezeigt."
   },
   "_filterOps": {
     "AND": "Auth-Wertemenge muss ALLE values abdecken (nach AE-06; '*' deckt alles).",

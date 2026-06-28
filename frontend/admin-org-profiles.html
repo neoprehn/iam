@@ -269,8 +269,8 @@ async function selectProfile(name) {
     $('opBadge').textContent = 'geschützt'; $('opBadge').className = 'badge protected';
     $('opForm').style.display = 'none';
     $('opProtectedInfo').style.display = '';
-    const mode = p.org.mode === 'ignoreOrg' ? 'keine Org-Einschränkung (Queries wie gebaut)'
-      : 'nur echtes „*“ / Vollbereich (übergreifend)';
+    const mode = p.org.mode === 'ignoreOrg' ? 'keine Org-Einschränkung — alle Queries laufen wie gebaut'
+      : 'nur Queries mit Org-Feld-Bezug, davon nur echtes „*“ / Vollbereich (übergreifend) — Queries ohne Org-Feld laufen hier nicht';
     $('opProtectedText').innerHTML = `<b>${p.description || ''}</b><div class="hint" style="margin-top:6px">`
       + `Org-Modus: ${mode}. Diese Basis-Variante ist fest vorgegeben und nicht editierbar.</div>`;
     setDirty(false);

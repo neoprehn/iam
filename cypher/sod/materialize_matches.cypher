@@ -1,10 +1,18 @@
 // Zwischenergebnis "wer kann was": (:User)-[:MATCHES]->(:Query) fuer die SoD-relevanten
 // Queries eines Rulesets (die, die in einer Klausel referenziert werden). Semantik wie
 // cypher/checks/query_match.cypher. Org-Felder (:OrgField aus USORG) je nach $orgMode:
-//   ignoreOrg   -> egal (Default; "kann der User die Funktion ueberhaupt")
-//   wildcardOnly-> nur wenn der Auth-Wert echtes '*' traegt (uebergreifend/Vollbereich)
-//   filtered    -> je Org-Feld eine Bedingung aus $orgFilters {op: AND|OR|RANGE, values/from/to};
-//                  nicht gelistete Org-Felder bleiben egal ('*' deckt ohnehin alles, AE-06).
+//   ignoreOrg   -> egal (Default; "kann der User die Funktion ueberhaupt") -> ALLE Queries.
+//   wildcardOnly-> nur Queries, die UEBERHAUPT ein Org-Feld referenzieren (sonst gibt es keine
+//                  "uebergreifend"-Frage zu stellen) UND nur wenn der Auth-Wert dort echtes '*'
+//                  traegt (Vollbereich).
+//   filtered    -> nur Queries, die eines der in $orgFilters gewaehlten Org-Felder referenzieren
+//                  (z. B. nur Queries mit BUKRS, wenn die Variante auf BUKRS filtert); je Feld
+//                  eine Bedingung {op: AND|OR|RANGE, values/from/to}.
+// Diese Vorauswahl auf org-relevante Queries (s. Driving-Query unten) wirkt sich automatisch
+// auch auf evaluate_sod.cypher aus: eine Klausel, deren Kandidaten-Queries alle nicht
+// org-relevant sind, bekommt fuer diesen Lauf gar keine MATCHES-Kante -> die Regel kann unter
+// dieser Variante nicht verletzt werden ("nur die SoDs, die auf Grundlage der Einzel-Queries
+// gehen" -- Nutzerfeedback).
 // Idempotent: alte MATCHES dieses Laufs werden zuerst geloescht (MATCHES ist pro runId
 // gescoped, nicht ruleset-weit geteilt -- sonst ueberschreiben sich parallele Varianten-Laeufe).
 // Parameter: $ruleset, $dataset, $asOf, $runId, $orgMode, $orgFilters (Map; {} = keine Filter).
@@ -12,7 +20,13 @@
 MATCH (:User {dataset:$dataset})-[m:MATCHES {ruleset:$ruleset, runId:$runId}]->() DELETE m;
 
 CALL apoc.periodic.iterate(
-  "MATCH (q:Query {ruleset:$ruleset}) WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } RETURN q",
+  "MATCH (q:Query {ruleset:$ruleset}) WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) }
+     AND ( $orgMode = 'ignoreOrg' OR EXISTS {
+       MATCH (q)-[:REQUIRES]->(ar)
+       WHERE EXISTS { MATCH (:OrgField {dataset:$dataset, field:ar.field}) }
+         AND ($orgMode = 'wildcardOnly' OR ar.field IN keys($orgFilters))
+     } )
+   RETURN q",
   "MATCH (of:OrgField {dataset:$dataset})
    WITH q, collect(of.field) AS orgFields
    OPTIONAL MATCH (q)-[:REQUIRES]->(ar)
