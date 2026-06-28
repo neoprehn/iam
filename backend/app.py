@@ -1417,6 +1417,7 @@ _SATISFIED_BY_CYPHER = (
     # Zeitpunkt) -- Stichprobe sachsenenergie: erfasst 3737/3829 T-*-Profile strukturell sowie
     # 1171 generierte Profile ohne "T-"-Praefix. Der Praefix-Fallback faengt die restlichen
     # verwaisten T-*-Profile (92 von 3829) ab, deren erzeugende Rolle fehlt.
+    "  (labels(actor)[0] = 'Profile' AND EXISTS { MATCH (:Role)-[:HAS_PROFILE]->(actor) }) AS hasGeneratingRole, "
     "  (labels(actor)[0] = 'Profile' AND ( "
     "    EXISTS { MATCH (:Role)-[:HAS_PROFILE]->(actor) } OR actor.id STARTS WITH 'T-' "
     "  )) AS technical, "
@@ -1443,6 +1444,10 @@ def _query_objects(s, ruleset: str, dataset: str, as_of, user: str, org_fields: 
         rows = s.run(_SATISFIED_BY_CYPHER, user=user, dataset=dataset, asOf=as_of,
                      object=obj, reqs=obj_reqs, orgFields=org_fields)
         return [{"actorType": r["actorType"], "actorId": r["actorId"], "technical": r["technical"],
+                 # "verwaist" = generiertes Profil, dessen erzeugende Rolle im Extrakt nicht (mehr)
+                 # existiert (nur ueber den Namens-Fallback als technisch erkannt) -- die
+                 # Berechtigung selbst bleibt laut UST04 trotzdem aktiv (s. Nutzer-Rueckfrage).
+                 "orphaned": bool(r["technical"]) and not bool(r["hasGeneratingRole"]),
                  "authValues": [f"{f['field']}={','.join(f['values'])}" for f in r["authFields"]]}
                 for r in rows]
 

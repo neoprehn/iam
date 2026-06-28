@@ -126,6 +126,8 @@
   .rcobj .rcactor { display:flex; justify-content:space-between; gap:10px; font-size:13px;
     padding:5px 0; border-top:1px solid var(--line); }
   .rcobj .rcactor:first-of-type { border-top:0; }
+  .rcobj mark.rcHit { background:rgba(70,167,88,.28); color:var(--ok); border-radius:3px;
+    padding:0 2px; font-weight:600; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .cc-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
   .cc-grid.single { grid-template-columns:1fr; max-width:600px; margin:4px auto 0; }
@@ -1640,6 +1642,30 @@ async function openRootCause(user, { query, rule }, returnTo) {
   }
 }
 
+/* Fundstelle markieren: in den authValues eines Akteurs ("FELD=w1,w2,…") genau die Werte
+   farblich hervorheben, die die Anforderung tatsächlich erfüllen — '*' deckt alles ab (AE-06),
+   ein Bereich "lo..hi" deckt jeden geforderten Wert im Intervall ab (lexikografischer Vergleich,
+   gleiche Semantik wie materialize_matches.cypher/_SATISFIED_BY_CYPHER), sonst exakte Wertgleichheit. */
+function actorValueHits(actorVal, reqVals) {
+  if (actorVal === '*') return true;
+  if (actorVal.includes('..')) {
+    const [lo, hi] = actorVal.split('..');
+    return reqVals.some(rv => lo <= rv && rv <= hi);
+  }
+  return reqVals.includes(actorVal);
+}
+function highlightAuthValues(authValues, reqValuesByField) {
+  return authValues.map(av => {
+    const eq = av.indexOf('=');
+    if (eq < 0) return av;
+    const field = av.slice(0, eq), vals = av.slice(eq + 1).split(',');
+    const reqVals = reqValuesByField.get(field);
+    if (!reqVals) return av;
+    const marked = vals.map(v => actorValueHits(v, reqVals) ? `<mark class="rcHit">${v}</mark>` : v);
+    return `${field}=${marked.join(',')}`;
+  }).join(', ');
+}
+
 function renderRootCause(data) {
   const box = $('rcObjects');
   if (!data.blocks.length) {
@@ -1652,17 +1678,22 @@ function renderRootCause(data) {
     if (!blk.objects.length) return `${heading}<div class="muted">keine Berechtigungsanforderungen für diese Query.</div>`;
     const objHtml = blk.objects.map(o => {
       const reqText = o.requirement
-        .map(r => `${r.field} ${r.andLogic ? 'UND' : 'ODER'} ${r.values.join(', ')}`).join(' · ');
+        .map(r => `${r.field} = ${r.values.join(r.andLogic ? ' UND ' : ' ODER ')}`).join(' · ');
+      const reqValuesByField = new Map(o.requirement.map(r => [r.field, r.values]));
       const shown = rcShowTechnical ? o.satisfiedBy : o.satisfiedBy.filter(a => !a.technical);
       const hiddenCount = o.satisfiedBy.length - shown.length;
+      const technicalNote = a => !a.technical ? '' : a.orphaned
+        ? ' <span class="muted">(technisch, generiert &mdash; erzeugende Rolle nicht mehr im Datenbestand, Berechtigung laut UST04 trotzdem aktiv)</span>'
+        : ' <span class="muted">(technisch, generiert)</span>';
       const actors = shown.length
         ? shown.map(a => `<div class="rcactor"><span>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}`
-            + `${a.technical ? ' <span class="muted">(technisch, generiert)</span>' : ''}</span>`
-            + `<span class="muted">${a.authValues.join(', ')}</span></div>`).join('')
+            + `${technicalNote(a)}</span>`
+            + `<span class="muted">${highlightAuthValues(a.authValues, reqValuesByField)}</span></div>`).join('')
         : '<div class="rcactor muted">keine erfüllende Rolle/Profil gefunden</div>';
       const hiddenHint = hiddenCount
         ? `<div class="hint">${hiddenCount} technische(s) Profil(e) ausgeblendet &mdash; „alle (inkl. technische)" oben einschalten.</div>` : '';
-      return `<div class="rcobj"><div><b>${o.object}</b></div>`
+      const objLabel = o.object.includes('(') ? o.object : `${o.object} (Berechtigungsobjekt-Prüfung)`;
+      return `<div class="rcobj"><div><b>${objLabel}</b></div>`
         + `<div class="rcreq">Anforderung: ${reqText}</div>${actors}${hiddenHint}</div>`;
     }).join('');
     return heading + objHtml;
