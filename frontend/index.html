@@ -416,6 +416,7 @@
         <button class="ghost" id="rcBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
       </div>
     </div>
+    <div class="sub" id="rcTargetDesc" style="display:none; margin-bottom:4px"></div>
     <div class="sub" style="margin-bottom:14px">Pro Berechtigungsobjekt (bzw. TCode-Pr&uuml;fung): welche Anforderung galt &mdash;
       und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
       Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
@@ -907,6 +908,7 @@ async function openConsistencyRootCause(checkId, user) {
   rcReturnTo = 'consistency';
   $('rcUser').textContent = `Nutzer: ${user}`;
   $('rcTarget').textContent = `· Check ${checkId}`;
+  $('rcTargetDesc').style.display = 'none';
   $('rcObjects').innerHTML = '<div class="muted">lädt&hellip;</div>';
   showRootCauseView();
   try {
@@ -1626,10 +1628,19 @@ $('filterActiveClear').onclick = () => $('filterResetBtn').onclick();
    Profil(e) mit konkreter Authorization. Aufruf entweder mit { query } (Matches-Tabelle, "wer
    matcht") oder { rule } (SoD-Kontext, aus "Verursachende Rollen/Profile" — erklaert dann jede
    Klausel der Regel einzeln, je die vom User tatsaechlich gematchte Query). */
+function rcSetTargetDescription(query, rule) {
+  const desc = query
+    ? (queriesCache.find(q => q.id === query) || {}).shortDescription
+        || (queriesCache.find(q => q.id === query) || {}).description
+    : sodRuleNames[rule];
+  $('rcTargetDesc').style.display = desc ? '' : 'none';
+  $('rcTargetDesc').textContent = desc || '';
+}
 async function openRootCause(user, { query, rule }, returnTo) {
   rcReturnTo = returnTo || 'results';
   $('rcUser').textContent = `Nutzer: ${user}`;
   $('rcTarget').textContent = query ? `· Query ${query}` : `· Regel ${rule}`;
+  rcSetTargetDescription(query, rule);
   $('rcObjects').innerHTML = '<div class="muted">lädt&hellip;</div>';
   showRootCauseView();
   try {
@@ -1673,12 +1684,17 @@ function renderRootCause(data) {
     return;
   }
   box.innerHTML = data.blocks.map(blk => {
-    const heading = data.ruleId ? `<h2 style="margin-top:18px">${blk.label}</h2>` : '';
+    const qidMatch = blk.label.match(/Query (\S+)$/);
+    const qDesc = qidMatch && (queriesCache.find(q => q.id === qidMatch[1]) || {});
+    const labelDesc = qDesc && (qDesc.shortDescription || qDesc.description);
+    const heading = data.ruleId
+      ? `<h2 style="margin-top:18px">${blk.label}${labelDesc ? ` <span class="muted" style="font-size:12.5px;font-weight:400">&middot; ${labelDesc}</span>` : ''}</h2>`
+      : '';
     if (blk.note) return `${heading}<div class="muted">${blk.note}</div>`;
     if (!blk.objects.length) return `${heading}<div class="muted">keine Berechtigungsanforderungen für diese Query.</div>`;
     const objHtml = blk.objects.map(o => {
       const reqText = o.requirement
-        .map(r => `${r.field} = ${r.values.join(r.andLogic ? ' UND ' : ' ODER ')}`).join(' · ');
+        .map(r => `${r.field} (${r.andLogic ? 'UND' : 'ODER'}): ${r.values.join(', ')}`).join(' · ');
       const reqValuesByField = new Map(o.requirement.map(r => [r.field, r.values]));
       const shown = rcShowTechnical ? o.satisfiedBy : o.satisfiedBy.filter(a => !a.technical);
       const hiddenCount = o.satisfiedBy.length - shown.length;
