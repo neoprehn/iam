@@ -126,14 +126,23 @@ Liste.
 ### Root-Cause
 
 Sowohl die **Findings-Tabelle** (SoD) als auch die **Matches-Tabelle** („wer matcht", Einzelfilter)
-haben pro Zeile einen **„Root-Cause"**-Button. Er öffnet eine Detailansicht, gruppiert **pro
-Berechtigungsobjekt** der Query (und ggf. einen eigenen Block für die TCode-Prüfung) — bei einer
-SoD-Regel zusätzlich **pro Klausel** (für die tatsächlich vom User gematchte Query dieser Klausel):
-oben die **Anforderung** (Feld, UND/ODER-Logik, geforderte Werte), darunter die **Rolle(n)/
-Profil(e)**, die genau dieses Objekt mit welcher konkreten Authorization erfüllen. Anders als die
-Evidenz (die nur „welche Rolle" zeigt) macht das sichtbar, wenn **verschiedene Objekte/Klauseln
-durch verschiedene Rollen** gedeckt werden — der eigentliche Root-Cause, nicht nur der Träger des
-Konflikts.
+haben pro Zeile einen **„Root-Cause"**-Button. Er wechselt (kein Dialog/Overlay, wie die
+Findings-/Konsistenzcheck-Ansicht) auf eine **eigene Seite** mit „← zurück" — oben die gesuchte
+**Query bzw. SoD-Regel**, darunter gruppiert **pro Berechtigungsobjekt** der Query (und ggf. einen
+eigenen Block für die TCode-Prüfung) — bei einer SoD-Regel zusätzlich **pro Klausel** (für die
+tatsächlich vom User gematchte Query dieser Klausel): je Objekt zunächst die **Anforderung** (Feld,
+UND/ODER-Logik, geforderte Werte), darunter die **Rolle(n)/Profil(e)**, die genau dieses Objekt mit
+welcher konkreten Authorization erfüllen. Anders als die Evidenz (die nur „welche Rolle" zeigt)
+macht das sichtbar, wenn **verschiedene Objekte/Klauseln durch verschiedene Rollen** gedeckt werden
+— der eigentliche Root-Cause, nicht nur der Träger des Konflikts.
+
+Ein Umschalter **„ohne technische" / „alle (inkl. technische)"** über der Ergebnisliste blendet
+SAP-generierte Profile aus (Default) bzw. ein: ein direkt zugewiesenes Profil gilt als „technisch",
+wenn es zugleich das vom SAP-Benutzerabgleich generierte Profil einer aktuell gültigen
+Rollenzuweisung desselben Users ist — redundant zur ohnehin gezeigten Rolle. Ist eine Rolle
+zwischenzeitlich entzogen/abgelaufen, aber ihr generiertes Profil noch in `UST04` vorhanden
+("Karteileiche"), zählt das Profil **nicht** als technisch und bleibt sichtbar (eigenständig
+interessanter Befund). Ein Hinweistext zeigt, wie viele Profile aktuell ausgeblendet sind.
 
 Die Matches-Tabelle zeigt dafür **User · Name · Query · Bezeichnung (Kurzbezeichnung der Query) ·
 Kritikalität · Root-Cause** — Nutzertyp/Status sind hier bewusst weggelassen (stehen ggf. in der
@@ -186,11 +195,12 @@ roher Spaltennamen), darunter die **Detailtabelle** (Spalten variieren je Check,
 ebenfalls menschenlesbar übersetzt statt der rohen Cypher-Spaltennamen) — **Spaltenköpfe sind
 klickbar und sortieren die Tabelle** (numerisch oder alphabetisch je nach Inhalt), ein kleines
 Dreieck (▲/▼) zeigt Spalte und Richtung; erneuter Klick dreht um. Bei manchen Checks (aktuell
-A4) erscheint je Zeile zusätzlich ein **„Root-Cause"-Button**, der in einem Dialog zeigt, welche
-konkrete(n) Rolle(n)/Profil(e) mit welchen Berechtigungswerten den Treffer auslösen — derselbe
-Dialog wie beim SoD-Root-Cause. Checks ohne Zusammenfassung zeigen nur die Detailtabelle.
-„← zurück zum Katalog" wechselt zurück. Noch nicht implementierte Checks zeigen rechts nur
-einen Hinweis statt eines Ergebnisses.
+A4) erscheint je Zeile zusätzlich ein **„Root-Cause"-Button**, der auf dieselbe **Root-Cause-Seite**
+wechselt wie beim SoD-/Einzelfilter-Root-Cause (s. o.) und zeigt, welche konkrete(n) Rolle(n)/
+Profil(e) mit welchen Berechtigungswerten den Treffer auslösen; deren „← zurück" führt wieder zu
+diesem Konsistenzcheck-Ergebnis (nicht zum Katalog). Checks ohne Zusammenfassung zeigen nur die
+Detailtabelle. „← zurück zum Katalog" (eigener Button am Check-Ergebnis selbst) wechselt zurück
+zum Katalog. Noch nicht implementierte Checks zeigen rechts nur einen Hinweis statt eines Ergebnisses.
 
 **Keine Persistenz (bewusst):** ein Check-Lauf erzeugt keinen `(:Run)`-Knoten und wird nirgends
 gespeichert — das Ergebnis lebt nur im Browser für die Dauer der Session. Die zuletzt gesehene
