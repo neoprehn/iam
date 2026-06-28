@@ -816,10 +816,19 @@ def admin_list_org_profiles():
 
 @app.get("/admin/org-profiles/org-fields")
 def admin_org_fields(dataset: str):
-    """Org-Felder (USORG-Registry) eines Datasets — speist die Feld-Auswahl beim Anlegen eines
-    Org-Kriteriums."""
+    """Org-Felder eines Datasets, auf die sich ein Kriterium sinnvoll einschraenken laesst —
+    speist die Feld-Auswahl beim Anlegen eines Org-Kriteriums. Die OrgField-Registry (aus USORG)
+    enthaelt alle 50+ moeglichen Org-Ebenen, viele davon kommen im konkreten Berechtigungskonzept
+    aber gar nicht oder nur mit echtem '*' (unbeschraenkt) vor -- ein Kriterium darauf waere nie
+    waehlbar (org-field-values liefert dann leer). Deshalb hier vorab filtern auf Felder, bei
+    denen mindestens eine Authorization einen konkreten (nicht-'*') Wert traegt."""
     with driver.session() as s:
-        rows = s.run("MATCH (of:OrgField {dataset:$d}) RETURN of.field AS field ORDER BY of.field", d=dataset)
+        rows = s.run(
+            "MATCH (of:OrgField {dataset:$d}) "
+            "WHERE EXISTS { MATCH (a:Authorization {dataset:$d}) "
+            "  WHERE apoc.any.property(a,'f_'+of.field) IS NOT NULL "
+            "    AND any(v IN apoc.any.property(a,'f_'+of.field) WHERE v <> '*') } "
+            "RETURN of.field AS field ORDER BY of.field", d=dataset)
         return [r["field"] for r in rows]
 
 

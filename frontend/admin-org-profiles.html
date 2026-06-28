@@ -305,12 +305,13 @@ function newProfile() {
 }
 $('opNewBtn').onclick = newProfile;
 
-function addCriterion() {
+async function addCriterion() {
   const field = orgFields[0] || '';
   criteria.push({ field, op: 'AND', values: [], rangeFrom: '', rangeTo: '' });
-  valuesForField(field).then(renderCriteria);
-  renderCriteria();
   setDirty(true);
+  renderCriteria();          // sofort anzeigen ("lädt…"), dann mit den geladenen Werten ersetzen
+  await valuesForField(field);
+  renderCriteria();
 }
 $('opAddCriterionBtn').onclick = addCriterion;
 
@@ -321,7 +322,10 @@ function renderCriteria() {
     return;
   }
   criteria.forEach((c, i) => {
+    const loaded = c.field in valueCache;
     const vals = valueCache[c.field] || [];
+    const valuesHint = !loaded ? '<div class="hint"><span class="spin"></span> Werte werden geladen…</div>'
+      : !vals.length ? '<div class="hint">Keine konkreten Werte für dieses Feld im Dataset gefunden — anderes Feld wählen.</div>' : '';
     const div = document.createElement('div');
     div.className = 'criterion';
     div.innerHTML = `
@@ -335,7 +339,7 @@ function renderCriteria() {
           <option value="RANGE" ${c.op === 'RANGE' ? 'selected' : ''}>Bereich (von/bis)</option>
         </select></div>
       </div>
-      ${c.op === 'RANGE' ? `
+      ${!vals.length ? valuesHint : c.op === 'RANGE' ? `
       <div class="row">
         <div><label>von</label><select class="critFrom" data-i="${i}">
           <option value="">–</option>${vals.map(v => `<option value="${v}" ${v === c.rangeFrom ? 'selected' : ''}>${v}</option>`).join('')}
