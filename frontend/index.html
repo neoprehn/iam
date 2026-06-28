@@ -121,11 +121,13 @@
     padding:10px 14px; margin-bottom:18px; }
   .causingbox h2 { margin:0 0 8px; }
   .rcobj { background:var(--panel); border:1px solid var(--line); border-radius:8px;
-    padding:10px 14px; margin-bottom:12px; }
-  .rcobj .rcreq { color:var(--muted); font-size:12.5px; margin-bottom:8px; }
-  .rcobj .rcactor { display:flex; justify-content:space-between; gap:10px; font-size:13px;
-    padding:5px 0; border-top:1px solid var(--line); }
+    padding:10px 14px; margin-bottom:12px; overflow-wrap:anywhere; }
+  .rcobj .rcreq { color:var(--muted); font-size:12.5px; margin-bottom:8px; overflow-wrap:anywhere; }
+  .rcobj .rcactor { display:flex; flex-wrap:wrap; justify-content:space-between; gap:2px 10px;
+    font-size:13px; padding:5px 0; border-top:1px solid var(--line); }
   .rcobj .rcactor:first-of-type { border-top:0; }
+  .rcobj .rcactor > span { min-width:0; overflow-wrap:anywhere; flex:1 1 auto; }
+  .rcobj .rcactor > span:last-child { text-align:right; }
   .rcobj mark.rcHit { background:rgba(70,167,88,.28); color:var(--ok); border-radius:3px;
     padding:0 2px; font-weight:600; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
@@ -152,7 +154,7 @@
     cursor:pointer; transition:border-color .15s, background .15s; }
   .run-card:hover { border-color:var(--accent); border-left-color:var(--accent); }
   .run-card.active { border-color:var(--accent); border-left-color:var(--accent); background:rgba(76,139,245,.10); }
-  .run-card-top { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .run-card-top { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 8px; }
   .run-card-top .run-id { font-weight:700; font-size:13px; }
   .run-card-top .run-badge { font-size:12px; font-weight:700; color:var(--accent);
     background:rgba(76,139,245,.14); padding:2px 9px; border-radius:10px; white-space:nowrap; }
