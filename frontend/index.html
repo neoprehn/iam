@@ -123,7 +123,7 @@
   .rcobj { background:var(--panel); border:1px solid var(--line); border-radius:8px;
     padding:10px 14px; margin-bottom:12px; overflow-wrap:anywhere; }
   .rcobj .rcreq { color:var(--muted); font-size:12.5px; margin-bottom:8px; overflow-wrap:anywhere; }
-  .rcobj .rcactor { display:grid; grid-template-columns:300px 1fr; align-items:start; gap:2px 12px;
+  .rcobj .rcactor { display:grid; grid-template-columns:420px 1fr; align-items:start; gap:2px 12px;
     font-size:13px; padding:5px 0; border-top:1px solid var(--line); }
   .rcobj .rcactor:first-of-type { border-top:0; }
   .rcobj .rcactor > span { overflow-wrap:anywhere; }
@@ -1747,9 +1747,13 @@ function renderRootCause(data) {
       const reqValuesByField = new Map(o.requirement.map(r => [r.field, r.values]));
       const shown = rcShowTechnical ? o.satisfiedBy : o.satisfiedBy.filter(a => !a.technical);
       const hiddenCount = o.satisfiedBy.length - shown.length;
+      // Kurze Anmerkungen (Rollen-/Profilname max. 30/12 Zeichen, s. SAP-Laengenlimits) bekommen
+      // white-space:nowrap, damit sie nie mitten im Namen umbrechen -- nur die lange Erklaerung
+      // beim verwaisten generierten Profil ist echter Fliesstext und darf umbrechen.
+      const nowrap = html => `<span style="white-space:nowrap">${html}</span>`;
       const technicalNote = a => !a.technical ? '' : a.orphaned
         ? '(technisch, generiert &mdash; erzeugende Rolle nicht mehr im Datenbestand, Berechtigung laut UST04 trotzdem aktiv)'
-        : '(technisch, generiert)';
+        : nowrap('(technisch, generiert)');
       // Ein Akteur kann denselben Treffer ueber mehrere Quellen erreichen (z. B. eine Rolle ueber
       // ihre eigene Definition UND zusaetzlich ueber ihr generiertes Profil, mit ggf.
       // abweichenden Werten -- Design vs. tatsaechlich Generiertes). Beide Zeilen bleiben
@@ -1760,9 +1764,9 @@ function renderRootCause(data) {
       const sourceNote = a => {
         if (a.via) {
           const label = a.via.type === 'Profile' ? 'über generiertes Profil' : 'über enthaltene Rolle';
-          return `(${label} ${a.via.id})`;
+          return nowrap(`(${label} ${a.via.id})`);
         }
-        return actorCounts[a.actorType + ':' + a.actorId] > 1 ? '(eigene Definition)' : '';
+        return actorCounts[a.actorType + ':' + a.actorId] > 1 ? nowrap('(eigene Definition)') : '';
       };
       // Weicht die eigene Rollendefinition (kein "via") fuer DASSELBE Objekt von dem ab, was ihr
       // generiertes Profil tatsaechlich traegt, ist das genau der Fall, den Konsistenzcheck D4
@@ -1775,7 +1779,7 @@ function renderRootCause(data) {
         if (!viaSiblings.length) return '';
         const ownMap = authValuesMap(a.authValues);
         const diverges = viaSiblings.every(s => !sameAuthValues(ownMap, authValuesMap(s.authValues)));
-        return diverges ? '<a href="#" class="rcD4Link" data-checkid="D4">weicht vom generierten Profil ab &middot; D4</a>' : '';
+        return diverges ? nowrap('<a href="#" class="rcD4Link" data-checkid="D4">weicht vom generierten Profil ab &middot; D4</a>') : '';
       };
       // Jede zutreffende Anmerkung in eine eigene Zeile (statt inline angehaengt) -- Rollen-/
       // Profilnamen schoepfen die SAP-Maximallaenge oft schon allein aus (Rolle bis 30, Profil
