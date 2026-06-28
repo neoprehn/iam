@@ -1393,7 +1393,7 @@ _SATISFIED_BY_CYPHER = (
     "OPTIONAL MATCH (u)-[g:ASSIGNED_TO]->(roleActor:Role) "
     "  WHERE (g.validFrom IS NULL OR g.validFrom<=$asOf) AND (g.validTo IS NULL OR $asOf<=g.validTo) "
     "OPTIONAL MATCH (u)-[:HAS_PROFILE]->(profActor:Profile) "
-    "WITH [x IN collect(DISTINCT roleActor) WHERE x IS NOT NULL] "
+    "WITH u, [x IN collect(DISTINCT roleActor) WHERE x IS NOT NULL] "
     "   + [x IN collect(DISTINCT profActor) WHERE x IS NOT NULL] AS actors "
     "UNWIND actors AS actor "
     "MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:$object}) "
@@ -1408,6 +1408,15 @@ _SATISFIED_BY_CYPHER = (
     "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
     "                END ) ) ) "
     "RETURN DISTINCT labels(actor)[0] AS actorType, actor.id AS actorId, "
+    # "technisch" = direkt zugewiesenes Profil, das ZUGLEICH das von SAP beim Benutzerabgleich
+    # generierte Profil einer aktuell gueltigen Rollenzuweisung dieses Users ist (identische
+    # Definition wie im Konsistenzcheck C1, cypher/checks/direct_profile_assignments.cypher --
+    # dort als "T-*"-Profile bekannt, aber strukturell statt namensbasiert ermittelt). Redundant
+    # zur bereits angezeigten Rolle, daher in der UI standardmaessig ausblendbar.
+    "  (labels(actor)[0] = 'Profile' AND EXISTS { "
+    "    MATCH (u)-[a2:ASSIGNED_TO]->(:Role)-[:HAS_PROFILE]->(actor) "
+    "    WHERE (a2.validFrom IS NULL OR a2.validFrom<=$asOf) AND (a2.validTo IS NULL OR $asOf<=a2.validTo) "
+    "  }) AS technical, "
     "  [k IN keys(a) WHERE k STARTS WITH 'f_' | {field: substring(k,2), values: apoc.any.property(a,k)}] AS authFields "
     "ORDER BY actorType, actorId"
 )
@@ -1430,7 +1439,7 @@ def _query_objects(s, ruleset: str, dataset: str, as_of, user: str, org_fields: 
     def satisfied_by(obj: str, obj_reqs: list[dict]) -> list[dict]:
         rows = s.run(_SATISFIED_BY_CYPHER, user=user, dataset=dataset, asOf=as_of,
                      object=obj, reqs=obj_reqs, orgFields=org_fields)
-        return [{"actorType": r["actorType"], "actorId": r["actorId"],
+        return [{"actorType": r["actorType"], "actorId": r["actorId"], "technical": r["technical"],
                  "authValues": [f"{f['field']}={','.join(f['values'])}" for f in r["authFields"]]}
                 for r in rows]
 

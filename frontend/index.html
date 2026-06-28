@@ -406,6 +406,26 @@
       </div>
     </div>
   </div>
+  <div id="rootCauseView" style="display:none">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:4px">
+      <h2 style="margin:0">Root-Cause <span class="muted" id="rcTarget"></span></h2>
+      <div class="bctx" style="margin:0">
+        <span class="chip" id="rcUser"></span>
+        <button class="ghost" id="rcBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+      </div>
+    </div>
+    <div class="sub" style="margin-bottom:14px">Pro Berechtigungsobjekt (bzw. TCode-Pr&uuml;fung): welche Anforderung galt &mdash;
+      und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
+      Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
+    <div class="resultbar">
+      <span class="muted" style="font-size:12px">Profile:</span>
+      <div class="pillgroup" id="rcTechPills">
+        <button type="button" class="pill active" data-value="hide">ohne technische</button>
+        <button type="button" class="pill" data-value="show">alle (inkl. technische)</button>
+      </div>
+    </div>
+    <div id="rcObjects"></div>
+  </div>
 </main>
 
 <!-- Dialog: Import -->
@@ -542,18 +562,6 @@
   <div class="sub">Fehlgeschlagene Jobs (Import/Lauf/Backup/Restore/Bereinigen) &mdash; persistent,
     &uuml;berlebt einen Container-Neustart. Neueste zuerst.</div>
   <ul class="runs" id="errorLogList"></ul>
-</div></div>
-
-<!-- Dialog: Root-Cause -->
-<div class="overlay" id="dlg-rootcause"><div class="dialog" style="max-width:640px">
-  <span class="x" data-close>&times;</span><h3>Root-Cause</h3>
-  <div class="sub">Pro Berechtigungsobjekt (bzw. TCode-Pr&uuml;fung): welche Anforderung galt &mdash;
-    und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
-    Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
-  <div class="bctx" style="margin:4px 0 14px">
-    <span class="chip" id="rcUser"></span><span class="chip" id="rcQuery"></span>
-  </div>
-  <div id="rcObjects"></div>
 </div></div>
 
 <script src="vendor/cytoscape/cytoscape.min.js"></script>
@@ -894,15 +902,16 @@ function renderCcdDetailTable(rows) {
   renderCcdDetailBody(cols, hasRootCause);
 }
 async function openConsistencyRootCause(checkId, user) {
+  rcReturnTo = 'consistency';
   $('rcUser').textContent = `Nutzer: ${user}`;
-  $('rcQuery').textContent = `Check: ${checkId}`;
+  $('rcTarget').textContent = `· Check ${checkId}`;
   $('rcObjects').innerHTML = '<div class="muted">lädt&hellip;</div>';
-  openDlg('dlg-rootcause');
+  showRootCauseView();
   try {
-    const data = await api('/consistency-checks/' + encodeURIComponent(checkId) + '/root-cause', {
+    rcLastData = await api('/consistency-checks/' + encodeURIComponent(checkId) + '/root-cause', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dataset: $('ccdDataset').value, user }) });
-    renderRootCause(data);
+    renderRootCause(rcLastData);
   } catch (err) {
     $('rcObjects').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
   }
@@ -1077,14 +1086,39 @@ function showConsistencyView(area) {
   $('causingActors').style.display = 'none';
   document.querySelector('main .cols').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
+  $('rootCauseView').style.display = 'none';
   $('consistencyView').style.display = '';
 }
 function showResultsView() {
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
+  $('rootCauseView').style.display = 'none';
   document.querySelector('main .cols').style.display = '';
   if (activeRunId) applyFilters(); else $('kpis').style.display = '';
 }
+/* Root-Cause als eigene Seite (statt Dialog) — gleiches "wechselt im Hauptbereich, kein
+   Overlay" + "← zurück"-Muster wie Konsistenzcheck-Katalog/-Ergebnis. rcReturnTo merkt sich,
+   ob "zurück" zu den Ergebnissen (Findings/Matches) oder zum Konsistenzcheck-Ergebnis fuehrt. */
+let rcReturnTo = 'results', rcLastData = null, rcShowTechnical = false;
+function showRootCauseView() {
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  document.querySelector('main .cols').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  $('rootCauseView').style.display = '';
+}
+$('rcBackBtn').onclick = () => {
+  $('rootCauseView').style.display = 'none';
+  if (rcReturnTo === 'consistency') { $('consistencyResultView').style.display = ''; }
+  else { showResultsView(); }
+};
+document.querySelectorAll('#rcTechPills .pill').forEach(b => b.addEventListener('click', () => {
+  rcShowTechnical = b.dataset.value === 'show';
+  document.querySelectorAll('#rcTechPills .pill').forEach(x => x.classList.toggle('active', x === b));
+  if (rcLastData) renderRootCause(rcLastData);
+}));
 
 /* Ribbon-Menues (Gruppen mit mehreren Befehlen, z. B. "Ergebnisse"/"Admin") */
 document.querySelectorAll('.menu-trigger').forEach(btn => {
@@ -1590,15 +1624,17 @@ $('filterActiveClear').onclick = () => $('filterResetBtn').onclick();
    Profil(e) mit konkreter Authorization. Aufruf entweder mit { query } (Matches-Tabelle, "wer
    matcht") oder { rule } (SoD-Kontext, aus "Verursachende Rollen/Profile" — erklaert dann jede
    Klausel der Regel einzeln, je die vom User tatsaechlich gematchte Query). */
-async function openRootCause(user, { query, rule }) {
+async function openRootCause(user, { query, rule }, returnTo) {
+  rcReturnTo = returnTo || 'results';
   $('rcUser').textContent = `Nutzer: ${user}`;
-  $('rcQuery').textContent = query ? `Query: ${query}` : `Regel: ${rule}`;
+  $('rcTarget').textContent = query ? `· Query ${query}` : `· Regel ${rule}`;
   $('rcObjects').innerHTML = '<div class="muted">lädt&hellip;</div>';
-  openDlg('dlg-rootcause');
+  showRootCauseView();
   try {
     let url = '/root-cause?runId=' + encodeURIComponent(activeRunId) + '&user=' + encodeURIComponent(user);
     url += query ? '&query=' + encodeURIComponent(query) : '&rule=' + encodeURIComponent(rule);
-    renderRootCause(await api(url));
+    rcLastData = await api(url);
+    renderRootCause(rcLastData);
   } catch (err) {
     $('rcObjects').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
   }
@@ -1617,12 +1653,17 @@ function renderRootCause(data) {
     const objHtml = blk.objects.map(o => {
       const reqText = o.requirement
         .map(r => `${r.field} ${r.andLogic ? 'UND' : 'ODER'} ${r.values.join(', ')}`).join(' · ');
-      const actors = o.satisfiedBy.length
-        ? o.satisfiedBy.map(a => `<div class="rcactor"><span>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}</span>`
+      const shown = rcShowTechnical ? o.satisfiedBy : o.satisfiedBy.filter(a => !a.technical);
+      const hiddenCount = o.satisfiedBy.length - shown.length;
+      const actors = shown.length
+        ? shown.map(a => `<div class="rcactor"><span>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}`
+            + `${a.technical ? ' <span class="muted">(technisch, generiert)</span>' : ''}</span>`
             + `<span class="muted">${a.authValues.join(', ')}</span></div>`).join('')
         : '<div class="rcactor muted">keine erfüllende Rolle/Profil gefunden</div>';
+      const hiddenHint = hiddenCount
+        ? `<div class="hint">${hiddenCount} technische(s) Profil(e) ausgeblendet &mdash; „alle (inkl. technische)" oben einschalten.</div>` : '';
       return `<div class="rcobj"><div><b>${o.object}</b></div>`
-        + `<div class="rcreq">Anforderung: ${reqText}</div>${actors}</div>`;
+        + `<div class="rcreq">Anforderung: ${reqText}</div>${actors}${hiddenHint}</div>`;
     }).join('');
     return heading + objHtml;
   }).join('');
