@@ -130,6 +130,8 @@
   .rcobj .rcactor > span:last-child { color:var(--muted); }
   .rcobj mark.rcHit { background:rgba(70,167,88,.28); color:var(--ok); border-radius:3px;
     padding:0 2px; font-weight:600; }
+  .rcD4Link { color:var(--crit); font-size:11.5px; font-weight:600; text-decoration:underline;
+    cursor:pointer; white-space:nowrap; }
   .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .cc-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
   .cc-grid.single { grid-template-columns:1fr; max-width:600px; margin:4px auto 0; }
@@ -1679,6 +1681,51 @@ function highlightAuthValues(authValues, reqValuesByField) {
   }).join(', ');
 }
 
+/* Vergleich "eigene Rollendefinition" vs. "generiertes Profil" fuer dasselbe Objekt (Root-Cause-
+   Divergenzhinweis -> Konsistenzcheck D4). authValues-Strings ("FELD=v1,v2,…") in Feld->Werte-Set
+   zerlegen und je Feld auf Gleichheit der Wertemenge pruefen (Reihenfolge irrelevant). */
+function authValuesMap(authValues) {
+  const m = {};
+  authValues.forEach(av => {
+    const eq = av.indexOf('=');
+    if (eq < 0) return;
+    m[av.slice(0, eq)] = new Set(av.slice(eq + 1).split(','));
+  });
+  return m;
+}
+function sameAuthValues(m1, m2) {
+  const fields = new Set([...Object.keys(m1), ...Object.keys(m2)]);
+  for (const f of fields) {
+    const a = m1[f] || new Set(), b = m2[f] || new Set();
+    if (a.size !== b.size || [...a].some(v => !b.has(v))) return false;
+  }
+  return true;
+}
+
+/* Direkter Sprung von einem Root-Cause-Divergenzhinweis zum Konsistenzcheck D4 (statt der
+   Nutzer muesste sich Kategorie/Check selbst zusammensuchen). Laedt den Katalog bei Bedarf nach
+   und blendet die anderen Hauptbereiche aus (wie showConsistencyView, aber direkt zur
+   Detailansicht statt zum Katalog). */
+async function openCheckById(checkId, area) {
+  await loadConsistencyCatalog(area);
+  const c = consistencyCatalog[area].find(x => x.id === checkId);
+  if (!c) return;
+  ccArea = area; ccCatFilter = '';
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  document.querySelector('main .cols').style.display = 'none';
+  $('rootCauseView').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  openConsistencyDetail(c);
+}
+$('rcObjects').addEventListener('click', e => {
+  const link = e.target.closest('.rcD4Link');
+  if (!link) return;
+  e.preventDefault();
+  openCheckById(link.dataset.checkid, 'user');
+});
+
 function renderRootCause(data) {
   const box = $('rcObjects');
   if (!data.blocks.length) {
@@ -1718,9 +1765,23 @@ function renderRootCause(data) {
         return actorCounts[a.actorType + ':' + a.actorId] > 1
           ? ' <span class="muted">(eigene Definition)</span>' : '';
       };
+      // Weicht die eigene Rollendefinition (kein "via") fuer DASSELBE Objekt von dem ab, was ihr
+      // generiertes Profil tatsaechlich traegt, ist das genau der Fall, den Konsistenzcheck D4
+      // ("veraltete/nicht generierte Profile") behandelt -- direkter Sprung dorthin statt nur
+      // einer Erklaerung, da der Nutzer sich das sonst selbst zusammensuchen muesste.
+      const divergenceLink = a => {
+        if (a.via) return '';
+        const viaSiblings = o.satisfiedBy.filter(x => x.actorType === a.actorType
+          && x.actorId === a.actorId && x.via && x.via.type === 'Profile');
+        if (!viaSiblings.length) return '';
+        const ownMap = authValuesMap(a.authValues);
+        const diverges = viaSiblings.every(s => !sameAuthValues(ownMap, authValuesMap(s.authValues)));
+        return diverges
+          ? ' <a href="#" class="rcD4Link" data-checkid="D4">weicht vom generierten Profil ab &middot; D4</a>' : '';
+      };
       const actors = shown.length
         ? shown.map(a => `<div class="rcactor"><span>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}`
-            + `${technicalNote(a)}${sourceNote(a)}</span>`
+            + `${technicalNote(a)}${sourceNote(a)}${divergenceLink(a)}</span>`
             + `<span class="muted">${highlightAuthValues(a.authValues, reqValuesByField)}</span></div>`).join('')
         : '<div class="rcactor muted">keine erfüllende Rolle/Profil gefunden</div>';
       const hiddenHint = hiddenCount
