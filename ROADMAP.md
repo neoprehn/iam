@@ -5,13 +5,14 @@
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe „Windows-Spezifika").
 
 **Stand:** Die App ist unter `http://localhost:8000/` lauffähig: **Import (Ordner/ZIP), Auswertung
-(inkl. Evidenz, Org-Varianten, interaktive Drill-downs), Konsistenzchecks, Query-/SoD-Management,
-Ergebnisse + CSV-Export, Backup/Restore, Bereinigen** — alles ohne JSON-Pflege. Abgeschlossene
-Arbeit (Phasen 0–3, 5; Phase 6 PoC; Phase 7 bis auf CSV-Export; Phase-9-Bausteine Backend-API/
-Import/Ribbon-UI/Backup-Restore-Clear/CSV-Export/Org-Filter+MATCHES-Scoping/Drill-downs/Admin-
-Management-Seiten; AE-11-Evidenz v1) ist im Detail in [`ROADMAP-ARCHIV.md`](ROADMAP-ARCHIV.md)
-festgehalten. **Diese Datei führt nur noch die offenen Punkte** plus die verbindliche Referenz
-(Vertrauensgrenze, Architektur-Entscheidungen, Zielarchitektur, Windows-Spezifika, R/3-vs-S/4).
+(inkl. Evidenz, Org-Varianten, interaktive Drill-downs), Konsistenzchecks + Konsistenz-Report (CSV),
+Query-/SoD-Management, Ergebnisse + CSV-Export, Backup/Restore, Bereinigen** — alles ohne
+JSON-Pflege. Abgeschlossene Arbeit (Phasen 0–3, 5; Phase 6 PoC; Phase 7 vollständig;
+Phase-9-Bausteine Backend-API/Import/Ribbon-UI/Backup-Restore-Clear/CSV-Export/Org-Filter+MATCHES-
+Scoping/Drill-downs/Admin-Management-Seiten; AE-11-Evidenz v1) ist im Detail in
+[`ROADMAP-ARCHIV.md`](ROADMAP-ARCHIV.md) festgehalten. **Diese Datei führt nur noch die offenen
+Punkte** plus die verbindliche Referenz (Vertrauensgrenze, Architektur-Entscheidungen,
+Zielarchitektur, Windows-Spezifika, R/3-vs-S/4).
 
 ---
 
@@ -79,34 +80,6 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 ---
 
 ## Offene Arbeit
-
-### Phase 7 — Konsistenzchecks (Qualität & Risiko des Berechtigungskonzepts)
-**Ziel:** Über die SoD-Funktionstrennung hinaus die strukturelle **Qualität und allgemeinen
-Risiken des geladenen Berechtigungskonzepts selbst** sichtbar machen — unabhängig von einer
-konkreten SoD-Regel. Ergebnis ist ein **Katalog einzeln auswählbarer Checks**, strukturiert
-abarbeitbar (analog zur Einzelfilter-/SoD-Auswahl), mit eigenem Ribbon-Einstieg.
-
-Der **vollständige, laufend erweiterbare Check-Katalog** steht mit Begründungstext in eigener
-Datei: [`KONSISTENZCHECKS.md`](KONSISTENZCHECKS.md) — wird unabhängig von dieser Roadmap
-gepflegt, neue Checks dort einfach ergänzen. Zwei Bereiche, je ein Ribbon-Punkt:
-**„User-spezifisch"** (Kategorien A/B/C/D/E — kritische Berechtigungen, Benutzerstamm-Hygiene,
-Zuweisungskonsistenz, Gültigkeit/Zeitbezug, referenzielle Integrität) und
-**„Rollen-spezifisch"** (Kategorie `R`, 18 Checks zu Rollendesign/-qualität — Kategorie `C` wurde
-um die rollenstrukturzentrierten Checks bereinigt, die dort aufgegangen sind). Hier nur der
-technische Rahmen:
-
-Erledigte Bausteine (Checks-Katalog, API/UI, Graph-Pilot A1–A3, drei Feedback-Runden,
-Ribbon-Menü-Umstellung) stehen im
-[Archiv](ROADMAP-ARCHIV.md#phase-7--konsistenzchecks-erledigte-bausteine). Offen:
-
-- [ ] **Export:** Konsistenz-Report (CSV, später Teil des Gesamt-Reports zusammen mit
-  Import-Evidenz).
-
-**DoD:** Ein strukturierter, erweiterbarer Katalog an Qualitäts-/Risiko-Checks ist über die UI
-auswählbar, ausführbar und mit Drill-down auf die betroffenen Objekte einsehbar — unabhängig von
-der SoD-Funktionstrennungsprüfung.
-
----
 
 ### Phase 9 — App: offene Bausteine
 

@@ -114,10 +114,20 @@ Rulesets konstant; Systeme (`dataset`) variabel; ein Ruleset pro Lauf.
 
 ---
 
-## Phase 7 — Konsistenzchecks (erledigte Bausteine)
+## Phase 7 — Konsistenzchecks ✓ abgeschlossen
 **Ziel:** Über die SoD-Funktionstrennung hinaus die strukturelle Qualität und allgemeinen Risiken
 des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSISTENZCHECKS.md`](KONSISTENZCHECKS.md).
-*(Export der Ergebnisse als CSV bleibt offen → `ROADMAP.md`.)*
+
+- [x] **Export (letzter offener Punkt): Konsistenz-Report (CSV).** Neuer Menüpunkt
+  „Bericht herunterladen" (Gruppe 4, Konsistenzchecks-Dropdown). Neuer Backend-Endpoint
+  `GET /consistency-checks/export?dataset=…` führt alle implementierten Checks mit ihren
+  Default-Params durch, zählt die Detailzeilen (= was die UI als „N Treffer" zeigt) und gibt
+  eine Überblick-CSV aus (Semikolon/UTF-8-BOM): Spalten `Dataset · Stichtag · Bereich ·
+  Check-ID · Kategorie · Titel · Priorität · Status · Treffer · Params`. Nicht implementierte
+  Checks erscheinen als Zeile ohne Treffer. Dialog mit Dataset-Auswahl (vorbelegt aus aktivem
+  Lauf/Check-Kontext) und Spinner während der Laufzeit; Dateiname
+  `konsistenz_<dataset>_<asOf>.csv`. Später Basis für den Gesamt-Report (zusammen mit
+  Import-Evidenz) und PDF-Variante.
 
 - [x] **Checks-Katalog (Datenmodell) — Katalog persistiert, Check-Logik für alle Kategorien
   nachgezogen.** Jeder Check aus `KONSISTENZCHECKS.md` liegt zusätzlich strukturiert

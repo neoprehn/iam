@@ -1064,6 +1064,248 @@ def consistency_graph(checkId: str, req: ConsistencyGraphReq):
     return {"checkId": checkId, "elements": list(nodes.values()) + list(edges.values())}
 
 
+def _collect_checks_data(session, dataset: str) -> tuple[str, list[list]]:
+    """Fuehrt alle Konsistenzchecks mit Default-Params aus.
+    Gibt (as_of_str, rows) zurueck; jede Row:
+    [dataset, asOf, bereich, checkId, category, title, prio, status, treffer, params]
+    wobei treffer=int|'' und status='implementiert'|'nicht implementiert'|'Fehler: ...'."""
+    area_names = {"user": "User-spezifisch", "role": "Rollen-spezifisch"}
+    all_checks = []
+    for area, cats in CHECK_AREAS.items():
+        for cat in cats:
+            for c in _load_check_category(cat):
+                c["_area"] = area_names[area]
+                all_checks.append(c)
+    as_of = _dataset_asof(session, dataset)
+    as_of_str = str(as_of) if as_of is not None else ""
+    rows = []
+    for c in all_checks:
+        params_info = ""
+        treffer: int | str = ""
+        status = "nicht implementiert"
+        if c.get("implemented") and c.get("cypherFile"):
+            path = CYPHER_DIR / c["cypherFile"].removeprefix("cypher/")
+            extra_params: dict = {}
+            param_parts = []
+            for p in c.get("params", []):
+                v = p.get("default")
+                extra_params[p["name"]] = v
+                param_parts.append(f"{p['name']}={v}")
+            params_info = "; ".join(param_parts)
+            try:
+                results = run_cypher_path_capturing(
+                    session, path, {"dataset": dataset, "asOf": as_of, **extra_params})
+                treffer = len(results[-1]) if results else 0
+                status = "implementiert"
+            except Exception as e:
+                treffer = "Fehler"
+                status = f"Fehler: {str(e)[:80]}"
+        rows.append([
+            dataset, as_of_str, c.get("_area", ""),
+            c["id"], c.get("category", ""), c.get("title", ""),
+            c.get("prio", ""), status, treffer, params_info,
+        ])
+    return as_of_str, rows
+
+
+def _pdf_safe(text: str) -> str:
+    """Ersetzt Zeichen ausserhalb Latin-1 durch ASCII-Aequivalente (fpdf2 built-in fonts)."""
+    _MAP = {
+        "„": '"', "“": '"', "”": '"',  # typografische Gaensefuesschen
+        "‘": "'", "’": "'",                  # typografische Apostrophe
+        "–": "-", "—": "-",                  # Gedankenstriche
+        "…": "...",                                # Ellipsis
+        "«": '"', "»": '"',                  # Guillemets
+    }
+    for src, dst in _MAP.items():
+        text = text.replace(src, dst)
+    return text.encode("latin-1", errors="replace").decode("latin-1")
+
+
+def _build_consistency_pdf(
+    dataset: str, as_of_str: str, rows: list[list],
+    unternehmen: str, system: str, ersteller: str, anlass: str,
+) -> bytes:
+    """Baut den Konsistenz-Ueberblick-Report als PDF (fpdf2, Querformat A4)."""
+    from fpdf import FPDF  # optional dep -- erst beim ersten PDF-Aufruf importiert
+
+    NAVY = (28, 40, 82)
+    PRIO_FG = {
+        "Hoch":    (170,  20,  20),
+        "Mittel":  (140,  70,   0),
+        "Niedrig": ( 20, 110,  40),
+        "Analytik":(  0,  70, 150),
+    }
+    PRIO_BG = {
+        "Hoch":    (255, 222, 222),
+        "Mittel":  (255, 244, 206),
+        "Niedrig": (218, 248, 222),
+        "Analytik":(207, 227, 255),
+    }
+
+    class _PDF(FPDF):
+        def footer(self):
+            self.set_y(-11)
+            self.set_font("Helvetica", "I", 7)
+            self.set_text_color(150, 150, 150)
+            self.cell(
+                0, 5,
+                f"Vertraulich \xb7 Seite {self.page_no()}/{{nb}} \xb7 "
+                "Erstellt mit IAM-Analysetool \xb7 Mandantendaten verbleiben in der lokalen Umgebung",
+                align="C",
+            )
+
+    pdf = _PDF(orientation="L", format="A4")
+    pdf.alias_nb_pages()
+    pdf.set_margins(10, 10, 10)
+    pdf.set_auto_page_break(True, margin=15)
+    pdf.add_page()
+
+    # ── Titelblock ───────────────────────────────────────────────────────────
+    pdf.set_fill_color(*NAVY)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.cell(0, 12, "Konsistenzpr\xfcfung SAP-Berechtigungen", fill=True, ln=True)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.cell(0, 7,
+             "Automatisierter Qualit\xe4ts- und Risikocheck des Berechtigungskonzepts",
+             fill=True, ln=True)
+    pdf.ln(5)
+
+    # ── Stammdaten ───────────────────────────────────────────────────────────
+    meta = [
+        ("Unternehmen / Auftraggeber",   unternehmen or "-"),
+        ("SAP-System / Mandant",          system      or "-"),
+        ("Pr\xfcfungsanlass / Zeitraum", anlass      or "-"),
+        ("Erstellt von",                 ersteller   or "-"),
+        ("Dataset",                      dataset),
+        ("Stichtag (Datenstand)",        as_of_str   or "-"),
+        ("Erstellt am",                  datetime.date.today().isoformat()),
+    ]
+    for label, value in meta:
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_fill_color(240, 242, 248)
+        pdf.set_text_color(40, 50, 90)
+        pdf.cell(65, 7, label, fill=True)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_fill_color(252, 252, 255)
+        pdf.set_text_color(0, 0, 0)
+        pdf.cell(212, 7, _pdf_safe(str(value)[:90]), fill=True, ln=True)
+    pdf.ln(6)
+
+    # ── Abschnitts-Heading ───────────────────────────────────────────────────
+    pdf.set_text_color(*NAVY)
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.cell(0, 8, "Pr\xfcfergebnisse - \xdcbersicht", ln=True)
+    pdf.ln(2)
+
+    # ── Tabellen-Header ──────────────────────────────────────────────────────
+    COL_W = [18, 153, 24, 22, 60]
+    pdf.set_fill_color(*NAVY)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 8)
+    for w, h in zip(COL_W, ["ID", "Titel", "Priorit\xe4t", "Treffer", "Status"]):
+        pdf.cell(w, 8, h, fill=True)
+    pdf.ln(8)
+
+    # ── Tabellenzeilen ───────────────────────────────────────────────────────
+    current_area = None
+    for i, row in enumerate(rows):
+        bereich, check_id, title = row[2], row[3], row[5]
+        prio, status_raw, treffer = row[6], row[7], row[8]
+
+        if bereich != current_area:
+            current_area = bereich
+            pdf.set_fill_color(55, 70, 120)
+            pdf.set_text_color(255, 255, 255)
+            pdf.set_font("Helvetica", "B", 8)
+            pdf.cell(0, 6, _pdf_safe(f"  {bereich}"), fill=True, ln=True)
+
+        is_impl = status_raw == "implementiert"
+        is_err  = status_raw.startswith("Fehler")
+
+        if is_impl:
+            bg = PRIO_BG.get(prio, (250, 250, 250))
+            if i % 2:
+                bg = tuple(max(0, c - 8) for c in bg)
+        elif is_err:
+            bg = (255, 230, 230)
+        else:
+            bg = (236, 236, 240) if i % 2 else (244, 244, 248)
+
+        pdf.set_fill_color(*bg)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Helvetica", "", 8)
+
+        title_d   = _pdf_safe(title[:65] + "..." if len(title) > 68 else title)
+        treffer_d = "-" if treffer == "" else ("!" if is_err else str(treffer))
+        status_d  = ("implementiert" if is_impl
+                     else "Fehler" if is_err else "nicht implementiert")
+
+        pdf.cell(COL_W[0], 7, _pdf_safe(check_id), fill=True)
+        pdf.cell(COL_W[1], 7, title_d,              fill=True)
+
+        pdf.set_text_color(*(PRIO_FG.get(prio, (80, 80, 80)) if is_impl else (140, 140, 140)))
+        pdf.set_font("Helvetica", "B", 8)
+        pdf.cell(COL_W[2], 7, _pdf_safe(prio), fill=True)
+
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.cell(COL_W[3], 7, treffer_d, fill=True, align="R")
+        pdf.cell(COL_W[4], 7, status_d,  fill=True, ln=True)
+
+    # ── Zusammenfassung ──────────────────────────────────────────────────────
+    impl   = [r for r in rows if r[7] == "implementiert"]
+    total  = sum(r[8] for r in impl if isinstance(r[8], int))
+    w_hits = sum(1 for r in impl if isinstance(r[8], int) and r[8] > 0)
+    pdf.ln(4)
+    pdf.set_font("Helvetica", "I", 8)
+    pdf.set_text_color(80, 80, 80)
+    pdf.cell(0, 5,
+             f"{len(rows)} Checks gesamt \xb7 {len(impl)} implementiert \xb7 "
+             f"{w_hits} mit Treffern \xb7 {total} Treffer insgesamt")
+
+    return bytes(pdf.output())
+
+
+@app.get("/consistency-checks/export")
+def export_consistency_checks(dataset: str):
+    """Konsistenz-Ueberblick-Report als CSV (Semikolon/UTF-8-BOM, Excel-tauglich)."""
+    with driver.session() as s:
+        as_of_str, rows = _collect_checks_data(s, dataset)
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter=";")
+    w.writerow(["Dataset", "Stichtag", "Bereich", "Check-ID", "Kategorie",
+                "Titel", "Priorität", "Status", "Treffer", "Params"])
+    for r in rows:
+        w.writerow(r)
+    data = "﻿" + buf.getvalue()
+    fname = f"konsistenz_{dataset}_{as_of_str or 'unbekannt'}.csv"
+    return Response(content=data, media_type="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+
+@app.get("/consistency-checks/export/pdf")
+def export_consistency_checks_pdf(
+    dataset: str,
+    unternehmen: str = Query(""),
+    system: str = Query(""),
+    ersteller: str = Query(""),
+    anlass: str = Query(""),
+):
+    """Konsistenz-Ueberblick-Report als PDF (Querformat A4) mit Stammdaten-Kopfblock."""
+    with driver.session() as s:
+        as_of_str, rows = _collect_checks_data(s, dataset)
+    try:
+        pdf_bytes = _build_consistency_pdf(
+            dataset, as_of_str, rows, unternehmen, system, ersteller, anlass)
+    except ImportError:
+        raise HTTPException(500, "fpdf2 nicht installiert — Image neu bauen: docker compose build backend")
+    fname = f"konsistenz_{dataset}_{as_of_str or 'unbekannt'}.pdf"
+    return Response(content=pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+
 @app.get("/admin/job-errors")
 def admin_job_errors(limit: int = Query(200, ge=1, le=2000)):
     """Persistentes Fehlerprotokoll (Job-Fehler) ueber Container-Neustarts hinweg, neueste zuerst."""

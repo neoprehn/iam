@@ -73,6 +73,8 @@ services:
       - ./data/logs:/app/data/logs     # persistentes Fehlerprotokoll (job_errors.jsonl, ueberlebt Neustart)
       - ./backups:/app/backups        # Dataset-Backups (.zip der bereinigten .csv) — bleibt lokal
       - ./frontend:/app/frontend:ro   # Minimale UI (statisch, vom Backend ausgeliefert)
+      - ./backend/app.py:/app/app.py  # Hot-Reload: app.py-Aenderungen ohne Image-Rebuild wirksam
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     restart: unless-stopped
 
   # Schema-Migrationen (AE-02). Startet NICHT bei `docker compose up` (profile: tools).

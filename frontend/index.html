@@ -244,6 +244,7 @@
     <div class="cmds dropdown">
       <button class="cmd" id="cmdConsistencyUser"><span class="ico">&#128100;</span>User-spezifisch</button>
       <button class="cmd" id="cmdConsistencyRole"><span class="ico">&#127917;</span>Rollen-spezifisch</button>
+      <button class="cmd" id="cmdConsistencyReport"><span class="ico">&#128202;</span>Bericht herunterladen</button>
     </div>
   </div>
   <div class="group">
@@ -563,6 +564,33 @@
   <button class="ghost danger" id="clearRunBtn">Diesen Lauf l&ouml;schen</button>
 </div></div>
 
+<!-- Dialog: Konsistenz-Report -->
+<div class="overlay" id="dlg-consistency-report"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Konsistenz-Report herunterladen</h3>
+  <div class="sub">F&uuml;hrt alle implementierten Checks aus und gibt eine &Uuml;bersicht (Treffer je Check) aus.</div>
+  <label for="rptDataset">Dataset</label>
+  <select id="rptDataset"></select>
+  <div class="hint">Stichtag (Datenstand): <b id="rptAsOfDisplay">&ndash;</b></div>
+  <div style="margin-top:10px">
+    <div class="pillgroup" id="rptFormatPills">
+      <button type="button" class="pill active" data-value="csv">CSV</button>
+      <button type="button" class="pill" data-value="pdf">PDF</button>
+    </div>
+  </div>
+  <div id="rptPdfFields" style="display:none; margin-top:10px">
+    <label for="rptUnternehmen">Unternehmen / Auftraggeber</label>
+    <input type="text" id="rptUnternehmen" placeholder="z. B. Mustermann GmbH">
+    <label for="rptSystem" style="margin-top:6px">SAP-System / Mandantennummer</label>
+    <input type="text" id="rptSystem" placeholder="z. B. PRD / Mandant 100">
+    <label for="rptErsteller" style="margin-top:6px">Erstellt von</label>
+    <input type="text" id="rptErsteller" placeholder="Name des Pr&uuml;fers">
+    <label for="rptAnlass" style="margin-top:6px">Pr&uuml;fungsanlass / Zeitraum</label>
+    <input type="text" id="rptAnlass" placeholder="z. B. Jahresabschlusspr&uuml;fung 2023">
+  </div>
+  <button class="ghost" type="button" id="rptDownloadBtn" style="margin-top:14px">&#128202; Herunterladen</button>
+  <div class="hint" id="rptHint" style="display:none"></div>
+</div></div>
+
 <!-- Dialog: Fehlerprotokoll -->
 <div class="overlay" id="dlg-errorlog"><div class="dialog">
   <span class="x" data-close>&times;</span><h3>Fehlerprotokoll</h3>
@@ -616,6 +644,61 @@ $('cmdExplain').onclick = () => {
 $('cmdErrorLog').onclick = () => { renderErrorLog(); openDlg('dlg-errorlog'); };
 $('cmdConsistencyUser').onclick = async () => { await loadConsistencyCatalog('user'); showConsistencyView('user'); };
 $('cmdConsistencyRole').onclick = async () => { await loadConsistencyCatalog('role'); showConsistencyView('role'); };
+$('cmdConsistencyReport').onclick = () => {
+  if (!$('rptDataset').value) {
+    const ds = $('ccdDataset').value || (activeRunId && runsById[activeRunId] && runsById[activeRunId].dataset) || '';
+    if (ds) $('rptDataset').value = ds;
+  }
+  refreshRptAsOfDisplay();
+  openDlg('dlg-consistency-report');
+};
+$('rptDataset').addEventListener('change', refreshRptAsOfDisplay);
+async function refreshRptAsOfDisplay() {
+  $('rptAsOfDisplay').textContent = (await fetchDatasetAsOf($('rptDataset').value)) || '–';
+}
+let rptFormat = 'csv';
+$('rptFormatPills').querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => {
+  rptFormat = b.dataset.value;
+  $('rptFormatPills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
+  $('rptPdfFields').style.display = rptFormat === 'pdf' ? '' : 'none';
+}));
+$('rptDownloadBtn').onclick = async () => {
+  const ds = $('rptDataset').value;
+  if (!ds) { $('rptHint').style.display = ''; $('rptHint').textContent = 'Dataset angeben.'; return; }
+  $('rptDownloadBtn').disabled = true;
+  $('rptDownloadBtn').innerHTML = '<span class="spin"></span> läuft…';
+  $('rptHint').style.display = 'none';
+  try {
+    let fetchUrl, defaultName;
+    if (rptFormat === 'pdf') {
+      const p = new URLSearchParams({
+        dataset: ds,
+        unternehmen: $('rptUnternehmen').value,
+        system:      $('rptSystem').value,
+        ersteller:   $('rptErsteller').value,
+        anlass:      $('rptAnlass').value,
+      });
+      fetchUrl = '/consistency-checks/export/pdf?' + p;
+      defaultName = `konsistenz_${ds}.pdf`;
+    } else {
+      fetchUrl = '/consistency-checks/export?dataset=' + encodeURIComponent(ds);
+      defaultName = `konsistenz_${ds}.csv`;
+    }
+    const resp = await fetch(fetchUrl);
+    if (!resp.ok) { const e = await resp.json(); throw e; }
+    const blob = await resp.blob();
+    const m = (resp.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/);
+    const a = Object.assign(document.createElement('a'),
+      { href: URL.createObjectURL(blob), download: m ? m[1] : defaultName });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    closeDlg();
+  } catch (e) {
+    $('rptHint').style.display = ''; $('rptHint').textContent = 'Fehler: ' + (e.detail || JSON.stringify(e));
+  } finally {
+    $('rptDownloadBtn').disabled = false; $('rptDownloadBtn').innerHTML = '&#128202; Herunterladen';
+  }
+};
 $('ccBackBtn').onclick = () => showResultsView();
 
 const CC_AREA_META = {
@@ -1236,7 +1319,7 @@ function updateCtxChip() {
 
 async function refreshDatasets() {
   const datasets = await api('/datasets');
-  for (const id of ['runDataset', 'clrDataset', 'bkpDataset', 'ccdDataset']) {
+  for (const id of ['runDataset', 'clrDataset', 'bkpDataset', 'ccdDataset', 'rptDataset']) {
     const sel = $(id), cur = sel.value; sel.innerHTML = '';
     datasets.forEach(d => opt(sel, d, d));
     if (datasets.includes(cur)) sel.value = cur;
