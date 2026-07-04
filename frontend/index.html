@@ -1472,11 +1472,13 @@ function rcCyStyle() {
   const v = n => css.getPropertyValue(n).trim();
   const panel = v('--panel'), line = v('--line'), muted = v('--muted'),
         accent = v('--accent'), crit = v('--crit'), ok = v('--ok');
+  // WICHTIG: Groessen-/Text-Werte als ZAHLEN (px), nicht als '…px'-Strings -- sonst kann
+  // Cytoscape 'width: label' die Label-Box nicht messen und die Knoten kollabieren zu Linien.
   return [
-    { selector: 'node', style: { 'label': 'data(label)', 'text-wrap': 'wrap', 'text-max-width': '150px',
-        'font-size': '11px', 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center',
-        'background-color': '#3a4152', 'shape': 'round-rectangle', 'width': 'label', 'height': 'label',
-        'padding': '9px', 'border-width': 1.5, 'border-color': line, 'text-outline-width': 0 } },
+    { selector: 'node', style: { 'label': 'data(label)', 'text-wrap': 'wrap', 'text-max-width': 140,
+        'font-size': 11, 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center',
+        'background-color': '#3a4152', 'shape': 'round-rectangle', 'width': 160, 'height': 'label',
+        'padding': 10, 'border-width': 1.5, 'border-color': line, 'text-outline-width': 0 } },
     { selector: '.rc-user', style: { 'background-color': ok, 'border-color': ok } },
     { selector: '.rc-rule', style: { 'background-color': crit, 'border-color': crit, 'font-weight': 'bold' } },
     { selector: '.rc-clause', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
@@ -1488,24 +1490,20 @@ function rcCyStyle() {
     { selector: '.rc-orphaned', style: { 'border-color': crit, 'border-width': 3 } },
     { selector: 'edge', style: { 'width': 1.5, 'line-color': line, 'target-arrow-color': line,
         'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.85,
-        'label': 'data(elabel)', 'font-size': '9px', 'color': muted, 'text-background-color': panel,
-        'text-background-opacity': 0.9, 'text-background-padding': '2px' } },
+        'label': 'data(elabel)', 'font-size': 9, 'color': muted, 'text-background-color': panel,
+        'text-background-opacity': 0.9, 'text-background-padding': 2 } },
     { selector: '.rc-via', style: { 'line-color': crit, 'target-arrow-color': crit, 'line-style': 'dashed', 'width': 2 } },
     { selector: '.rcfade', style: { 'opacity': 0.15 } },
   ];
 }
-function rcInitCy() {
-  if (rcCy) return rcCy;
-  rcCy = cytoscape({ container: $('rcGraph'), style: rcCyStyle(),
-    wheelSensitivity: 0.25, minZoom: 0.2, maxZoom: 2.5 });
+function rcAttachHandlers(cy) {
   const tip = rcTipEl();
-  rcCy.on('mouseover', 'node', e => { const d = e.target.data('detail'); if (d) { tip.innerHTML = d; tip.style.display = 'block'; } });
-  rcCy.on('mousemove', 'node', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
-  rcCy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
-  rcCy.on('tap', 'node', e => { const n = e.target; rcCy.elements().addClass('rcfade');
+  cy.on('mouseover', 'node', e => { const d = e.target.data('detail'); if (d) { tip.innerHTML = d; tip.style.display = 'block'; } });
+  cy.on('mousemove', 'node', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
+  cy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
+  cy.on('tap', 'node', e => { const n = e.target; cy.elements().addClass('rcfade');
     n.predecessors().union(n.successors()).union(n).removeClass('rcfade'); });
-  rcCy.on('tap', e => { if (e.target === rcCy) rcCy.elements().removeClass('rcfade'); });
-  return rcCy;
+  cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('rcfade'); });
 }
 function rcActorDetail(a) {
   const n = [];
@@ -1598,13 +1596,21 @@ function rcBuildGraph(data, mode) {
 }
 function renderRootCauseGraph(data, mode) {
   if (!data.blocks || !data.blocks.length) { rcShowError('Keine Berechtigungsanforderungen gefunden.'); return; }
-  const cy = rcInitCy();
   const { els, layout } = rcBuildGraph(data, mode);
-  cy.elements().remove();
-  cy.add(els);
-  cy.resize();
-  cy.layout(layout).run();
-  cy.fit(undefined, 25);
+  // Frische Instanz je Render (wie der Konsistenzcheck-Graph-Pilot renderCcdGraph) -- vermeidet
+  // Stale-Viewport-Effekte beim Wiederverwenden. elements+layout direkt im Konstruktor; danach
+  // erst messen wir eine korrekte Container-Groesse -> resize + fit in doppeltem rAF, damit die
+  // gerade sichtbar geschaltete #rcGraph-Box ihre 62vh-Hoehe schon hat.
+  if (rcCy) { rcCy.destroy(); rcCy = null; }
+  rcCy = cytoscape({ container: $('rcGraph'), elements: els, style: rcCyStyle(),
+    layout, wheelSensitivity: 0.25, minZoom: 0.2, maxZoom: 2.5 });
+  rcAttachHandlers(rcCy);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (!rcCy) return;
+    rcCy.resize();
+    rcCy.layout(layout).run();
+    rcCy.fit(undefined, 30);
+  }));
 }
 
 /* Ribbon-Menues (Gruppen mit mehreren Befehlen, z. B. "Ergebnisse"/"Admin") */
