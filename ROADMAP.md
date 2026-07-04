@@ -132,9 +132,18 @@ Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mi
 
 Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse-drill-down--graphtabelle)):
 klickbare Drill-downs (Findings-Filter, KPI-Kontext-Chips, Ergebnistyp-Pills), Root-Cause-Drill-down
-(Einzelfilter **und** SoD-Regeln), kaskadierende Sidebar-Filter, SoD-Kurzbezeichnung.
+(Einzelfilter **und** SoD-Regeln), kaskadierende Sidebar-Filter, SoD-Kurzbezeichnung,
+**Root-Cause-Graph (Pfad + Radial, Cytoscape)** als Ansicht-Umschalter neben der Tabelle.
 
-- [ ] **Umschalter Tabelle/Graph — echter Graph für SoD-Konfliktpfade** — Konfliktpfad **User → Rolle/Profil → Query → Regel** (nutzt die Evidenz-Kanten `VIA_ROLE`/`VIA_PROFILE`). Der Tabelle/Graph-Umschalter selbst ist da (s. o.), nur „Graph" ist noch deaktiviert. Technik/Lib-Entscheidung ist bereits getroffen und am einfacheren Fall erprobt (Konsistenzcheck-Graph-Pilot A1–A3, Phase 7: **Cytoscape.js**, lokal vendored, nicht NVL — Lizenzgrund dort dokumentiert); hier nur noch Cypher (mehrere Knotentypen + Evidenz-Kanten statt nur User→Profil) + Wiring auf den bestehenden Pill.
+- [~] **Umschalter Tabelle/Graph — echter Graph für SoD-Konfliktpfade.** **Auf Root-Cause-Ebene
+  erledigt:** die Root-Cause-Seite hat jetzt einen Ansicht-Umschalter **Tabelle · Pfadgraph ·
+  Radial** (Cytoscape.js, aus denselben `/root-cause`-Daten — voller Pfad User → Regel → Klausel →
+  Query → Objekt → Rolle/Profil inkl. technisch/verwaist/„via generiertem Profil"; Details im
+  Archiv). **Noch offen:** der **listenweite** Tabelle/Graph-Umschalter über der Findings-Liste
+  (`viewTogglePills`, „Graph" dort noch deaktiviert) — ein Graph **aller** Findings eines Laufs auf
+  einmal (Heatmap/Matrix-artig, viele User × Regeln) statt des fokussierten Einzel-Pfads; sowie die
+  perf-optimierte Variante über die vorab geflachten Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`, s.
+  „Evidenz-Perf") statt der Root-Cause-Live-Abfrage.
 
 #### Anzeige, Vergleich, Export, Admin
 - [ ] **„Fancy" Aufbereitung — gebrandetes Frontend mit Cytoscape.js.** **Ersetzt den temporären NeoDash-PoC** (Phase 6, Archiv). KPIs, **Graph-Darstellung der Konfliktpfade** (Cytoscape.js statt Neo4j Visualization Library — NVL verworfen, Lizenz nur für Aura/kommerzielle Subscription, s. Phase 7 Graph-Pilot) — visualisiert genau die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (`dashboards/sod_poc.json`) sind die Vorlage.
@@ -145,6 +154,7 @@ klickbare Drill-downs (Findings-Filter, KPI-Kontext-Chips, Ergebnistyp-Pills), R
   (Overlay-Mechanismus, Kurzbezeichnungen, Risiko/Controls-Tabs, Fehlerprotokoll) sind erledigt
   — Details im [Archiv](ROADMAP-ARCHIV.md#admin-bereich). Offen/zurückgestellt:
   - [ ] **Authorizations/TCodes im Editor bearbeitbar machen** (v2) — bisher nur 1:1-Kopie beim Ableiten/Anzeige im Aufbau-Tab, keine UI für die verschachtelten Objekt/Feld/Werte-Listen.
+  - [ ] **Strukturierter Threat-/Attack-Baum am Risiko-Feld** (v2, „nicht vergessen"): Heute ist `risk` (Query **und** SoD-Regel) ein **einzelnes Freitextfeld** im Overlay (`queries.custom.json`/`sod_rules.custom.json`, coalesce-Merge in `load_ruleset.cypher`) — ein Threat-Baum müsste dort als serialisierter Text abgelegt werden und ist weder traversierbar noch wiederverwendbar. Idee: den Risiko-Teil zu einem **strukturierten Threat-Baum** ausbauen (AND/OR-Verzweigungen, Knoten = Bedrohungsschritt/Voraussetzung, optional Wahrscheinlichkeit/Impact/Gegenmaßnahme je Knoten) — eigenes JSON-Schema statt Freitext, im selben Overlay-Mechanismus gespeichert (bleibt Vendor-Datei-schonend + git-tracked). **Doppelnutzen:** (a) die SoD-Verletzungslogik ist selbst schon ein AND/OR-Baum (Regel = AND über Klauseln, Klausel = OR über Queries, Query = AND über Objekte, Objekt = OR über erfüllende Rollen/Profile) — ein Threat-Baum-Renderer und die neue Root-Cause-Graph-/Baum-Darstellung (s. „Interaktive Ergebnisse") könnten **dieselbe Baum-Komponente** teilen; (b) perspektivisch verlinkbar/wiederverwendbar über mehrere Queries/Regeln. Vor dem Bau: Schema festlegen (an ein etabliertes Format anlehnen, z. B. Fault-/Attack-Tree), Editor-UX skizzieren.
   - [ ] **USOBT-gestützter Query-Builder** (v2, "Profilgenerator-Logik"): neue Queries durch **kontextbasierte Auswahl von Transaktion → Berechtigungsobjekten** bauen statt freier Eingabe — USOBT/USOBX als eigener, vom Dataset getrennter Graph-Layer (ist je Berechtigungskonzept/Set stabil, aber bei Bedarf gegen das aktuelle Set **abzugleichen/neu zu laden**, wenn neue Queries gebaut werden).
   - [ ] **Stammdaten-Blatt: Query → System-Typ-Zuordnung** (v2, „für die Zukunft"): welche Query zu welchem Quellsystem-Typ gehört (SAP R/3, SAP S/4HANA, künftig weitere) — Vorstufe für system-übergreifende/-spezifische Rulesets, ohne das Datenmodell zu verzweigen.
   - [ ] **Filterset-/Konnektor-Import** für weitere Systeme — perspektivisch **SAP S/4HANA, Azure AD/Entra, Microsoft Dynamics, Salesforce** (je System ein eigenes Ruleset; Datenmodell bleibt gleich).

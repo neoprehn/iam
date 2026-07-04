@@ -491,6 +491,29 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Status); der Kontext-Chip „Nutzer: …" zeigt jetzt **UserID · Name · Typ · Status** statt nur
   der ID. Sleeping-Pillzeile ist jetzt **nur bei Ergebnistyp „alle" sichtbar** (bei
   „Einzelfilter"/„SoD" ausgeblendet + zurückgesetzt).
+- [x] **Root-Cause-Graph (Pfad + Radial) — Nutzer-Wunsch.** Die Root-Cause-Seite hat neben der
+  Tabelle einen **Ansicht-Umschalter „Tabelle · Pfadgraph · Radial"** (`rcViewPills`). Beide
+  Graph-Varianten nutzen die **bereits vendored Cytoscape.js** (MIT, `frontend/vendor/cytoscape/`,
+  wie der Konsistenzcheck-Graph-Pilot) und werden aus **denselben `/root-cause`-Daten** gebaut wie
+  die Tabelle — kein neuer Endpoint, keine Zusatz-Cypher. Der Builder (`rcBuildGraph()`) projiziert
+  die `blocks`-Struktur auf einen Baum **User → Regel → Klausel → Query → Objekt(+Anforderung) →
+  Rolle/Profil**: Klauseln werden aus den `Klausel N · Query X`-Labels rekonstruiert und dedupliziert,
+  Einzelfilter-Root-Cause hängt die Objekte direkt unter die Query (keine Klausel-Ebene),
+  Konsistenzcheck-Befunde (Label ohne Query-/Klausel-Muster) hängen direkt unter den Check-Knoten.
+  Knoten-Styling kodiert die Semantik: Rolle vs. Profil (Farbe), **technisch/generiert** (gestrichelt,
+  halbtransparent), **verwaist** (roter Rand), **„via generiertem Profil"** (rote gestrichelte Kante);
+  UND/ODER stehen als Kantenbeschriftung. Der bestehende **„ohne technische / alle"-Filter** wirkt
+  auch im Graph. Interaktion: Knoten-Klick hebt den Pfad hervor (Rest ausgegraut), Hover zeigt Details
+  (technisch/via/Feldwerte), „Einpassen"-Button, Zoom/Pan. Theme-aware (liest die CSS-Variablen der
+  App, funktioniert in Hell/Dunkel). **Pfadgraph** = `breadthfirst`-Layout (Wurzel User),
+  **Radial** = `concentric`-Layout (User im Zentrum, Ebenen als Ringe nach außen). Nebenbei ein
+  Render-Race behoben: `showFindings()` lädt Findings + Regel-Bezeichnungen jetzt parallel (`Promise.all`),
+  sonst fehlte die Bezeichnung beim allerersten Öffnen — war schon vorher offen, hier miterledigt.
+  Verifiziert gegen einen echten Lauf: Builder erzeugt aus den Live-`/root-cause`-Daten einen
+  wohlgeformten, zusammenhängenden Baum (69 Knoten / 68 Kanten, keine doppelten IDs, keine
+  ins-Leere-Kanten, kein unverbundener Knoten) für Pfad- **und** Radial-Layout. **Kein** Browser-
+  Rendering-Test in der Session möglich (nur Server-/Builder-Ebene geprüft; die Cytoscape-Render-
+  Mechanik ist die 1:1 aus dem Wegwerf-Prototyp übernommene, dort visuell bestätigte).
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren

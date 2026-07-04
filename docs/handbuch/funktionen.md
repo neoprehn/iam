@@ -149,6 +149,19 @@ unabhängig vom betrachteten User) **oder** der Name mit `T-` beginnt (Namens-Fa
 Berechtigung bleibt laut `UST04` trotzdem aktiv, daher bewusst **nicht** verborgen, sondern mit
 Hinweistext versehen). Ein Zähler zeigt, wie viele Profile aktuell ausgeblendet sind.
 
+**Ansicht Tabelle · Pfadgraph · Radial.** Über der Ergebnisliste schaltet ein zweiter Umschalter
+zwischen der **Tabelle** (Default, mit allen Anmerkungen unten) und zwei **Graph-Darstellungen
+derselben Daten** um. Der **Pfadgraph** zeigt den Weg **User → Regel → Klausel → Query →
+Berechtigungsobjekt → Rolle/Profil** als Baum von oben nach unten; die **Radiale** Ansicht setzt
+den User ins Zentrum und legt die Ursachen ringförmig nach außen. Farben unterscheiden
+Regel/Klausel/Query/Objekt/Rolle/Profil; **technische/generierte** Profile sind gestrichelt und
+blasser, **verwaiste** rot umrandet, ein Treffer **„über generiertes Profil"** als rote gestrichelte
+Kante; **UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine* Voraussetzung). Der
+„ohne technische"-Filter wirkt auch hier. Ein Klick auf einen Knoten hebt seinen Pfad hervor (Rest
+ausgegraut), Hover zeigt Details (technisch/„via"/konkrete Feldwerte), „Einpassen" zentriert die
+Ansicht. Die Graph-Ansicht ergänzt die Tabelle für den Überblick — für den lückenlosen Wert-für-Wert-
+Abgleich (grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die Detailsicht.
+
 **Quellenkennzeichnung.** Derselbe Akteur kann einen Treffer über **mehrere Quellen** erreichen —
 das wird je Zeile als kurze Anmerkung kenntlich gemacht, statt sie stillschweigend zusammenzufassen
 (zwei Zeilen für dieselbe Rolle sind also kein Anzeige-Fehler):

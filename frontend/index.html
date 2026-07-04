@@ -409,13 +409,21 @@
         und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
         Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
       <div class="resultbar">
+        <span class="muted" style="font-size:12px">Ansicht:</span>
+        <div class="pillgroup" id="rcViewPills">
+          <button type="button" class="pill active" data-value="table">Tabelle</button>
+          <button type="button" class="pill" data-value="path">Pfadgraph</button>
+          <button type="button" class="pill" data-value="radial">Radial</button>
+        </div>
         <span class="muted" style="font-size:12px">Profile:</span>
         <div class="pillgroup" id="rcTechPills">
           <button type="button" class="pill active" data-value="hide">ohne technische</button>
           <button type="button" class="pill" data-value="show">alle (inkl. technisch generierte)</button>
         </div>
+        <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px">Einpassen</button>
       </div>
       <div id="rcObjects"></div>
+      <div id="rcGraph" style="display:none;height:62vh;min-height:420px;border:1px solid var(--line);border-radius:8px;background:var(--panel)"></div>
     </div>
   </div>
   <div id="consistencyView" style="display:none">
@@ -1191,6 +1199,7 @@ function renderCcdDetailTable(rows) {
 }
 async function openConsistencyRootCause(checkId, user) {
   rcReturnTo = 'consistency';
+  rcUserId = user;
   $('rcUser').textContent = `Nutzer: ${user}`;
   $('rcTarget').textContent = `· Check ${checkId}`;
   $('rcTargetDesc').style.display = 'none';
@@ -1200,9 +1209,9 @@ async function openConsistencyRootCause(checkId, user) {
     rcLastData = await api('/consistency-checks/' + encodeURIComponent(checkId) + '/root-cause', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dataset: $('ccdDataset').value, user }) });
-    renderRootCause(rcLastData);
+    rcRender();
   } catch (err) {
-    $('rcObjects').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
+    rcShowError('Fehler: ' + (err.detail || JSON.stringify(err)));
   }
 }
 // Zuletzt gesehene Trefferzahl je Check, nur im Browser-Speicher (kein Backend-Run/-Persistenz
@@ -1393,7 +1402,8 @@ function showResultsView() {
 /* Root-Cause als eigene Seite (statt Dialog) — gleiches "wechselt im Hauptbereich, kein
    Overlay" + "← zurück"-Muster wie Konsistenzcheck-Katalog/-Ergebnis. rcReturnTo merkt sich,
    ob "zurück" zu den Ergebnissen (Findings/Matches) oder zum Konsistenzcheck-Ergebnis fuehrt. */
-let rcReturnTo = 'results', rcLastData = null, rcShowTechnical = false;
+let rcReturnTo = 'results', rcLastData = null, rcShowTechnical = false,
+    rcDisplayMode = 'table', rcUserId = null;
 function showRootCauseView() {
   $('resultContext').style.display = 'none';
   $('kpis').style.display = 'none';
@@ -1417,8 +1427,185 @@ $('rcBackBtn').onclick = () => {
 document.querySelectorAll('#rcTechPills .pill').forEach(b => b.addEventListener('click', () => {
   rcShowTechnical = b.dataset.value === 'show';
   document.querySelectorAll('#rcTechPills .pill').forEach(x => x.classList.toggle('active', x === b));
-  if (rcLastData) renderRootCause(rcLastData);
+  if (rcLastData) rcRender();
 }));
+document.querySelectorAll('#rcViewPills .pill').forEach(b => b.addEventListener('click', () => {
+  rcDisplayMode = b.dataset.value;
+  document.querySelectorAll('#rcViewPills .pill').forEach(x => x.classList.toggle('active', x === b));
+  rcRender();
+}));
+$('rcFitBtn').addEventListener('click', () => { if (rcCy) rcCy.fit(undefined, 25); });
+
+/* Root-Cause: Tabelle vs. Graph (Pfad/Radial) -- dieselben /root-cause-Daten (blocks),
+   nur andere Darstellung. Der Umschalter zeigt/versteckt Tabelle bzw. Cytoscape-Container. */
+function rcRender() {
+  if (!rcLastData) return;
+  const graph = rcDisplayMode !== 'table';
+  $('rcObjects').style.display = graph ? 'none' : '';
+  $('rcGraph').style.display = graph ? '' : 'none';
+  $('rcFitBtn').style.display = graph ? '' : 'none';
+  if (graph) renderRootCauseGraph(rcLastData, rcDisplayMode);
+  else renderRootCause(rcLastData);
+}
+function rcShowError(msg) {
+  rcDisplayMode = 'table';
+  document.querySelectorAll('#rcViewPills .pill').forEach(x => x.classList.toggle('active', x.dataset.value === 'table'));
+  $('rcGraph').style.display = 'none'; $('rcFitBtn').style.display = 'none';
+  $('rcObjects').style.display = ''; $('rcObjects').innerHTML = '<div class="muted">' + msg + '</div>';
+}
+
+// --- Cytoscape-Graph fuer Root-Cause (Pfad + Radial teilen sich Builder & Engine) -----------
+let rcCy = null;
+function rcTipEl() {
+  let t = $('rcTip');
+  if (!t) {
+    t = document.createElement('div'); t.id = 'rcTip';
+    t.style.cssText = 'position:fixed;z-index:60;pointer-events:none;display:none;max-width:300px;'
+      + 'background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;'
+      + 'font-size:12px;color:var(--fg);box-shadow:0 6px 20px rgba(0,0,0,.4)';
+    document.body.appendChild(t);
+  }
+  return t;
+}
+function rcCyStyle() {
+  const css = getComputedStyle(document.documentElement);
+  const v = n => css.getPropertyValue(n).trim();
+  const panel = v('--panel'), line = v('--line'), muted = v('--muted'),
+        accent = v('--accent'), crit = v('--crit'), ok = v('--ok');
+  return [
+    { selector: 'node', style: { 'label': 'data(label)', 'text-wrap': 'wrap', 'text-max-width': '150px',
+        'font-size': '11px', 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center',
+        'background-color': '#3a4152', 'shape': 'round-rectangle', 'width': 'label', 'height': 'label',
+        'padding': '9px', 'border-width': 1.5, 'border-color': line, 'text-outline-width': 0 } },
+    { selector: '.rc-user', style: { 'background-color': ok, 'border-color': ok } },
+    { selector: '.rc-rule', style: { 'background-color': crit, 'border-color': crit, 'font-weight': 'bold' } },
+    { selector: '.rc-clause', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
+    { selector: '.rc-query', style: { 'background-color': '#2f9e97', 'border-color': '#2f9e97' } },
+    { selector: '.rc-object', style: { 'background-color': '#b98900', 'border-color': '#b98900' } },
+    { selector: '.rc-role', style: { 'background-color': accent, 'border-color': accent } },
+    { selector: '.rc-profile', style: { 'background-color': '#8a5cf6', 'border-color': '#8a5cf6' } },
+    { selector: '.rc-technical', style: { 'border-style': 'dashed', 'border-width': 2.5, 'opacity': 0.78 } },
+    { selector: '.rc-orphaned', style: { 'border-color': crit, 'border-width': 3 } },
+    { selector: 'edge', style: { 'width': 1.5, 'line-color': line, 'target-arrow-color': line,
+        'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.85,
+        'label': 'data(elabel)', 'font-size': '9px', 'color': muted, 'text-background-color': panel,
+        'text-background-opacity': 0.9, 'text-background-padding': '2px' } },
+    { selector: '.rc-via', style: { 'line-color': crit, 'target-arrow-color': crit, 'line-style': 'dashed', 'width': 2 } },
+    { selector: '.rcfade', style: { 'opacity': 0.15 } },
+  ];
+}
+function rcInitCy() {
+  if (rcCy) return rcCy;
+  rcCy = cytoscape({ container: $('rcGraph'), style: rcCyStyle(),
+    wheelSensitivity: 0.25, minZoom: 0.2, maxZoom: 2.5 });
+  const tip = rcTipEl();
+  rcCy.on('mouseover', 'node', e => { const d = e.target.data('detail'); if (d) { tip.innerHTML = d; tip.style.display = 'block'; } });
+  rcCy.on('mousemove', 'node', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
+  rcCy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
+  rcCy.on('tap', 'node', e => { const n = e.target; rcCy.elements().addClass('rcfade');
+    n.predecessors().union(n.successors()).union(n).removeClass('rcfade'); });
+  rcCy.on('tap', e => { if (e.target === rcCy) rcCy.elements().removeClass('rcfade'); });
+  return rcCy;
+}
+function rcActorDetail(a) {
+  const n = [];
+  if (a.technical && a.orphaned) n.push('technisch generiert &mdash; erzeugende Rolle nicht mehr im Bestand, laut UST04 trotzdem aktiv');
+  else if (a.technical) n.push('technisch, generiert');
+  if (a.via) n.push('&uuml;ber generiertes Profil ' + a.via.id);
+  const vals = (a.authValues || []).join(' &middot; ');
+  return `<b>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}</b>`
+    + (vals ? `<br><span style="color:var(--muted)">tr&auml;gt ${vals}</span>` : '')
+    + (n.length ? `<br><span style="color:var(--muted)">${n.join('<br>')}</span>` : '');
+}
+function rcBuildGraph(data, mode) {
+  let seq = 0; const gid = p => `rc_${p}_${seq++}`;
+  const els = []; const ring = { user: 6, rule: 5, clause: 4, query: 3, object: 2, actor: 1 };
+  const trunc = s => !s ? '' : (s.length > 44 ? s.slice(0, 42) + '…' : s);
+  const N = (id, label, cls, r, detail) => els.push({ data: { id, label, ring: r, detail: detail || '' }, classes: cls });
+  const E = (s, t, cls, elabel) => els.push({ data: { id: gid('e'), source: s, target: t, elabel: elabel || '' }, classes: cls || '' });
+  function attachObject(parentId, o) {
+    const on = gid('o');
+    const reqText = (o.requirement || []).map(r => `${r.field}=${(r.values || []).join(',')}`).join(' · ');
+    N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, 'rc-object', ring.object,
+      `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">Anforderung ${reqText}</span>` : ''}`);
+    E(parentId, on, '', 'UND');
+    const actors = (o.satisfiedBy || []).filter(a => rcShowTechnical || !a.technical);
+    if (!actors.length) {
+      const nn = gid('a'); N(nn, 'keine erfüllende\nRolle/Profil', 'rc-object', ring.actor,
+        '<span style="color:var(--muted)">keine erf&uuml;llende Rolle/Profil</span>'); E(on, nn); return;
+    }
+    actors.forEach(a => {
+      const an = gid('a'); const cls = ['rc-' + (a.actorType === 'Role' ? 'role' : 'profile')];
+      if (a.technical) cls.push('rc-technical');
+      if (a.orphaned) cls.push('rc-orphaned');
+      const vals = (a.authValues || []).join(' · ');
+      N(an, `${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}${vals ? `\n${vals}` : ''}`,
+        cls.join(' '), ring.actor, rcActorDetail(a));
+      E(on, an, a.via ? 'rc-via' : '', 'ODER');
+    });
+  }
+  const topIsRule = !!data.ruleId;
+  const userId = rcUserId || data.user;
+  const topLabel = topIsRule ? `Regel ${data.ruleId}${sodRuleNames[data.ruleId] ? `\n${trunc(sodRuleNames[data.ruleId])}` : ''}`
+                             : `Query ${data.queryId || ''}`;
+  const topDetail = topIsRule
+    ? `<b>Regel ${data.ruleId}</b>${sodRuleNames[data.ruleId] ? `<br><span style="color:var(--muted)">${sodRuleNames[data.ruleId]}</span>` : ''}`
+    : `<b>Query ${data.queryId || ''}</b>`;
+  if (userId) N('rc_user', `User\n${userId}`, 'rc-user', ring.user, `<b>${userId}</b>`);
+  N('rc_top', topLabel, 'rc-rule', ring.rule, topDetail);
+  if (userId) E('rc_user', 'rc_top', '', topIsRule ? 'verletzt' : 'matcht');
+
+  if (!topIsRule) {
+    // Einzelfilter/Query-Modus: Objekte direkt unter der Query (keine Klausel-Ebene, keine doppelte Query)
+    (data.blocks || []).forEach(blk => (blk.objects || []).forEach(o => attachObject('rc_top', o)));
+  } else {
+    const clauseNodes = {};
+    (data.blocks || []).forEach(blk => {
+      let m, clauseNum = null, qid = null, befund = null;
+      if ((m = blk.label.match(/^Klausel (\d+) · Query (.+)$/))) { clauseNum = m[1]; qid = m[2]; }
+      else if ((m = blk.label.match(/^Klausel (\d+)$/))) { clauseNum = m[1]; }
+      else if ((m = blk.label.match(/^Query (.+)$/))) { qid = m[1]; }
+      else befund = blk.label;   // Konsistenzcheck-Befund (kein Query-/Klausel-Muster)
+      let parent = 'rc_top';
+      if (clauseNum != null) {
+        if (!clauseNodes[clauseNum]) {
+          const cid = gid('c'); N(cid, `Klausel ${clauseNum}`, 'rc-clause', ring.clause);
+          E('rc_top', cid, '', 'UND'); clauseNodes[clauseNum] = cid;
+        }
+        parent = clauseNodes[clauseNum];
+      }
+      if (blk.note && !(blk.objects || []).length) {
+        const nn = gid('o'); N(nn, blk.note, 'rc-object', ring.object,
+          `<span style="color:var(--muted)">${blk.note}</span>`); E(parent, nn, '', clauseNum != null ? 'ODER' : ''); return;
+      }
+      let qnode = parent;
+      if (qid != null) {
+        const qn = gid('q'); const qd = queriesCache.find(q => q.id === qid) || {};
+        const qlab = qd.shortDescription || qd.description;
+        N(qn, `Query ${qid}${qlab ? `\n${trunc(qlab)}` : ''}`, 'rc-query', ring.query,
+          `<b>Query ${qid}</b>${qlab ? `<br><span style="color:var(--muted)">${qlab}</span>` : ''}`);
+        E(parent, qn, '', clauseNum != null ? 'ODER' : ''); qnode = qn;
+      } else if (befund != null) {
+        const bn = gid('q'); N(bn, befund, 'rc-query', ring.query, `<b>${befund}</b>`); E('rc_top', bn); qnode = bn;
+      }
+      (blk.objects || []).forEach(o => attachObject(qnode, o));
+    });
+  }
+  const layout = mode === 'radial'
+    ? { name: 'concentric', concentric: n => n.data('ring') || 0, levelWidth: () => 1, minNodeSpacing: 42, padding: 20, animate: false }
+    : { name: 'breadthfirst', directed: true, roots: userId ? '#rc_user' : '#rc_top', spacingFactor: 1.15, padding: 20, animate: false };
+  return { els, layout };
+}
+function renderRootCauseGraph(data, mode) {
+  if (!data.blocks || !data.blocks.length) { rcShowError('Keine Berechtigungsanforderungen gefunden.'); return; }
+  const cy = rcInitCy();
+  const { els, layout } = rcBuildGraph(data, mode);
+  cy.elements().remove();
+  cy.add(els);
+  cy.resize();
+  cy.layout(layout).run();
+  cy.fit(undefined, 25);
+}
 
 /* Ribbon-Menues (Gruppen mit mehreren Befehlen, z. B. "Ergebnisse"/"Admin") */
 document.querySelectorAll('.menu-trigger').forEach(btn => {
@@ -2039,6 +2226,7 @@ function rcSetTargetDescription(query, rule) {
 }
 async function openRootCause(user, { query, rule }, returnTo) {
   rcReturnTo = returnTo || 'results';
+  rcUserId = user;
   $('rcUser').textContent = `Nutzer: ${user}`;
   $('rcTarget').textContent = query ? `· Query ${query}` : `· Regel ${rule}`;
   rcSetTargetDescription(query, rule);
@@ -2048,9 +2236,9 @@ async function openRootCause(user, { query, rule }, returnTo) {
     let url = '/root-cause?runId=' + encodeURIComponent(activeRunId) + '&user=' + encodeURIComponent(user);
     url += query ? '&query=' + encodeURIComponent(query) : '&rule=' + encodeURIComponent(rule);
     rcLastData = await api(url);
-    renderRootCause(rcLastData);
+    rcRender();
   } catch (err) {
-    $('rcObjects').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
+    rcShowError('Fehler: ' + (err.detail || JSON.stringify(err)));
   }
 }
 
