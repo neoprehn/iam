@@ -6,7 +6,10 @@
 // Nutzertyp-Filter: $userTypes = Liste Subtyp-Labels (z. B. ['Dialog','Service']); leer = alle.
 // Sperr-Filter: $excludeLocked = true -> gesperrte User (`:Locked`, UFLAG) ausschliessen.
 //   (Nutzertyp und Sperre sind getrennte Achsen: A/S sagt nichts ueber gesperrt/aktiv.)
-// Sleeping-Flag: userSleeping = kein Logon in $sleepDays Tagen (oder nie).
+// Sleeping-Flag: userSleeping = bekannter Logon, aber laenger als $sleepDays Tage her.
+// lastLogonKnown = false, wenn TRDAT im Quellextrakt fehlt/leer war -- ein unbekannter Logon
+// ist NICHT automatisch "sleeping" (sonst faelschlich fast alle User sleeping, wenn TRDAT in der
+// SAP-Extraktion fehlt -- TRDAT ist laut Extraktionsleitfaden ein optionales USR02-Feld).
 // Scope: $minCriticalityRank (0..5; nur Regeln >= Rang, 5=very-critical) und $sodRules (Liste
 // expliziter Regel-IDs; leer = alle) — so laufen z. B. „nur very-critical" oder einzelne Regeln.
 // Idempotent: alte Findings dieses (ruleset,dataset,runId) werden zuerst entfernt.
@@ -49,5 +52,6 @@ MERGE (u)-[:VIOLATES]->(f:SoDConflict {key: $ruleset + '|' + $dataset + '|' + $r
   SET f.ruleset = $ruleset, f.dataset = $dataset, f.runId = $runId, f.asOf = $asOf,
       f.ruleId = rule.id, f.reasonCode = rule.reasonCode,
       f.criticality = rule.criticality, f.criticalityRank = rule.criticalityRank,
-      f.userSleeping = (u.lastLogon IS NULL OR u.lastLogon < ($asOf - duration({days: $sleepDays})))
+      f.lastLogonKnown = (u.lastLogon IS NOT NULL),
+      f.userSleeping = (u.lastLogon IS NOT NULL AND u.lastLogon < ($asOf - duration({days: $sleepDays})))
 MERGE (f)-[:BASED_ON]->(rule);

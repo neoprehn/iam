@@ -82,6 +82,27 @@ Rulesets konstant; Systeme (`dataset`) variabel; ein Ruleset pro Lauf.
 - [x] **Ruleset-Loader** `cypher/ruleset/load_ruleset.cypher` (`(:Query)`/`(:AuthReq)`/`(:SoDRule)`; OrgFelder aus USORG).
 - [x] **Einzelberechtigungs-Matcher** `cypher/checks/query_match.cypher` (Org-Felder Default „egal").
 - [x] **SoD-Evaluator** (Zwei-Schritt): `materialize_matches.cypher` (`(:User)-[:MATCHES]->(:Query)`) → `evaluate_sod.cypher` (Findings `(:SoDConflict)`, CNF-Klauseln). Nutzertyp-Filter + Sleeping-Regel.
+  **Nachträglicher Korrekturbedarf (Nutzer-Feedback):** `f.userSleeping = (u.lastLogon IS NULL OR
+  u.lastLogon < asOf - sleepDays)` behandelte „kein bekannter Logon" und „bestätigt sleeping"
+  gleich — bereits bei der zweiten Konsistenzcheck-Feedback-Runde als Datenlage vermerkt (B6,
+  s. u., ~47 % `NULL` im Testdatenbestand), aber nicht als eigener Zustand ausgewiesen. Bricht
+  vollständig zusammen, sobald `TRDAT` (laut Extraktionsleitfaden ein optionales USR02-Feld) in
+  einer Extraktion **gar nicht** mitgeliefert wird: dann ist `lastLogon` für 100 % der User
+  `NULL`, und **jeder** Fund erscheint als „sleeping" — verifiziert gegen einen realen
+  Produktivfall (26.949 von 26.949 Usern ohne `lastLogon`). Korrigiert: neues Flag
+  `f.lastLogonKnown = (u.lastLogon IS NOT NULL)`; `f.userSleeping` ist jetzt nur noch **true**,
+  wenn der Logon bekannt **und** älter als die Schwelle ist. `GET /findings`+`/findings/summary`
+  (`sleeping`-Parameter jetzt `'true'|'false'|'unknown'` statt bool; `false` verlangt zusätzlich
+  bekannten Logon, sonst würden „unbekannt" fälschlich unter „nicht sleeping" mitgezählt),
+  CSV-Export und Lauf-Backup/-Restore (`cypher/admin/restore_run.cypher`, Default
+  `lastLogonKnown=true` für Backups von vor dieser Unterscheidung) ziehen das Flag nach. UI:
+  vierter Sleeping-Pill „unbekannt", Findings-Tabelle zeigt eigenen `unbekannt`-Tag statt
+  fälschlich `–` oder `sleeping`. **Bewusst nicht angefasst:** die Consistency-Check-Familie
+  `sleeping_users*.cypher`/`dormant_active_dialog_users.cypher` hat denselben
+  „nie angemeldet zählt als sleeping"-Wortlaut — dort ist das die *beabsichtigte* Definition
+  eines eigenen Checks („Dormant-User finden"), nicht Nebenprodukt einer SoD-Auswertung; bei
+  vollständig fehlendem `TRDAT` verzerrt das denselben Check aber genauso und sollte bei
+  Gelegenheit dieselbe Unterscheidung bekommen.
 - [x] **Org-`filtered`-Modus** + **Org-Level-Platzhalter aufgelöst** (`load/24`, AGR_1252).
 - [x] **Scope im SoD-Lauf** (`$minCriticalityRank`, `$sodRules`).
 - [x] **Einzel-Checks** (`sap_all.cypher`).
@@ -323,6 +344,18 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Sicherheitsabfrage. Neo4j-Speicher in `docker-compose.yml` nachgezogen (Heap 4G→8G, `dbms.memory
   .transaction.total.max=0`) — Ursache war ein `MemoryPoolOutOfMemoryError` bei einem großen
   Batch-Import (`AGR_1251`).
+  **Nachträglicher Korrekturbedarf:** beim Verifizieren des Sleeping-Fixes (s. Phase 3) fiel auf,
+  dass der „Abbrechen"-Button im Neuer-Lauf-Dialog (`runCancelBtn`, ruft denselben
+  `POST /jobs/{id}/cancel` auf) bei SoD-Läufen **wirkungslos** war — `_check_cancel()` wurde nur
+  in `do_import` aufgerufen, nie in `_run_one` (gemeinsamer Kern von `do_run`/`do_run_batch`).
+  Ein Abbruch setzte zwar `cancelRequested`, der Lauf lief aber unbeeinflusst zu Ende (in einem
+  Testlauf über das gesamte Dataset ohne Scoping >20 Minuten unbemerkt weiter). Korrigiert:
+  `_check_cancel()` jetzt vor jeder Phase (ruleset/materialize/evaluate/explain) plus
+  `except InterruptedError` in `do_run`/`do_run_batch` (Status `cancelled`, Frontend hatte diesen
+  Status bereits erwartet). **Bewusste Grenze:** eine einzelne Phase (v. a. `materialize`, meist
+  die teuerste) ist selbst nicht unterbrechbar — sie läuft als ein `apoc.periodic.iterate`-Aufruf
+  am Stück; Abbruch wirkt erst, sobald diese Phase durchgelaufen ist. UI-Hinweistext ergänzt
+  („Abbruch erst nach dem aktuellen Schritt").
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`
@@ -389,6 +422,18 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   `(:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query)` eingeschränkt) genauso aufgeschlüsselt
   wie im Einzelfilter-Fall — Antwortformat einheitlich auf `blocks[]` (Label + Objekte)
   umgestellt. UI: „Root-Cause"-Button im „Verursachende Rollen/Profile"-Panel (Nutzer+Regel-Kontext).
+  **Nachträglicher Korrekturbedarf (Nutzer-Feedback):** Klick auf einen Lauf in der „Läufe"-
+  Sidebar direkt aus der (später ergänzten) eigenen Root-Cause-Seite heraus zeigte scheinbar
+  nichts an. Ursache: `showFindings(runId)` lädt nur die Findings-Daten neu, schaltet aber nie
+  die Sichtbarkeit auf die Ergebnis-Ansicht zurück — sie ging bislang davon aus, bereits
+  sichtbar zu sein. Kam der Klick aus einer anderen Ansicht (Root-Cause, Konsistenzcheck-
+  Ergebnis), blieb diese sichtbar, während die (unsichtbare) Ergebnis-Ansicht im Hintergrund
+  aktualisiert wurde. Fix: gemeinsame `_showResultsLayout()`-Hilfsfunktion (aus
+  `showResultsView()` herausgezogen) wird jetzt auch vom Sidebar-Klick-Handler aufgerufen —
+  bewusst **nicht** in `showFindings()` selbst, da diese Funktion auch vom generischen
+  Job-Abschluss-Refresh (`poll()`) verwendet wird und dort kein Ansichtswechsel gewünscht ist
+  (sonst würde z. B. ein Dataset-Backup während einer Root-Cause-Analyse ungefragt aus der
+  Ansicht herausspringen).
 - [x] **SoD-Kurzbezeichnung nachgezogen.** Die Query-Kurzbezeichnungs-Bereinigung hatte
   `SoDRule.shortDescription` nicht mitgenommen. Da SoD-Regeln **keinen Overlay-Mechanismus** wie
   Queries haben (`sod_rules.json` ist die einzige Quelle, kein `*.custom.json`), wurde die

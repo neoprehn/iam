@@ -266,6 +266,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
     as_of = _dataset_asof(s, dataset)
     base = {"ruleset": ruleset, "dataset": dataset, "asOf": as_of, "runId": run_id}
     if not skip_ruleset_load:
+        _check_cancel(job_id)
         rdir = ruleset_dir(ruleset)
         if not rdir:
             raise ValueError(f"Ruleset-Ordner fuer '{ruleset}' nicht gefunden")
@@ -274,8 +275,10 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
         ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
         run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
     if not skip_materialize:
+        _check_cancel(job_id)
         jobs[job_id]["step"] = step_prefix + "materialize"
         run_file(s, "sod/materialize_matches.cypher", {**base, **org})
+    _check_cancel(job_id)
     jobs[job_id]["step"] = step_prefix + "evaluate"
     run_file(s, "sod/evaluate_sod.cypher", {
         **base, **org,
@@ -287,6 +290,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
         "title": title,
     })
     if not skip_explain:
+        _check_cancel(job_id)
         jobs[job_id]["step"] = step_prefix + "explain"
         run_file(s, "sod/explain_sod.cypher", base)
     rec = s.run(
@@ -314,6 +318,8 @@ def do_run(job_id: str, req: RunReq):
                                skip_ruleset_load=req.skipRulesetLoad, skip_materialize=req.skipMaterialize,
                                skip_explain=req.skipExplain)
         jobs[job_id].update(status="done", step="done", **result)
+    except InterruptedError:
+        jobs[job_id].update(status="cancelled", step="cancelled")
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -362,6 +368,8 @@ def do_run_batch(job_id: str, req: RunBatchReq):
                 results.append(result)
                 jobs[job_id]["runs"] = results
         jobs[job_id].update(status="done", step="done", runs=results)
+    except InterruptedError:
+        jobs[job_id].update(status="cancelled", step="cancelled")
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -705,7 +713,8 @@ def do_backup_run(job_id: str, run_id: str):
                 "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$id})-[:BASED_ON]->(rule:SoDRule) "
                 "RETURN u.id AS user, f.ruleId AS rule, f.criticality AS criticality, "
                 "f.criticalityRank AS criticalityRank, f.asOf AS asOf, f.reasonCode AS reasonCode, "
-                "coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType",
+                "coalesce(f.userSleeping,false) AS sleeping, "
+                "coalesce(f.lastLogonKnown,true) AS lastLogonKnown, f.conflictType AS conflictType",
                 id=run_id)]
         RUN_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
         ts = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -1654,7 +1663,10 @@ _FINDINGS_WHERE = (
     "  AND ($user IS NULL OR u.id = $user) "
     "  AND ($rule IS NULL OR f.ruleId = $rule) "
     "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
-    "  AND ($sleeping IS NULL OR coalesce(f.userSleeping,false) = $sleeping) "
+    "  AND ($sleeping IS NULL "
+    "       OR ($sleeping = 'true' AND coalesce(f.userSleeping,false) = true) "
+    "       OR ($sleeping = 'false' AND coalesce(f.userSleeping,false) = false AND coalesce(f.lastLogonKnown,true) = true) "
+    "       OR ($sleeping = 'unknown' AND coalesce(f.lastLogonKnown,true) = false)) "
     "  AND ($ruleCriticality IS NULL OR f.criticality = $ruleCriticality) "
 )
 
@@ -1662,16 +1674,18 @@ _FINDINGS_WHERE = (
 @app.get("/findings")
 def findings(runId: str, minRank: int = 0, limit: int = 200,
              user: str | None = None, rule: str | None = None,
-             userType: list[str] = Query(default=[]), sleeping: bool | None = None,
+             userType: list[str] = Query(default=[]), sleeping: str | None = None,
              ruleCriticality: str | None = None):
     """Findings eines Laufs; optional auf User/Regel/Nutzertyp(en)/Sleeping/Kritikalitaet
-    eingeschraenkt (Drill-down: Klick auf User-/Regel-Zelle, oder Ergebnisfilter in der Sidebar)."""
+    eingeschraenkt (Drill-down: Klick auf User-/Regel-Zelle, oder Ergebnisfilter in der Sidebar).
+    sleeping: 'true' (bestaetigt sleeping) / 'false' (bestaetigt aktiv) / 'unknown' (kein TRDAT)."""
     with driver.session() as s:
         return [jsonable(dict(r)) for r in s.run(
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
             + _FINDINGS_WHERE +
             "RETURN u.id AS user, f.ruleId AS rule, f.criticality AS criticality, "
-            "       coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType, "
+            "       coalesce(f.userSleeping,false) AS sleeping, "
+            "       coalesce(f.lastLogonKnown,true) AS lastLogonKnown, f.conflictType AS conflictType, "
             "       [(f)-[:VIA_ROLE]->(r) | r.id] AS roles, "
             "       [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles "
             "ORDER BY coalesce(f.criticalityRank,0) DESC, user LIMIT $limit",
@@ -1681,16 +1695,18 @@ def findings(runId: str, minRank: int = 0, limit: int = 200,
 
 @app.get("/findings/summary")
 def findings_summary(runId: str, minRank: int = 0, user: str | None = None, rule: str | None = None,
-                      userType: list[str] = Query(default=[]), sleeping: bool | None = None,
+                      userType: list[str] = Query(default=[]), sleeping: str | None = None,
                       ruleCriticality: str | None = None):
-    """KPI-Aggregate (Findings/betroffene Regeln/sleeping) fuer den aktuellen Filterkontext —
-    unabhaengig vom Limit der Findings-Liste, damit die KPI-Kacheln zum gewaehlten Filter passen."""
+    """KPI-Aggregate (Findings/betroffene Regeln/sleeping/unbekannt) fuer den aktuellen
+    Filterkontext — unabhaengig vom Limit der Findings-Liste, damit die KPI-Kacheln zum
+    gewaehlten Filter passen."""
     with driver.session() as s:
         rec = s.run(
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
             + _FINDINGS_WHERE +
             "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
-            "       sum(CASE WHEN coalesce(f.userSleeping,false) THEN 1 ELSE 0 END) AS sleeping",
+            "       sum(CASE WHEN coalesce(f.userSleeping,false) THEN 1 ELSE 0 END) AS sleeping, "
+            "       sum(CASE WHEN NOT coalesce(f.lastLogonKnown,true) THEN 1 ELSE 0 END) AS unknownLogon",
             runId=runId, minRank=minRank, user=user, rule=rule,
             userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality).single()
         return jsonable(dict(rec))
@@ -1892,17 +1908,18 @@ def export_findings(runId: str):
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$r})-[:BASED_ON]->(rule:SoDRule) "
             "RETURN u.id AS user, f.ruleId AS rule, f.ruleset AS ruleset, f.dataset AS dataset, "
             "f.criticality AS criticality, coalesce(f.criticalityRank,0) AS criticalityRank, "
-            "coalesce(f.userSleeping,false) AS sleeping, f.conflictType AS conflictType, "
+            "coalesce(f.userSleeping,false) AS sleeping, coalesce(f.lastLogonKnown,true) AS lastLogonKnown, "
+            "f.conflictType AS conflictType, "
             "[(f)-[:VIA_ROLE]->(r) | r.id] AS roles, [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles, "
             "f.reasonCode AS reasonCode "
             "ORDER BY criticalityRank DESC, user", r=runId))
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=";")
     w.writerow(["user", "rule", "ruleset", "dataset", "criticality", "criticalityRank",
-                "sleeping", "conflictType", "roles", "profiles", "reasonCode"])
+                "sleeping", "lastLogonKnown", "conflictType", "roles", "profiles", "reasonCode"])
     for x in rows:
         w.writerow([x["user"], x["rule"], x["ruleset"], x["dataset"], x["criticality"],
-                    x["criticalityRank"], x["sleeping"], x["conflictType"],
+                    x["criticalityRank"], x["sleeping"], x["lastLogonKnown"], x["conflictType"],
                     "|".join(x["roles"] or []), "|".join(x["profiles"] or []), x["reasonCode"]])
     data = "﻿" + buf.getvalue()   # BOM, damit Excel UTF-8/Umlaute korrekt liest
     return Response(content=data, media_type="text/csv; charset=utf-8",
