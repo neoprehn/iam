@@ -4,12 +4,13 @@
 **Repository:** `neoprehn/iam`.
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe „Windows-Spezifika").
 
-**Stand:** Die App ist unter `http://localhost:8000/` lauffähig: **Import (Ordner/ZIP), Auswertung
-(inkl. Evidenz, Org-Varianten, interaktive Drill-downs), Konsistenzchecks + Konsistenz-Report (CSV),
-Query-/SoD-Management, Ergebnisse + CSV-Export, Backup/Restore, Bereinigen** — alles ohne
-JSON-Pflege. Abgeschlossene Arbeit (Phasen 0–3, 5; Phase 6 PoC; Phase 7 vollständig;
-Phase-9-Bausteine Backend-API/Import/Ribbon-UI/Backup-Restore-Clear/CSV-Export/Org-Filter+MATCHES-
-Scoping/Drill-downs/Admin-Management-Seiten; AE-11-Evidenz v1) ist im Detail in
+**Stand:** Die App ist unter `http://localhost:8000/` lauffähig: **Import (Ordner/ZIP, mit
+Abbrechen/Resume), geführte Auswertung (Assistent-Stepper), Auswertung (inkl. Evidenz, Org-Varianten,
+interaktive Drill-downs), Konsistenzchecks + Konsistenz-Report (CSV/PDF), Query-/SoD-Management,
+Ergebnisse + CSV-Export, Backup/Restore, Bereinigen** — alles ohne JSON-Pflege. Abgeschlossene Arbeit
+(Phasen 0–3, 5; Phase 6 PoC; Phase 7 vollständig; Phase-9-Bausteine Backend-API/Import/Ribbon-UI/
+Backup-Restore-Clear/CSV-Export/Org-Filter+MATCHES-Scoping/Drill-downs/Admin-Management-Seiten/
+Assistent-Stepper/Import-Robustheit; AE-11-Evidenz v1) ist im Detail in
 [`ROADMAP-ARCHIV.md`](ROADMAP-ARCHIV.md) festgehalten. **Diese Datei führt nur noch die offenen
 Punkte** plus die verbindliche Referenz (Vertrauensgrenze, Architektur-Entscheidungen,
 Zielarchitektur, Windows-Spezifika, R/3-vs-S/4).
@@ -86,6 +87,10 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 Die App-Grundfunktionen stehen (siehe Archiv). Offen sind die folgenden Ausbauten.
 
 #### Import-Evidenz (Vollständigkeitsnachweis gegen Quell-SAP)
+Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#geführte-auswertung)): **Import-Robustheit** —
+Abbrechen laufender Importe, Resume über Checkpoint nach Abbruch/Fehler, fehlende optionale
+Quelltabelle bricht nicht mehr ab, parallele CSV-Konvertierung, Quelldateien nach Backup löschbar.
+
 - [ ] **Persistente, abrufbare Import-Statistik je Lauf.** Heute nur flüchtig (Job-Counts) bzw. Konsole (`99_validate`).
   - **Persistenz:** `(:Import {dataset, importedAt, lang})` + je Tabelle `(:ImportTable {table, sourceRows, droppedColumns})` (der Konverter liefert Zeilen/verworfene Spalten bereits) + resultierende Graph-Zähler je Label/Kante.
   - **Abgleich/Checks:** je Quelltabelle **Quellzeilen ↔ Graph-Ergebnis** mit dokumentierter Beziehung — **1:1** (USR02→User, AGR_DEFINE→Role …, Abweichung = Flag) vs. **aggregiert** (AGR_1251→gruppierte `Authorization` nach AE-03; UST12-Feldwerte) → beide Zahlen zeigen, nicht als Fehler werten. Gefilterte Zeilen (`DELETED='X'`) ausweisen.
@@ -99,9 +104,11 @@ tief**. Vieles existiert als Backend-Parameter (`sodRules`, `userTypes`, `exclud
 
 Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#geführte-auswertung)): Org-Filter im App-Lauf
 wirksam, MATCHES nach `runId` gescoped (Vorbedingung für Multi-Varianten-Läufe), Lauf
-verwalten + Backup/Restore.
+verwalten + Backup/Restore, **Assistent-Stepper** (7 Schritte Import→Bestand→Scoping→Konsistenz→
+SoD→Root-Cause→Bericht, bindet für Konsistenz/SoD/Root-Cause die bestehenden Seiten ein).
 
-- [ ] **Katalog-Auswahl (Filter/Regeln):** Browser über Queries (Einzelfilter) **und** SoD-Regeln, **filterbar** nach Kritikalität (z. B. nur very-critical), **Namensmuster** (z. B. `BC_*`), Modul, queryType. Mehrfachauswahl → Lauf nur über die Auswahl. *(Kritikalität/explizite Regel-IDs ✓ als Param; Muster-/Modul-Filter + UI neu.)*
+- [ ] **Katalog-Auswahl (Filter/Regeln) — füllt Schritt ③ „Scoping" im Assistenten** (dort bisher nur
+  Platzhalter): Browser über Queries (Einzelfilter) **und** SoD-Regeln, **filterbar** nach Kritikalität (z. B. nur very-critical), **Namensmuster** (z. B. `BC_*`), Modul, queryType. Mehrfachauswahl → Lauf nur über die Auswahl. *(Kritikalität/explizite Regel-IDs ✓ als Param; Muster-/Modul-Filter + UI neu.)*
 - [ ] **Zwei Auswertungsarten:** **(a) Einzelfilter / Can-Do** — „wer matcht Query X" (nur Materialisierung der gewählten Queries, ohne SoD); **(b) SoD-Konflikte** — bei Auswahl bestimmter SoD-Regeln **zuerst nur deren Einzelfilter** (Klausel-Queries) materialisieren, dann SoD → **scoped materialize** statt „alle SoD-Queries". *(neu.)* Damit auch **„Can-Do nach Org"**: „wer kann *Funktion* in *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/… (Matching-Seite ✓; braucht nur die Einzelfilter-Ansicht).
 - [x] **Multi-Varianten-Läufe — erledigt.** Jede Variante (z. B. „Standard", „Übergreifend", „BUKRS=…") = ein eigener, **benannter** `(:Run)` (Titel-Feld, Lauf-Liste zeigt Titel als Hauptlabel + Run-ID als Mini-Chip). **Org-Varianten sind jetzt frei konfigurierbar:** neue Admin-Seite **„Org-Varianten"** (`frontend/admin-org-profiles.html`, verlinkt aus Ribbon „Admin") — wählt aus den tatsächlich im Dataset vorkommenden Org-Feldern (`GET /admin/org-profiles/org-fields`) und Werten (`GET /admin/org-profiles/org-field-values`, **echte Werte aus den Authorization-Daten**, kein Freitext) ein oder mehrere Kriterien (UND/ODER/Bereich) und speichert sie unter einem Namen. Overlay-Mechanismus wie bei Query-/SoD-Metadaten (`config/analysis_profiles.custom.json`, Vendor-Datei `analysis_profiles.json` bleibt unberührt) — **aber bewusst `.gitignore`d** (anders als `queries.custom.json`), da Org-Varianten echte Mandanten-Org-Codes enthalten können. **„Standard"/„Übergreifend" sind geschützt** (nicht editierbar/löschbar, `PROTECTED_ORG_PROFILES`). **Paralleles Anlegen mehrerer Varianten in einem Schritt:** „Neuer Lauf"-Dialog hat jetzt eine **Mehrfachauswahl** (Checkbox-Dropdown, gleiches `ddcheck`-Pattern wie der Nutzertyp-Filter) statt eines Single-Select; bei mehreren gewählten Varianten entsteht über den neuen Endpoint `POST /runs/batch` **ein Job mit je einem eigenen Lauf pro Variante** (Titel = Variantenname, sequenziell abgearbeitet — gemeinsame Neo4j-Session, kein Parallel-Schreiben). Backend-Refactor: `do_run()`-Kern in `_run_one()` ausgelagert, von Einzel- (`do_run`) und Batch-Lauf (`do_run_batch`) gemeinsam genutzt. Verifiziert gegen den laufenden Container: Variante mit echten Org-Werten angelegt/bearbeitet/gelöscht (Vendor-Datei unverändert, geschützte Profile lehnen Edit/Delete mit 400 ab), Batch-Lauf mit drei Varianten erzeugt drei `(:Run)` mit unterschiedlichen Trefferzahlen und kurzen Titeln. **Nicht Teil dieses Schritts:** sichtbare Gruppierung mehrerer Läufe als „Varianten-Set" in der UI (jeder Batch-Lauf erscheint einzeln in der Lauf-Liste).
   **Nachträglicher Korrekturbedarf (Nutzer-Feedback nach erster Nutzung):** `materialize_matches.cypher`

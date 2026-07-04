@@ -198,10 +198,15 @@ def split_statements(text: str) -> list[str]:
     return [s for s in stmts if s]
 
 
-def run_cypher_path(session, path: Path, params: dict):
-    """Eine .cypher-Datei (mehrere ;-getrennte Statements) ueber den Treiber fahren."""
+def run_cypher_path(session, path: Path, params: dict) -> dict:
+    """Eine .cypher-Datei ausfuehren; gibt aggregierte Summary-Zaehler zurueck."""
+    totals = {"nodes_created": 0, "relationships_created": 0, "properties_set": 0}
     for stmt in split_statements(path.read_text(encoding="utf-8")):
-        session.run(stmt, **params).consume()
+        c = session.run(stmt, **params).consume().counters
+        totals["nodes_created"] += c.nodes_created
+        totals["relationships_created"] += c.relationships_created
+        totals["properties_set"] += c.properties_set
+    return totals
 
 
 def run_file(session, rel_path: str, params: dict):
@@ -367,9 +372,40 @@ class ImportReq(BaseModel):
     lang: list[str] = []            # Sprach-Schalter (SPRAS/LANGU); leer = Default (IMPORT_LANG)
     skipConvert: bool = False       # .csv liegen schon vor -> Konvertierung ueberspringen
     skipSchema: bool = False        # Migrationen (Constraints/Indizes) ueberspringen
+    clearFirst: bool = False        # Dataset im Graph leeren vor Import (Neustart, entfernt Artefakte)
+    resume: bool = False            # Ab letztem Checkpoint weitermachen (State-Datei lesen)
     asOf: str | None = None         # 'YYYY-MM-DD' Stichtag (= Downloaddatum der SAP-Extrakte);
                                      # nur bei Erst-Import wirksam (ON CREATE), Default = heute.
                                      # Spaetere Korrektur ueber PUT /datasets/{id}/asof.
+
+
+def _check_cancel(job_id: str):
+    if jobs.get(job_id, {}).get("cancelRequested"):
+        raise InterruptedError("Abgebrochen")
+
+
+# --- Import-Checkpoint (Resume nach Abbruch) ------------------------------------
+def _state_path(dataset: str) -> Path:
+    return DATA_DIR / dataset / "_import_state.json"
+
+def _read_state(dataset: str) -> dict | None:
+    p = _state_path(dataset)
+    try:
+        return json.loads(p.read_text(encoding="utf-8")) if p.is_file() else None
+    except Exception:
+        return None
+
+def _write_state(dataset: str, completed: list[str], total: int) -> None:
+    state = {"dataset": dataset, "completed": completed, "total": total,
+             "updatedAt": datetime.datetime.now().isoformat(timespec="seconds")}
+    p = _state_path(dataset)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def _clear_state(dataset: str) -> None:
+    p = _state_path(dataset)
+    if p.is_file():
+        p.unlink()
 
 
 def do_import(job_id: str, req: ImportReq):
@@ -382,24 +418,69 @@ def do_import(job_id: str, req: ImportReq):
                  else (_infer_dataset_asof(req.dataset) or datetime.date.today()))
         jobs[job_id].update(status="running", dataset=req.dataset, step="start")
 
+        # 0. Optional: Dataset vor Import leeren (Artefakte aus früheren Läufen entfernen)
+        if req.clearFirst:
+            jobs[job_id]["step"] = "clear"
+            with driver.session() as s:
+                run_file(s, "admin/clear_dataset.cypher", {"dataset": req.dataset})
+            _clear_state(req.dataset)
+
+        # Resume: bereits erledigte Load-Steps aus State-Datei lesen
+        completed_steps: set[str] = set()
+        completed_list: list[str] = []
+        if req.resume and not req.clearFirst:
+            state = _read_state(req.dataset)
+            if state:
+                completed_list = state.get("completed", [])
+                completed_steps = set(completed_list)
+                jobs[job_id]["resumedFrom"] = completed_list[-1] if completed_list else ""
+
         # 1. Konvertieren (SE16-.txt -> .csv; Minimalset-Pruefung + Credential-Denylist im Konverter)
         if not req.skipConvert:
-            jobs[job_id]["step"] = "convert"
-            conv = convert.convert_folder(folder, required_config=CONFIG_DIR / "required_tables.json")
+            jobs[job_id].update(step="convert", convertFile="", convertDone=0, convertTotal=0)
+
+            def _conv_progress(done, total, stem):
+                jobs[job_id].update(convertDone=done, convertTotal=total, convertFile=stem)
+
+            conv = convert.convert_folder(folder, required_config=CONFIG_DIR / "required_tables.json",
+                                          on_progress=_conv_progress)
             jobs[job_id]["converted"] = conv["converted"]
+            jobs[job_id]["skipped"] = conv.get("skipped", 0)
             jobs[job_id]["missingOptional"] = conv["missingOptional"]
 
+        _check_cancel(job_id)
         with driver.session() as s:
             # 2. Schema sicherstellen (idempotente CREATE ... IF NOT EXISTS)
             if not req.skipSchema:
                 jobs[job_id]["step"] = "schema"
                 for f in sorted(MIGRATIONS_DIR.glob("*.cypher")):
                     run_cypher_path(s, f, {})
+            _check_cancel(job_id)
             # 3. Laden (Reihenfolge = Dateiname), mit dataset + lang + asOf (nur 00_dataset.cypher
             # nutzt asOf, ungenutzte gebundene Parameter in den anderen Loadern sind unschaedlich)
-            for f in sorted(LOAD_DIR.glob("*.cypher")):
-                jobs[job_id]["step"] = f"load {f.name}"
-                run_cypher_path(s, f, {"dataset": req.dataset, "lang": lang, "asOf": as_of})
+            load_files = sorted(LOAD_DIR.glob("*.cypher"))
+            for idx, f in enumerate(load_files, 1):
+                jobs[job_id].update(step=f"load {f.name}", stepNum=idx, stepTotal=len(load_files))
+                if f.name in completed_steps:
+                    jobs[job_id]["stepSkipped"] = True
+                    continue                              # bereits erledigt -> ueberspringen
+                jobs[job_id].pop("stepSkipped", None)
+                _check_cancel(job_id)
+                try:
+                    counters = run_cypher_path(s, f, {"dataset": req.dataset, "lang": lang, "asOf": as_of})
+                except Exception as e:
+                    if "NoSuchFileException" in str(e):
+                        # Optionale Tabelle fehlt im Export -> Schritt überspringen, kein Abbruch
+                        jobs[job_id]["lastWarning"] = f"Datei fehlt, Schritt übersprungen: {f.name}"
+                        counters = {"nodes_created": 0, "relationships_created": 0, "properties_set": 0}
+                    else:
+                        raise
+                jobs[job_id]["lastNodes"] = counters["nodes_created"]
+                jobs[job_id]["lastRels"] = counters["relationships_created"]
+                completed_list.append(f.name)
+                _write_state(req.dataset, completed_list, len(load_files))
+            jobs[job_id].pop("stepNum", None)
+            jobs[job_id].pop("stepTotal", None)
             # 4. Validieren (eigene Zaehler statt Konsolen-Output)
             jobs[job_id]["step"] = "validate"
             rec = s.run(
@@ -407,8 +488,12 @@ def do_import(job_id: str, req: ImportReq):
                 "OPTIONAL MATCH (r:Role {dataset:$d}) WITH users, count(r) AS roles "
                 "OPTIONAL MATCH (a:Authorization {dataset:$d}) RETURN users, roles, count(a) AS auths",
                 d=req.dataset).single()
+        _clear_state(req.dataset)   # vollstaendig -> State-Datei nicht mehr benoetigt
         jobs[job_id].update(status="done", step="done",
                             users=rec["users"], roles=rec["roles"], auths=rec["auths"])
+    except InterruptedError:
+        jobs[job_id].update(status="cancelled", step="cancelled")
+        # State-Datei bleibt erhalten -> Resume moeglich
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -455,6 +540,7 @@ def do_clear(job_id: str, dataset: str):
         with driver.session() as s:
             run_file(s, "admin/clear_dataset.cypher", {"dataset": dataset})
             rec = s.run("MATCH (n {dataset:$d}) RETURN count(n) AS remaining", d=dataset).single()
+        _clear_state(dataset)
         jobs[job_id].update(status="done", step="done", remaining=rec["remaining"])
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
@@ -666,7 +752,7 @@ def do_restore_run(job_id: str, path: Path, force: bool):
 
 
 def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], skip_schema: bool,
-                      as_of: str | None = None):
+                      as_of: str | None = None, clear_first: bool = False):
     """Entpackt ein hochgeladenes ZIP (.csv und/oder .txt) nach data/import/<dataset> und importiert.
     .txt vorhanden -> konvertieren; nur .csv -> Konvertierung ueberspringen."""
     try:
@@ -684,7 +770,8 @@ def do_upload_import(job_id: str, zip_path: str, dataset: str, lang: list[str], 
         if not extracted:
             raise ValueError("ZIP enthielt keine .csv/.txt-Dateien")
         do_import(job_id, ImportReq(dataset=dataset, lang=lang,
-                                    skipConvert=not has_txt, skipSchema=skip_schema, asOf=as_of))
+                                    skipConvert=not has_txt, skipSchema=skip_schema, asOf=as_of,
+                                    clearFirst=clear_first))
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -733,6 +820,33 @@ def set_dataset_asof(datasetId: str, req: DatasetAsOfReq):
         if not rec:
             raise HTTPException(404, f"Dataset '{datasetId}' nicht gefunden")
     return {"dataset": datasetId, "asOf": jsonable(rec["asOf"])}
+
+
+@app.get("/datasets/{datasetId}/import-files")
+def import_files_info(datasetId: str):
+    """Groesse der rohen Quelldateien (.txt + .csv) im Import-Ordner des Datasets."""
+    folder = DATA_DIR / datasetId
+    if not folder.is_dir():
+        return {"dataset": datasetId, "files": 0, "bytes": 0}
+    files = list(folder.glob("*.txt")) + list(folder.glob("*.csv"))
+    return {"dataset": datasetId, "files": len(files),
+            "bytes": sum(f.stat().st_size for f in files)}
+
+
+@app.delete("/datasets/{datasetId}/import-files")
+def delete_import_files(datasetId: str):
+    """Loescht den kompletten data/import/<dataset>/-Ordner (nach erfolgtem Backup nicht
+    mehr benoetigt; fuer Re-Import reicht das Backup-ZIP per Upload)."""
+    if not _SAFE_NAME.match(datasetId):
+        raise HTTPException(400, "ungueltiger Dataset-Name")
+    folder = DATA_DIR / datasetId
+    if not folder.is_dir():
+        raise HTTPException(404, f"Import-Ordner '{datasetId}' nicht gefunden")
+    files = list(folder.glob("*.txt")) + list(folder.glob("*.csv"))
+    freed = sum(f.stat().st_size for f in files)
+    deleted = len(files)
+    shutil.rmtree(folder)
+    return {"dataset": datasetId, "deleted": deleted, "freedBytes": freed}
 
 
 @app.get("/users/{userId}")
@@ -1806,7 +1920,7 @@ def start_import(req: ImportReq):
 @app.post("/imports/upload")
 async def upload_import(file: UploadFile = File(...), dataset: str = Form(""),
                         lang: str = Form(""), skipSchema: bool = Form(False),
-                        asOf: str = Form("")):
+                        asOf: str = Form(""), clearFirst: bool = Form(False)):
     """Import per ZIP-Upload: .csv/.txt im ZIP -> data/import/<dataset> -> Import-Job."""
     ds = re.sub(r"[^A-Za-z0-9._-]", "_", dataset or Path(file.filename or "import").stem)
     if not ds:
@@ -1818,9 +1932,16 @@ async def upload_import(file: UploadFile = File(...), dataset: str = Form(""),
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "queued", "kind": "import",
                     "request": {"dataset": ds, "upload": file.filename}}
-    threading.Thread(target=do_upload_import, args=(job_id, str(tmp), ds, langs, skipSchema, asOf or None),
+    threading.Thread(target=do_upload_import,
+                     args=(job_id, str(tmp), ds, langs, skipSchema, asOf or None, clearFirst),
                      daemon=True).start()
     return {"jobId": job_id, "dataset": ds}
+
+
+@app.get("/datasets/{datasetId}/import-state")
+def get_import_state(datasetId: str):
+    """Import-Checkpoint lesen: welche Load-Schritte wurden schon abgeschlossen?"""
+    return _read_state(datasetId) or {}
 
 
 @app.get("/import-folders")
@@ -1974,6 +2095,17 @@ def job_status(job_id: str):
     if job_id not in jobs:
         raise HTTPException(404, "unbekannte Job-Id")
     return jobs[job_id]
+
+
+@app.post("/jobs/{job_id}/cancel")
+def cancel_job(job_id: str):
+    """Setzt cancelRequested-Flag; der laufende Thread bricht nach dem naechsten Schritt ab."""
+    if job_id not in jobs:
+        raise HTTPException(404, "unbekannte Job-Id")
+    if jobs[job_id].get("status") not in ("queued", "running"):
+        raise HTTPException(409, "Job ist nicht mehr aktiv")
+    jobs[job_id]["cancelRequested"] = True
+    return {"jobId": job_id}
 
 
 # Minimale UI (Phase 9, Bau-Schritt 2): statische Single-Page, vom Backend ausgeliefert.

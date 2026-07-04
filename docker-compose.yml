@@ -14,9 +14,11 @@ services:
       NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
       # Speicher: Default (512MiB Pagecache, kein Heap-Limit) ist für die Importmengen
       # viel zu klein -> Plattenthrashing. Großzügig dimensionieren (Host hat reichlich RAM).
-      NEO4J_server_memory_heap_initial__size: "4G"
-      NEO4J_server_memory_heap_max__size: "4G"
-      NEO4J_server_memory_pagecache_size: "6G"
+      NEO4J_server_memory_heap_initial__size: "8G"
+      NEO4J_server_memory_heap_max__size: "8G"
+      NEO4J_server_memory_pagecache_size: "4G"
+      # 0 = kein Limit fuer parallele Transaktions-Speicher (noetig fuer grosse Batch-Importe wie AGR_1251)
+      NEO4J_dbms_memory_transaction_total_max: "0"
     volumes:
       # DB als Named Volume (schnelle ext4-Platte IN der Docker-VM) — NICHT als Bind-Mount auf
       # den OneDrive-Pfad: dort ist DB-I/O (fsync) extrem langsam + OneDrive synchronisiert mit.
@@ -73,7 +75,8 @@ services:
       - ./data/logs:/app/data/logs     # persistentes Fehlerprotokoll (job_errors.jsonl, ueberlebt Neustart)
       - ./backups:/app/backups        # Dataset-Backups (.zip der bereinigten .csv) — bleibt lokal
       - ./frontend:/app/frontend:ro   # Minimale UI (statisch, vom Backend ausgeliefert)
-      - ./backend/app.py:/app/app.py  # Hot-Reload: app.py-Aenderungen ohne Image-Rebuild wirksam
+      - ./backend/app.py:/app/app.py          # Hot-Reload: Aenderungen ohne Image-Rebuild wirksam
+      - ./backend/convert.py:/app/convert.py  # Hot-Reload: Aenderungen ohne Image-Rebuild wirksam
     command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     restart: unless-stopped
 

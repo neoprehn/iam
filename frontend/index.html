@@ -63,6 +63,26 @@
   .group.menu .cmds.dropdown .cmd { flex-direction:row; justify-content:flex-start; width:100%;
     min-width:0; gap:8px; padding:7px 9px; }
 
+  /* Assistent Stepper */
+  #assistentStepper { background:var(--panel); border-bottom:2px solid var(--accent); overflow-x:auto; }
+  .asst-bar { display:flex; align-items:stretch; min-height:44px; padding:0 12px; }
+  .asst-step { padding:0 13px; background:transparent; border:none; border-bottom:3px solid transparent;
+    margin-bottom:-2px; color:var(--muted); cursor:pointer; font-size:12px; font-weight:500;
+    white-space:nowrap; transition:color .15s,border-color .15s; line-height:1; }
+  .asst-step:hover:not(:disabled) { color:var(--fg); }
+  .asst-step.visited { color:var(--fg); }
+  .asst-step.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:700; }
+  .asst-step:disabled { opacity:.3; cursor:default; pointer-events:none; }
+  .asst-sep { color:var(--muted); font-size:10px; display:flex; align-items:center; padding:0 1px; }
+  .asst-exit { margin-left:auto; padding:0 4px 0 16px; background:transparent; border:none;
+    color:var(--muted); cursor:pointer; font-size:12px; }
+  .asst-exit:hover { color:var(--crit); }
+  /* Assistent inline Views */
+  #assistentView { padding:28px 32px; max-width:820px; }
+  #assistentView h2 { margin-top:0; }
+  .asst-nav { display:flex; gap:10px; margin-top:28px; align-items:center; }
+  .asst-datasets-chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+
   #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
     border:1px solid var(--line); background:var(--panel); }
   #status.err { border-color:var(--crit); color:#ffb3b5; }
@@ -74,6 +94,9 @@
   .kpi span { color:var(--muted); font-size:12px; }
   h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 10px; }
   .cols { display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start; }
+  #colsLeft { grid-column:1; grid-row:1; }
+  #colsRight { grid-column:2; grid-row:1; }
+  #rootCauseView { grid-column:2; grid-row:1; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
   th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
   th { color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--bg); }
@@ -151,16 +174,17 @@
   #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
   #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
-  .runs li { padding:9px 11px; border-radius:6px; margin-bottom:8px; }
+  .runs li { padding:7px 9px; border-radius:6px; margin-bottom:5px; }
   .run-card { border:1px solid var(--line); border-left:3px solid var(--line); background:var(--panel);
-    cursor:pointer; transition:border-color .15s, background .15s; }
+    cursor:grab; transition:border-color .15s, background .15s; user-select:none; }
+  .run-card:active { cursor:grabbing; }
   .run-card:hover { border-color:var(--accent); border-left-color:var(--accent); }
   .run-card.active { border-color:var(--accent); border-left-color:var(--accent); background:rgba(76,139,245,.10); }
-  .run-card-top { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 8px; }
-  .run-card-top .run-id { font-weight:700; font-size:13px; }
-  .run-card-top .run-badge { font-size:12px; font-weight:700; color:var(--accent);
-    background:rgba(76,139,245,.14); padding:2px 9px; border-radius:10px; white-space:nowrap; }
-  .run-card-meta { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+  .run-card.drag-over { border-top:2px solid var(--accent); }
+  .run-card.dragging { opacity:.4; }
+  .run-card-top { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+  .run-card-top .run-id { font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .run-card-meta { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
   .chip-mini { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
     border-radius:10px; padding:2px 7px; white-space:nowrap; }
   .chip-mini.warn { color:#f5c451; border-color:rgba(245,166,35,.4); }
@@ -168,6 +192,7 @@
   .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
     border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
   @keyframes s { to { transform:rotate(360deg); } }
+  @keyframes impPulse { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
 
   /* Dialoge */
   .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
@@ -268,7 +293,32 @@
       <button class="cmd" id="cmdErrorLog"><span class="ico">&#128220;</span>Fehlerprotokoll</button>
     </div>
   </div>
+  <div class="group" style="margin-left:auto;border-left:1px solid var(--line);border-right:0">
+    <div class="cmds">
+      <button class="cmd" id="cmdAssistent" style="background:rgba(76,139,245,.08);border-color:rgba(76,139,245,.3)"><span class="ico">&#129517;</span>Assistent</button>
+    </div><div class="lbl">Gef&uuml;hrte Auswertung</div>
+  </div>
 </nav>
+
+<!-- Assistent Stepper (nur sichtbar wenn Assistent aktiv) -->
+<div id="assistentStepper" style="display:none">
+  <div class="asst-bar">
+    <button class="asst-step" data-step="1">&#9312; Import</button>
+    <span class="asst-sep">&#8250;</span>
+    <button class="asst-step" data-step="2">&#9313; Bestand</button>
+    <span class="asst-sep">&#8250;</span>
+    <button class="asst-step" data-step="3">&#9314; Scoping</button>
+    <span class="asst-sep">&#8250;</span>
+    <button class="asst-step" data-step="4">&#9315; Konsistenz</button>
+    <span class="asst-sep">&#8250;</span>
+    <button class="asst-step" data-step="5">&#9316; SoD</button>
+    <span class="asst-sep">&#8250;</span>
+    <button class="asst-step" data-step="6">&#9317; Root-Cause</button>
+    <span class="asst-sep">&#8250;</span>
+    <button class="asst-step" data-step="7">&#9318; Bericht</button>
+    <button class="asst-exit" id="cmdAsstExit">&#10005; Assistent beenden</button>
+  </div>
+</div>
 
 <div id="status"></div>
 
@@ -279,7 +329,7 @@
   <div class="kpis" id="kpis"></div>
   <div id="causingActors" style="display:none"></div>
   <div class="cols">
-    <div>
+    <div id="colsLeft">
       <h2 style="margin-top:0">Filter</h2>
       <div class="filterbox">
         <label for="filterUserTypeBtn">Nutzertyp</label>
@@ -299,14 +349,13 @@
         <select id="filterQuery"><option value="">&ndash; alle &ndash;</option></select>
         <label for="filterRule">SoD</label>
         <select id="filterRule"><option value="">&ndash; alle &ndash;</option></select>
-        <button class="ghost" id="filterApplyBtn">Filtern</button>
         <button class="ghost" id="filterResetBtn">Zur&uuml;cksetzen</button>
       </div>
 
       <h2>L&auml;ufe</h2>
       <div class="runsbox"><ul class="runs" id="runs"></ul></div>
     </div>
-    <div>
+    <div id="colsRight">
       <h2 style="margin-top:0"><span id="resultsTitle">Findings</span> <span class="muted" id="findingsMeta"></span></h2>
       <div class="resultbar">
         <span class="muted" style="font-size:12px">Kritikalit&auml;t:</span>
@@ -345,6 +394,27 @@
         <thead><tr><th>User</th><th>Name</th><th>Query</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Root-Cause</th></tr></thead>
         <tbody id="matchesBody"></tbody>
       </table>
+    </div>
+    <div id="rootCauseView" style="display:none">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:4px">
+        <h2 style="margin:0">Root-Cause <span class="muted" id="rcTarget"></span></h2>
+        <div class="bctx" style="margin:0">
+          <span class="chip" id="rcUser"></span>
+          <button class="ghost" id="rcBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+        </div>
+      </div>
+      <div class="sub" id="rcTargetDesc" style="display:none; margin-bottom:4px"></div>
+      <div class="sub" style="margin-bottom:14px">Pro Berechtigungsobjekt (bzw. TCode-Pr&uuml;fung): welche Anforderung galt &mdash;
+        und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
+        Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
+      <div class="resultbar">
+        <span class="muted" style="font-size:12px">Profile:</span>
+        <div class="pillgroup" id="rcTechPills">
+          <button type="button" class="pill active" data-value="hide">ohne technische</button>
+          <button type="button" class="pill" data-value="show">alle (inkl. technisch generierte)</button>
+        </div>
+      </div>
+      <div id="rcObjects"></div>
     </div>
   </div>
   <div id="consistencyView" style="display:none">
@@ -413,69 +483,179 @@
       </div>
     </div>
   </div>
-  <div id="rootCauseView" style="display:none">
-    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:4px">
-      <h2 style="margin:0">Root-Cause <span class="muted" id="rcTarget"></span></h2>
-      <div class="bctx" style="margin:0">
-        <span class="chip" id="rcUser"></span>
-        <button class="ghost" id="rcBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+
+  <!-- Assistent Inline-Schritte (Steps 1, 2, 3, 7) -->
+  <div id="assistentView" style="display:none">
+
+    <!-- Step 1: Import -->
+    <div id="asst-step-1" style="display:none">
+      <h2>&#9312;&nbsp;Import</h2>
+      <p class="sub">Laden Sie die SAP-Exportdaten in das Analysetool. Wenn bereits ein Dataset vorhanden ist, k&ouml;nnen Sie direkt weitergehen.</p>
+      <div id="asst-datasets-overview" style="margin:16px 0">
+        <span class="muted">Lade&hellip;</span>
+      </div>
+      <div class="asst-nav">
+        <button class="ghost" id="asst-import-open">&#128228; Import starten</button>
+        <button class="ghost" id="asst-1-next" style="margin-left:auto">Weiter &#8594; Bestand</button>
       </div>
     </div>
-    <div class="sub" id="rcTargetDesc" style="display:none; margin-bottom:4px"></div>
-    <div class="sub" style="margin-bottom:14px">Pro Berechtigungsobjekt (bzw. TCode-Pr&uuml;fung): welche Anforderung galt &mdash;
-      und welche Rolle(n)/Profil(e) erf&uuml;llen sie mit welcher konkreten Authorization. Mehrere
-      Objekte k&ouml;nnen durch unterschiedliche Rollen gedeckt sein.</div>
-    <div class="resultbar">
-      <span class="muted" style="font-size:12px">Profile:</span>
-      <div class="pillgroup" id="rcTechPills">
-        <button type="button" class="pill active" data-value="hide">ohne technische</button>
-        <button type="button" class="pill" data-value="show">alle (inkl. technisch generierte)</button>
+
+    <!-- Step 2: Bestand -->
+    <div id="asst-step-2" style="display:none">
+      <h2>&#9313;&nbsp;Bestand best&auml;tigen</h2>
+      <p class="sub">W&auml;hlen Sie das Dataset f&uuml;r diese Auswertung und pr&uuml;fen Sie den Datenstand (Stichtag).</p>
+      <table style="border-collapse:collapse;margin:16px 0">
+        <tr>
+          <td style="padding:6px 16px 6px 0;font-weight:600;white-space:nowrap">Dataset</td>
+          <td><select id="asst-dataset-sel" style="min-width:240px"></select></td>
+        </tr>
+        <tr>
+          <td style="padding:6px 16px 6px 0;font-weight:600">Stichtag</td>
+          <td>
+            <span id="asst-asof-display" style="font-family:monospace">&ndash;</span>
+            <button class="ghost" id="asst-asof-edit" style="width:auto;padding:3px 10px;font-size:11px;margin-left:10px">&#9998; &auml;ndern&hellip;</button>
+          </td>
+        </tr>
+      </table>
+      <div class="asst-nav">
+        <button class="ghost" id="asst-2-prev">&#8592; Zur&uuml;ck</button>
+        <button class="ghost" id="asst-2-next" style="margin-left:auto">Weiter &#8594; Scoping</button>
       </div>
     </div>
-    <div id="rcObjects"></div>
+
+    <!-- Step 3: Scoping -->
+    <div id="asst-step-3" style="display:none">
+      <h2>&#9314;&nbsp;Scoping <span class="muted" style="font-weight:400;font-size:14px">&mdash; optional</span></h2>
+      <p class="sub">Schr&auml;nken Sie die Auswertung auf bestimmte Bereiche ein. Ohne Einschr&auml;nkung wird das gesamte Dataset gepr&uuml;ft.</p>
+      <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 20px;margin:16px 0;color:var(--muted);font-size:13px">
+        &#128203; Einzelfilter und Varianten werden in einer kommenden Phase implementiert.<br>Sie k&ouml;nnen hier direkt weitergehen.
+      </div>
+      <div class="asst-nav">
+        <button class="ghost" id="asst-3-prev">&#8592; Zur&uuml;ck</button>
+        <button class="ghost" id="asst-3-next" style="margin-left:auto">Weiter &#8594; Konsistenz</button>
+      </div>
+    </div>
+
+    <!-- Step 7: Bericht -->
+    <div id="asst-step-7" style="display:none">
+      <h2>&#9318;&nbsp;Bericht</h2>
+      <p class="sub">Laden Sie den Konsistenz-&Uuml;berblick als CSV oder PDF herunter.</p>
+      <div style="margin:16px 0">
+        <label style="display:block;margin-bottom:8px;font-weight:600">Format</label>
+        <div class="pillgroup" id="asst-rpt-format-pills">
+          <button type="button" class="pill active" data-value="csv">CSV</button>
+          <button type="button" class="pill" data-value="pdf">PDF</button>
+        </div>
+        <div id="asst-rpt-pdf-fields" style="display:none;margin-top:16px;max-width:480px">
+          <label>Unternehmen / Auftraggeber</label>
+          <input type="text" id="asst-rpt-unternehmen" placeholder="z. B. Mustermann GmbH">
+          <label style="margin-top:8px">SAP-System / Mandant</label>
+          <input type="text" id="asst-rpt-system" placeholder="z. B. PRD / Mandant 100">
+          <label style="margin-top:8px">Erstellt von</label>
+          <input type="text" id="asst-rpt-ersteller" placeholder="Name des Pr&uuml;fers">
+          <label style="margin-top:8px">Pr&uuml;fungsanlass / Zeitraum</label>
+          <input type="text" id="asst-rpt-anlass" placeholder="z. B. Jahresabschlussp&uuml;fung 2023">
+        </div>
+      </div>
+      <div class="hint" id="asst-rpt-hint" style="display:none"></div>
+      <div class="asst-nav">
+        <button class="ghost" id="asst-7-prev">&#8592; Zur&uuml;ck</button>
+        <button class="ghost" id="asst-rpt-download">&#128202; Bericht herunterladen</button>
+      </div>
+    </div>
+
   </div>
 </main>
 
 <!-- Dialog: Import -->
 <div class="overlay" id="dlg-import"><div class="dialog">
-  <span class="x" data-close>&times;</span><h3>Import</h3>
-  <div class="sub">Daten eines Systems laden &mdash; ZIP hochladen (mit `.csv`/`.txt`) oder vorhandenen Ordner.</div>
-  <form id="formUpload">
-    <label for="upFile">ZIP-Datei</label>
-    <input type="file" id="upFile" accept=".zip" />
-    <div class="row">
-      <div><label for="upDataset">Dataset-Name</label><input id="upDataset" placeholder="aus Dateiname" /></div>
-      <div><label for="upLang">Sprachen</label><input id="upLang" value="DE,DEU,D" /></div>
+  <span class="x" id="impDlgClose" data-close>&times;</span><h3>Import</h3>
+
+  <!-- Fortschrittsanzeige (während Job läuft) -->
+  <div id="impProgress" style="display:none">
+    <div id="impStepLabel" style="font-weight:600;font-size:14px;margin-bottom:10px;min-height:20px"></div>
+    <div style="background:var(--line);border-radius:3px;height:6px;overflow:hidden;margin-bottom:6px;position:relative">
+      <div id="impBar" style="height:100%;background:var(--accent);width:0;transition:width .5s ease"></div>
+      <div id="impBarPulse" style="display:none;position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,var(--accent) 40%,transparent 100%);animation:impPulse 1.4s ease-in-out infinite"></div>
     </div>
-    <label for="upAsOf">Stichtag (Downloaddatum der Extrakte)</label>
-    <input type="date" id="upAsOf" />
-    <small>Wird einmalig bei Erst-Import gesetzt (gilt dann global für alle Läufe/Checks dieses
-      Datasets); leer = automatisch aus den Dateizeitstempeln der Extrakte abgeleitet, sonst
-      heute. Spätere Korrektur über „ändern…" beim Dataset.</small>
-    <div class="check"><input type="checkbox" id="upSkipSchema" />
-      <div><label for="upSkipSchema">Schema &uuml;berspringen</label>
-        <small>Constraints/Indizes sind schon angelegt.</small></div></div>
-    <button class="primary" type="submit" id="upBtn">ZIP importieren</button>
-  </form>
-  <div class="sep"></div>
-  <form id="formFolder">
-    <label for="impDataset">oder vorhandener Ordner (data/import/&hellip;)</label>
-    <select id="impDataset"></select>
-    <label for="impAsOf">Stichtag (Downloaddatum der Extrakte)</label>
-    <input type="date" id="impAsOf" />
-    <small>Nur bei Erst-Import dieses Datasets wirksam; leer = automatisch aus den
-      Dateizeitstempeln der Extrakte abgeleitet, sonst heute.</small>
-    <div class="check"><input type="checkbox" id="impSkipConvert" />
-      <div><label for="impSkipConvert">Konvertierung &uuml;berspringen</label>
-        <small>.csv liegen bereits vor.</small></div></div>
-    <button class="ghost" type="submit" id="impBtn">Ordner importieren</button>
-  </form>
+    <div id="impMeta" class="muted" style="font-size:12px;display:flex;gap:16px;flex-wrap:wrap;min-height:16px"></div>
+    <div id="impNote" class="muted" style="font-size:12px;margin-top:3px;min-height:14px"></div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:18px">
+      <button class="ghost danger" id="impCancelBtn">Abbrechen</button>
+      <span id="impCancelHint" class="muted" style="font-size:11px;display:none">Abbruch nach aktuellem Schritt&hellip;</span>
+    </div>
+    <div id="impResult" style="display:none;margin-top:16px;padding:10px 14px;border-radius:6px;background:var(--panel)"></div>
+  </div>
+
+  <!-- Formulare (während Job läuft ausgeblendet) -->
+  <div id="impForms">
+    <div class="sub">Daten eines Systems laden &mdash; ZIP hochladen (mit <code>.csv</code>/<code>.txt</code>) oder vorhandenen Ordner.</div>
+    <form id="formUpload">
+      <label for="upFile">ZIP-Datei</label>
+      <input type="file" id="upFile" accept=".zip" />
+      <div class="row">
+        <div><label for="upDataset">Dataset-Name</label><input id="upDataset" placeholder="aus Dateiname" /></div>
+        <div><label for="upLang">Sprachen</label><input id="upLang" value="DE,DEU,D" /></div>
+      </div>
+      <label for="upAsOf">Stichtag (Downloaddatum der Extrakte)</label>
+      <input type="date" id="upAsOf" />
+      <small>Wird einmalig bei Erst-Import gesetzt; leer = automatisch aus Dateizeitstempeln abgeleitet.
+        Sp&auml;tere Korrektur &uuml;ber „&auml;ndern&hellip;" beim Dataset.</small>
+      <div class="check"><input type="checkbox" id="upSkipSchema" />
+        <div><label for="upSkipSchema">Schema &uuml;berspringen</label>
+          <small>Constraints/Indizes sind schon angelegt.</small></div></div>
+      <div class="check"><input type="checkbox" id="upClearFirst" />
+        <div><label for="upClearFirst">Vorher leeren</label>
+          <small>Entfernt bestehende Graph-Daten dieses Datasets vor dem Import (sauberer Neustart).</small></div></div>
+      <button class="primary" type="submit" id="upBtn">ZIP importieren</button>
+    </form>
+    <div class="sep"></div>
+    <form id="formFolder">
+      <label for="impDataset">oder vorhandener Ordner (data/import/&hellip;)</label>
+      <select id="impDataset"></select>
+
+      <!-- Resume-Banner (eingeblendet wenn State-Datei vorhanden) -->
+      <div id="impResumeBanner" style="display:none; background:rgba(76,139,245,.1); border:1px solid rgba(76,139,245,.3); border-radius:6px; padding:10px 12px; margin:8px 0">
+        <div style="font-weight:600; font-size:13px; margin-bottom:4px">&#9889; Letzter Import unterbrochen</div>
+        <div id="impResumeInfo" class="muted" style="font-size:12px; margin-bottom:8px"></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button type="button" class="ghost" id="impResumeBtn" style="padding:4px 12px; font-size:12px">Weitermachen</button>
+          <button type="button" class="ghost danger" id="impRestartBtn" style="padding:4px 12px; font-size:12px">Von vorne</button>
+        </div>
+      </div>
+
+      <label for="impAsOf">Stichtag (Downloaddatum der Extrakte)</label>
+      <input type="date" id="impAsOf" />
+      <small>Nur bei Erst-Import dieses Datasets wirksam; leer = automatisch abgeleitet.</small>
+      <div class="check"><input type="checkbox" id="impSkipConvert" />
+        <div><label for="impSkipConvert">Konvertierung &uuml;berspringen</label>
+          <small>.csv liegen bereits vor.</small></div></div>
+      <div class="check"><input type="checkbox" id="impClearFirst" />
+        <div><label for="impClearFirst">Vorher leeren</label>
+          <small>Entfernt bestehende Graph-Daten dieses Datasets vor dem Import.</small></div></div>
+      <button class="ghost" type="submit" id="impBtn">Ordner importieren</button>
+    </form>
+  </div>
 </div></div>
 
 <!-- Dialog: Neuer Lauf -->
 <div class="overlay" id="dlg-run"><div class="dialog">
-  <span class="x" data-close>&times;</span><h3>Neuer Lauf</h3>
+  <span class="x" id="runDlgClose" data-close>&times;</span><h3>Neuer Lauf</h3>
   <div class="sub">SoD-Auswertung mit Parametern &mdash; F&uuml;llt intern die Parameter (kein JSON).</div>
+
+  <!-- Fortschrittsanzeige (eingeblendet während Job läuft) -->
+  <div id="runProgress" style="display:none">
+    <div id="runStepLabel" style="font-weight:600; font-size:14px; margin-bottom:8px"></div>
+    <div style="background:var(--line);border-radius:3px;height:6px;overflow:hidden;position:relative;margin-bottom:6px">
+      <div id="runBarPulse" style="position:absolute;inset:0;background:var(--accent);opacity:.55;animation:impPulse 1.4s ease-in-out infinite"></div>
+      <div id="runBar" style="height:100%;width:0%;background:var(--accent);border-radius:3px;transition:width .6s ease;position:relative"></div>
+    </div>
+    <div id="runMeta" class="muted" style="font-size:12px;min-height:16px;margin-bottom:10px"></div>
+    <button class="ghost danger" id="runCancelBtn">Abbrechen</button>
+    <div id="runResult" style="display:none;margin-top:12px;padding:10px 12px;border-radius:6px;font-size:13px"></div>
+  </div>
+
+  <div id="runForms">
   <form id="formRun">
     <div class="row">
       <div><label for="ruleset">Ruleset</label><select id="ruleset"></select></div>
@@ -515,15 +695,16 @@
     <div class="check"><input type="checkbox" id="skipMaterialize" />
       <div><label for="skipMaterialize">Materialisierung &uuml;berspringen</label>
         <small>nur wenn „wer kann was" f&uuml;r den Stichtag schon vorliegt (schneller).</small></div></div>
-    <div class="check"><input type="checkbox" id="skipRulesetLoad" checked />
+    <div class="check"><input type="checkbox" id="skipRulesetLoad" />
       <div><label for="skipRulesetLoad">Ruleset-Laden &uuml;berspringen</label>
-        <small>Ruleset ist i. d. R. schon geladen.</small></div></div>
+        <small>Nur setzen, wenn das Ruleset bereits aus einem fr&uuml;heren Lauf geladen ist.</small></div></div>
     <div class="check"><input type="checkbox" id="withExplain" />
       <div><label for="withExplain">Evidenz mitberechnen</label>
         <small>verursachende Rollen/Profile + intra/inter &mdash; <b>deutlich langsamer</b>. Sonst
           sp&auml;ter per „Evidenz" (Ribbon) nachrechenbar.</small></div></div>
     <button class="primary" type="submit" id="runBtn">Auswertung starten</button>
   </form>
+  </div><!-- /#runForms -->
 </div></div>
 
 <!-- Dialog: Sichern -->
@@ -537,6 +718,15 @@
   <button class="ghost" id="backupBtn">Backup erstellen</button>
   <h2>Backups</h2>
   <ul class="runs" id="backups"></ul>
+
+  <div class="sep"></div>
+  <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap">
+    <b>Quelldateien bereinigen</b>
+    <span class="muted" id="importFilesInfo" style="font-size:12px"></span>
+  </div>
+  <div class="hint" style="margin-top:4px">Nach einem Backup werden die rohen .txt- und konvertierten .csv-Dateien im
+    Import-Ordner nicht mehr ben&ouml;tigt. Das Backup-ZIP enth&auml;lt alles f&uuml;r einen sp&auml;teren Re-Import.</div>
+  <button class="ghost danger" id="purgeImportBtn" style="margin-top:8px" disabled>Quelldateien l&ouml;schen</button>
 
   <div class="sep"></div>
   <div class="sub">Lauf-Backup = Ergebnis eines Auswertungslaufs (Findings, ohne Evidenz). Beim
@@ -629,9 +819,9 @@ function closeDlg() { document.querySelectorAll('.overlay.open').forEach(o => o.
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeDlg(); }));
 document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
-$('cmdImport').onclick = () => openDlg('dlg-import');
+$('cmdImport').onclick = () => { openDlg('dlg-import'); checkImportState($('impDataset').value); };
 $('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); openDlg('dlg-run'); };
-$('cmdBackup').onclick = () => openDlg('dlg-backup');
+$('cmdBackup').onclick = () => { openDlg('dlg-backup'); refreshImportFilesInfo(); };
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
 $('cmdExport').onclick = () => { if (activeRunId) location.href = '/findings/export?runId=' + encodeURIComponent(activeRunId); };
@@ -699,7 +889,7 @@ $('rptDownloadBtn').onclick = async () => {
     $('rptDownloadBtn').disabled = false; $('rptDownloadBtn').innerHTML = '&#128202; Herunterladen';
   }
 };
-$('ccBackBtn').onclick = () => showResultsView();
+$('ccBackBtn').onclick = () => asst.active ? goToAsstStep(3) : showResultsView();
 
 const CC_AREA_META = {
   user: { title: 'Konsistenzchecks &middot; User-spezifisch',
@@ -1184,6 +1374,8 @@ function showResultsView() {
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
   $('rootCauseView').style.display = 'none';
+  $('colsLeft').style.display = '';
+  $('colsRight').style.display = '';
   document.querySelector('main .cols').style.display = '';
   if (activeRunId) applyFilters(); else $('kpis').style.display = '';
 }
@@ -1195,13 +1387,19 @@ function showRootCauseView() {
   $('resultContext').style.display = 'none';
   $('kpis').style.display = 'none';
   $('causingActors').style.display = 'none';
-  document.querySelector('main .cols').style.display = 'none';
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
+  $('colsRight').style.display = 'none';
+  document.querySelector('main .cols').style.display = '';
+  // Sidebar nur bei Absprung aus Ergebnissen eingeblendet lassen
+  $('colsLeft').style.display = rcReturnTo === 'results' ? '' : 'none';
   $('rootCauseView').style.display = '';
 }
 $('rcBackBtn').onclick = () => {
+  if (asst.active) { goToAsstStep(5); return; }
   $('rootCauseView').style.display = 'none';
+  $('colsLeft').style.display = '';
+  $('colsRight').style.display = '';
   if (rcReturnTo === 'consistency') { $('consistencyResultView').style.display = ''; }
   else { showResultsView(); }
 };
@@ -1370,6 +1568,27 @@ async function loadImportFolders() {
   if (!folders.length) opt(sel, '', '— kein Ordner —');
 }
 
+let _impResumeMode = false; // true = Weitermachen, false = normaler/neuer Start
+
+async function checkImportState(dataset) {
+  const banner = $('impResumeBanner'), info = $('impResumeInfo');
+  if (!dataset) { banner.style.display = 'none'; _impResumeMode = false; return; }
+  try {
+    const st = await api(`/datasets/${encodeURIComponent(dataset)}/import-state`);
+    const completed = st.completed || [];
+    const total = st.total || 0;
+    if (completed.length > 0 && !$('impClearFirst').checked) {
+      const last = completed[completed.length - 1];
+      info.textContent = `${completed.length} von ${total} Schritten abgeschlossen · letzter: ${last}`;
+      banner.style.display = '';
+      _impResumeMode = true;
+    } else {
+      banner.style.display = 'none';
+      _impResumeMode = false;
+    }
+  } catch { banner.style.display = 'none'; _impResumeMode = false; }
+}
+
 function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLowerCase()}">${c || '?'}</span>`; }
 
 function fmtDateTime(iso) {
@@ -1395,24 +1614,75 @@ function setKpis(j) {
   $('kpis').innerHTML = tiles.join('');
 }
 
+function _runsOrderKey() { return 'runsOrder'; }
+function _saveRunsOrder() {
+  const ids = [...$('runs').querySelectorAll('[data-run-id]')].map(li => li.dataset.runId);
+  localStorage.setItem(_runsOrderKey(), JSON.stringify(ids));
+}
+function _getSavedRunsOrder() {
+  try { return JSON.parse(localStorage.getItem(_runsOrderKey()) || '[]'); } catch { return []; }
+}
+
+let _dragSrc = null;
+function _bindRunDnd(li) {
+  li.setAttribute('draggable', 'true');
+  li.addEventListener('dragstart', e => {
+    _dragSrc = li; li.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  li.addEventListener('dragend', () => {
+    li.classList.remove('dragging');
+    $('runs').querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  });
+  li.addEventListener('dragover', e => {
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    if (_dragSrc && _dragSrc !== li) {
+      $('runs').querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      li.classList.add('drag-over');
+    }
+  });
+  li.addEventListener('dragleave', () => li.classList.remove('drag-over'));
+  li.addEventListener('drop', e => {
+    e.preventDefault(); li.classList.remove('drag-over');
+    if (!_dragSrc || _dragSrc === li) return;
+    const ul = $('runs');
+    const kids = [...ul.children];
+    const si = kids.indexOf(_dragSrc), ti = kids.indexOf(li);
+    ul.insertBefore(_dragSrc, si < ti ? li.nextSibling : li);
+    _saveRunsOrder();
+  });
+}
+
 async function loadRuns() {
   const runs = await api('/runs');
   runsById = {}; runs.forEach(r => runsById[r.runId] = r);
   ctx.runs = runs.length; updateCtxChip();
   const ul = $('runs');
   ul.innerHTML = runs.length ? '' : '<li class="muted" style="cursor:default">noch keine L&auml;ufe</li>';
+  // gespeicherte Reihenfolge anwenden
+  const saved = _getSavedRunsOrder();
+  if (saved.length) {
+    const order = new Map(saved.map((id, i) => [id, i]));
+    runs.sort((a, b) => (order.has(a.runId) ? order.get(a.runId) : 9999)
+                      - (order.has(b.runId) ? order.get(b.runId) : 9999));
+  }
   runs.forEach(r => {
     const li = document.createElement('li');
     li.className = 'run-card' + (r.runId === activeRunId ? ' active' : '');
+    li.dataset.runId = r.runId;
     const label = r.title || r.runId;
     const rs = (metaCache.rulesets || []).find(x => x.id === r.ruleset);
-    li.innerHTML = `<div class="run-card-top"><span class="run-id">${label}</span></div>`
+    const rsName = rs ? rs.name : r.ruleset;
+    li.innerHTML = `<div class="run-card-top">`
+      + `<span class="run-id">${label}</span>`
+      + `<span class="chip-mini" style="flex-shrink:0">${rsName}</span>`
+      + `</div>`
       + `<div class="run-card-meta">`
-      + `<span class="chip-mini">${rs ? rs.name : r.ruleset}</span>`
       + `<span class="chip-mini">Stichtag ${r.asOf}</span>`
       + `<span class="chip-mini">${fmtDateTime(r.generatedAt)}</span>`
       + `</div>`;
     li.onclick = () => showFindings(r.runId);
+    _bindRunDnd(li);
     ul.appendChild(li);
   });
   for (const id of ['clrRun', 'bkpRun']) {
@@ -1699,7 +1969,7 @@ async function applyFilters() {
   refreshKpis({ user: u, rule: r, userTypes: uts, ruleCriticality: rc, sleeping: sl });
   renderCausingActors((u && r && rows.length === 1) ? rows[0] : null);
 }
-$('filterApplyBtn').onclick = applyFilters;
+
 $('filterResetBtn').onclick = () => {
   $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
   resetUserTypeFilter();
@@ -1912,7 +2182,10 @@ async function updateQueryCascade(u) {
 $('filterUser').addEventListener('change', () => {
   updateQueryCascade($('filterUser').value);
   renderRuleSelect();
+  applyFilters();
 });
+$('filterQuery').addEventListener('change', applyFilters);
+$('filterRule').addEventListener('change', applyFilters);
 
 function renderQuerySelect() {
   const sel = $('filterQuery'); const cur = sel.value;
@@ -2003,7 +2276,9 @@ async function poll(jobId, onDone) {
     if (j.status === 'done') { st.className = ''; st.innerHTML = await onDone(j); await refreshAll();
       if (activeRunId) await showFindings(activeRunId).catch(() => {}); return j; }
     if (j.status === 'error') { st.className = 'err'; st.innerHTML = `<b>Fehler:</b> ${j.error}`; return j; }
-    st.innerHTML = `<span class="spin"></span> Schritt: <b>${j.step || j.status}</b>&hellip;`;
+    const stepCounter = j.stepNum ? ` <span class="muted">(${j.stepNum}/${j.stepTotal})</span>` : '';
+    const nodeHint = j.lastNodes ? ` <span class="muted">+${j.lastNodes.toLocaleString()} Knoten</span>` : '';
+    st.innerHTML = `<span class="spin"></span> Schritt: <b>${j.step || j.status}</b>${stepCounter}${nodeHint}&hellip;`;
     await new Promise(r => setTimeout(r, 1500));
   }
 }
@@ -2022,39 +2297,335 @@ async function runJob(url, fetchOpts, confirmMsg, onDone) {
   }
 }
 const json = body => ({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-const importDone = j => `${doneTag} <b>${j.dataset}</b> &mdash; ${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen.`;
+
+/* Import-Fortschrittsanzeige --------------------------------------------------------- */
+const IMP_LABELS = {
+  'unpack':   ['ZIP entpacken', ''],
+  'convert':  ['SE16-Exportdateien konvertieren (.txt → .csv)', ''],
+  'schema':   ['Datenbankschema prüfen (Constraints & Indizes)', ''],
+  'validate': ['Ergebnis validieren', ''],
+  'start':    ['Starte…', ''],
+  '00_dataset.cypher':           ['Dataset-Eintrag anlegen', ''],
+  '01_users.cypher':             ['Benutzer laden', 'USR02'],
+  '02_roles.cypher':             ['Rollen laden', 'AGR_DEFINE'],
+  '03_role_hierarchy.cypher':    ['Rollenhierarchie', 'AGR_AGRS'],
+  '04_user_roles.cypher':        ['Benutzerzuordnungen', 'AGR_USERS'],
+  '05_role_profiles.cypher':     ['Rollen → Profile', 'AGR_PROF2'],
+  '06_user_profiles.cypher':     ['Benutzer-Profile', 'UST04'],
+  '07_profile_texts.cypher':     ['Profil-Texte', 'UST10'],
+  '08_authorizations.cypher':    ['Rollenberechtigungen laden', 'AGR_1251 · größter Schritt, kann Minuten dauern'],
+  '09_transactions.cypher':      ['Transaktionen', 'TSTCT'],
+  '10_su24_checks.cypher':       ['SU24-Berechtigungsvorschläge', 'USOBT_C'],
+  '12_user_names.cypher':        ['Benutzernamen', 'ADRP'],
+  '13_authobject_texts.cypher':  ['Berechtigungsobjekt-Texte', 'TOBJ / TOBJT'],
+  '14_reference_users.cypher':   ['Referenzbenutzer', 'USR21'],
+  '15_collective_profiles.cypher':['Sammelprofile', 'USR10'],
+  '16_org_levels.cypher':        ['Org-Level-Felder', 'PRGN_CUST'],
+  '17_role_menu.cypher':         ['Rollenmenü', 'AGR_TCODES'],
+  '18_profile_auths.cypher':     ['Profilberechtigungen Struktur', 'UST10S'],
+  '19_profile_auth_values.cypher':['Profilberechtigungen Feldwerte', 'UST12 · kann Minuten dauern'],
+  '20_auth_texts.cypher':        ['Berechtigungs-Texte', 'UST12T'],
+  '21_role_texts.cypher':        ['Rollen-Texte', 'AGR_TEXTS'],
+  '22_role_profile_status.cypher':['Profil-Generierungsstatus', 'AGR_FLAGS'],
+  '23_org_fields.cypher':        ['Org-Felder', 'USORG'],
+  '24_resolve_org_levels.cypher':['Org-Level auflösen', ''],
+  '90_finalize.cypher':          ['Abschlussverknüpfungen', ''],
+  '99_validate.cypher':          ['Integrität prüfen', ''],
+};
+
+let _impJobId = null;
+
+function _impStepInfo(j) {
+  const raw = j.step || '';
+  if (raw.startsWith('load ')) {
+    const file = raw.slice(5);
+    const [label, note] = IMP_LABELS[file] || [file, ''];
+    return { label, note, pct: j.stepNum ? Math.round((j.stepNum / j.stepTotal) * 90) : 5,
+             meta: j.stepNum ? `Schritt ${j.stepNum} / ${j.stepTotal}` : '' };
+  }
+  if (raw === 'convert') {
+    const [label] = IMP_LABELS['convert'];
+    const hasProg = j.convertTotal > 0;
+    const pct = hasProg ? Math.round((j.convertDone / j.convertTotal) * 20) : null;
+    const meta = hasProg ? `${j.convertDone} / ${j.convertTotal} Dateien` : '';
+    const note = hasProg && j.convertFile ? j.convertFile.toUpperCase() : '';
+    return { label, note, pct, meta };
+  }
+  const [label, note] = IMP_LABELS[raw] || [raw, ''];
+  const pct = raw === 'validate' ? 95 : raw === 'done' ? 100 : null;
+  return { label, note, pct, meta: '' };
+}
+
+function _impUpdateUI(j) {
+  if (!j) return;
+  const { label, note, pct, meta } = _impStepInfo(j);
+  $('impStepLabel').textContent = label;
+  $('impNote').textContent = note;
+  const metaParts = [];
+  if (meta) metaParts.push(meta);
+  if (j.lastNodes) metaParts.push(`+${j.lastNodes.toLocaleString('de')} Knoten`);
+  $('impMeta').textContent = metaParts.join(' · ');
+  const bar = $('impBar'), pulse = $('impBarPulse');
+  if (pct != null) {
+    bar.style.width = pct + '%'; bar.style.display = '';
+    pulse.style.display = 'none';
+  } else {
+    bar.style.width = '15%'; bar.style.display = '';
+    pulse.style.display = '';
+  }
+}
+
+/* Lauf-Fortschrittsanzeige --------------------------------------------------------- */
+const RUN_STEP_LABELS = {
+  'start':       ['Starte…', ''],
+  'ruleset':     ['Ruleset laden', 'Queries & SoD-Regeln in den Graph schreiben'],
+  'materialize': ['Berechtigungsmatrix aufbauen', 'Wer kann was? — kann einige Minuten dauern'],
+  'evaluate':    ['SoD-Verst\xf6\xdfe auswerten', 'Findings berechnen'],
+  'explain':     ['Evidenz berechnen', 'Verursachende Rollen & Profile — kann Minuten dauern'],
+  'done':        ['Fertig', ''],
+};
+
+let _runJobId = null;
+
+function _runStepInfo(j) {
+  const raw = j.step || 'start';
+  // Batch: "Variante 2/3 (profil): materialize" -> prefix + step
+  const batchMatch = raw.match(/^(Variante \d+\/(\d+)[^:]*): (.+)$/);
+  let stepKey = raw, prefix = '', total = null, current = null;
+  if (batchMatch) {
+    prefix = batchMatch[1] + ' — ';
+    total = parseInt(batchMatch[2], 10);
+    stepKey = batchMatch[3].trim();
+    const curMatch = batchMatch[1].match(/(\d+)\/\d+/);
+    if (curMatch) current = parseInt(curMatch[1], 10);
+  }
+  const [label, note] = RUN_STEP_LABELS[stepKey] || [stepKey, ''];
+  return { label: prefix + label, note, current, total };
+}
+
+function _runUpdateUI(j) {
+  const { label, note, current, total } = _runStepInfo(j);
+  $('runStepLabel').textContent = label;
+  $('runMeta').textContent = note + (current && total ? ` (${current} von ${total} Varianten)` : '');
+  // Für Batch-Läufe Fortschrittsbalken als Schrittanzeige
+  if (current && total) {
+    const pct = ((current - 1) / total) * 100;
+    $('runBar').style.width = pct + '%';
+    $('runBarPulse').style.display = '';
+  } else {
+    $('runBar').style.width = '0%';
+    $('runBarPulse').style.display = '';
+  }
+}
+
+async function _runRun(startFn) {
+  $('runForms').style.display = 'none';
+  $('runDlgClose').style.display = 'none';
+  $('runProgress').style.display = '';
+  $('runResult').style.display = 'none';
+  $('runCancelBtn').disabled = false;
+  $('runCancelBtn').style.display = '';
+  $('runStepLabel').textContent = 'Starte…';
+  $('runMeta').textContent = '';
+  $('runBar').style.width = '0%';
+  try {
+    _runJobId = await startFn();
+    // Polling
+    const tick = async () => {
+      if (!_runJobId) return;
+      try {
+        const j = await api('/jobs/' + _runJobId);
+        _runUpdateUI(j);
+        if (j.status === 'done') {
+          // Ergebnis aufbauen
+          let msg = '';
+          if (j.runs) { // Batch
+            msg = `✅ ${j.runs.length} L\xe4ufe — ` + j.runs.map(r => `<b>${r.title}</b> (${r.findings})`).join(', ') + '.';
+          } else {
+            msg = `✅ Lauf <b>${j.runId}</b> — ${j.findings} Findings` + (j.intra != null ? ` (${j.intra} intra-Rolle)` : '') + '.';
+            activeRunId = j.runId;
+          }
+          _runDone(msg, false);
+          await refreshAll();
+          return;
+        }
+        if (j.status === 'error' || j.status === 'cancelled') {
+          _runDone('<b>' + (j.status === 'cancelled' ? 'Abgebrochen.' : 'Fehler:') + '</b> ' + (j.error || ''), true);
+          return;
+        }
+        setTimeout(tick, 800);
+      } catch(e) { setTimeout(tick, 2000); }
+    };
+    setTimeout(tick, 400);
+  } catch(err) {
+    _runDone('<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err)), true);
+  }
+}
+
+function _runDone(msg, isError) {
+  $('runBar').style.width = isError ? '0%' : '100%';
+  $('runBarPulse').style.display = 'none';
+  $('runCancelBtn').style.display = 'none';
+  const res = $('runResult');
+  res.style.display = '';
+  res.style.background = isError ? 'rgba(255,90,90,.1)' : 'rgba(60,200,100,.1)';
+  res.style.border = `1px solid ${isError ? 'rgba(255,90,90,.3)' : 'rgba(60,200,100,.3)'}`;
+  res.innerHTML = msg;
+  const btn = document.createElement('button');
+  btn.className = 'ghost'; btn.textContent = 'Schlie\xdfen';
+  btn.style.marginTop = '10px';
+  btn.onclick = () => { closeDlg(); _runReset(); };
+  res.appendChild(document.createElement('br'));
+  res.appendChild(btn);
+  _runJobId = null;
+}
+
+function _runReset() {
+  $('runForms').style.display = '';
+  $('runDlgClose').style.display = '';
+  $('runProgress').style.display = 'none';
+  $('runResult').style.display = 'none';
+  $('runCancelBtn').disabled = false;
+  $('runCancelBtn').style.display = '';
+  _runJobId = null;
+}
+
+$('runCancelBtn').addEventListener('click', async () => {
+  if (!_runJobId) return;
+  $('runCancelBtn').disabled = true;
+  try { await api('/jobs/' + _runJobId + '/cancel', { method: 'POST' }); } catch {}
+});
+
+async function _runStart(url, body) {
+  const r = await api(url, json(body));
+  return r.jobId;
+}
+
+async function _impRun(startFn) {
+  $('impForms').style.display = 'none';
+  $('impDlgClose').style.display = 'none';
+  $('impProgress').style.display = '';
+  $('impResult').style.display = 'none';
+  $('impCancelBtn').disabled = false;
+  $('impCancelHint').style.display = 'none';
+  $('impBar').style.width = '0';
+  $('impBarPulse').style.display = 'none';
+  $('impStepLabel').textContent = 'Starte…';
+  $('impNote').textContent = ''; $('impMeta').textContent = '';
+  try {
+    _impJobId = await startFn();
+    while (true) {
+      const j = await api('/jobs/' + _impJobId);
+      _impUpdateUI(j);
+      if (j.status === 'done') {
+        $('impBar').style.width = '100%'; $('impBarPulse').style.display = 'none';
+        const conv = j.converted != null ? `, ${j.converted} Tab. konvertiert` + (j.skipped ? ` (${j.skipped} übersprungen)` : '') : '';
+        _impDone(`✓ <b>${j.dataset}</b> geladen &mdash; ${j.users} User, ${j.roles} Rollen, ${j.auths} Berechtigungen${conv}.`, false);
+        await refreshAll();
+        return;
+      }
+      if (j.status === 'cancelled') { _impDone('Import abgebrochen.', true); return; }
+      if (j.status === 'error') { _impDone(`<b>Fehler:</b> ${j.error}`, true); return; }
+      await new Promise(r => setTimeout(r, 1200));
+    }
+  } catch (err) {
+    _impDone('<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err)), true);
+  }
+}
+
+function _impDone(msg, isError) {
+  $('impCancelBtn').style.display = 'none';
+  $('impCancelHint').style.display = 'none';
+  const res = $('impResult');
+  res.style.display = ''; res.innerHTML = msg;
+  res.style.color = isError ? 'var(--crit)' : '';
+  const btn = document.createElement('button');
+  btn.className = 'ghost'; btn.textContent = 'Schließen';
+  btn.style.marginTop = '12px';
+  btn.onclick = () => { closeDlg(); _impReset(); };
+  res.appendChild(document.createElement('br'));
+  res.appendChild(btn);
+  if (!isError) {
+    const st = $('status'); st.className = ''; st.style.display = 'block';
+    st.innerHTML = msg;
+  }
+}
+
+function _impReset() {
+  $('impForms').style.display = '';
+  $('impDlgClose').style.display = '';
+  $('impProgress').style.display = 'none';
+  $('impCancelBtn').disabled = false;
+  $('impCancelBtn').style.display = '';
+  _impJobId = null;
+  // Nach Abbruch oder Fertig: Banner neu laden (State hat sich ggf. geändert)
+  checkImportState($('impDataset').value);
+}
+
+$('impCancelBtn').addEventListener('click', async () => {
+  if (!_impJobId) return;
+  $('impCancelBtn').disabled = true;
+  $('impCancelHint').style.display = '';
+  try { await api('/jobs/' + _impJobId + '/cancel', { method: 'POST' }); } catch {}
+});
+
+/* Resume-Banner Steuerung */
+$('impDataset').addEventListener('change', () => checkImportState($('impDataset').value));
+$('impClearFirst').addEventListener('change', () => {
+  if ($('impClearFirst').checked) {
+    $('impResumeBanner').style.display = 'none'; _impResumeMode = false;
+  } else {
+    checkImportState($('impDataset').value);
+  }
+});
+$('impResumeBtn').addEventListener('click', () => {
+  _impResumeMode = true;
+  $('impClearFirst').checked = false;
+  $('formFolder').requestSubmit();
+});
+$('impRestartBtn').addEventListener('click', () => {
+  _impResumeMode = false;
+  $('impClearFirst').checked = true;
+  $('impResumeBanner').style.display = 'none';
+  $('formFolder').requestSubmit();
+});
 
 /* Formulare */
 $('formUpload').addEventListener('submit', async e => {
   e.preventDefault();
   const f = $('upFile').files[0];
   if (!f) { alert('Bitte eine ZIP-Datei wählen.'); return; }
-  closeDlg();
   const st = $('status'); st.className = ''; st.style.display = 'block';
-  st.innerHTML = '<span class="spin"></span> Upload&hellip;';
-  try {
+  st.innerHTML = '<span class="spin"></span> Upload läuft&hellip;';
+  await _impRun(async () => {
     const fd = new FormData();
     fd.append('file', f); fd.append('dataset', $('upDataset').value.trim());
     fd.append('lang', $('upLang').value.trim()); fd.append('skipSchema', $('upSkipSchema').checked);
     fd.append('asOf', $('upAsOf').value);
-    const { jobId } = await api('/imports/upload', { method: 'POST', body: fd });
-    await poll(jobId, importDone);
-  } catch (err) {
-    st.className = 'err'; st.innerHTML = '<b>Fehler:</b> ' + (err.detail || err.error || JSON.stringify(err));
-  }
+    fd.append('clearFirst', $('upClearFirst').checked);
+    const r = await api('/imports/upload', { method: 'POST', body: fd });
+    st.style.display = 'none';
+    return r.jobId;
+  });
 });
 
-$('formFolder').addEventListener('submit', e => {
+$('formFolder').addEventListener('submit', async e => {
   e.preventDefault();
   const d = $('impDataset').value; if (!d) return;
-  runJob('/imports', json({ dataset: d, skipConvert: $('impSkipConvert').checked,
-                            asOf: $('impAsOf').value || null }), null, importDone);
+  const resume = _impResumeMode && !$('impClearFirst').checked;
+  const clearFirst = $('impClearFirst').checked;
+  await _impRun(async () => {
+    const r = await api('/imports', json({ dataset: d, skipConvert: $('impSkipConvert').checked,
+                                          asOf: $('impAsOf').value || null,
+                                          clearFirst, resume }));
+    return r.jobId;
+  });
 });
 
-$('formRun').addEventListener('submit', e => {
+$('formRun').addEventListener('submit', async e => {
   e.preventDefault();
   const orgProfiles = selectedOrgProfiles();
-  if (!orgProfiles.length) { alert('Bitte mindestens eine Org-Variante wählen.'); return; }
+  if (!orgProfiles.length) { alert('Bitte mindestens eine Org-Variante w\xe4hlen.'); return; }
   const common = {
     ruleset: $('ruleset').value, dataset: $('runDataset').value,
     userTypeProfile: $('userTypeProfile').value,
@@ -2062,19 +2633,52 @@ $('formRun').addEventListener('submit', e => {
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
     skipExplain: !$('withExplain').checked,
   };
-  if (orgProfiles.length === 1) {
-    runJob('/runs', json({
-      ...common, orgProfile: orgProfiles[0],
-      runId: $('runId').value.trim() || null, title: $('runTitle').value.trim() || null,
-    }), null, async j => { activeRunId = j.runId;
-      return `${doneTag} Lauf <b>${j.runId}</b> &mdash; ${j.findings} Findings`
-        + (j.intra != null ? ` (${j.intra} intra-Rolle)` : '') + '.'; });
-  } else {
-    runJob('/runs/batch', json({ ...common, orgProfiles }), null, async j => {
-      const last = j.runs[j.runs.length - 1]; activeRunId = last.runId;
-      return `${doneTag} ${j.runs.length} Läufe angelegt: `
-        + j.runs.map(r => `<b>${r.title}</b> (${r.findings})`).join(', ') + '.';
-    });
+  await _runRun(async () => {
+    if (orgProfiles.length === 1) {
+      const r = await api('/runs', json({
+        ...common, orgProfile: orgProfiles[0],
+        runId: $('runId').value.trim() || null, title: $('runTitle').value.trim() || null,
+      }));
+      return r.jobId;
+    } else {
+      const r = await api('/runs/batch', json({ ...common, orgProfiles }));
+      return r.jobId;
+    }
+  });
+});
+
+async function refreshImportFilesInfo() {
+  const d = $('bkpDataset').value;
+  const btn = $('purgeImportBtn'), info = $('importFilesInfo');
+  if (!d) { info.textContent = ''; btn.disabled = true; return; }
+  try {
+    const r = await api('/datasets/' + encodeURIComponent(d) + '/import-files');
+    if (r.files === 0) {
+      info.textContent = 'keine Quelldateien vorhanden';
+      btn.disabled = true;
+    } else {
+      info.textContent = `${r.files} Datei${r.files !== 1 ? 'en' : ''}, ${(r.bytes / 1e6).toFixed(0)} MB`;
+      btn.disabled = false;
+    }
+  } catch { info.textContent = ''; btn.disabled = true; }
+}
+
+$('bkpDataset').addEventListener('change', refreshImportFilesInfo);
+
+$('purgeImportBtn').addEventListener('click', async () => {
+  const d = $('bkpDataset').value; if (!d) return;
+  if (!confirm(`Alle .txt- und .csv-Quelldateien von „${d}" löschen?\n\nDas Backup-ZIP bleibt erhalten und reicht für einen Re-Import.`)) return;
+  closeDlg();
+  const st = $('status'); st.className = ''; st.style.display = 'block';
+  st.innerHTML = '<span class="spin"></span> Quelldateien werden gel&ouml;scht&hellip;';
+  try {
+    const r = await api('/datasets/' + encodeURIComponent(d) + '/import-files', { method: 'DELETE' });
+    st.innerHTML = `${doneTag} Quelldateien von <b>${d}</b> gel&ouml;scht &mdash; ${r.deleted} Datei${r.deleted !== 1 ? 'en' : ''}, ${(r.freedBytes / 1e6).toFixed(0)} MB freigegeben.`;
+    await refreshImportFilesInfo();
+    await loadImportFolders();
+  } catch (err) {
+    st.className = 'err'; st.style.display = 'block';
+    st.innerHTML = '<b>Fehler:</b> ' + (err.detail || JSON.stringify(err));
   }
 });
 
@@ -2083,8 +2687,11 @@ $('backupBtn').addEventListener('click', () => {
   const clear = $('backupClear').checked;
   runJob('/datasets/' + encodeURIComponent(d) + '/backup' + (clear ? '?clear=true' : ''), { method: 'POST' },
     clear ? `Backup von „${d}" erstellen und Dataset danach leeren?` : null,
-    j => `${doneTag} Backup <b>${j.backup}</b> (${j.tables} Tab., ${(j.sizeBytes / 1e6).toFixed(1)} MB)`
-       + (j.cleared ? ' &mdash; Dataset geleert.' : '.'));
+    async j => {
+      await refreshImportFilesInfo();
+      return `${doneTag} Backup <b>${j.backup}</b> (${j.tables} Tab., ${(j.sizeBytes / 1e6).toFixed(1)} MB)`
+           + (j.cleared ? ' &mdash; Dataset geleert.' : '.');
+    });
 });
 
 $('clearBtn').addEventListener('click', () => {
@@ -2111,6 +2718,214 @@ $('clearRunBtn').addEventListener('click', () => {
     `Lauf „${label}" wirklich löschen? (Dataset & andere Läufe bleiben erhalten.)`,
     () => `${doneTag} Lauf <b>${label}</b> gelöscht.`);
 });
+
+// ── Assistent ────────────────────────────────────────────────────────────────
+const asst = { active: false, step: 0, visited: new Set(), dataset: '' };
+
+function _asstAllViews(hide = true) {
+  const v = hide ? 'none' : '';
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  document.querySelector('main .cols').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  $('rootCauseView').style.display = 'none';
+  $('assistentView').style.display = hide ? 'none' : '';
+}
+
+function _asstUpdateStepper() {
+  document.querySelectorAll('.asst-step').forEach(btn => {
+    const n = +btn.dataset.step;
+    const reachable = asst.visited.has(n) || n === asst.step || n <= asst.step + 1;
+    btn.disabled = !reachable;
+    btn.classList.toggle('active',  n === asst.step);
+    btn.classList.toggle('visited', asst.visited.has(n) && n !== asst.step);
+  });
+}
+
+function _asstShowInlineStep(id) {
+  _asstAllViews(true);
+  $('assistentView').style.display = '';
+  ['asst-step-1','asst-step-2','asst-step-3','asst-step-7'].forEach(s => $(s).style.display = 'none');
+  $(id).style.display = '';
+}
+
+async function goToAsstStep(n) {
+  if (!asst.active) return;
+  asst.step = n;
+  asst.visited.add(n);
+  _asstUpdateStepper();
+
+  if (n === 1) {
+    _asstShowInlineStep('asst-step-1');
+    await asstRenderDatasets();
+  } else if (n === 2) {
+    _asstShowInlineStep('asst-step-2');
+    const ds = await api('/datasets').catch(() => []);
+    const sel = $('asst-dataset-sel'); sel.innerHTML = '';
+    if (!ds.length) opt(sel, '', '— keine —');
+    else { ds.forEach(d => opt(sel, d, d)); if (asst.dataset) sel.value = asst.dataset; }
+    const asOf = await fetchDatasetAsOf(sel.value).catch(() => null);
+    $('asst-asof-display').textContent = asOf || '–';
+    asst.dataset = sel.value;
+  } else if (n === 3) {
+    _asstShowInlineStep('asst-step-3');
+  } else if (n === 4) {
+    _asstAllViews(true);
+    await loadConsistencyCatalog('user');
+    showConsistencyView('user');
+    // Teaser: auch Rollen-Tab anbieten
+    $('ccViewSub').innerHTML += ' &nbsp;<a href="#" id="asst-cc-role-link" style="font-size:12px">&#8594; auch Rollen-spezifisch laden</a>';
+    const roleLink = $('asst-cc-role-link');
+    if (roleLink) roleLink.onclick = async e => {
+      e.preventDefault();
+      await loadConsistencyCatalog('role');
+      showConsistencyView('role');
+    };
+  } else if (n === 5) {
+    _asstAllViews(true);
+    showResultsView();
+  } else if (n === 6) {
+    _asstAllViews(true);
+    showResultsView(); // Findings als Ausgangspunkt für Root-Cause
+  } else if (n === 7) {
+    _asstShowInlineStep('asst-step-7');
+    // Dataset aus Schritt 2 vorbelegen
+    const rptDs = asst.dataset;
+    $('asst-rpt-download').dataset.dataset = rptDs;
+  }
+}
+
+async function asstRenderDatasets() {
+  const el = $('asst-datasets-overview');
+  el.innerHTML = '<span class="muted">Lade&hellip;</span>';
+  const ds = await api('/datasets').catch(() => []);
+  if (!ds.length) {
+    el.innerHTML = '<p style="color:var(--muted)">Noch keine Datasets vorhanden &mdash; starten Sie mit einem Import.</p>';
+    return;
+  }
+  if (!asst.dataset) asst.dataset = ds[0];
+  const asOfs = await Promise.all(ds.map(d => fetchDatasetAsOf(d).catch(() => null)));
+  let html = '<table style="border-collapse:collapse;width:100%;max-width:680px">'
+    + '<thead><tr>'
+    + '<th style="text-align:left;padding:5px 20px 5px 0;border-bottom:1px solid var(--line);font-weight:600">Dataset</th>'
+    + '<th style="text-align:left;padding:5px 20px 5px 0;border-bottom:1px solid var(--line);font-weight:600">Stichtag</th>'
+    + '<th style="border-bottom:1px solid var(--line)"></th>'
+    + '</tr></thead><tbody>';
+  ds.forEach((d, i) => {
+    html += '<tr>'
+      + '<td style="padding:7px 20px 7px 0;font-family:monospace;font-size:13px">' + d + '</td>'
+      + '<td style="padding:7px 20px 7px 0;color:var(--muted);font-family:monospace;font-size:13px">' + (asOfs[i] || '&ndash;') + '</td>'
+      + '<td style="padding:7px 0"><span style="display:flex;gap:6px">'
+      + '<button class="ghost asst-ds-bkp" data-ds="' + d + '" style="width:auto;padding:3px 10px;font-size:12px">&#128190; Backup</button>'
+      + '<button class="ghost asst-ds-del" data-ds="' + d + '" style="width:auto;padding:3px 10px;font-size:12px;color:var(--crit)">&#128465; L&ouml;schen</button>'
+      + '</span></td>'
+      + '</tr>';
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+
+  el.querySelectorAll('.asst-ds-bkp').forEach(btn => btn.onclick = async () => {
+    const d = btn.dataset.ds;
+    await runJob('/datasets/' + encodeURIComponent(d) + '/backup', { method: 'POST' }, null,
+      j => doneTag + ' Backup <b>' + j.backup + '</b> (' + j.tables + '&nbsp;Tab., ' + (j.sizeBytes / 1e6).toFixed(1) + '&nbsp;MB).');
+  });
+
+  el.querySelectorAll('.asst-ds-del').forEach(btn => btn.onclick = async () => {
+    const d = btn.dataset.ds;
+    await runJob('/datasets/' + encodeURIComponent(d) + '/clear', { method: 'POST' },
+      'Dataset „' + d + '“ wirklich l\xf6schen? (Ruleset & Schema bleiben.)',
+      j => doneTag + ' Dataset <b>' + d + '</b> gel\xf6scht (' + j.remaining + ' Rest-Knoten).');
+    if (asst.dataset === d) asst.dataset = '';
+    await refreshDatasets();
+    await asstRenderDatasets();
+  });
+}
+
+function startAssistent() {
+  asst.active = true;
+  asst.step   = 0;
+  asst.visited.clear();
+  $('assistentStepper').style.display = '';
+  goToAsstStep(1);
+}
+
+function exitAssistent() {
+  asst.active = false;
+  $('assistentStepper').style.display = 'none';
+  $('assistentView').style.display = 'none';
+  showResultsView();
+}
+
+// Ribbon + Exit
+$('cmdAssistent').onclick = startAssistent;
+$('cmdAsstExit').onclick  = exitAssistent;
+
+// Stepper-Klicks
+document.querySelectorAll('.asst-step').forEach(btn =>
+  btn.addEventListener('click', () => goToAsstStep(+btn.dataset.step)));
+
+// Step-1 Buttons
+$('asst-import-open').onclick = () => { openDlg('dlg-import'); checkImportState($('impDataset').value); };
+$('asst-1-next').onclick      = () => goToAsstStep(2);
+
+// Step-2 Buttons
+$('asst-dataset-sel').addEventListener('change', async () => {
+  asst.dataset = $('asst-dataset-sel').value;
+  const asOf = await fetchDatasetAsOf(asst.dataset).catch(() => null);
+  $('asst-asof-display').textContent = asOf || '–';
+});
+$('asst-asof-edit').onclick = async () => {
+  await editDatasetAsOf('asst-dataset-sel', 'asst-asof-display');
+  const asOf = await fetchDatasetAsOf($('asst-dataset-sel').value).catch(() => null);
+  $('asst-asof-display').textContent = asOf || '–';
+};
+$('asst-2-prev').onclick = () => goToAsstStep(1);
+$('asst-2-next').onclick = () => { asst.dataset = $('asst-dataset-sel').value; goToAsstStep(3); };
+
+// Step-3 Buttons
+$('asst-3-prev').onclick = () => goToAsstStep(2);
+$('asst-3-next').onclick = () => goToAsstStep(4);
+
+// Step-7 Buttons
+let asstRptFormat = 'csv';
+$('asst-rpt-format-pills').querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => {
+  asstRptFormat = b.dataset.value;
+  $('asst-rpt-format-pills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
+  $('asst-rpt-pdf-fields').style.display = asstRptFormat === 'pdf' ? '' : 'none';
+}));
+$('asst-7-prev').onclick = () => goToAsstStep(6);
+$('asst-rpt-download').onclick = async () => {
+  const ds = asst.dataset;
+  if (!ds) { $('asst-rpt-hint').style.display = ''; $('asst-rpt-hint').textContent = 'Kein Dataset gewählt (zurück zu Schritt 2).'; return; }
+  $('asst-rpt-download').disabled = true;
+  $('asst-rpt-download').innerHTML = '<span class="spin"></span> läuft…';
+  $('asst-rpt-hint').style.display = 'none';
+  try {
+    let url, name;
+    if (asstRptFormat === 'pdf') {
+      const p = new URLSearchParams({ dataset: ds,
+        unternehmen: $('asst-rpt-unternehmen').value, system: $('asst-rpt-system').value,
+        ersteller: $('asst-rpt-ersteller').value, anlass: $('asst-rpt-anlass').value });
+      url = '/consistency-checks/export/pdf?' + p; name = `konsistenz_${ds}.pdf`;
+    } else {
+      url = '/consistency-checks/export?dataset=' + encodeURIComponent(ds); name = `konsistenz_${ds}.csv`;
+    }
+    const resp = await fetch(url);
+    if (!resp.ok) { const e = await resp.json(); throw e; }
+    const blob = await resp.blob();
+    const m = (resp.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/);
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: m ? m[1] : name });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+    $('asst-rpt-hint').style.display = ''; $('asst-rpt-hint').textContent = 'Bericht heruntergeladen ✔';
+  } catch (e) {
+    $('asst-rpt-hint').style.display = ''; $('asst-rpt-hint').textContent = 'Fehler: ' + (e.detail || JSON.stringify(e));
+  } finally {
+    $('asst-rpt-download').disabled = false; $('asst-rpt-download').innerHTML = '&#128202; Bericht herunterladen';
+  }
+};
+// ── Ende Assistent ────────────────────────────────────────────────────────────
 
 loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).then(loadRunBackups).catch(e =>
   document.body.insertAdjacentHTML('beforeend',

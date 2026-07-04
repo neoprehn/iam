@@ -10,7 +10,8 @@ Runner) · Phase 6 als **PoC** (NeoDash, Showcase-Stopp) · Phase-9-Bausteine 1/
 Import im Container inkl. ZIP-Upload, Ribbon-UI), Backup/Restore/Clear, CSV-Export, AE-11-Evidenz v1
 · Phase 7 (Konsistenzchecks) bis auf den CSV-Export · Phase 9: Org-Filter/MATCHES-Scoping,
 Lauf verwalten + Backup/Restore, interaktive Drill-downs (Findings/Root-Cause/Sidebar-Filter),
-Query-/SoD-Management-Seite mit Overlay-Mechanismus + Fehlerprotokoll.
+Query-/SoD-Management-Seite mit Overlay-Mechanismus + Fehlerprotokoll, Assistent-Stepper für die
+geführte Auswertung, Import-Robustheit (Abbrechen/Resume/parallele Konvertierung).
 
 ---
 
@@ -294,6 +295,34 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   (`force=true`), bevor er wiederherstellt. Restore selbst matcht User/Regel nur per `MATCH`
   (nie `MERGE`) — Findings, deren Bezug im aktuellen Dataset nicht mehr existiert, werden
   übersprungen statt Phantom-Knoten anzulegen (AE-10).
+- [x] **Assistent — Geführte Auswertung als Stepper.** Neuer Ribbon-Befehl „Assistent" (`frontend/index.html`)
+  führt in 7 Schritten durch den kompletten Zyklus: **① Import → ② Bestand → ③ Scoping → ④ Konsistenz
+  → ⑤ SoD → ⑥ Root-Cause → ⑦ Bericht** (Stepper-Leiste, bereits besuchte/erreichbare Schritte klickbar,
+  `asst`-State hält aktiven Schritt + gewähltes Dataset). Schritte ①/②/⑦ sind eigene, neue Inline-Views
+  (Dataset-Übersicht mit Backup/Löschen, Dataset-/Stichtag-Auswahl, Bericht-Download CSV/PDF mit den
+  PDF-Deckblattfeldern); Schritte ④–⑥ binden die **bestehenden** Konsistenz-/Ergebnis-/Root-Cause-Seiten
+  ein (kein Duplikat, „zurück" springt jeweils einen Schritt zurück statt in die normale Navigation).
+  **Schritt ③ Scoping ist bewusst nur ein Platzhalter** („wird in kommender Phase implementiert") —
+  das ist exakt die noch offene Katalog-Auswahl-UI (→ ROADMAP.md).
+- [x] **Import-Robustheit.** Reaktion auf reale Abbrüche bei großen Importen (Speicherlimit,
+  Verbindungsabbruch mitten im Ladevorgang): **Abbrechen** (`POST /jobs/{id}/cancel` setzt ein Flag,
+  der Import-Thread prüft es zwischen den Lade-Schritten via `_check_cancel()` und stoppt sauber,
+  Job-Status `cancelled`); **Resume** über eine Checkpoint-Datei (`data/<dataset>/_import_state.json`,
+  Liste der bereits abgeschlossenen `load/*.cypher`-Schritte) — ein Re-Import mit `resume=true`
+  überspringt sie und macht ab dem letzten Stand weiter (UI: Resume-Banner im Import-Dialog mit
+  „Weitermachen"/„Von vorne"); State wird bei Erfolg und bei „vorher leeren" (`clearFirst`) gelöscht,
+  bleibt nach Abbruch/Fehler erhalten. **Fehlende optionale Quelltabelle bricht den Import nicht mehr
+  ab** (`NoSuchFileException` beim Laden → Schritt überspringen statt Abbruch; direkt gegen einen
+  realen Fall verifiziert, bei dem eine optionale Tabelle im Export fehlte). **Parallele CSV-Konvertierung**
+  (`backend/convert.py`, `ThreadPoolExecutor`, 6 Worker — I/O-bound bei üblicherweise 15–25 Tabellen)
+  plus Skip bereits aktueller `.csv` (mtime-Vergleich) und `errors="replace"` statt Abbruch bei
+  einzelnen kaputten Bytes in der `cp1252`-Quelle. **Fortschrittsanzeige** im Import-Dialog (Schritt
+  X/Y, zuletzt geschriebene Knoten/Kanten, Konvertierungsstand). **Quelldateien löschen**
+  (`DELETE /datasets/{d}/import-files`) räumt `.txt`/`.csv` im Import-Ordner nach erfolgtem Backup
+  auf (Re-Import bleibt über das Backup-ZIP möglich) — UI im Sichern-Dialog mit Größenanzeige und
+  Sicherheitsabfrage. Neo4j-Speicher in `docker-compose.yml` nachgezogen (Heap 4G→8G, `dbms.memory
+  .transaction.total.max=0`) — Ursache war ein `MemoryPoolOutOfMemoryError` bei einem großen
+  Batch-Import (`AGR_1251`).
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`

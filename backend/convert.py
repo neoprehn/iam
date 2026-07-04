@@ -9,6 +9,7 @@ Import auch ohne Windows/PowerShell im Container reproduzierbar ist (Phase-9-Tra
 """
 import json
 import fnmatch
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 DROP_DEFAULT = ["BCODE*", "BCDA*", "OCOD*", "CODV*", "PASSCODE", "PWDSALTEDHASH", "PWDHISTORY"]
@@ -19,12 +20,17 @@ def _sensitive(name: str, patterns: list[str]) -> bool:
     return any(fnmatch.fnmatchcase(up, p.upper()) for p in patterns)
 
 
-def convert_file(in_path: Path, out_path: Path, drop_patterns: list[str], delim: str = "\t") -> dict:
+def convert_file(in_path: Path, out_path: Path, drop_patterns: list[str], delim: str = "\t",
+                 skip_if_current: bool = True) -> dict:
+    # Skip conversion when CSV is already up-to-date (mtime >= source mtime)
+    if skip_if_current and out_path.exists() and out_path.stat().st_mtime >= in_path.stat().st_mtime:
+        return {"table": out_path.stem, "columns": [], "rows": 0, "dropped": [], "skipped": True}
+
     keep_idx = None
     header: list[str] = []
     dropped: list[str] = []
     rows = 0
-    with open(in_path, encoding="cp1252") as r, open(out_path, "w", encoding="utf-8", newline="") as w:
+    with open(in_path, encoding="cp1252", errors="replace") as r, open(out_path, "w", encoding="utf-8", newline="") as w:
         for raw in r:
             line = raw.rstrip("\r\n")
             if not line.startswith("|"):       # Titel/Info/Trennlinien/Footer ueberspringen
@@ -52,8 +58,11 @@ def convert_file(in_path: Path, out_path: Path, drop_patterns: list[str], delim:
 
 
 def convert_folder(folder: Path, required_config: Path | None = None,
-                   drop_patterns: list[str] | None = None, skip_required: bool = False) -> dict:
-    """Ganzen dataset-Ordner konvertieren. Prueft das Minimalset VOR der Konvertierung."""
+                   drop_patterns: list[str] | None = None, skip_required: bool = False,
+                   workers: int = 6, on_progress=None) -> dict:
+    """Ganzen dataset-Ordner konvertieren. Prueft das Minimalset VOR der Konvertierung.
+    Parallelisiert I/O-gebundene Konvertierung (mehrere .txt gleichzeitig); Anzahl Worker
+    konfigurierbar (Standard 6 — ueblicherweise 15-25 Tabellen, I/O-bound)."""
     if not folder.is_dir():
         raise FileNotFoundError(f"Import-Ordner fehlt: {folder}")
     drop_patterns = drop_patterns if drop_patterns is not None else DROP_DEFAULT
@@ -69,9 +78,30 @@ def convert_folder(folder: Path, required_config: Path | None = None,
             raise ValueError("Minimalset unvollstaendig - fehlende Pflicht-Tabellen (.txt): "
                              + ", ".join(missing))
 
-    results = [convert_file(txt, folder / (txt.stem.lower() + ".csv"), drop_patterns)
-               for txt in sorted(folder.glob("*.txt"))]
+    txts = sorted(folder.glob("*.txt"))
+    if not txts:
+        missing_opt = [t for t in optional if not (folder / f"{t}.txt").is_file()]
+        return {"converted": 0, "skipped": 0, "tables": [], "requiredOk": not required,
+                "missingOptional": missing_opt}
+
+    results_map: dict[str, dict] = {}
+    done = 0
+    with ThreadPoolExecutor(max_workers=min(workers, len(txts))) as executor:
+        futures = {
+            executor.submit(convert_file, txt, folder / (txt.stem.lower() + ".csv"),
+                            drop_patterns): txt.stem
+            for txt in txts
+        }
+        for future in as_completed(futures):
+            stem = futures[future]
+            results_map[stem] = future.result()
+            done += 1
+            if on_progress:
+                on_progress(done, len(txts), stem)
+
+    results = [results_map[txt.stem] for txt in txts]  # preserve sorted order
+    skipped = sum(1 for r in results if r.get("skipped"))
     missing_opt = [t for t in optional if not (folder / f"{t}.txt").is_file()]
-    return {"converted": len(results), "tables": results,
+    return {"converted": len(results) - skipped, "skipped": skipped, "tables": results,
             "requiredOk": (not required) or all((folder / f"{t}.txt").is_file() for t in required),
             "missingOptional": missing_opt}
