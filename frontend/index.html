@@ -171,6 +171,15 @@
   .ccd-graph-box { height:480px; }
   #ccdGraphWrap:fullscreen { background:var(--bg); padding:16px; }
   #ccdGraphWrap:fullscreen .ccd-graph-box { height:calc(100vh - 32px); }
+  .rc-graph-box { height:62vh; min-height:420px; }
+  #rcGraphWrap:fullscreen { background:var(--bg); padding:16px; }
+  #rcGraphWrap:fullscreen .rc-graph-box { height:calc(100vh - 32px); }
+  /* Vertikaler Zoom-Slider am rechten Graph-Rand (schnelles Rein-/Rauszoomen) */
+  #rcZoom { position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:5;
+    writing-mode:vertical-lr; direction:rtl; -webkit-appearance:slider-vertical; appearance:slider-vertical;
+    width:22px; height:190px; cursor:pointer; accent-color:var(--accent); }
+  .rc-graph-fsbtn { position:absolute; left:12px; top:12px; z-index:5; width:auto;
+    padding:5px 10px; font-size:12px; }
   #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
   #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
@@ -423,7 +432,11 @@
         <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px">Einpassen</button>
       </div>
       <div id="rcObjects"></div>
-      <div id="rcGraph" style="display:none;height:62vh;min-height:420px;border:1px solid var(--line);border-radius:8px;background:var(--panel)"></div>
+      <div id="rcGraphWrap" style="display:none;position:relative">
+        <div id="rcGraph" class="rc-graph-box" style="border:1px solid var(--line);border-radius:8px;background:var(--panel)"></div>
+        <button class="ghost rc-graph-fsbtn" id="rcFullscreenBtn" title="Vollbild">&#9974; Vollbild</button>
+        <input type="range" id="rcZoom" min="0" max="100" value="50" title="Zoom" />
+      </div>
     </div>
   </div>
   <div id="consistencyView" style="display:none">
@@ -1442,7 +1455,7 @@ function rcRender() {
   if (!rcLastData) return;
   const graph = rcDisplayMode !== 'table';
   $('rcObjects').style.display = graph ? 'none' : '';
-  $('rcGraph').style.display = graph ? '' : 'none';
+  $('rcGraphWrap').style.display = graph ? '' : 'none';
   $('rcFitBtn').style.display = graph ? '' : 'none';
   if (graph) renderRootCauseGraph(rcLastData, rcDisplayMode);
   else renderRootCause(rcLastData);
@@ -1450,9 +1463,38 @@ function rcRender() {
 function rcShowError(msg) {
   rcDisplayMode = 'table';
   document.querySelectorAll('#rcViewPills .pill').forEach(x => x.classList.toggle('active', x.dataset.value === 'table'));
-  $('rcGraph').style.display = 'none'; $('rcFitBtn').style.display = 'none';
+  $('rcGraphWrap').style.display = 'none'; $('rcFitBtn').style.display = 'none';
   $('rcObjects').style.display = ''; $('rcObjects').innerHTML = '<div class="muted">' + msg + '</div>';
 }
+
+// Vollbild + Zoom-Slider fuer den Root-Cause-Graph (analog Konsistenzcheck-Graph-Pilot).
+const RC_ZMIN = 0.05, RC_ZMAX = 3;
+let _rcZoomSync = false;   // verhindert Rueckkopplung Slider <-> cy.zoom
+function rcZoomToSlider() {
+  if (!rcCy) return;
+  _rcZoomSync = true;
+  const z = Math.max(RC_ZMIN, Math.min(RC_ZMAX, rcCy.zoom()));
+  $('rcZoom').value = 100 * Math.log(z / RC_ZMIN) / Math.log(RC_ZMAX / RC_ZMIN);
+  _rcZoomSync = false;
+}
+$('rcZoom').addEventListener('input', () => {
+  if (!rcCy || _rcZoomSync) return;
+  const v = +$('rcZoom').value;
+  const z = RC_ZMIN * Math.pow(RC_ZMAX / RC_ZMIN, v / 100);
+  rcCy.zoom({ level: z, renderedPosition: { x: rcCy.width() / 2, y: rcCy.height() / 2 } });
+});
+$('rcFullscreenBtn').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else $('rcGraphWrap').requestFullscreen && $('rcGraphWrap').requestFullscreen();
+});
+document.addEventListener('fullscreenchange', () => {
+  // Doppelter rAF: die CSS-Hoehenaenderung (:fullscreen) muss erst greifen, bevor cy neu misst.
+  if (document.fullscreenElement === $('rcGraphWrap') || !document.fullscreenElement) {
+    if (rcCy) requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!rcCy) return; rcCy.resize(); rcCy.fit(undefined, 30); rcZoomToSlider();
+    }));
+  }
+});
 
 // --- Cytoscape-Graph fuer Root-Cause (Pfad + Radial teilen sich Builder & Engine) -----------
 let rcCy = null;
@@ -1504,6 +1546,7 @@ function rcAttachHandlers(cy) {
   cy.on('tap', 'node', e => { const n = e.target; cy.elements().addClass('rcfade');
     n.predecessors().union(n.successors()).union(n).removeClass('rcfade'); });
   cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('rcfade'); });
+  cy.on('zoom', rcZoomToSlider);   // Slider folgt Maus-/Pinch-Zoom
 }
 function rcActorDetail(a) {
   const n = [];
@@ -1604,13 +1647,14 @@ function renderRootCauseGraph(data, mode) {
   // gerade sichtbar geschaltete #rcGraph-Box ihre 62vh-Hoehe schon hat.
   if (rcCy) { rcCy.destroy(); rcCy = null; }
   rcCy = cytoscape({ container: $('rcGraph'), elements: els, style: rcCyStyle(),
-    layout, wheelSensitivity: 0.25, minZoom: 0.2, maxZoom: 2.5 });
+    layout, wheelSensitivity: 0.25, minZoom: RC_ZMIN, maxZoom: RC_ZMAX });
   rcAttachHandlers(rcCy);
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if (!rcCy) return;
     rcCy.resize();
     rcCy.layout(layout).run();
     rcCy.fit(undefined, 30);
+    rcZoomToSlider();
   }));
 }
 
