@@ -1510,6 +1510,7 @@ function rcActorDetail(a) {
   if (a.technical && a.orphaned) n.push('technisch generiert &mdash; erzeugende Rolle nicht mehr im Bestand, laut UST04 trotzdem aktiv');
   else if (a.technical) n.push('technisch, generiert');
   if (a.via) n.push('&uuml;ber generiertes Profil ' + a.via.id);
+  if (a.coincidesProfile) n.push('Definition = generiertes Profil ' + a.coincidesProfile);
   const vals = (a.authValues || []).join(' &middot; ');
   return `<b>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}</b>`
     + (vals ? `<br><span style="color:var(--muted)">tr&auml;gt ${vals}</span>` : '')
@@ -1527,7 +1528,7 @@ function rcBuildGraph(data, mode) {
     N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, 'rc-object', ring.object,
       `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">Anforderung ${reqText}</span>` : ''}`);
     E(parentId, on, '', 'UND');
-    const actors = (o.satisfiedBy || []).filter(a => rcShowTechnical || !a.technical);
+    const actors = rcCollapseActors(o.satisfiedBy || []).filter(a => rcShowTechnical || !a.technical);
     if (!actors.length) {
       const nn = gid('a'); N(nn, 'keine erfüllende\nRolle/Profil', 'rc-object', ring.actor,
         '<span style="color:var(--muted)">keine erf&uuml;llende Rolle/Profil</span>'); E(on, nn); return;
@@ -2293,6 +2294,27 @@ function sameAuthValues(m1, m2) {
   return true;
 }
 
+/* Wertidentische Doppelzeilen zusammenfassen (Nutzer-Wunsch): traegt ein Akteur denselben Treffer
+   sowohl in seiner EIGENEN Definition (via=null) als auch ueber sein GENERIERTES Profil
+   (via.type='Profile') mit EXAKT denselben Feldwerten, ist das generierte Profil nur die
+   kompilierte Form der Definition -> nur EINE Zeile (die eigene, markiert 'coincidesProfile').
+   WEICHEN die Werte ab, bleiben beide erhalten -- das ist der Divergenzfall (Konsistenzcheck D4),
+   den divergenceLink weiterhin flaggt. Nicht-Profil-Quellen (enthaltene Rolle) bleiben unberuehrt.
+   Gemeinsam von Tabelle (renderRootCause) und Graph (rcBuildGraph) genutzt, nicht-mutierend. */
+function rcCollapseActors(satisfiedBy) {
+  const own = satisfiedBy.filter(a => !a.via).map(a => ({ a, map: authValuesMap(a.authValues) }));
+  const drop = new Set();        // wertgleiche via-Profil-Eintraege -> verwerfen
+  const coincide = new Map();    // eigener Eintrag -> id des wertgleichen generierten Profils
+  satisfiedBy.forEach(v => {
+    if (!(v.via && v.via.type === 'Profile')) return;
+    const vMap = authValuesMap(v.authValues);
+    const m = own.find(o => o.a.actorType === v.actorType && o.a.actorId === v.actorId && sameAuthValues(o.map, vMap));
+    if (m) { drop.add(v); coincide.set(m.a, v.via.id); }
+  });
+  return satisfiedBy.filter(a => !drop.has(a))
+    .map(a => coincide.has(a) ? { ...a, coincidesProfile: coincide.get(a) } : a);
+}
+
 /* Direkter Sprung von einem Root-Cause-Divergenzhinweis zum Konsistenzcheck D4 (statt der
    Nutzer muesste sich Kategorie/Check selbst zusammensuchen). Laedt den Katalog bei Bedarf nach
    und blendet die anderen Hauptbereiche aus (wie showConsistencyView, aber direkt zur
@@ -2336,8 +2358,11 @@ function renderRootCause(data) {
       const reqText = o.requirement
         .map(r => `${r.field} (${r.andLogic ? 'UND' : 'ODER'}): ${r.values.join(', ')}`).join(' · ');
       const reqValuesByField = new Map(o.requirement.map(r => [r.field, r.values]));
-      const shown = rcShowTechnical ? o.satisfiedBy : o.satisfiedBy.filter(a => !a.technical);
-      const hiddenCount = o.satisfiedBy.length - shown.length;
+      // Wertidentische "eigene Definition"/"generiertes Profil"-Paare desselben Akteurs
+      // zusammenfassen (s. rcCollapseActors); Divergenzen bleiben als zwei Zeilen erhalten.
+      const collapsed = rcCollapseActors(o.satisfiedBy);
+      const shown = rcShowTechnical ? collapsed : collapsed.filter(a => !a.technical);
+      const hiddenCount = collapsed.length - shown.length;
       // Kurze Anmerkungen (Rollen-/Profilname max. 30/12 Zeichen, s. SAP-Laengenlimits) bekommen
       // white-space:nowrap, damit sie nie mitten im Namen umbrechen -- nur die lange Erklaerung
       // beim verwaisten generierten Profil ist echter Fliesstext und darf umbrechen.
@@ -2353,6 +2378,7 @@ function renderRootCause(data) {
       const actorCounts = {};
       shown.forEach(a => { const k = a.actorType + ':' + a.actorId; actorCounts[k] = (actorCounts[k] || 0) + 1; });
       const sourceNote = a => {
+        if (a.coincidesProfile) return nowrap(`(eigene Definition = generiertes Profil ${a.coincidesProfile})`);
         if (a.via) {
           const label = a.via.type === 'Profile' ? 'über generiertes Profil' : 'über enthaltene Rolle';
           return nowrap(`(${label} ${a.via.id})`);
@@ -2364,8 +2390,8 @@ function renderRootCause(data) {
       // ("veraltete/nicht generierte Profile") behandelt -- direkter Sprung dorthin statt nur
       // einer Erklaerung, da der Nutzer sich das sonst selbst zusammensuchen muesste.
       const divergenceLink = a => {
-        if (a.via) return '';
-        const viaSiblings = o.satisfiedBy.filter(x => x.actorType === a.actorType
+        if (a.via || a.coincidesProfile) return '';
+        const viaSiblings = collapsed.filter(x => x.actorType === a.actorType
           && x.actorId === a.actorId && x.via && x.via.type === 'Profile');
         if (!viaSiblings.length) return '';
         const ownMap = authValuesMap(a.authValues);

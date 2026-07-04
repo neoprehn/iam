@@ -1955,9 +1955,10 @@ _SATISFIED_BY_CYPHER = (
     # (z. B. Role-HAS_AUTH aus AGR_1251). Ist via ein anderer Knoten (z. B. das generierte Profil
     # der Rolle, oder eine ueber CONTAINS enthaltene Sammelrolle), kommt der Treffer aus DIESEM
     # Pfad -- mit ggf. abweichenden Werten zur eigenen Definition (Design vs. tatsaechlich
-    # Generiertes, vgl. Konsistenzcheck D4 stale_profile_generation.cypher). Beide Faelle sind
-    # eigenstaendige Belege und werden NICHT zusammengefasst (Nutzer-Entscheidung) -- die UI
-    # kennzeichnet stattdessen die Quelle je Zeile.
+    # Generiertes, vgl. Konsistenzcheck D4 stale_profile_generation.cypher). Beide Faelle werden
+    # hier NICHT zusammengefasst -- das Backend liefert alle Belege, die UI kennzeichnet die Quelle
+    # je Zeile. WERTIDENTISCHE eigene-Definition/generiertes-Profil-Paare fasst das Frontend
+    # (rcCollapseActors) zu einer Zeile zusammen; nur bei ABWEICHUNG bleiben beide (Divergenz -> D4).
     "  (CASE WHEN via = actor THEN null ELSE labels(via)[0] END) AS viaType, "
     "  (CASE WHEN via = actor THEN null ELSE via.id END) AS viaId, "
     # "technisch" = ein generiertes Profil (PFCG-Artefakt einer Rolle), keine eigenstaendig

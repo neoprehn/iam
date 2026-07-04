@@ -163,13 +163,18 @@ Ansicht. Die Graph-Ansicht ergänzt die Tabelle für den Überblick — für den
 Abgleich (grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die Detailsicht.
 
 **Quellenkennzeichnung.** Derselbe Akteur kann einen Treffer über **mehrere Quellen** erreichen —
-das wird je Zeile als kurze Anmerkung kenntlich gemacht, statt sie stillschweigend zusammenzufassen
-(zwei Zeilen für dieselbe Rolle sind also kein Anzeige-Fehler):
+das wird je Zeile als kurze Anmerkung kenntlich gemacht. Wertidentische Paare aus eigener Definition
+und generiertem Profil werden dabei zu **einer** Zeile zusammengefasst (das Profil ist dann nur die
+kompilierte Form der Definition); nur bei **abweichenden** Werten bleiben beide Zeilen stehen — das
+ist der aussagekräftige Divergenzfall (→ D4). Mehrere Zeilen für dieselbe Rolle mit
+**unterschiedlichen** Werten sind also kein Anzeige-Fehler, sondern echte, verschiedene
+Berechtigungsinstanzen bzw. eine Design-≠-Generiert-Divergenz:
 
 | Anmerkung | Bedeutung |
 | --- | --- |
 | **(eigene Definition)** | Die Rolle trägt die Berechtigung direkt selbst (`AGR_1251` → Role-`HAS_AUTH`) — erscheint nur, wenn es für denselben Akteur zusätzlich eine zweite Quelle gibt. |
-| **(über generiertes Profil X)** | Kommt über das von der Rolle generierte Profil X (Role-`HAS_PROFILE`→Profile-`HAS_AUTH`) — das, was beim Benutzerabgleich tatsächlich in `UST04` geschrieben und zur Laufzeit geprüft wird. |
+| **(eigene Definition = generiertes Profil X)** | Eigene Definition **und** das generierte Profil X tragen für dieses Objekt **exakt dieselben** Werte — das Profil ist hier nur die kompilierte Form der Definition. Beide werden dann zu **einer** Zeile zusammengefasst (statt zweier wertidentischer Zeilen). |
+| **(über generiertes Profil X)** | Kommt über das von der Rolle generierte Profil X (Role-`HAS_PROFILE`→Profile-`HAS_AUTH`) — das, was beim Benutzerabgleich tatsächlich in `UST04` geschrieben und zur Laufzeit geprüft wird. Erscheint eigenständig nur, wenn es von der eigenen Definition **abweicht** (sonst zusammengefasst, s. o.). |
 | **(über enthaltene Rolle X)** | Die angezeigte Rolle ist eine **Sammelrolle**, die Rolle X als Einzelrolle bündelt (`CONTAINS`); X selbst trägt die Berechtigung. |
 
 Fallen „eigene Definition" und „generiertes Profil" für **dasselbe** Berechtigungsobjekt
