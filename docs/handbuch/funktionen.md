@@ -141,13 +141,23 @@ Werte manuell zu vergleichen. Anders als die Evidenz (die nur „welche Rolle" z
 sichtbar, wenn **verschiedene Objekte/Klauseln durch verschiedene Rollen** gedeckt werden — der
 eigentliche Root-Cause, nicht nur der Träger des Konflikts.
 
-Ein Umschalter **„ohne technische" / „alle (inkl. technisch generierte)"** über der Ergebnisliste
-blendet SAP-generierte Profile aus (Default) bzw. ein: ein direkt zugewiesenes Profil gilt als
-„technisch", wenn irgendeine Rolle im Datenbestand dieses Profil erzeugt (Role-`HAS_PROFILE`,
-unabhängig vom betrachteten User) **oder** der Name mit `T-` beginnt (Namens-Fallback für
-„verwaiste" generierte Profile, deren erzeugende Rolle im Extrakt nicht mehr existiert — die
-Berechtigung bleibt laut `UST04` trotzdem aktiv, daher bewusst **nicht** verborgen, sondern mit
-Hinweistext versehen). Ein Zähler zeigt, wie viele Profile aktuell ausgeblendet sind.
+Ein Umschalter **„ohne technische" / „alle (inkl. technisch generierte)" / „nur generierte Rollen"**
+über der Ergebnisliste steuert, welche Akteure gezeigt werden. **„ohne technische"** (Default)
+blendet SAP-generierte Profile aus: ein direkt zugewiesenes Profil gilt als „technisch", wenn
+irgendeine Rolle im Datenbestand dieses Profil erzeugt (Role-`HAS_PROFILE`, unabhängig vom
+betrachteten User) **oder** der Name mit `T-` beginnt (Namens-Fallback für „verwaiste" generierte
+Profile, deren erzeugende Rolle im Extrakt nicht mehr existiert — die Berechtigung bleibt laut
+`UST04` trotzdem aktiv, daher bewusst **nicht** verborgen, sondern mit Hinweistext versehen).
+**„alle"** zeigt zusätzlich diese technischen Profile. **„nur generierte Rollen"** zeigt die
+**Laufzeitsicht**: nur Rollen, die über ihr **generiertes Profil** tatsächlich aktiv sind (das, was
+in `UST04` zieht) — reine Design-Zeilen ohne Profil-Deckung (D4-Divergenz) fallen weg —, **plus**
+direkt zugewiesene Profile (z. B. `SAP_ALL`), damit kein kritischer Direktzugriff aus dem Bild
+fällt. In den **Graph-Ansichten** wird in diesem Modus zusätzlich jeder Akteur nur **einmal**
+gezeigt (Dedup über alle Objekte), was den Graphen deutlich verschlankt. Ein Zähler bzw. Hinweis
+zeigt, wie viele Zeilen aktuell ausgeblendet sind.
+
+Die Graph-Ansichten haben außerdem einen **Vollbild**-Button und einen **Zoom-Regler** am rechten
+Rand für schnelles Rein-/Rauszoomen.
 
 **Ansicht Tabelle · Pfadgraph · Radial.** Über der Ergebnisliste schaltet ein zweiter Umschalter
 zwischen der **Tabelle** (Default, mit allen Anmerkungen unten) und zwei **Graph-Darstellungen

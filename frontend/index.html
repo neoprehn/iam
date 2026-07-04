@@ -428,6 +428,7 @@
         <div class="pillgroup" id="rcTechPills">
           <button type="button" class="pill active" data-value="hide">ohne technische</button>
           <button type="button" class="pill" data-value="show">alle (inkl. technisch generierte)</button>
+          <button type="button" class="pill" data-value="generated" title="Nur Rollen, die über ihr generiertes Profil aktiv sind (UST04), plus direkt zugewiesene Profile — jede nur einmal">nur generierte Rollen</button>
         </div>
         <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px">Einpassen</button>
       </div>
@@ -1415,8 +1416,22 @@ function showResultsView() {
 /* Root-Cause als eigene Seite (statt Dialog) — gleiches "wechselt im Hauptbereich, kein
    Overlay" + "← zurück"-Muster wie Konsistenzcheck-Katalog/-Ergebnis. rcReturnTo merkt sich,
    ob "zurück" zu den Ergebnissen (Findings/Matches) oder zum Konsistenzcheck-Ergebnis fuehrt. */
-let rcReturnTo = 'results', rcLastData = null, rcShowTechnical = false,
+let rcReturnTo = 'results', rcLastData = null, rcTechMode = 'hide',
     rcDisplayMode = 'table', rcUserId = null;
+// Sichtbarkeit eines Akteurs je Profil-Filter-Modus ('hide' | 'show' | 'generated').
+// 'generated' = nur Rollen, die ueber ihr generiertes Profil aktiv sind (coincidesProfile ODER
+// via-Profil -> das, was zur Laufzeit in UST04 zieht; reine Design-only-Zeilen ohne Profil-Deckung
+// = D4-Divergenz fallen weg), PLUS direkt zugewiesene, nicht-technische Profile (z. B. SAP_ALL,
+// damit kein kritischer Direktzugriff aus dem Bild faellt). Der Graph zeigt in diesem Modus jeden
+// Akteur nur EINMAL (Dedup, s. rcBuildGraph).
+function rcVisibleActor(a) {
+  if (rcTechMode === 'show') return true;
+  if (rcTechMode === 'generated') {
+    if (a.actorType === 'Role') return !!(a.coincidesProfile || (a.via && a.via.type === 'Profile'));
+    return !a.technical;   // direkt zugewiesenes, nicht generiertes Profil (SAP_ALL o.ae.)
+  }
+  return !a.technical;     // 'hide'
+}
 function showRootCauseView() {
   $('resultContext').style.display = 'none';
   $('kpis').style.display = 'none';
@@ -1438,7 +1453,7 @@ $('rcBackBtn').onclick = () => {
   else { showResultsView(); }
 };
 document.querySelectorAll('#rcTechPills .pill').forEach(b => b.addEventListener('click', () => {
-  rcShowTechnical = b.dataset.value === 'show';
+  rcTechMode = b.dataset.value;
   document.querySelectorAll('#rcTechPills .pill').forEach(x => x.classList.toggle('active', x === b));
   if (rcLastData) rcRender();
 }));
@@ -1565,24 +1580,31 @@ function rcBuildGraph(data, mode) {
   const trunc = s => !s ? '' : (s.length > 44 ? s.slice(0, 42) + '…' : s);
   const N = (id, label, cls, r, detail) => els.push({ data: { id, label, ring: r, detail: detail || '' }, classes: cls });
   const E = (s, t, cls, elabel) => els.push({ data: { id: gid('e'), source: s, target: t, elabel: elabel || '' }, classes: cls || '' });
+  // Im Modus 'nur generierte Rollen' jeden Akteur nur EINMAL: Knoten je actorId cachen und aus
+  // mehreren Objekten heraus wiederverwenden (Graph wird zum DAG statt Baum -> viel schmaler).
+  const actorCache = rcTechMode === 'generated' ? new Map() : null;
   function attachObject(parentId, o) {
     const on = gid('o');
     const reqText = (o.requirement || []).map(r => `${r.field}=${(r.values || []).join(',')}`).join(' · ');
     N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, 'rc-object', ring.object,
       `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">Anforderung ${reqText}</span>` : ''}`);
     E(parentId, on, '', 'UND');
-    const actors = rcCollapseActors(o.satisfiedBy || []).filter(a => rcShowTechnical || !a.technical);
+    const actors = rcCollapseActors(o.satisfiedBy || []).filter(rcVisibleActor);
     if (!actors.length) {
       const nn = gid('a'); N(nn, 'keine erfüllende\nRolle/Profil', 'rc-object', ring.actor,
         '<span style="color:var(--muted)">keine erf&uuml;llende Rolle/Profil</span>'); E(on, nn); return;
     }
     actors.forEach(a => {
+      const key = a.actorType + '|' + a.actorId;
+      if (actorCache && actorCache.has(key)) { E(on, actorCache.get(key), a.via ? 'rc-via' : '', 'ODER'); return; }
       const an = gid('a'); const cls = ['rc-' + (a.actorType === 'Role' ? 'role' : 'profile')];
       if (a.technical) cls.push('rc-technical');
       if (a.orphaned) cls.push('rc-orphaned');
-      const vals = (a.authValues || []).join(' · ');
+      // Dedup-Knoten spannt ueber mehrere Objekte -> keine objektspezifischen Werte im Label.
+      const vals = actorCache ? '' : (a.authValues || []).join(' · ');
       N(an, `${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}${vals ? `\n${vals}` : ''}`,
         cls.join(' '), ring.actor, rcActorDetail(a));
+      if (actorCache) actorCache.set(key, an);
       E(on, an, a.via ? 'rc-via' : '', 'ODER');
     });
   }
@@ -2405,7 +2427,7 @@ function renderRootCause(data) {
       // Wertidentische "eigene Definition"/"generiertes Profil"-Paare desselben Akteurs
       // zusammenfassen (s. rcCollapseActors); Divergenzen bleiben als zwei Zeilen erhalten.
       const collapsed = rcCollapseActors(o.satisfiedBy);
-      const shown = rcShowTechnical ? collapsed : collapsed.filter(a => !a.technical);
+      const shown = collapsed.filter(rcVisibleActor);
       const hiddenCount = collapsed.length - shown.length;
       // Kurze Anmerkungen (Rollen-/Profilname max. 30/12 Zeichen, s. SAP-Laengenlimits) bekommen
       // white-space:nowrap, damit sie nie mitten im Namen umbrechen -- nur die lange Erklaerung
@@ -2454,7 +2476,9 @@ function renderRootCause(data) {
           }).join('')
         : '<div class="rcactor muted">keine erfüllende Rolle/Profil gefunden</div>';
       const hiddenHint = hiddenCount
-        ? `<div class="hint">${hiddenCount} technische(s) Profil(e) ausgeblendet &mdash; „alle (inkl. technisch generierte)" oben einschalten.</div>` : '';
+        ? `<div class="hint">${hiddenCount} Zeile(n) ausgeblendet &mdash; ${rcTechMode === 'generated'
+            ? 'nur über generiertes Profil aktive Rollen + Direktprofile; „alle" oben für Design-/Divergenzdetails'
+            : '„alle (inkl. technisch generierte)" oben einschalten'}.</div>` : '';
       const objLabel = o.object.includes('(') ? o.object : `${o.object} (Berechtigungsobjekt-Prüfung)`;
       return `<div class="rcobj"><div><b>${objLabel}</b></div>`
         + `<div class="rcreq">Anforderung: ${reqText}</div>${actors}${hiddenHint}</div>`;
