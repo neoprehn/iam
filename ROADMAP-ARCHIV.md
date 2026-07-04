@@ -11,7 +11,8 @@ Import im Container inkl. ZIP-Upload, Ribbon-UI), Backup/Restore/Clear, CSV-Expo
 · Phase 7 (Konsistenzchecks) bis auf den CSV-Export · Phase 9: Org-Filter/MATCHES-Scoping,
 Lauf verwalten + Backup/Restore, interaktive Drill-downs (Findings/Root-Cause/Sidebar-Filter),
 Query-/SoD-Management-Seite mit Overlay-Mechanismus + Fehlerprotokoll, Assistent-Stepper für die
-geführte Auswertung, Import-Robustheit (Abbrechen/Resume/parallele Konvertierung).
+geführte Auswertung, Import-Robustheit (Abbrechen/Resume/parallele Konvertierung), Lauf-Fortschritt
++ Resume (materialize/evaluate/explain, inkl. Batch-Varianten).
 
 ---
 
@@ -352,10 +353,51 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Testlauf über das gesamte Dataset ohne Scoping >20 Minuten unbemerkt weiter). Korrigiert:
   `_check_cancel()` jetzt vor jeder Phase (ruleset/materialize/evaluate/explain) plus
   `except InterruptedError` in `do_run`/`do_run_batch` (Status `cancelled`, Frontend hatte diesen
-  Status bereits erwartet). **Bewusste Grenze:** eine einzelne Phase (v. a. `materialize`, meist
-  die teuerste) ist selbst nicht unterbrechbar — sie läuft als ein `apoc.periodic.iterate`-Aufruf
-  am Stück; Abbruch wirkt erst, sobald diese Phase durchgelaufen ist. UI-Hinweistext ergänzt
-  („Abbruch erst nach dem aktuellen Schritt").
+  Status bereits erwartet). **Bewusste Grenze (durch den nächsten Punkt aufgehoben):** eine
+  einzelne Phase (v. a. `materialize`, meist die teuerste) war selbst nicht unterbrechbar — sie
+  lief als ein `apoc.periodic.iterate`-Aufruf am Stück; Abbruch wirkte erst, sobald diese Phase
+  durchgelaufen war.
+- [x] **Lauf-Fortschritt + Resume (materialize/evaluate/explain, inkl. Batch) — Nutzer-Feedback.**
+  Direkte Folge des vorigen Punkts: ein ungescopter Lauf über alle Filter dauert auf echten
+  Produktivdaten >20 Minuten (real gemessen: 38 SoD-relevante Queries × 27.000 User, ~30 s je
+  Query) und zeigte bis hierhin nur den Phasennamen, keinen Fortschritt darin — bei Abbruch (Reload
+  durch `--reload`, Netzwerkfehler, Cancel) war die ganze Phase verloren. Alle drei teuren Phasen
+  laufen jetzt als **Reset (einmalig, nur bei frischem Phasenstart) → Kandidaten ermitteln → pro
+  Einheit** statt als ein einziger Aufruf — dieselbe Grundidee wie beim Import-Loader, nur auf
+  Query- (materialize) / Regel- (evaluate) / Akteur-Ebene (explain-PROVIDES). Dafür `cypher/sod/
+  materialize_matches.cypher`, `evaluate_sod.cypher`, `explain_sod.cypher` in je drei Dateien
+  aufgeteilt (`..._reset`/`..._init`, `..._candidates`, `..._one`, bei explain zusätzlich
+  `..._finalize` für den bereits schnellen Abschluss) — fachliche Logik 1:1 übernommen, nur die
+  Iterationssteuerung wandert von `apoc.periodic.iterate` (Neo4j-intern) zu einer Python-Schleife
+  (`_run_phase()`/`_run_candidates()` in `backend/app.py`). Checkpoint pro Dataset
+  (`data/<dataset>/_run_state.json`, analog zum Import) nach **jeder** Einheit geschrieben —
+  Absturz verliert höchstens eine Einheit; bleibt nach Abbruch/Fehler erhalten, wird nur bei
+  vollständigem Erfolg gelöscht. Resume (`resume:true` an `POST /runs`/`/runs/batch`) übernimmt
+  alle fachlichen Parameter **aus dem Checkpoint**, nicht erneut vom Client — verhindert
+  inkonsistente Ergebnisse, falls der Nutzer Formularwerte zwischenzeitlich geändert hat; einzig
+  `dataset` (und optional `runId`) kommen vom Client. **Batch-Läufe** resumen exakt die Variante,
+  bei der abgebrochen wurde (`variantIndex`/`completedResults` im Checkpoint), bereits fertige
+  Varianten werden nicht neu gerechnet. UI: Resume-Banner im Neuer-Lauf-Dialog
+  („Weitermachen"/„Verwerfen" — Verwerfen löscht den abgebrochenen Lauf über den bestehenden
+  `POST /runs/{runId}/delete`-Mechanismus + den Checkpoint); Fortschrittsanzeige zeigt jetzt
+  „(Query 5/38)"/„(Regel 7/22)"/„(Akteur 320/4219)" zusätzlich zum Phasennamen (bzw. zur
+  Batch-Variante). Der Ribbon-Button „Evidenz nachrechnen" (`do_explain`) nutzt denselben
+  `_explain_one()`-Kern — eigene, nach `runId` benannte Checkpoint-Datei (nicht die dataset-weite
+  `_run_state.json`), damit ein parallel laufender „echter" Lauf sie nicht überschreibt; ein
+  abgebrochener Aufruf wird beim nächsten Klick automatisch fortgesetzt (kein Formular nötig).
+  Host-Runner `run/run_evaluate.ps1` auf dieselben, jetzt aufgeteilten `.cypher`-Dateien
+  umgestellt (kein doppelt gepflegter Cypher-Text) — läuft die Kandidaten/Pro-Einheit-Schleife
+  ohne Checkpoint/Resume (einmaliger interaktiver Lauf, alle Schritte idempotent); dabei nebenbei
+  einen Bestandsfehler behoben (`$orgMode` wurde nie an `evaluate_sod` übergeben, obwohl referenziert).
+  **Verifiziert** gegen den laufenden Container (Zähler/Status, keine Nutzerdaten): Fortschritt
+  sichtbar (`stepNum`/`stepTotal` steigen: z. B. 1→2 während `materialize`, 626→4219 während
+  `explain`); Abbruch wirkt jetzt innerhalb einer Einheit (Sekunden statt der ganzen Phase);
+  Resume eines abgebrochenen Einzellaufs setzt exakt bei der zuletzt geschriebenen Einheit fort
+  (nicht bei 0); Resume eines abgebrochenen Batch-Laufs bleibt in der richtigen Variante; Discard
+  räumt Run/Findings/MATCHES **und** Checkpoint vollständig weg (0 Restknoten/-kanten geprüft);
+  `do_explain` mit Fortschritt einmal komplett durchgelaufen (4219 Akteure, Ergebnis 492 intra /
+  9 inter identisch zur vorherigen Berechnung). PowerShell-Host-Runner smoke-getestet (Auswerten
+  von 5 bzw. 22 Regeln gegen bereits materialisierte Matches).
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`

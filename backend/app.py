@@ -231,6 +231,9 @@ class RunReq(BaseModel):
     skipMaterialize: bool = False
     skipExplain: bool = True         # Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) ist teuer ->
                                      # Default aus; per Formular oder POST /runs/{id}/explain anfordern
+    resume: bool = False             # Ab dem gespeicherten Lauf-Checkpoint weitermachen (_run_state.json);
+                                     # alle anderen Felder werden dann ignoriert -> die Original-Parameter
+                                     # aus dem Checkpoint gelten (siehe do_run()).
 
 
 def _slug(name: str) -> str:
@@ -245,14 +248,100 @@ def _humanize_profile_name(name: str) -> str:
     return " ".join(w[:1].upper() + w[1:] for w in re.split(r"[-_]+", name) if w)
 
 
+def _checkpoint_path(dataset: str, name: str) -> Path:
+    return DATA_DIR / dataset / name
+
+def _read_checkpoint(path: Path) -> dict | None:
+    try:
+        return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+    except Exception:
+        return None
+
+def _write_checkpoint(path: Path, state: dict) -> None:
+    state = {**state, "updatedAt": datetime.datetime.now().isoformat(timespec="seconds")}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def _clear_checkpoint(path: Path) -> None:
+    if path.is_file():
+        path.unlink()
+
+
+def _run_candidates(s, rel_path: str, params: dict) -> list[str]:
+    """Fuehrt eine Kandidaten-Datei aus (ein einzelnes RETURN id-Statement) und gibt die
+    Einheiten-IDs zurueck, die _run_phase() Schritt fuer Schritt abarbeitet."""
+    stmt = split_statements((CYPHER_DIR / rel_path).read_text(encoding="utf-8"))[0]
+    return [r["id"] for r in s.run(stmt, **params)]
+
+
+def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
+               reset_rel_path: str | None, candidates_rel_path: str, one_rel_path: str,
+               unit_param: str, params: dict, resume_units: set[str],
+               checkpoint_extra: dict) -> None:
+    """Eine Phase (materialize/evaluate/explain-PROVIDES) als 'Reset einmalig -> Kandidaten
+    ermitteln -> pro Einheit' statt als ein einziger, nicht unterbrechbarer Aufruf. Bei
+    resume_units (nicht leer): reset_rel_path wird uebersprungen (sonst waeren bereits fertige
+    Einheiten wieder weg) und bereits erledigte Einheiten werden nicht erneut gerechnet.
+    Schreibt nach JEDER Einheit einen Checkpoint (data/<dataset>/_run_state.json bzw. das vom
+    Aufrufer uebergebene state_path) -- ein Absturz verliert hoechstens eine Einheit."""
+    if not resume_units and reset_rel_path:
+        run_file(s, reset_rel_path, params)
+
+    candidates = _run_candidates(s, candidates_rel_path, params)
+    total = len(candidates)
+    completed = list(resume_units)
+    completed_set = set(completed)
+
+    jobs[job_id].update(step=step_label, stepNum=len(completed), stepTotal=total)
+    for unit_id in candidates:
+        if unit_id in completed_set:
+            continue
+        _check_cancel(job_id)
+        run_file(s, one_rel_path, {**params, unit_param: unit_id})
+        completed.append(unit_id)
+        completed_set.add(unit_id)
+        jobs[job_id].update(stepNum=len(completed), stepTotal=total)
+        _write_checkpoint(state_path, {**checkpoint_extra, "phase": phase,
+                                       "completedUnits": completed, "unitTotal": total})
+    jobs[job_id].pop("stepNum", None)
+    jobs[job_id].pop("stepTotal", None)
+
+
+def _explain_one(s, job_id: str, *, ruleset: str, dataset: str, as_of, run_id: str,
+                 state_path: Path, checkpoint_extra: dict, resume_units: set[str],
+                 step_prefix: str = "") -> None:
+    """Evidenz (VIA_ROLE/VIA_PROFILE + conflictType) fuer einen Lauf berechnen -- PROVIDES
+    (teuer, pro Akteur) ueber _run_phase() mit Fortschritt/Resume, der Abschluss
+    (explain_sod_finalize.cypher, bereits auf die Findings dieses Laufs begrenzt und damit
+    schnell) danach als ein Aufruf. Von _run_one() (explain-Phase eines Laufs) UND do_explain()
+    (Ribbon-Button "Evidenz nachrechnen") gemeinsam genutzt."""
+    base = {"ruleset": ruleset, "dataset": dataset, "asOf": as_of, "runId": run_id}
+    _run_phase(s, job_id, phase="explain", step_label=step_prefix + "explain",
+               state_path=state_path, reset_rel_path=None,
+               candidates_rel_path="sod/explain_sod_candidates.cypher",
+               one_rel_path="sod/explain_sod_one.cypher", unit_param="actorId",
+               params=base, resume_units=resume_units, checkpoint_extra=checkpoint_extra)
+    _check_cancel(job_id)
+    run_file(s, "sod/explain_sod_finalize.cypher", base)
+
+
+_RUN_PHASE_ORDER = ["ruleset", "materialize", "evaluate", "explain"]
+
+
 def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type_profile: str,
              org_profile: str, sleep_days: int, min_criticality_rank: int, sod_rules: list[str],
              run_id: str, title: str, skip_ruleset_load: bool, skip_materialize: bool,
-             skip_explain: bool, step_prefix: str = "") -> dict:
-    """Ein einzelner Lauf (Profile aufloesen -> materialize -> evaluate -> optional explain ->
-    Ergebnis-Zaehlung). Von do_run() (1 Variante) UND do_run_batch() (mehrere Varianten,
-    gemeinsame Session) genutzt — step_prefix erlaubt dem Batch, den Fortschritt je Variante
-    anzuzeigen (z. B. "Variante 2/3: uebergreifend - materialize")."""
+             skip_explain: bool, step_prefix: str = "", checkpoint_base: dict | None = None,
+             resume_phase: str | None = None, resume_units: list[str] | None = None) -> dict:
+    """Ein einzelner Lauf ([ruleset] -> materialize -> evaluate -> [explain] -> Ergebnis-
+    Zaehlung). Von do_run() (1 Variante) UND do_run_batch() (mehrere Varianten, gemeinsame
+    Session) genutzt — step_prefix erlaubt dem Batch, den Fortschritt je Variante anzuzeigen
+    (z. B. "Variante 2/3 (uebergreifend): materialize"). materialize/evaluate/explain laufen
+    ueber _run_phase()/_explain_one() mit Fortschritt + Checkpoint (data/<dataset>/_run_state.json,
+    checkpoint_base traegt die dataset-weiten Zusatzfelder wie runId/params/Batch-Kontext).
+    resume_phase/resume_units setzen an einem frueheren Abbruch fort: Phasen VOR resume_phase
+    gelten als bereits abgeschlossen (werden uebersprungen), resume_phase selbst macht bei den
+    darin bereits erledigten Einheiten weiter, alles danach laeuft frisch."""
     utp = next((p for p in cfg["userTypeProfiles"] if p["name"] == user_type_profile), None)
     if not utp:
         raise ValueError(f"userTypeProfile '{user_type_profile}' unbekannt")
@@ -265,34 +354,69 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
 
     as_of = _dataset_asof(s, dataset)
     base = {"ruleset": ruleset, "dataset": dataset, "asOf": as_of, "runId": run_id}
-    if not skip_ruleset_load:
-        _check_cancel(job_id)
-        rdir = ruleset_dir(ruleset)
-        if not rdir:
-            raise ValueError(f"Ruleset-Ordner fuer '{ruleset}' nicht gefunden")
-        jobs[job_id]["step"] = step_prefix + "ruleset"
-        ensure_custom_queries_file(ruleset)    # queries.custom.json muss existieren (apoc.load.json)
-        ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
-        run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
-    if not skip_materialize:
-        _check_cancel(job_id)
-        jobs[job_id]["step"] = step_prefix + "materialize"
-        run_file(s, "sod/materialize_matches.cypher", {**base, **org})
-    _check_cancel(job_id)
-    jobs[job_id]["step"] = step_prefix + "evaluate"
-    run_file(s, "sod/evaluate_sod.cypher", {
-        **base, **org,
-        "userTypes": list(utp.get("userTypes", [])),
-        "excludeLocked": bool(utp.get("excludeLocked", False)),
-        "sleepDays": sleep_days,
-        "minCriticalityRank": min_criticality_rank,
-        "sodRules": sod_rules,
-        "title": title,
-    })
-    if not skip_explain:
-        _check_cancel(job_id)
-        jobs[job_id]["step"] = step_prefix + "explain"
-        run_file(s, "sod/explain_sod.cypher", base)
+    state_path = _checkpoint_path(dataset, "_run_state.json")
+    checkpoint_extra = checkpoint_base or {}
+
+    enabled = {"ruleset": not skip_ruleset_load, "materialize": not skip_materialize,
+               "evaluate": True, "explain": not skip_explain}
+    reached = resume_phase is None
+    resume_units_set = set(resume_units or [])
+
+    for phase in _RUN_PHASE_ORDER:
+        if not enabled[phase]:
+            continue
+        if not reached:
+            if phase == resume_phase:
+                reached = True
+            else:
+                continue   # vor dem Wiederaufnahmepunkt liegende Phase -> schon abgeschlossen
+
+        this_phase_resume = resume_units_set if phase == resume_phase else set()
+
+        if phase == "ruleset":
+            _check_cancel(job_id)
+            rdir = ruleset_dir(ruleset)
+            if not rdir:
+                raise ValueError(f"Ruleset-Ordner fuer '{ruleset}' nicht gefunden")
+            jobs[job_id]["step"] = step_prefix + "ruleset"
+            ensure_custom_queries_file(ruleset)    # queries.custom.json muss existieren (apoc.load.json)
+            ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
+            run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
+
+        elif phase == "materialize":
+            _run_phase(s, job_id, phase="materialize", step_label=step_prefix + "materialize",
+                       state_path=state_path, reset_rel_path="sod/materialize_matches_reset.cypher",
+                       candidates_rel_path="sod/materialize_matches_candidates.cypher",
+                       one_rel_path="sod/materialize_matches_one.cypher", unit_param="qid",
+                       params={**base, **org}, resume_units=this_phase_resume,
+                       checkpoint_extra=checkpoint_extra)
+
+        elif phase == "evaluate":
+            _check_cancel(job_id)
+            jobs[job_id]["step"] = step_prefix + "evaluate"
+            eval_params = {
+                **base, **org,
+                "userTypes": list(utp.get("userTypes", [])),
+                "excludeLocked": bool(utp.get("excludeLocked", False)),
+                "sleepDays": sleep_days,
+                "minCriticalityRank": min_criticality_rank,
+                "sodRules": sod_rules,
+                "title": title,
+            }
+            if not this_phase_resume:
+                run_file(s, "sod/evaluate_sod_init.cypher", eval_params)
+            _run_phase(s, job_id, phase="evaluate", step_label=step_prefix + "evaluate",
+                       state_path=state_path, reset_rel_path=None,
+                       candidates_rel_path="sod/evaluate_sod_candidates.cypher",
+                       one_rel_path="sod/evaluate_sod_one.cypher", unit_param="ruleId",
+                       params=eval_params, resume_units=this_phase_resume,
+                       checkpoint_extra=checkpoint_extra)
+
+        elif phase == "explain":
+            _explain_one(s, job_id, ruleset=ruleset, dataset=dataset, as_of=as_of, run_id=run_id,
+                        state_path=state_path, checkpoint_extra=checkpoint_extra,
+                        resume_units=this_phase_resume, step_prefix=step_prefix)
+
     rec = s.run(
         "MATCH (f:SoDConflict {runId:$r}) "
         "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
@@ -306,17 +430,29 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
 def do_run(job_id: str, req: RunReq):
     try:
         cfg = profiles()
-        sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
-        run_id = req.runId or f"{req.ruleset}-{datetime.datetime.now():%Y%m%d%H%M%S}"
-        title = req.title or run_id
+        resume_state = _read_checkpoint(_checkpoint_path(req.dataset, "_run_state.json")) if req.resume else None
+        if resume_state and not resume_state.get("isBatch"):
+            eff_req = RunReq(**resume_state["params"])
+            run_id = resume_state["runId"]
+            resume_phase, resume_units = resume_state["phase"], resume_state["completedUnits"]
+        else:
+            eff_req, resume_state = req, None
+            run_id = req.runId or f"{req.ruleset}-{datetime.datetime.now():%Y%m%d%H%M%S}"
+            resume_phase, resume_units = None, None
+        title = eff_req.title or run_id
+        sleep_days = eff_req.sleepDays if eff_req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
         jobs[job_id].update(status="running", runId=run_id, step="start")
+        checkpoint_base = {"runId": run_id, "ruleset": eff_req.ruleset, "isBatch": False,
+                           "params": eff_req.model_dump()}
         with driver.session() as s:
-            result = _run_one(s, job_id, cfg, ruleset=req.ruleset, dataset=req.dataset,
-                               user_type_profile=req.userTypeProfile, org_profile=req.orgProfile,
-                               sleep_days=sleep_days, min_criticality_rank=req.minCriticalityRank,
-                               sod_rules=req.sodRules, run_id=run_id, title=title,
-                               skip_ruleset_load=req.skipRulesetLoad, skip_materialize=req.skipMaterialize,
-                               skip_explain=req.skipExplain)
+            result = _run_one(s, job_id, cfg, ruleset=eff_req.ruleset, dataset=eff_req.dataset,
+                               user_type_profile=eff_req.userTypeProfile, org_profile=eff_req.orgProfile,
+                               sleep_days=sleep_days, min_criticality_rank=eff_req.minCriticalityRank,
+                               sod_rules=eff_req.sodRules, run_id=run_id, title=title,
+                               skip_ruleset_load=eff_req.skipRulesetLoad, skip_materialize=eff_req.skipMaterialize,
+                               skip_explain=eff_req.skipExplain, checkpoint_base=checkpoint_base,
+                               resume_phase=resume_phase, resume_units=resume_units)
+        _clear_checkpoint(_checkpoint_path(eff_req.dataset, "_run_state.json"))
         jobs[job_id].update(status="done", step="done", **result)
     except InterruptedError:
         jobs[job_id].update(status="cancelled", step="cancelled")
@@ -329,44 +465,66 @@ class RunBatchReq(BaseModel):
     ruleset: str = "kpmg_r3"
     dataset: str
     userTypeProfile: str = "all"
-    orgProfiles: list[str]           # >=1 Org-Varianten; je Variante ein eigener Lauf
+    orgProfiles: list[str] = []      # >=1 Org-Varianten (je Variante ein eigener Lauf) -- leer nur
+                                     # erlaubt, wenn resume=true (dann kommen sie aus dem Checkpoint)
     sleepDays: int | None = None
     minCriticalityRank: int = 0
     sodRules: list[str] = []
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
     skipExplain: bool = True
+    resume: bool = False             # s. RunReq.resume
 
 
 def do_run_batch(job_id: str, req: RunBatchReq):
     try:
-        if not req.orgProfiles:
-            raise ValueError("orgProfiles darf nicht leer sein")
         cfg = profiles()
-        sleep_days = req.sleepDays if req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
-        ts = f"{datetime.datetime.now():%Y%m%d%H%M%S}"
-        jobs[job_id].update(status="running", step="start", runs=[])
-        results = []
-        n = len(req.orgProfiles)
+        resume_state = _read_checkpoint(_checkpoint_path(req.dataset, "_run_state.json")) if req.resume else None
+        if resume_state and resume_state.get("isBatch"):
+            eff_req = RunBatchReq(**resume_state["params"])
+            ts = resume_state["ts"]
+            results = resume_state.get("completedResults", [])
+            start_index = resume_state["variantIndex"]
+            resume_phase, resume_units = resume_state["phase"], resume_state["completedUnits"]
+        else:
+            if not req.orgProfiles:
+                raise ValueError("orgProfiles darf nicht leer sein")
+            eff_req, resume_state = req, None
+            ts = f"{datetime.datetime.now():%Y%m%d%H%M%S}"
+            results = []
+            start_index = 1
+            resume_phase, resume_units = None, None
+        sleep_days = eff_req.sleepDays if eff_req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
+        n = len(eff_req.orgProfiles)
+        jobs[job_id].update(status="running", step="start", runs=results)
         with driver.session() as s:
-            for i, profile_name in enumerate(req.orgProfiles, start=1):
+            for i, profile_name in enumerate(eff_req.orgProfiles, start=1):
+                if i < start_index:
+                    continue    # bereits abgeschlossene Variante -> Ergebnis steckt schon in `results`
                 op = next((p for p in cfg["profiles"] if p["name"] == profile_name), None)
                 if not op:
                     raise ValueError(f"orgProfile '{profile_name}' unbekannt")
-                run_id = f"{req.ruleset}-{ts}-{i}-{_slug(profile_name)}"
+                run_id = f"{eff_req.ruleset}-{ts}-{i}-{_slug(profile_name)}"
                 title = _humanize_profile_name(profile_name)
+                checkpoint_base = {"runId": run_id, "ruleset": eff_req.ruleset, "isBatch": True,
+                                   "params": eff_req.model_dump(), "ts": ts,
+                                   "variantIndex": i, "variantTotal": n, "completedResults": results}
                 result = _run_one(
-                    s, job_id, cfg, ruleset=req.ruleset, dataset=req.dataset,
-                    user_type_profile=req.userTypeProfile, org_profile=profile_name,
-                    sleep_days=sleep_days, min_criticality_rank=req.minCriticalityRank,
-                    sod_rules=req.sodRules, run_id=run_id, title=title,
+                    s, job_id, cfg, ruleset=eff_req.ruleset, dataset=eff_req.dataset,
+                    user_type_profile=eff_req.userTypeProfile, org_profile=profile_name,
+                    sleep_days=sleep_days, min_criticality_rank=eff_req.minCriticalityRank,
+                    sod_rules=eff_req.sodRules, run_id=run_id, title=title,
                     # Ruleset nur einmal laden (idempotent, aber unnoetig fuer jede Variante)
-                    skip_ruleset_load=req.skipRulesetLoad or i > 1,
-                    skip_materialize=req.skipMaterialize, skip_explain=req.skipExplain,
+                    skip_ruleset_load=eff_req.skipRulesetLoad or i > 1,
+                    skip_materialize=eff_req.skipMaterialize, skip_explain=eff_req.skipExplain,
                     step_prefix=f"Variante {i}/{n} ({profile_name}): ",
+                    checkpoint_base=checkpoint_base,
+                    resume_phase=resume_phase if i == start_index else None,
+                    resume_units=resume_units if i == start_index else None,
                 )
                 results.append(result)
                 jobs[job_id]["runs"] = results
+        _clear_checkpoint(_checkpoint_path(eff_req.dataset, "_run_state.json"))
         jobs[job_id].update(status="done", step="done", runs=results)
     except InterruptedError:
         jobs[job_id].update(status="cancelled", step="cancelled")
@@ -509,7 +667,12 @@ def do_import(job_id: str, req: ImportReq):
 
 def do_explain(job_id: str, run_id: str):
     """Evidenz (VIA_ROLE/VIA_PROFILE + conflictType) fuer einen bestehenden Lauf nachrechnen.
-    Scope (ruleset/dataset/asOf) kommt aus dem (:Run)-Knoten."""
+    Scope (ruleset/dataset/asOf) kommt aus dem (:Run)-Knoten. Fortschritt/Resume ueber
+    _explain_one() wie die explain-Phase eines Laufs -- eigene, nach runId benannte
+    Checkpoint-Datei (statt der dataset-weiten _run_state.json), damit ein parallel laufender
+    "echter" Lauf desselben Datasets nicht denselben Checkpoint ueberschreibt. Ein zuvor
+    abgebrochener Aufruf fuer denselben Lauf wird automatisch fortgesetzt (kein Formular/keine
+    Nutzer-Entscheidung noetig -- der einzige Parameter ist der bestehende Lauf selbst)."""
     try:
         with driver.session() as s:
             run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, r.dataset AS dataset, "
@@ -517,14 +680,21 @@ def do_explain(job_id: str, run_id: str):
             if not run:
                 raise ValueError(f"Lauf '{run_id}' nicht gefunden")
             jobs[job_id].update(status="running", step="explain", runId=run_id)
-            run_file(s, "sod/explain_sod.cypher",
-                     {"ruleset": run["ruleset"], "dataset": run["dataset"],
-                      "asOf": run["asOf"], "runId": run_id})
+            state_path = _checkpoint_path(run["dataset"], f"_explain_state_{run_id}.json")
+            resume_state = _read_checkpoint(state_path)
+            resume_units = set(resume_state["completedUnits"]) if resume_state else set()
+            _explain_one(s, job_id, ruleset=run["ruleset"], dataset=run["dataset"], as_of=run["asOf"],
+                        run_id=run_id, state_path=state_path,
+                        checkpoint_extra={"runId": run_id, "ruleset": run["ruleset"]},
+                        resume_units=resume_units)
+            _clear_checkpoint(state_path)
             rec = s.run("MATCH (f:SoDConflict {runId:$id}) RETURN count(f) AS findings, "
                         "sum(CASE WHEN f.conflictType='intra' THEN 1 ELSE 0 END) AS intra, "
                         "sum(CASE WHEN f.conflictType='inter' THEN 1 ELSE 0 END) AS inter", id=run_id).single()
         jobs[job_id].update(status="done", step="done",
                             findings=rec["findings"], intra=rec["intra"], inter=rec["inter"])
+    except InterruptedError:
+        jobs[job_id].update(status="cancelled", step="cancelled")
     except Exception as e:  # noqa: BLE001
         jobs[job_id].update(status="error", error=str(e))
         _log_job_error(job_id, str(e))
@@ -1959,6 +2129,22 @@ async def upload_import(file: UploadFile = File(...), dataset: str = Form(""),
 def get_import_state(datasetId: str):
     """Import-Checkpoint lesen: welche Load-Schritte wurden schon abgeschlossen?"""
     return _read_state(datasetId) or {}
+
+
+@app.get("/datasets/{datasetId}/run-state")
+def get_run_state(datasetId: str):
+    """Lauf-Checkpoint lesen: ist fuer dieses Dataset ein Lauf abgebrochen und fortsetzbar?
+    (Einzel- und Batch-Laeufe teilen sich denselben Checkpoint -- pro Dataset ist immer nur ein
+    Lauf gleichzeitig aktiv/fortsetzbar, wie beim Import.)"""
+    return _read_checkpoint(_checkpoint_path(datasetId, "_run_state.json")) or {}
+
+
+@app.post("/datasets/{datasetId}/run-state/discard")
+def discard_run_state(datasetId: str):
+    """Verwirft einen abgebrochenen Lauf-Checkpoint (nur die Datei) -- Aufraeumen der
+    Graphdaten des abgebrochenen Laufs selbst erfolgt separat ueber POST /runs/{runId}/delete."""
+    _clear_checkpoint(_checkpoint_path(datasetId, "_run_state.json"))
+    return {"dataset": datasetId, "discarded": True}
 
 
 @app.get("/import-folders")

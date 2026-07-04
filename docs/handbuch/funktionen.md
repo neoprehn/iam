@@ -166,7 +166,7 @@ Fallen „eigene Definition" und „generiertes Profil" für **dasselbe** Berech
 nach dem Generieren des Profils zur Laufzeit wirksam — weicht die gepflegte Definition vom
 generierten Profil ab, zeigt die „eigene Definition"-Zeile etwas, das ggf. **nicht** (mehr) aktiv
 ist. Diese Annahme (Rollendefinition ≈ generiertes Profil) ist keine Root-Cause-Eigenheit, sondern
-gilt für die gesamte Can-Do-/SoD-Auswertung der App (`materialize_matches.cypher`); D4 ist der
+gilt für die gesamte Can-Do-/SoD-Auswertung der App (`materialize_matches_*.cypher`); D4 ist der
 dafür vorgesehene Konsistenzcheck.
 
 Die Matches-Tabelle zeigt dafür **User · Name · Query · Bezeichnung (Kurzbezeichnung der Query) ·

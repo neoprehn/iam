@@ -5,12 +5,13 @@
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe „Windows-Spezifika").
 
 **Stand:** Die App ist unter `http://localhost:8000/` lauffähig: **Import (Ordner/ZIP, mit
-Abbrechen/Resume), geführte Auswertung (Assistent-Stepper), Auswertung (inkl. Evidenz, Org-Varianten,
-interaktive Drill-downs), Konsistenzchecks + Konsistenz-Report (CSV/PDF), Query-/SoD-Management,
-Ergebnisse + CSV-Export, Backup/Restore, Bereinigen** — alles ohne JSON-Pflege. Abgeschlossene Arbeit
-(Phasen 0–3, 5; Phase 6 PoC; Phase 7 vollständig; Phase-9-Bausteine Backend-API/Import/Ribbon-UI/
-Backup-Restore-Clear/CSV-Export/Org-Filter+MATCHES-Scoping/Drill-downs/Admin-Management-Seiten/
-Assistent-Stepper/Import-Robustheit; AE-11-Evidenz v1) ist im Detail in
+Abbrechen/Resume), geführte Auswertung (Assistent-Stepper), Auswertung (inkl. Fortschritt/Resume je
+Query/Regel/Akteur, Evidenz, Org-Varianten, interaktive Drill-downs), Konsistenzchecks +
+Konsistenz-Report (CSV/PDF), Query-/SoD-Management, Ergebnisse + CSV-Export, Backup/Restore,
+Bereinigen** — alles ohne JSON-Pflege. Abgeschlossene Arbeit (Phasen 0–3, 5; Phase 6 PoC; Phase 7
+vollständig; Phase-9-Bausteine Backend-API/Import/Ribbon-UI/Backup-Restore-Clear/CSV-Export/
+Org-Filter+MATCHES-Scoping/Drill-downs/Admin-Management-Seiten/Assistent-Stepper/Import-Robustheit/
+Lauf-Fortschritt+Resume; AE-11-Evidenz v1) ist im Detail in
 [`ROADMAP-ARCHIV.md`](ROADMAP-ARCHIV.md) festgehalten. **Diese Datei führt nur noch die offenen
 Punkte** plus die verbindliche Referenz (Vertrauensgrenze, Architektur-Entscheidungen,
 Zielarchitektur, Windows-Spezifika, R/3-vs-S/4).

@@ -33,12 +33,21 @@ stichtagsgefiltert. Einfache Checks wie `cypher/checks/sap_all.cypher` sind der 
 
 Das Teure (Matching gegen Auths) passiert **einmal**, SoD ist danach reine Mengenlogik:
 
-1. **`cypher/sod/materialize_matches.cypher`** — materialisiert das Zwischenergebnis „wer kann
+1. **`cypher/sod/materialize_matches_*.cypher`** — materialisiert das Zwischenergebnis „wer kann
    was": `(:User)-[:MATCHES]->(:Query)` (nur die SoD-relevanten Queries).
-2. **`cypher/sod/evaluate_sod.cypher`** — wertet darauf aus: ein User verletzt eine Regel, wenn
+2. **`cypher/sod/evaluate_sod_*.cypher`** — wertet darauf aus: ein User verletzt eine Regel, wenn
    **jede Klausel** (CNF) ≥1 von ihm gematchte Query enthält → `(:SoDConflict)` mit Provenienz
    (`ruleset`, `dataset`, `asOf`, `runId`). **Risiko/Kritikalität stammt aus `(:SoDRule)`** und
    wird nur angehängt — nicht neu bewertet.
+
+Beide Schritte (plus `cypher/sod/explain_sod_*.cypher` für die Evidenz) sind seit dem
+Fortschritts-/Resume-Ausbau (ROADMAP-ARCHIV) jeweils in drei Dateien aufgeteilt statt eines
+einzigen, nicht unterbrechbaren Aufrufs: `..._reset`/`..._init` (einmalig, nur bei frischem
+Phasenstart), `..._candidates` (Liste der Einheiten — Query/Regel/Akteur), `..._one` (Kern-Logik
+für **eine** Einheit, vom Backend Einheit für Einheit aufgerufen, mit Fortschritt + Checkpoint
+zwischen jeder Einheit). Die fachliche Logik ist unverändert, nur die Iterationssteuerung wandert
+von `apoc.periodic.iterate` (Neo4j-intern) zu einer Python-Schleife (`_run_phase()` in
+`backend/app.py`).
 
 ## Parameter
 

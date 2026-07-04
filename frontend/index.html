@@ -653,7 +653,7 @@
     </div>
     <div id="runMeta" class="muted" style="font-size:12px;min-height:16px;margin-bottom:10px"></div>
     <button class="ghost danger" id="runCancelBtn">Abbrechen</button>
-    <span id="runCancelHint" class="muted" style="font-size:11px;display:none;margin-left:8px">Abbruch erst nach dem aktuellen Schritt &mdash; „materialize" kann dauern&hellip;</span>
+    <span id="runCancelHint" class="muted" style="font-size:11px;display:none;margin-left:8px">Abbruch nach der aktuellen Query/Regel/Akteur&hellip;</span>
     <div id="runResult" style="display:none;margin-top:12px;padding:10px 12px;border-radius:6px;font-size:13px"></div>
   </div>
 
@@ -662,6 +662,12 @@
     <div class="row">
       <div><label for="ruleset">Ruleset</label><select id="ruleset"></select></div>
       <div><label for="runDataset">System (dataset)</label><select id="runDataset"></select></div>
+    </div>
+    <!-- Resume-Banner (eingeblendet wenn ein Lauf-Checkpoint fuer das Dataset vorliegt) -->
+    <div id="runResumeBanner" style="display:none; background:rgba(76,139,245,.1); border:1px solid rgba(76,139,245,.3); border-radius:6px; padding:10px 12px; margin:8px 0">
+      <div id="runResumeInfo" class="muted" style="font-size:12px; margin-bottom:8px"></div>
+      <button type="button" class="ghost" id="runResumeBtn" style="padding:4px 12px; font-size:12px">Weitermachen</button>
+      <button type="button" class="ghost danger" id="runDiscardBtn" style="padding:4px 12px; font-size:12px">Verwerfen</button>
     </div>
     <div class="row">
       <div><label>Stichtag</label>
@@ -822,7 +828,7 @@ document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e
 document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
 $('cmdImport').onclick = () => { openDlg('dlg-import'); checkImportState($('impDataset').value); };
-$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); openDlg('dlg-run'); };
+$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); openDlg('dlg-run'); checkRunState($('runDataset').value); };
 $('cmdBackup').onclick = () => { openDlg('dlg-backup'); refreshImportFilesInfo(); };
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
@@ -1563,6 +1569,7 @@ async function editDatasetAsOf(datasetSelId, displayElId) {
   } catch (e) { alert('Fehler: ' + (e.detail || JSON.stringify(e))); }
 }
 $('runDataset').addEventListener('change', refreshRunAsOfDisplay);
+$('runDataset').addEventListener('change', () => checkRunState($('runDataset').value));
 $('ccdDataset').addEventListener('change', refreshCcdAsOfDisplay);
 $('runAsOfEdit').onclick = e => { e.preventDefault(); editDatasetAsOf('runDataset', 'runAsOfDisplay'); };
 $('ccdAsOfEdit').onclick = e => { e.preventDefault(); editDatasetAsOf('ccdDataset', 'ccdAsOfDisplay'); };
@@ -1592,6 +1599,29 @@ async function checkImportState(dataset) {
       _impResumeMode = false;
     }
   } catch { banner.style.display = 'none'; _impResumeMode = false; }
+}
+
+let _runResumeState = null;
+
+async function checkRunState(dataset) {
+  const banner = $('runResumeBanner'), info = $('runResumeInfo');
+  if (!dataset) { banner.style.display = 'none'; _runResumeState = null; return; }
+  try {
+    const st = await api(`/datasets/${encodeURIComponent(dataset)}/run-state`);
+    if (st.runId) {
+      const phaseLabel = (RUN_STEP_LABELS[st.phase] || [st.phase])[0];
+      const done = (st.completedUnits || []).length;
+      const unitInfo = st.unitTotal ? ` (${done}/${st.unitTotal})` : '';
+      const variantInfo = st.isBatch ? ` &mdash; Variante ${st.variantIndex}/${st.variantTotal}` : '';
+      const title = (st.params && st.params.title) || st.runId;
+      info.innerHTML = `Abgebrochener Lauf <b>${title}</b>${variantInfo}: ${phaseLabel}${unitInfo}`;
+      banner.style.display = '';
+      _runResumeState = st;
+    } else {
+      banner.style.display = 'none';
+      _runResumeState = null;
+    }
+  } catch { banner.style.display = 'none'; _runResumeState = null; }
 }
 
 function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLowerCase()}">${c || '?'}</span>`; }
@@ -1716,7 +1746,13 @@ async function showFindings(runId) {
   renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
   hideFilterActive(); updateResultContext('', ''); renderCausingActors(null);
   refreshKpis({});
-  allFindingsForRun = await api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500');
+  // Parallel laden (nicht sequenziell) und ERST rendern, wenn beides da ist -- sonst ist
+  // sodRuleNames beim allerersten Oeffnen eines Laufs noch leer und die Regel-Bezeichnung
+  // fehlt in der Tabelle, bis irgendetwas anderes (z. B. ein Filterklick) neu rendert.
+  [allFindingsForRun] = await Promise.all([
+    api('/findings?runId=' + encodeURIComponent(runId) + '&limit=500'),
+    loadSodRuleNames(runId),
+  ]);
   rulesCache = [...new Map(allFindingsForRun.map(f => [f.rule, f.criticality])).entries()]
     .map(([rule, criticality]) => ({ rule, criticality }));
   populateFilterSelects(allFindingsForRun);
@@ -1724,7 +1760,6 @@ async function showFindings(runId) {
   setFindingsMeta(allFindingsForRun.length);
   loadRuns();
   loadQueriesForRun(runId);
-  loadSodRuleNames(runId);
 }
 
 function userTypeValues() {
@@ -2412,12 +2447,24 @@ function _runStepInfo(j) {
   return { label: prefix + label, note, current, total };
 }
 
+const RUN_UNIT_LABELS = { materialize: 'Query', evaluate: 'Regel', explain: 'Akteur' };
+
 function _runUpdateUI(j) {
   const { label, note, current, total } = _runStepInfo(j);
   $('runStepLabel').textContent = label;
-  $('runMeta').textContent = note + (current && total ? ` (${current} von ${total} Varianten)` : '');
-  // Für Batch-Läufe Fortschrittsbalken als Schrittanzeige
-  if (current && total) {
+  const metaParts = [note];
+  if (current && total) metaParts.push(`(${current} von ${total} Varianten)`);
+  if (j.stepNum != null && j.stepTotal) {
+    const unitKey = Object.keys(RUN_UNIT_LABELS).find(k => (j.step || '').includes(k));
+    metaParts.push(`(${RUN_UNIT_LABELS[unitKey] || 'Einheit'} ${j.stepNum}/${j.stepTotal})`);
+  }
+  $('runMeta').textContent = metaParts.filter(Boolean).join(' ');
+  // Fortschrittsbalken: Einheiten-Fortschritt (praezise, materialize/evaluate/explain) bevorzugt,
+  // sonst grober Varianten-Fortschritt (Batch), sonst nur Pulse-Animation (ruleset/start/done).
+  if (j.stepNum != null && j.stepTotal) {
+    $('runBar').style.width = (j.stepNum / j.stepTotal * 100) + '%';
+    $('runBarPulse').style.display = 'none';
+  } else if (current && total) {
     const pct = ((current - 1) / total) * 100;
     $('runBar').style.width = pct + '%';
     $('runBarPulse').style.display = '';
@@ -2657,6 +2704,29 @@ $('formRun').addEventListener('submit', async e => {
       return r.jobId;
     }
   });
+});
+
+$('runResumeBtn').addEventListener('click', async () => {
+  if (!_runResumeState) return;
+  const dataset = (_runResumeState.params && _runResumeState.params.dataset) || $('runDataset').value;
+  const url = _runResumeState.isBatch ? '/runs/batch' : '/runs';
+  await _runRun(async () => {
+    const r = await api(url, json({ dataset, resume: true }));
+    return r.jobId;
+  });
+});
+
+$('runDiscardBtn').addEventListener('click', () => {
+  if (!_runResumeState) return;
+  const st = _runResumeState;
+  const label = (st.params && st.params.title) || st.runId;
+  const dataset = (st.params && st.params.dataset) || $('runDataset').value;
+  runJob('/runs/' + encodeURIComponent(st.runId) + '/delete', { method: 'POST' },
+    `Abgebrochenen Lauf „${label}" wirklich verwerfen? Bereits berechnete Zwischenergebnisse dieses Laufs gehen verloren.`,
+    async j => {
+      await api('/datasets/' + encodeURIComponent(dataset) + '/run-state/discard', { method: 'POST' });
+      return doneTag + ' Abgebrochener Lauf verworfen.';
+    });
 });
 
 async function refreshImportFilesInfo() {

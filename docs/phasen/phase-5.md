@@ -25,10 +25,16 @@ Export unter `data/import/<Dataset>/`. Jeder Schritt wird über `$LASTEXITCODE` 
 ```
 
 Schritte: **Ruleset laden** (`cypher/ruleset/load_ruleset.cypher`) → **materialisieren**
-(`cypher/sod/materialize_matches.cypher`) → **SoD auswerten** (`cypher/sod/evaluate_sod.cypher`).
-Die **Profile** (`-UserTypeProfile`, `-OrgProfile`, Sleeping, Scope) werden aus
-`config/analysis_profiles.json` **aufgelöst** und als `-P`-Cypher-Literale übergeben — der
-Nutzer pflegt **kein** JSON von Hand. Am Ende: Zusammenfassung (Findings / Regeln / sleeping).
+(`cypher/sod/materialize_matches_*.cypher`) → **SoD auswerten**
+(`cypher/sod/evaluate_sod_*.cypher`). Materialisieren/Auswerten laufen intern als Reset (einmalig)
+→ Kandidaten ermitteln → pro Einheit (Query bzw. Regel, `Invoke-Phase` im Skript) — dieselben
+Dateien wie die App (`backend/app.py:_run_phase()`), nur ohne deren Fortschrittsanzeige/Checkpoint
+(Host-Runner ist ein einmaliger interaktiver Lauf; bei Abbruch einfach neu starten, alle Schritte
+idempotent). Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) wird hier **nicht** berechnet — dafür
+über die App `POST /runs/{id}/explain`. Die **Profile** (`-UserTypeProfile`, `-OrgProfile`,
+Sleeping, Scope) werden aus `config/analysis_profiles.json` **aufgelöst** und als
+`-P`-Cypher-Literale übergeben — der Nutzer pflegt **kein** JSON von Hand. Am Ende:
+Zusammenfassung (Findings / Regeln / sleeping).
 
 :::{important} Stichtag (`-AsOf`)
 Muss zum **Datenstand** passen (Snapshot-Datum, nicht „heute") — er steuert Rollen-Gültigkeit

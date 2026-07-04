@@ -4,8 +4,13 @@
 
 .DESCRIPTION
   Drei Schritte ueber den laufenden iam-neo4j: cypher/ruleset/load_ruleset, cypher/sod/
-  materialize_matches, cypher/sod/evaluate_sod. Profile (Nutzertyp/Org/Scope/Sleeping) werden
-  aus config/analysis_profiles.json aufgeloest und als -P Parameter uebergeben.
+  materialize_matches_*, cypher/sod/evaluate_sod_*. Materialisieren und Auswerten laufen als
+  Reset (einmalig) -> Kandidaten ermitteln -> pro Einheit (Query bzw. Regel) -- dieselben
+  .cypher-Dateien wie die App (backend/app.py:_run_phase()), nur ohne deren Fortschrittsanzeige/
+  Checkpoint (Host-Runner ist ein einmaliger interaktiver Lauf, alle Schritte idempotent).
+  Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) wird hier NICHT berechnet -- ueber die App per
+  POST /runs/{id}/explain nachrechenbar. Profile (Nutzertyp/Org/Scope/Sleeping) werden aus
+  config/analysis_profiles.json aufgeloest und als -P Parameter uebergeben.
 
 .PARAMETER Ruleset   Ruleset-Id (kpmg_r3/csi/csi_bi); Ordner wird aus rules/*/ruleset.json ermittelt.
 .PARAMETER Dataset   Dataset-Id (System).
@@ -90,6 +95,8 @@ if (-not $RunId) { $RunId = "$Ruleset-$(Get-Date -Format yyyyMMddHHmmss)" }
 Write-Host "== Auswerte-Runner | ruleset=$Ruleset dataset=$Dataset asOf=$AsOf runId=$RunId ==" -ForegroundColor Cyan
 Write-Host "   userTypes=$(ConvertTo-Cypher $userTypes) org=$OrgProfile orgFilters=$(ConvertTo-Cypher $orgFilters) sleepDays=$SleepDays minRank=$MinCriticalityRank" -ForegroundColor DarkCyan
 
+$orgMode = $op.org.mode
+
 function Invoke-Cypher([string] $file, [string[]] $params) {
     $dargs = @('exec', 'iam-neo4j', 'cypher-shell', '-u', 'neo4j', '-p', $pw)
     foreach ($p in $params) { $dargs += @('-P', $p) }
@@ -98,21 +105,57 @@ function Invoke-Cypher([string] $file, [string[]] $params) {
     if ($LASTEXITCODE -ne 0) { throw "Fehler in $file" }
 }
 
+# Kandidaten-Datei ausfuehren (ein RETURN id-Statement, s. backend/app.py:_run_candidates) und
+# die id-Spalte als Liste zurueckgeben -- treibt die Pro-Einheit-Schleife unten, exakt wie die
+# App das ueber den Treiber macht (dieselben .cypher-Dateien, kein doppelt gepflegter Cypher-Text).
+function Get-CypherIds([string] $file, [string[]] $params) {
+    $dargs = @('exec', 'iam-neo4j', 'cypher-shell', '-u', 'neo4j', '-p', $pw, '--format', 'plain')
+    foreach ($p in $params) { $dargs += @('-P', $p) }
+    $dargs += @('-f', $file)
+    $out = & docker @dargs
+    if ($LASTEXITCODE -ne 0) { throw "Fehler in $file" }
+    $out | Select-Object -Skip 1 | ForEach-Object { $_.Trim('"') } | Where-Object { $_ }
+}
+
+# Eine Phase (materialize/evaluate/explain) als Reset (einmalig) -> Kandidaten -> pro Einheit --
+# analog zu _run_phase() in backend/app.py, nur ohne Checkpoint/Resume (Host-Runner ist ein
+# einmaliger interaktiver Lauf; bei Abbruch: einfach neu starten, alle drei Schritte sind
+# idempotent). cypher-shell startet je Einheit neu -- der Prozess-Overhead ist gegenueber der
+# eigentlichen Cypher-Laufzeit pro Query/Regel/Akteur meist vernachlaessigbar.
+function Invoke-Phase([string] $label, [string] $resetFile, [string] $candidatesFile,
+                       [string] $oneFile, [string] $unitParamName, [string[]] $baseParams) {
+    if ($resetFile) { Invoke-Cypher $resetFile $baseParams }
+    $ids = @(Get-CypherIds $candidatesFile $baseParams)
+    $n = $ids.Count
+    for ($i = 0; $i -lt $n; $i++) {
+        Write-Progress -Activity $label -Status "$($i + 1)/$n : $($ids[$i])" -PercentComplete (100 * ($i + 1) / [Math]::Max($n, 1))
+        Invoke-Cypher $oneFile ($baseParams + @("$unitParamName => '$($ids[$i])'"))
+    }
+    Write-Progress -Activity $label -Completed
+    Write-Host "      $n Einheiten." -ForegroundColor DarkGray
+}
+
 if (-not $SkipRulesetLoad) {
-    Write-Host "[1/3] Ruleset laden ($rsDir) ..." -ForegroundColor Cyan
+    Write-Host "[1/4] Ruleset laden ($rsDir) ..." -ForegroundColor Cyan
     Invoke-Cypher '/cypher/ruleset/load_ruleset.cypher' @("dir => '$rsDir'", "ruleset => '$Ruleset'")
 }
+$commonParams = @("ruleset => '$Ruleset'", "dataset => '$Dataset'", "asOf => date('$AsOf')", "runId => '$RunId'")
 if (-not $SkipMaterialize) {
-    Write-Host "[2/3] Matches materialisieren (Stichtag $AsOf) ..." -ForegroundColor Cyan
-    Invoke-Cypher '/cypher/sod/materialize_matches.cypher' @("ruleset => '$Ruleset'", "dataset => '$Dataset'", "asOf => date('$AsOf')", "runId => '$RunId'")
+    Write-Host "[2/4] Matches materialisieren (Stichtag $AsOf) ..." -ForegroundColor Cyan
+    Invoke-Phase 'Materialisiere' '/cypher/sod/materialize_matches_reset.cypher' '/cypher/sod/materialize_matches_candidates.cypher' `
+        '/cypher/sod/materialize_matches_one.cypher' 'qid' `
+        ($commonParams + @("orgMode => '$orgMode'", "orgFilters => $(ConvertTo-Cypher $orgFilters)"))
 }
-Write-Host "[3/3] SoD auswerten ..." -ForegroundColor Cyan
-Invoke-Cypher '/cypher/sod/evaluate_sod.cypher' @(
-    "ruleset => '$Ruleset'", "dataset => '$Dataset'", "asOf => date('$AsOf')", "runId => '$RunId'",
+Write-Host "[3/4] SoD auswerten ..." -ForegroundColor Cyan
+$evalParams = $commonParams + @(
     "userTypes => $(ConvertTo-Cypher $userTypes)", "excludeLocked => $(ConvertTo-Cypher $excludeLocked)",
     "sleepDays => $SleepDays", "minCriticalityRank => $MinCriticalityRank",
-    "sodRules => $(ConvertTo-Cypher $SodRules)", "orgFilters => $(ConvertTo-Cypher $orgFilters)"
+    "sodRules => $(ConvertTo-Cypher $SodRules)", "title => '$RunId'",
+    "orgMode => '$orgMode'", "orgFilters => $(ConvertTo-Cypher $orgFilters)"
 )
+Invoke-Cypher '/cypher/sod/evaluate_sod_init.cypher' $evalParams
+Invoke-Phase 'Werte aus' $null '/cypher/sod/evaluate_sod_candidates.cypher' '/cypher/sod/evaluate_sod_one.cypher' 'ruleId' $evalParams
+Write-Host "[4/4] Evidenz (optional, hier nicht berechnet -- ueber die App/POST /runs/{id}/explain nachrechenbar) ..." -ForegroundColor DarkGray
 
 # Zusammenfassung (Query als Argument -> kein stdin-BOM)
 Write-Host "== Zusammenfassung runId=$RunId ==" -ForegroundColor Green
