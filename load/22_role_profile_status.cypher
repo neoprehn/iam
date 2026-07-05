@@ -1,4 +1,7 @@
-// 22 — AGR_1016B -> Generierungs-Status des/der Rollenprofile an :Role. Parameter: $dataset
+// 22 — AGR_1016 -> Generierungs-Status des/der Rollenprofile an :Role. Parameter: $dataset
+// (Quelltabelle ist AGR_1016 mit Spalten GENERATED/PSTATE — NICHT AGR_1016B. Frueher wurde
+//  faelschlich agr_1016b.csv gelesen -> die Datei fehlte im Extrakt, profileGenerated blieb bei
+//  ALLEN Rollen NULL, was auch Konsistenzcheck D4 aushebelte. Fix: agr_1016.csv.)
 // VERLUSTFREI/nicht-konzeptspezifisch: pro Rolle wird festgehalten, ob ALLE generierten Profile
 // den Status GENERATED='X' tragen (profileGenerated) und welche PSTATE-Werte vorkommen
 // (profileState — roh, ohne Interpretation). Eine Rolle kann mehrere Profile haben (COUNTER>1,
@@ -19,5 +22,5 @@ CALL apoc.periodic.iterate(
    RETURN agr, all(g IN gens WHERE g) AS profileGenerated, [s IN states WHERE s <> ''] AS profileState",
   "MATCH (r:Role {key: $dataset + '|' + agr})
    SET r.profileGenerated = profileGenerated, r.profileState = profileState",
-  {batchSize:2000, parallel:false, params:{url:'file:///'+$dataset+'/agr_1016b.csv', dataset:$dataset}}
+  {batchSize:2000, parallel:false, params:{url:'file:///'+$dataset+'/agr_1016.csv', dataset:$dataset}}
 );

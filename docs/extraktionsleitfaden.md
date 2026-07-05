@@ -119,6 +119,12 @@ Pseudonymisierung beachten).
 | --- | --- |
 | `AGR_NAME` | Rollenname (fachliche `id`) |
 | `PARENT_AGR` | **Sammelrolle** (bestätigt) — übergeordnete Composite-Rolle; deckungsgleich mit `AGR_AGRS` |
+| `TEXT` | Rollenbeschreibung (einsprachig; kanonisch aus `AGR_TEXTS`, s. 21) → `r.text` |
+| `CREATE_USR` / `CREATE_DAT` | Ersteller / Erstelldatum (`dd.mm.yyyy` → `date`) → `r.createUsr` / `r.createDat` |
+| `CHANGE_USR` / `CHANGE_DAT` | letzter Änderer / Änderungsdatum → `r.changeUsr` / `r.changeDat` |
+
+Ersteller/Änderer + Daten speisen die **Rollen-Detailseite** (Stammdaten-Reiter). Ein separates
+**Generierungsdatum** ist in `AGR_DEFINE`/`AGR_1016` nicht enthalten und wird daher nicht angezeigt.
 
 Subtyp `Composite`/`Single` wird **abgeleitet**: Composite = tritt in `AGR_AGRS` als `AGR_NAME`
 (bzw. als `PARENT_AGR` in AGR_DEFINE) auf, sonst `Single`. Der Subtyp `Derived` und die Kante
@@ -137,12 +143,16 @@ Kanonische, **sprachabhängige** Quelle für Rollentexte (`AGR_DEFINE.TEXT` in `
 einsprachig und lückenhaft). Läuft nach `02`: bevorzugte Sprache aus `$lang` überschreibt,
 sonst bleibt der erste vorhandene Text. Siehe `load/21_role_texts.cypher`.
 
-### 22 — AGR_1016B (Profil-Generierungsstatus) → `:Role`-Properties
+### 22 — AGR_1016 (Profil-Generierungsstatus) → `:Role`-Properties
 | Spalte | Verwendung |
 | --- | --- |
 | `AGR_NAME` | Rollenname (Join auf `:Role`) |
 | `GENERATED` | `'X'` = Profil generiert → `r.profileGenerated` (true, wenn **alle** Profile der Rolle) |
 | `PSTATE` | Profilstatus (roh, ohne Interpretation) → `r.profileState` (Liste distinct) |
+
+> ⚠️ **Tabelle heißt `AGR_1016`, nicht `AGR_1016B`.** Die `GENERATED`/`PSTATE`-Spalten stehen in
+> `AGR_1016`. Ein früherer Stand las `agr_1016b.csv` → die Datei fehlte, `r.profileGenerated` blieb
+> bei allen Rollen `NULL` (und Konsistenzcheck **D4** damit wirkungslos). Bitte `AGR_1016` extrahieren.
 
 Verlustfrei/konzeptunabhängig: hält fest, ob die generierten Profile einer Rolle vorhanden/aktiv
 sind. In Konzepten mit nicht generierten/veralteten Rollen sind deren AGR_1251-Berechtigungen
