@@ -197,6 +197,23 @@ ist. Diese Annahme (Rollendefinition ≈ generiertes Profil) ist keine Root-Caus
 gilt für die gesamte Can-Do-/SoD-Auswertung der App (`materialize_matches_*.cypher`); D4 ist der
 dafür vorgesehene Konsistenzcheck.
 
+**Gruppierung + Werte-Filter.** Eine Rolle mit **mehreren Berechtigungsinstanzen** für dasselbe
+Objekt (in SAP zulässig; die Instanzen dürfen **nicht** aggregiert werden, s. AE-03) erscheint
+**einmal** als Kopf, ihre matchenden Instanzen darunter eingerückt — statt vieler Zeilen mit
+gleichem Rollennamen. Ein zweiter Umschalter **„alle" / „nur Treffer"** zeigt wahlweise alle
+Feldwerte (Treffer grün markiert) oder **nur** die zur Anforderung passenden Werte (ohne Markierung)
+— hilfreich bei Rollen mit sehr vielen TCodes/Werten.
+
+**Rolle anklickbar → Detailseite.** Rollennamen (Tabelle) bzw. Rollen-Knoten (Graph) öffnen per
+Klick eine **Rollen-Detailseite** mit Reitern: **Stammdaten** (Beschreibung, Subtyp, Elternrolle,
+generiertes Profil + Generierungsstatus, Ersteller/letzter Änderer + Daten, Gültigkeit der
+Zuweisung des betrachteten Users, Anzahl zugewiesener User), **TCodes** (effektiv aus `S_TCODE` +
+Rollenmenü), **Berechtigungsobjekte** (mit Instanz-Anzahl), **Einzelberechtigungen** (welche
+Einzelfilter die Rolle **allein** erfüllt) und **SoD-Regeln** (welche Regeln die Rolle **allein**
+auslösen kann — Intra-Rollen-Konflikt). Die letzten beiden Reiter sind **rollenzentrisch** (frisch
+berechnet, unabhängig vom Lauf). Ein separates **Generierungsdatum** ist im SAP-Extrakt nicht
+enthalten und wird daher nicht gezeigt.
+
 Die Matches-Tabelle zeigt dafür **User · Name · Query · Bezeichnung (Kurzbezeichnung der Query) ·
 Kritikalität · Root-Cause** — Nutzertyp/Status sind hier bewusst weggelassen (stehen ggf. in der
 Stammdaten-Kachel), stattdessen ist auf einen Blick erkennbar, **welche** Query mit **welcher

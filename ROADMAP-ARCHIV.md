@@ -514,6 +514,36 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   ins-Leere-Kanten, kein unverbundener Knoten) für Pfad- **und** Radial-Layout. **Kein** Browser-
   Rendering-Test in der Session möglich (nur Server-/Builder-Ebene geprüft; die Cytoscape-Render-
   Mechanik ist die 1:1 aus dem Wegwerf-Prototyp übernommene, dort visuell bestätigte).
+  **Nachträgliche Verfeinerungen (Nutzer-Feedback):** (1) Cytoscape-Größen-Fix — Knoten
+  kollabierten zu „dünnen Linien", weil `text-max-width`/`padding` als `'…px'`-Strings statt Zahlen
+  gesetzt waren (jetzt numerisch, feste Knotenbreite, frische Instanz je Render). (2) **Vollbild +
+  vertikaler Zoom-Slider** am Graph. (3) Dritter Profil-Filter **„nur generierte Rollen"** =
+  Laufzeitsicht (nur über generiertes Profil aktive Rollen + Direktprofile; Design-only/D4 raus),
+  im Graph zusätzlich **Dedup** (jeder Akteur einmal, Baum→DAG; echte Daten 28→9 Knoten).
+  (4) **Wertidentische** „eigene Definition = generiertes Profil"-Zeilen zusammenfassen. (5)
+  **Zeilen pro Rolle gruppieren** (mehrere Berechtigungsinstanzen je Objekt sind reale SAP-Daten,
+  AE-03 — nicht aggregierbar, nur optisch gruppiert) + Werte-Filter **„nur Treffer"** (nur die
+  passenden grünen Werte, entlastet Rollen mit vielen TCodes: 63→2 im Beispiel).
+- [x] **Rollen-Detailseite (anklickbare Rolle) — Nutzer-Wunsch.** Rollennamen (Tabelle) und
+  Rollen-Knoten (Graph) öffnen eine eigene View mit 5 Reitern: **Stammdaten** (Beschreibung,
+  Subtyp, Elternrolle, generiertes Profil + Generierungsstatus, Ersteller/letzter Änderer + Daten,
+  Zuweisungs-Gültigkeit des betrachteten Users, User-Anzahl), **TCodes** (effektiv S_TCODE +
+  Rollenmenü), **Berechtigungsobjekte** (Instanz-Anzahl), **Einzelberechtigungen** und
+  **SoD-Regeln** — die letzten beiden **rollenzentrisch** (was die Rolle **allein** erfüllt/auslöst,
+  frisch berechnet über `cypher/roles/role_can_do.cypher`/`role_sod_rules.cypher`, die
+  PROVIDES-Prädikate aus `explain_sod_one.cypher` für eine Rolle; lazy geladen). Neue Endpoints
+  `GET /roles/{id}` (Stammdaten/TCodes/BOs) + `GET /roles/{id}/can-do`. Nur aus dem lauf-basierten
+  Root-Cause klickbar (Dataset über `runId` eindeutig; im Konsistenzcheck-Root-Cause gesperrt).
+  **Loader-Erweiterung + Bugfix:** `load/02_roles.cypher` lädt jetzt `CREATE_USR/DAT`,
+  `CHANGE_USR/DAT` (Stammdaten); **`load/22_role_profile_status.cypher` las `agr_1016b.csv`, der
+  Export heißt aber `agr_1016.csv`** (Tabelle AGR_1016 mit `GENERATED`/`PSTATE`) → `profileGenerated`
+  war bei **allen** Rollen NULL, was auch Konsistenzcheck **D4** aushebelte — auf `agr_1016.csv`
+  umgestellt (`required_tables.json` + Extraktionsleitfaden nachgezogen). Verifiziert: nach dem Fix
+  `profileGenerated` auf 307.595 Rollen gesetzt (vorher 0); `/roles`/`/can-do` liefern korrekte
+  Zählwerte, die rollenzentrische can-do-Liste enthält die erwarteten Queries. Ein separates
+  **Generierungsdatum** ist im Extrakt nicht vorhanden → wird als „nicht im Extrakt" ausgewiesen.
+  **Neue Rollen-Properties greifen erst nach Re-Import** des Datasets. **Kein** Browser-Rendering-
+  Test in der Session (nur API/Loader-Ebene geprüft).
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren
