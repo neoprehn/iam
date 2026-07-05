@@ -160,6 +160,15 @@ zur Laufzeit nicht (vollständig) aktiv — das **Finding** dazu (betroffene Rol
 Auswertung (Phase 3, AE-10), hier nur das Rohfaktum. Eine Rolle kann mehrere Profile haben
 (`COUNTER`>1, Split bei >150 Objekten) → Aggregation je Rolle. Siehe `load/22_role_profile_status.cypher`.
 
+:::{admonition} ⚠️ PSTATE-Bedeutung nicht offiziell dokumentiert
+:class: warning
+`PSTATE` wird bewusst **roh** gespeichert. Bisher beobachteter Wert: `'A'` = **Aktiv** (aktuell
+generierte Version) — allgemein gebräuchliche SAP-Konvention, aber **nicht** einheitlich öffentlich
+dokumentiert (analog `PWDINITIAL`, s. USR02). Die Rollen-Detailseite zeigt diese Interpretation nur
+für `'A'` an (mit Hinweis-Icon); andere Codes erscheinen roh. Vor Produktivnutzung gegen das eigene
+System verifizieren, falls weitere Codes auftauchen.
+:::
+
 ### 03 — AGR_AGRS (Rollenhierarchie) → `CONTAINS`
 | Spalte | Verwendung |
 | --- | --- |

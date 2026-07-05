@@ -205,12 +205,14 @@ Feldwerte (Treffer grün markiert) oder **nur** die zur Anforderung passenden We
 — hilfreich bei Rollen mit sehr vielen TCodes/Werten.
 
 **Rolle anklickbar → Detailseite.** Rollennamen (Tabelle) bzw. Rollen-Knoten (Graph) öffnen per
-Klick eine **Rollen-Detailseite** mit Reitern: **Stammdaten** (Beschreibung, Subtyp, Elternrolle,
-generiertes Profil + Generierungsstatus, Ersteller/letzter Änderer + Daten, Gültigkeit der
-Zuweisung des betrachteten Users, Anzahl zugewiesener User), **TCodes** (effektiv aus `S_TCODE` +
-Rollenmenü), **Berechtigungsobjekte** (mit Instanz-Anzahl), **Einzelberechtigungen** (welche
-Einzelfilter die Rolle **allein** erfüllt) und **SoD-Regeln** (welche Regeln die Rolle **allein**
-auslösen kann — Intra-Rollen-Konflikt). Die letzten beiden Reiter sind **rollenzentrisch** (frisch
+Klick eine **Rollen-Detailseite** (die linke Filter-/Läufe-Sidebar bleibt dabei sichtbar). Oben
+immer sichtbar die **Stammdaten** (Beschreibung, Subtyp, Elternrolle, generiertes Profil +
+Generierungsstatus inkl. Profilstatus-Bedeutung, Ersteller/letzter Änderer als „Name (Kürzel)" +
+Datum, Gültigkeit der Zuweisung des betrachteten Users, Anzahl zugewiesener User) — analog den
+immer sichtbaren Metadaten im Query-Editor. Darunter als Reiter: **TCodes** (effektiv aus
+`S_TCODE` + Rollenmenü), **Berechtigungsobjekte** (mit Instanz-Anzahl), **Einzelberechtigungen**
+(welche Einzelfilter die Rolle **allein** erfüllt) und **SoD-Regeln** (welche Regeln die Rolle
+**allein** auslösen kann — Intra-Rollen-Konflikt); die letzten beiden **rollenzentrisch** (frisch
 berechnet, unabhängig vom Lauf). Ein separates **Generierungsdatum** ist im SAP-Extrakt nicht
 enthalten und wird daher nicht gezeigt.
 

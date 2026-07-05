@@ -451,6 +451,27 @@
         <input type="range" id="rcZoom" min="0" max="100" value="50" title="Zoom" />
       </div>
     </div>
+
+    <!-- Rollen-Detailseite (aus dem Root-Cause per Klick auf einen Rollennamen). Stammdaten sind
+         immer sichtbar (wie die Metadaten im Query-Editor), TCodes/BOs/Einzelberechtigungen/SoD
+         darunter als Reiter. -->
+    <div id="roleDetailView" style="display:none">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:6px">
+        <h2 style="margin:0">Rolle <span class="muted" id="rdTitle" style="font-weight:400"></span></h2>
+        <button class="ghost" id="rdBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+      </div>
+      <div class="sub" id="rdText" style="margin-bottom:10px"></div>
+      <div id="rdStamm" style="margin-bottom:16px"></div>
+      <div class="resultbar">
+        <div class="pillgroup" id="rdTabPills">
+          <button type="button" class="pill active" data-tab="tcodes">TCodes</button>
+          <button type="button" class="pill" data-tab="objects">Berechtigungsobjekte</button>
+          <button type="button" class="pill" data-tab="queries">Einzelberechtigungen</button>
+          <button type="button" class="pill" data-tab="sod">SoD-Regeln</button>
+        </div>
+      </div>
+      <div id="rdContent" style="margin-top:12px"></div>
+    </div>
   </div>
   <div id="consistencyView" style="display:none">
     <h2 style="margin-top:0"><span id="ccViewTitle">Konsistenzchecks</span>
@@ -599,25 +620,6 @@
       </div>
     </div>
 
-  </div>
-
-  <!-- Rollen-Detailseite (aus dem Root-Cause per Klick auf einen Rollennamen) -->
-  <div id="roleDetailView" style="display:none">
-    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:6px">
-      <h2 style="margin:0">Rolle <span class="muted" id="rdTitle" style="font-weight:400"></span></h2>
-      <button class="ghost" id="rdBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
-    </div>
-    <div class="sub" id="rdText" style="margin-bottom:10px"></div>
-    <div class="resultbar">
-      <div class="pillgroup" id="rdTabPills">
-        <button type="button" class="pill active" data-tab="stamm">Stammdaten</button>
-        <button type="button" class="pill" data-tab="tcodes">TCodes</button>
-        <button type="button" class="pill" data-tab="objects">Berechtigungsobjekte</button>
-        <button type="button" class="pill" data-tab="queries">Einzelberechtigungen</button>
-        <button type="button" class="pill" data-tab="sod">SoD-Regeln</button>
-      </div>
-    </div>
-    <div id="rdContent" style="margin-top:12px"></div>
   </div>
 </main>
 
@@ -2469,12 +2471,16 @@ function rdFmtDate(iso) {
   return m ? `${m[3]}.${m[2]}.${m[1]}` : String(iso);
 }
 function showRoleDetailView() {
+  // Wie showRootCauseView: .cols muss sichtbar sein (roleDetailView ist darin verschachtelt,
+  // damit die linke Filter-/Läufe-Sidebar erhalten bleibt); colsRight bleibt ausgeblendet.
   $('resultContext').style.display = 'none';
   $('kpis').style.display = 'none';
   $('causingActors').style.display = 'none';
-  document.querySelector('main .cols').style.display = 'none';
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
+  document.querySelector('main .cols').style.display = '';
+  $('colsRight').style.display = 'none';
+  $('colsLeft').style.display = rcReturnTo === 'results' ? '' : 'none';
   $('rootCauseView').style.display = 'none';
   if ($('assistentView')) $('assistentView').style.display = 'none';
   $('roleDetailView').style.display = '';
@@ -2484,19 +2490,21 @@ async function openRoleDetail(roleId) {
   // Aus einem Konsistenzcheck-Root-Cause (anderes Dataset via ccdDataset) waere die Zuordnung
   // ueber activeRunId nicht garantiert korrekt -> dort keine Rollen-Detailseite.
   if (!activeRunId || rcReturnTo === 'consistency') return;
-  rdRole = roleId; rdData = null; rdCanDo = null; rdTab = 'stamm';
+  rdRole = roleId; rdData = null; rdCanDo = null; rdTab = 'tcodes';
   $('rdTitle').textContent = roleId;
   $('rdText').textContent = '';
-  $('rdContent').innerHTML = '<div class="muted">lädt&hellip;</div>';
-  document.querySelectorAll('#rdTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === 'stamm'));
+  $('rdStamm').innerHTML = '<div class="muted">lädt&hellip;</div>';
+  $('rdContent').innerHTML = '';
+  document.querySelectorAll('#rdTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === 'tcodes'));
   showRoleDetailView();
   try {
     const u = rcUserId ? '&user=' + encodeURIComponent(rcUserId) : '';
     rdData = await api('/roles/' + encodeURIComponent(roleId) + '?runId=' + encodeURIComponent(activeRunId) + u);
     $('rdText').textContent = rdData.text || '';
-    rdRenderTab('stamm');
+    rdRenderStammdaten();
+    rdRenderTab('tcodes');
   } catch (err) {
-    $('rdContent').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
+    $('rdStamm').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
   }
 }
 function rdRow(label, val) {
@@ -2513,29 +2521,50 @@ function rdList(items) {
   return '<ul style="list-style:none;padding:0;margin:8px 0">'
     + items.map(h => `<li style="padding:5px 0;border-top:1px solid var(--line)">${h}</li>`).join('') + '</ul>';
 }
+// "Name (ID)" wenn ein Name bekannt ist (V_USERNAME-Export -> User.name), sonst nur die ID
+// (Ersteller/Aenderer sind SAP-User-Kuerzel, nicht zwingend als :User im Dataset vorhanden).
+function rdPerson(id, name) {
+  if (!id) return null;
+  return name ? `${esc(name)} (${esc(id)})` : esc(id);
+}
+// PSTATE (AGR_1016): SAP dokumentiert die Codes nicht einheitlich oeffentlich -- 'A' (Aktiv,
+// aktuell generierte Version) ist der einzige bisher beobachtete Wert und allgemein gebraeuchlich;
+// andere Codes werden roh gezeigt (kein Rateswert), s. Extraktionsleitfaden §22.
+const PSTATE_MEANING = { 'A': 'Aktiv (aktuell generierte Version)' };
+function rdPstate(codes) {
+  if (!codes || !codes.length) return '–';
+  return codes.map(c => {
+    const m = PSTATE_MEANING[c];
+    return m ? `${esc(c)} <span class="muted">(${m})</span>` : esc(c);
+  }).join(', ') + ' <span class="muted" title="SAP-interne Kennung, Bedeutung nicht offiziell dokumentiert -- ggf. gegen das eigene System pr&uuml;fen">&#9432;</span>';
+}
+function rdRenderStammdaten() {
+  const d = rdData; if (!d) { $('rdStamm').innerHTML = ''; return; }
+  const subtype = d.composite ? 'Sammelrolle' : d.derived ? 'abgeleitete Rolle' : 'Einzelrolle';
+  const gen = d.profileGenerated === true ? 'ja (aktiv)' : d.profileGenerated === false ? 'nein (nicht generiert)' : '–';
+  const valid = d.forUser ? `${rdFmtDate(d.userValidFrom)} &ndash; ${rdFmtDate(d.userValidTo)} <span class="muted">(Zuweisung ${esc(d.forUser)})</span>` : null;
+  const created = d.createUsr ? `${rdPerson(d.createUsr, d.createUsrName)}${d.createDat ? ' &middot; ' + rdFmtDate(d.createDat) : ''}` : '–';
+  const changed = d.changeUsr ? `${rdPerson(d.changeUsr, d.changeUsrName)}${d.changeDat ? ' &middot; ' + rdFmtDate(d.changeDat) : ''}` : '–';
+  $('rdStamm').innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
+    + rdRow('Beschreibung', esc(d.text) || '–')
+    + rdRow('Subtyp', subtype + (d.parentAgr ? ` <span class="muted">&middot; Elternrolle ${esc(d.parentAgr)}</span>` : ''))
+    + rdRow('Generiertes Profil', d.profiles && d.profiles.length ? d.profiles.map(esc).join(', ') : '–')
+    + rdRow('Profil generiert/aktiv', gen)
+    + rdRow('Profilstatus (PSTATE)', rdPstate(d.profileState))
+    + rdRow('Erstellt', created)
+    + rdRow('Zuletzt geändert', changed)
+    + rdRow('Generierungsdatum', '<span class="muted">nicht im Extrakt</span>')
+    + (valid ? rdRow('Gültigkeit', valid) : '')
+    + rdRow('Zugewiesene User', d.userCount)
+    + '</table>';
+}
 async function rdRenderTab(tab) {
   rdTab = tab;
   document.querySelectorAll('#rdTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === tab));
   const box = $('rdContent');
   if (!rdData) { box.innerHTML = '<div class="muted">–</div>'; return; }
   const d = rdData;
-  if (tab === 'stamm') {
-    const subtype = d.composite ? 'Sammelrolle' : d.derived ? 'abgeleitete Rolle' : 'Einzelrolle';
-    const gen = d.profileGenerated === true ? 'ja (aktiv)' : d.profileGenerated === false ? 'nein (nicht generiert)' : '–';
-    const valid = d.forUser ? `${rdFmtDate(d.userValidFrom)} &ndash; ${rdFmtDate(d.userValidTo)} <span class="muted">(Zuweisung ${esc(d.forUser)})</span>` : null;
-    box.innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
-      + rdRow('Beschreibung', esc(d.text) || '–')
-      + rdRow('Subtyp', subtype + (d.parentAgr ? ` <span class="muted">&middot; Elternrolle ${esc(d.parentAgr)}</span>` : ''))
-      + rdRow('Generiertes Profil', d.profiles && d.profiles.length ? d.profiles.map(esc).join(', ') : '–')
-      + rdRow('Profil generiert/aktiv', gen)
-      + rdRow('Profilstatus (PSTATE)', d.profileState && d.profileState.length ? d.profileState.map(esc).join(', ') : '–')
-      + rdRow('Erstellt', d.createUsr ? `${esc(d.createUsr)}${d.createDat ? ' &middot; ' + rdFmtDate(d.createDat) : ''}` : '–')
-      + rdRow('Zuletzt geändert', d.changeUsr ? `${esc(d.changeUsr)}${d.changeDat ? ' &middot; ' + rdFmtDate(d.changeDat) : ''}` : '–')
-      + rdRow('Generierungsdatum', '<span class="muted">nicht im Extrakt</span>')
-      + (valid ? rdRow('Gültigkeit', valid) : '')
-      + rdRow('Zugewiesene User', d.userCount)
-      + '</table>';
-  } else if (tab === 'tcodes') {
+  if (tab === 'tcodes') {
     box.innerHTML = `<div class="sub">Effektive TCode-Berechtigung (aus S_TCODE) und Rollenmenü &mdash; das echte Recht läuft über S_TCODE.</div>`
       + rdChips('Effektiv (S_TCODE)', d.authTcodes || []) + rdChips('Rollenmenü', d.menuTcodes || []);
   } else if (tab === 'objects') {

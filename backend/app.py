@@ -1064,13 +1064,19 @@ def role_detail(roleId: str, runId: str, user: str | None = None):
             "OPTIONAL MATCH (r)-[:HAS_PROFILE]->(p:Profile) "
             "WITH r, collect(DISTINCT p.id) AS profiles "
             "OPTIONAL MATCH (u:User)-[:ASSIGNED_TO]->(r) "
+            "WITH r, profiles, count(DISTINCT u) AS userCount "
+            # Ersteller/Aenderer sind SAP-User-Kuerzel (AGR_DEFINE.CREATE_USR/CHANGE_USR) --
+            # koennen, muessen aber nicht als :User im Dataset vorhanden sein (z. B. Basis-Team
+            # ohne Dialog-Zugang im Extrakt). Name optional aus V_USERNAME (User.name).
+            "OPTIONAL MATCH (cu:User {id:r.createUsr, dataset:$ds}) "
+            "OPTIONAL MATCH (chu:User {id:r.changeUsr, dataset:$ds}) "
             "RETURN r.id AS id, coalesce(r.text,'') AS text, r.parentAgr AS parentAgr, "
             "  r.profileGenerated AS profileGenerated, r.profileState AS profileState, "
-            "  r.createUsr AS createUsr, r.createDat AS createDat, "
-            "  r.changeUsr AS changeUsr, r.changeDat AS changeDat, "
+            "  r.createUsr AS createUsr, coalesce(cu.name,'') AS createUsrName, r.createDat AS createDat, "
+            "  r.changeUsr AS changeUsr, coalesce(chu.name,'') AS changeUsrName, r.changeDat AS changeDat, "
             "  ('Composite' IN labels(r)) AS composite, "
             "  (r.parentAgr IS NOT NULL) AS derived, "
-            "  profiles, count(DISTINCT u) AS userCount",
+            "  profiles, userCount",
             rid=roleId, ds=ds).single()
         if not rec:
             raise HTTPException(404, f"Rolle '{roleId}' nicht gefunden")

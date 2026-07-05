@@ -542,8 +542,19 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   `profileGenerated` auf 307.595 Rollen gesetzt (vorher 0); `/roles`/`/can-do` liefern korrekte
   Zählwerte, die rollenzentrische can-do-Liste enthält die erwarteten Queries. Ein separates
   **Generierungsdatum** ist im Extrakt nicht vorhanden → wird als „nicht im Extrakt" ausgewiesen.
-  **Neue Rollen-Properties greifen erst nach Re-Import** des Datasets. **Kein** Browser-Rendering-
+  Die korrigierten Loader wurden zur Verifikation direkt gegen den laufenden Container ausgeführt
+  (kein separater Re-Import nötig, um die neuen Properties am bestehenden Dataset zu sehen — nur
+  bei einem **künftigen** Neu-Import greift der Fix automatisch mit). **Kein** Browser-Rendering-
   Test in der Session (nur API/Loader-Ebene geprüft).
+  **Nachträgliche Verfeinerung (Nutzer-Feedback):** Stammdaten sind jetzt **immer sichtbar** (wie
+  die Metadaten im Query-Editor, `admin.html`), TCodes/Berechtigungsobjekte/Einzelberechtigungen/
+  SoD-Regeln darunter als 4 Reiter (Stammdaten selbst kein Reiter mehr). `roleDetailView` in
+  `.cols` verschachtelt (wie `rootCauseView`) — die linke Filter-/Läufe-Sidebar bleibt sichtbar
+  statt zu verschwinden. Ersteller/Änderer zeigen jetzt **„Name (Kürzel)"** wenn ein Name bekannt
+  ist (`V_USERNAME` → `User.name`, `OPTIONAL MATCH` da nicht jedes SAP-Kürzel als `:User` im
+  Dataset vorhanden ist — z. B. Basis-Team ohne Dialog-Zugang), sonst nur das Kürzel. Profilstatus
+  zeigt die Bedeutung von `PSTATE='A'` ("Aktiv") mit Hinweis-Icon, da die Codes SAP-seitig nicht
+  einheitlich dokumentiert sind (Extraktionsleitfaden §22 entsprechend ergänzt).
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren
