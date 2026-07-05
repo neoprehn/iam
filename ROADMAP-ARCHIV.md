@@ -583,6 +583,25 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   vorher exportierten Findings-CSV für diese Regel; `/findings/export` liefert ungefiltert 501,
   mit `ruleCriticality=very-critical` 63 Zeilen (deckt sich mit der vom Nutzer beigelegten CSV);
   `/matches/export` liefert für eine Query exakt die `userCount` aus der Summary-Tabelle.
+- [x] **Ergebnisse-Übersicht: Kopf-Kachel mit distinkter Gesamtnutzerzahl — Nutzer-Wunsch.**
+  `GET /queries/summary`/`GET /sodrules/summary` liefern jetzt `{totalUsers, rows}` statt einer
+  reinen Liste; `totalUsers` ist die **distinkte** Userzahl über alle Zeilen (naives Aufsummieren
+  von `userCount` je Zeile wäre falsch, da ein User i. d. R. mehrere Queries/Regeln gleichzeitig
+  erfüllt/verletzt). Frontend zeigt das als Kachel (`.kpi`, wie im Konsistenzcheck-Ergebnis) über
+  der Tabelle. Im selben Zuge geklärt: Nutzer-Rückfrage, warum von >600 Einzelberechtigungs-Queries
+  im Vendor-Katalog nur 38 in der Übersicht auftauchen, während alle 22 SoD-Regeln erscheinen —
+  **kein Bug**: „SoD-relevant" bedeutet hier (wie beim bestehenden `GET /queries`-Endpoint für die
+  Einzelfilter-Dropdown-Auswahl) „als Klausel in mindestens einer SoD-Regel verwendet"; der
+  Materialize-Schritt (`materialize_matches.cypher`) berechnet `MATCHES`-Kanten nur für genau diese
+  Teilmenge, nicht für den gesamten Query-Katalog (Performance-Scoping). Verifiziert gegen den
+  laufenden Container: 604 `Query`-Knoten im Ruleset insgesamt, aber nur 38 sind einer Klausel
+  zugeordnet **und** genau diese 38 haben `MATCHES`-Kanten (kein Query außerhalb dieser Teilmenge
+  wurde je materialisiert) — deckt sich mit den 22 von 22 SoD-Regeln, die alle mindestens einen
+  Fund haben. `totalUsers` je Endpoint gegen einen realen Lauf geprüft (9.360 distinkte User über
+  alle Einzelberechtigungen, 143 über alle SoD-Regeln — beide plausibel kleiner als die Summe der
+  Einzelzeilen). Betrifft direkt den offenen Roadmap-Punkt „Katalog-Auswahl-UI (Scoping)": künftig
+  soll die Query-Auswahl fürs Materialize erweiterbar sein, statt implizit auf SoD-Klauseln
+  beschränkt zu bleiben.
 - [x] **Rollen-Detailseite: Usernamen-Auflösung + anklickbare Nutzerliste — Nutzer-Wunsch.**
   „Zuweisung"-Zeile der Stammdaten (Gültigkeit der `ASSIGNED_TO`-Kante des betrachteten Users)
   zeigt jetzt ebenfalls „Name (ID)" statt der rohen ID (`GET /roles/{id}` liefert zusätzlich

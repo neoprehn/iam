@@ -2039,12 +2039,15 @@ def queries_summary(runId: str):
     """Einzelberechtigungs-Uebersicht (Ergebnisse-Menue): pro SoD-relevanter Query, wie viele
     User sie in diesem Lauf matchen. Nur Queries mit mindestens einem Treffer (0-Treffer waere
     Katalog-Browsing, kein Ergebnis -- die MATCH-Kardinalitaet filtert das implizit). Klick auf
-    eine Zeile filtert im Frontend die normale Einzelfilter-Ansicht auf diese Query."""
+    eine Zeile filtert im Frontend die normale Einzelfilter-Ansicht auf diese Query.
+    totalUsers = distinkte User ueber ALLE Zeilen zusammen (fuer die Kopf-Kachel; naives Aufsummieren
+    von userCount je Zeile waere falsch, da ein User i. d. R. mehrere Queries matcht)."""
     with driver.session() as s:
         run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
         if not run:
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
-        return [dict(r) for r in s.run(
+        ruleset = run["ruleset"]
+        rows = [dict(r) for r in s.run(
             "MATCH (q:Query {ruleset:$ruleset}) "
             "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
             "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q) "
@@ -2052,19 +2055,25 @@ def queries_summary(runId: str):
             "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
             "  q.criticality AS criticality, q.module AS module, userCount "
             "ORDER BY coalesce(q.criticalityRank,0) DESC, userCount DESC",
-            ruleset=run["ruleset"], runId=runId)]
+            ruleset=ruleset, runId=runId)]
+        total_users = s.run(
+            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
+            "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
+            "RETURN count(DISTINCT u) AS c", ruleset=ruleset, runId=runId).single()["c"]
+        return {"totalUsers": total_users, "rows": rows}
 
 
 @app.get("/sodrules/summary")
 def sod_rules_summary(runId: str):
     """SoD-Regel-Uebersicht (Ergebnisse-Menue): pro Regel, wie viele User sie in diesem Lauf
     verletzen. Nur Regeln mit mindestens einem Fund. Klick auf eine Zeile filtert im Frontend
-    die normale Findings-Liste auf diese Regel."""
+    die normale Findings-Liste auf diese Regel. totalUsers s. queries_summary."""
     with driver.session() as s:
         run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
         if not run:
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
-        return [dict(r) for r in s.run(
+        ruleset = run["ruleset"]
+        rows = [dict(r) for r in s.run(
             "MATCH (rule:SoDRule {ruleset:$ruleset}) "
             "WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() } "
             "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId, ruleId:rule.id}) "
@@ -2072,7 +2081,11 @@ def sod_rules_summary(runId: str):
             "RETURN rule.id AS id, rule.description AS description, "
             "  rule.shortDescription AS shortDescription, rule.criticality AS criticality, userCount "
             "ORDER BY coalesce(rule.criticalityRank,0) DESC, userCount DESC",
-            ruleset=run["ruleset"], runId=runId)]
+            ruleset=ruleset, runId=runId)]
+        total_users = s.run(
+            "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId}) "
+            "RETURN count(DISTINCT u) AS c", ruleset=ruleset, runId=runId).single()["c"]
+        return {"totalUsers": total_users, "rows": rows}
 
 
 @app.get("/matches")

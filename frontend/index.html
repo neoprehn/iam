@@ -483,6 +483,7 @@
         <button class="ghost" id="summaryBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
       </div>
       <div class="sub" id="summarySub"></div>
+      <div id="summaryKpis" class="kpis" style="display:none"></div>
       <table id="summaryTable">
         <thead><tr><th id="summaryIdHead">ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Anzahl Nutzer</th></tr></thead>
         <tbody id="summaryBody"></tbody>
@@ -2691,19 +2692,24 @@ async function openSummaryView(mode) {   // mode: 'query' | 'sod'
   $('summaryTitle').textContent = mode === 'query' ? 'Einzelberechtigungen — Übersicht' : 'SoD-Regeln — Übersicht';
   $('summaryIdHead').textContent = mode === 'query' ? 'Query' : 'Regel';
   $('summarySub').textContent = 'lädt…';
+  $('summaryKpis').style.display = 'none'; $('summaryKpis').innerHTML = '';
   $('summaryBody').innerHTML = '';
   try {
     const url = (mode === 'query' ? '/queries/summary' : '/sodrules/summary') + '?runId=' + encodeURIComponent(activeRunId);
-    const rows = await api(url);
-    renderSummaryTable(rows, mode);
+    const res = await api(url);
+    renderSummaryTable(res.rows, mode, res.totalUsers);
   } catch (err) {
     $('summarySub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
   }
 }
-function renderSummaryTable(rows, mode) {
+function renderSummaryTable(rows, mode, totalUsers) {
   $('summarySub').textContent = rows.length
     ? `${rows.length} ${mode === 'query' ? 'Einzelberechtigung(en)' : 'SoD-Regel(n)'} mit mindestens einem Treffer in diesem Lauf.`
     : 'Keine Treffer in diesem Lauf.';
+  if (rows.length) {
+    $('summaryKpis').style.display = 'flex';
+    $('summaryKpis').innerHTML = `<div class="kpi"><b>${totalUsers}</b><span>Betroffene User (distinkt, ${mode === 'query' ? 'über alle Einzelberechtigungen' : 'über alle SoD-Regeln'})</span></div>`;
+  }
   $('summaryBody').innerHTML = rows.map(r => {
     const name = r.shortDescription || r.description || '';
     return `<tr><td class="click" data-id="${r.id}" title="Ergebnisse zu dieser ${mode === 'query' ? 'Query' : 'Regel'} anzeigen">${r.id}</td>`
