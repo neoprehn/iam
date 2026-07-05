@@ -555,6 +555,34 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Dataset vorhanden ist — z. B. Basis-Team ohne Dialog-Zugang), sonst nur das Kürzel. Profilstatus
   zeigt die Bedeutung von `PSTATE='A'` ("Aktiv") mit Hinweis-Icon, da die Codes SAP-seitig nicht
   einheitlich dokumentiert sind (Extraktionsleitfaden §22 entsprechend ergänzt).
+- [x] **Ergebnisse-Übersicht Einzelberechtigungen/SoD-Regeln + CSV-Export-Fix — Nutzer-Wunsch.**
+  Zwei neue Ribbon-Menüpunkte unter „Ergebnisse": **„Einzelberechtigungen"** und **„SoD-Regeln"**
+  zeigen je eine Tabelle **Query/Regel-ID · Bezeichnung · Kritikalität · Anzahl Nutzer** — nur
+  Zeilen mit mindestens einem Treffer in diesem Lauf (neue Endpoints `GET /queries/summary` bzw.
+  `GET /sodrules/summary`, `MATCH` statt `OPTIONAL MATCH` filtert 0-Treffer implizit über die
+  Kardinalität weg). Klick auf eine Zeile springt in die normale Einzelfilter-/Findings-Ansicht,
+  gefiltert auf genau diese Query/Regel (`jumpToQueryFilter`/`jumpToRuleFilter`, dieselbe
+  `applyFilters()`-Logik wie die „nach User filtern"-Zelle in der Findings-Tabelle; setzt dabei
+  bewusst auch stehengebliebene Kritikalitäts-/Sleeping-Filter zurück, sonst könnte ein Klick auf
+  eine Regel mit echten Treffern durch einen unpassenden Alt-Filter „0 Findings" zeigen). Neue
+  gemeinsame View `summaryView` in `.cols` verschachtelt (Sidebar bleibt sichtbar).
+  **CSV-Export-Bugfix (Nutzer-Meldung: Export passte nicht zur angezeigten Tabelle), zwei
+  unabhängige Ursachen:** (1) `GET /findings/export` nahm **keinerlei Filter-Parameter** entgegen
+  — der Export dumpte immer den kompletten Lauf, unabhängig von der gerade angezeigten gefilterten
+  Ansicht. Jetzt dieselbe `_FINDINGS_WHERE`-Klausel wie `GET /findings` (identische Parameter);
+  ohne Parameter weiterhin alles (Abwärtskompatibilität). (2) Die Regel-**Bezeichnung** fehlte im
+  Export komplett (nur die ID war drin, obwohl die Tabelle sie anzeigt) — neue Spalte `ruleName`.
+  (3) Der Export-Button exportierte **immer** Findings, auch während die Einzelfilter-Matches-
+  Tabelle sichtbar war — neuer Endpoint `GET /matches/export` (Pendant zu `GET /matches`,
+  gleiche Parameter/Spalten wie die Matches-Tabelle) und `cmdExport` folgt jetzt exakt derselben
+  Verzweigung wie `applyFilters()` (Einzelfilter → `/matches/export`, sonst → `/findings/export`),
+  mit denselben Filterparametern wie die aktuell sichtbare Tabelle. Verifiziert gegen den
+  laufenden Container: `/sodrules/summary` liefert 22 Regeln (deckt sich mit der bekannten
+  Regelanzahl dieses Laufs), `/queries/summary` 38 Queries (deckt sich mit der bekannten
+  Query-Anzahl); `userCount` einer Stichproben-Regel exakt gleich der Anzahl distinkter User im
+  vorher exportierten Findings-CSV für diese Regel; `/findings/export` liefert ungefiltert 501,
+  mit `ruleCriticality=very-critical` 63 Zeilen (deckt sich mit der vom Nutzer beigelegten CSV);
+  `/matches/export` liefert für eine Query exakt die `userCount` aus der Summary-Tabelle.
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren

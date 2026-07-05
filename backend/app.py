@@ -1984,6 +1984,47 @@ def sod_rules(runId: str):
             "ORDER BY id", ruleset=run["ruleset"])]
 
 
+@app.get("/queries/summary")
+def queries_summary(runId: str):
+    """Einzelberechtigungs-Uebersicht (Ergebnisse-Menue): pro SoD-relevanter Query, wie viele
+    User sie in diesem Lauf matchen. Nur Queries mit mindestens einem Treffer (0-Treffer waere
+    Katalog-Browsing, kein Ergebnis -- die MATCH-Kardinalitaet filtert das implizit). Klick auf
+    eine Zeile filtert im Frontend die normale Einzelfilter-Ansicht auf diese Query."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        return [dict(r) for r in s.run(
+            "MATCH (q:Query {ruleset:$ruleset}) "
+            "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
+            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q) "
+            "WITH q, count(DISTINCT u) AS userCount "
+            "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
+            "  q.criticality AS criticality, q.module AS module, userCount "
+            "ORDER BY coalesce(q.criticalityRank,0) DESC, userCount DESC",
+            ruleset=run["ruleset"], runId=runId)]
+
+
+@app.get("/sodrules/summary")
+def sod_rules_summary(runId: str):
+    """SoD-Regel-Uebersicht (Ergebnisse-Menue): pro Regel, wie viele User sie in diesem Lauf
+    verletzen. Nur Regeln mit mindestens einem Fund. Klick auf eine Zeile filtert im Frontend
+    die normale Findings-Liste auf diese Regel."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        return [dict(r) for r in s.run(
+            "MATCH (rule:SoDRule {ruleset:$ruleset}) "
+            "WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() } "
+            "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId, ruleId:rule.id}) "
+            "WITH rule, count(DISTINCT u) AS userCount "
+            "RETURN rule.id AS id, rule.description AS description, "
+            "  rule.shortDescription AS shortDescription, rule.criticality AS criticality, userCount "
+            "ORDER BY coalesce(rule.criticalityRank,0) DESC, userCount DESC",
+            ruleset=run["ruleset"], runId=runId)]
+
+
 @app.get("/matches")
 def matches(runId: str, query: str | None = None, user: str | None = None,
             userType: list[str] = Query(default=[])):
@@ -2143,30 +2184,70 @@ def root_cause(runId: str, user: str, query: str | None = None, rule: str | None
 
 
 @app.get("/findings/export")
-def export_findings(runId: str):
+def export_findings(runId: str, minRank: int = 0, user: str | None = None, rule: str | None = None,
+                     userType: list[str] = Query(default=[]), sleeping: str | None = None,
+                     ruleCriticality: str | None = None):
     """Findings eines Laufs als CSV (Semikolon, UTF-8-BOM -> Excel-tauglich) — Ergebnis-Export
-    getrennt vom Quell-Backup."""
+    getrennt vom Quell-Backup. Nimmt dieselben Filter-Parameter wie GET /findings (identische
+    _FINDINGS_WHERE) an, damit der Export standardmaessig zur gerade angezeigten (gefilterten)
+    Tabelle passt statt immer den kompletten Lauf zu dumpen; ohne Parameter = alles (bisheriges
+    Verhalten). Enthaelt jetzt auch die Regel-Bezeichnung (fehlte komplett, nur die ID war drin)."""
     with driver.session() as s:
         rows = list(s.run(
-            "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$r})-[:BASED_ON]->(rule:SoDRule) "
-            "RETURN u.id AS user, f.ruleId AS rule, f.ruleset AS ruleset, f.dataset AS dataset, "
+            "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
+            + _FINDINGS_WHERE +
+            "RETURN u.id AS user, f.ruleId AS rule, "
+            "coalesce(rule.shortDescription, rule.description, '') AS ruleName, "
+            "f.ruleset AS ruleset, f.dataset AS dataset, "
             "f.criticality AS criticality, coalesce(f.criticalityRank,0) AS criticalityRank, "
             "coalesce(f.userSleeping,false) AS sleeping, coalesce(f.lastLogonKnown,true) AS lastLogonKnown, "
             "f.conflictType AS conflictType, "
             "[(f)-[:VIA_ROLE]->(r) | r.id] AS roles, [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles, "
             "f.reasonCode AS reasonCode "
-            "ORDER BY criticalityRank DESC, user", r=runId))
+            "ORDER BY criticalityRank DESC, user",
+            runId=runId, minRank=minRank, user=user, rule=rule,
+            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality))
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=";")
-    w.writerow(["user", "rule", "ruleset", "dataset", "criticality", "criticalityRank",
+    w.writerow(["user", "rule", "ruleName", "ruleset", "dataset", "criticality", "criticalityRank",
                 "sleeping", "lastLogonKnown", "conflictType", "roles", "profiles", "reasonCode"])
     for x in rows:
-        w.writerow([x["user"], x["rule"], x["ruleset"], x["dataset"], x["criticality"],
+        w.writerow([x["user"], x["rule"], x["ruleName"], x["ruleset"], x["dataset"], x["criticality"],
                     x["criticalityRank"], x["sleeping"], x["lastLogonKnown"], x["conflictType"],
                     "|".join(x["roles"] or []), "|".join(x["profiles"] or []), x["reasonCode"]])
     data = "﻿" + buf.getvalue()   # BOM, damit Excel UTF-8/Umlaute korrekt liest
     return Response(content=data, media_type="text/csv; charset=utf-8",
                    headers={"Content-Disposition": f'attachment; filename="findings_{runId}.csv"'})
+
+
+@app.get("/matches/export")
+def export_matches(runId: str, query: str | None = None, user: str | None = None,
+                    userType: list[str] = Query(default=[])):
+    """Einzelfilter-Treffer ('wer matcht Query X') als CSV -- Pendant zu /findings/export fuer die
+    Einzelfilter-Ansicht (Matches-Tabelle). Nimmt dieselben Parameter wie GET /matches an, damit
+    der Export zur aktuell angezeigten Tabelle passt (der Export-Button exportierte bisher IMMER
+    die SoD-Findings, auch waehrend die Matches-Tabelle sichtbar war)."""
+    with driver.session() as s:
+        rows = list(s.run(
+            "MATCH (u:User)-[:MATCHES {runId:$runId}]->(q:Query) "
+            "WHERE ($qid IS NULL OR q.id = $qid) AND ($user IS NULL OR u.id = $user) "
+            "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
+            "RETURN u.id AS user, coalesce(u.name,'') AS name, "
+            "  CASE WHEN 'Dialog' IN labels(u) THEN 'Dialog' WHEN 'System' IN labels(u) THEN 'System' "
+            "       WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Communication' "
+            "       WHEN 'Reference' IN labels(u) THEN 'Reference' ELSE '?' END AS typ, "
+            "  CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status, "
+            "  q.id AS query, coalesce(q.shortDescription, q.description, '') AS queryName, "
+            "  coalesce(q.criticality,'') AS criticality "
+            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType))
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter=";")
+    w.writerow(["user", "name", "typ", "status", "query", "queryName", "criticality"])
+    for x in rows:
+        w.writerow([x["user"], x["name"], x["typ"], x["status"], x["query"], x["queryName"], x["criticality"]])
+    data = "﻿" + buf.getvalue()
+    return Response(content=data, media_type="text/csv; charset=utf-8",
+                   headers={"Content-Disposition": f'attachment; filename="matches_{runId}.csv"'})
 
 
 @app.post("/imports")

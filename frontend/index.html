@@ -275,6 +275,8 @@
       <button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button>
       <button class="cmd" id="cmdExplain" disabled><span class="ico">&#128270;</span>Evidenz</button>
       <button class="cmd" id="cmdExport" disabled><span class="ico">&#128202;</span>Export CSV</button>
+      <button class="cmd" id="cmdQuerySummary" disabled><span class="ico">&#128269;</span>Einzelberechtigungen</button>
+      <button class="cmd" id="cmdSodSummary" disabled><span class="ico">&#129517;</span>SoD-Regeln</button>
     </div>
   </div>
   <div class="group menu" id="grpConsistency">
@@ -471,6 +473,20 @@
         </div>
       </div>
       <div id="rdContent" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Ergebnisse-Uebersicht: pro Query/Regel Anzahl Nutzer -- Klick filtert die normale
+         Findings-/Matches-Ansicht (dieselbe Logik wie die "nach User filtern"-Zelle). -->
+    <div id="summaryView" style="display:none">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:6px">
+        <h2 style="margin:0" id="summaryTitle"></h2>
+        <button class="ghost" id="summaryBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+      </div>
+      <div class="sub" id="summarySub"></div>
+      <table id="summaryTable">
+        <thead><tr><th id="summaryIdHead">ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Anzahl Nutzer</th></tr></thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
     </div>
   </div>
   <div id="consistencyView" style="display:none">
@@ -887,7 +903,30 @@ $('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); 
 $('cmdBackup').onclick = () => { openDlg('dlg-backup'); refreshImportFilesInfo(); };
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
-$('cmdExport').onclick = () => { if (activeRunId) location.href = '/findings/export?runId=' + encodeURIComponent(activeRunId); };
+// Export folgt exakt derselben Verzweigung/denselben Parametern wie applyFilters() -- sonst
+// exportiert der Button unabhaengig von der Ansicht immer "alle SoD-Findings", auch waehrend
+// gerade eine gefilterte Ansicht oder die Einzelfilter-Matches-Tabelle sichtbar ist.
+$('cmdExport').onclick = () => {
+  if (!activeRunId) return;
+  const u = $('filterUser').value, r = $('filterRule').value, q = $('filterQuery').value;
+  const uts = userTypeValues();
+  if (q || resultTypeValue === 'query') {
+    let url = '/matches/export?runId=' + encodeURIComponent(activeRunId);
+    if (q) url += '&query=' + encodeURIComponent(q);
+    if (u) url += '&user=' + encodeURIComponent(u);
+    uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
+    location.href = url;
+    return;
+  }
+  const rc = ruleCritValue, sl = sleepingValue;
+  let url = '/findings/export?runId=' + encodeURIComponent(activeRunId);
+  if (u) url += '&user=' + encodeURIComponent(u);
+  if (r) url += '&rule=' + encodeURIComponent(r);
+  uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
+  if (rc) url += '&ruleCriticality=' + encodeURIComponent(rc);
+  if (sl) url += '&sleeping=' + sl;
+  location.href = url;
+};
 $('cmdExplain').onclick = () => {
   if (!activeRunId) return;
   runJob('/runs/' + encodeURIComponent(activeRunId) + '/explain', { method: 'POST' },
@@ -2038,6 +2077,8 @@ let allFindingsForRun = [];
 async function showFindings(runId) {
   activeRunId = runId;
   $('cmdExport').disabled = false;
+  $('cmdQuerySummary').disabled = false;
+  $('cmdSodSummary').disabled = false;
   document.querySelectorAll('.run-card').forEach(li => li.classList.remove('active'));
   $('cmdExplain').disabled = false;
   const run = runsById[runId];
@@ -2601,6 +2642,75 @@ async function rdRenderTab(tab) {
 }
 document.querySelectorAll('#rdTabPills .pill').forEach(b => b.addEventListener('click', () => rdRenderTab(b.dataset.tab)));
 $('rdBackBtn').onclick = () => { $('roleDetailView').style.display = 'none'; showRootCauseView(); };
+
+/* ── Ergebnisse-Uebersicht (Einzelberechtigungen/SoD-Regeln, je Anzahl Nutzer) ────────────── */
+function showSummaryView() {
+  // Direkt aus dem Ribbon erreichbar (nicht aus Root-Cause/Rollen-Detail) -> Sidebar immer an,
+  // wie der normale Ergebnis-Einstieg.
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  document.querySelector('main .cols').style.display = '';
+  $('colsRight').style.display = 'none';
+  $('colsLeft').style.display = '';
+  $('rootCauseView').style.display = 'none';
+  $('roleDetailView').style.display = 'none';
+  if ($('assistentView')) $('assistentView').style.display = 'none';
+  $('summaryView').style.display = '';
+}
+async function openSummaryView(mode) {   // mode: 'query' | 'sod'
+  if (!activeRunId) return;
+  showSummaryView();
+  $('summaryTitle').textContent = mode === 'query' ? 'Einzelberechtigungen — Übersicht' : 'SoD-Regeln — Übersicht';
+  $('summaryIdHead').textContent = mode === 'query' ? 'Query' : 'Regel';
+  $('summarySub').textContent = 'lädt…';
+  $('summaryBody').innerHTML = '';
+  try {
+    const url = (mode === 'query' ? '/queries/summary' : '/sodrules/summary') + '?runId=' + encodeURIComponent(activeRunId);
+    const rows = await api(url);
+    renderSummaryTable(rows, mode);
+  } catch (err) {
+    $('summarySub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
+  }
+}
+function renderSummaryTable(rows, mode) {
+  $('summarySub').textContent = rows.length
+    ? `${rows.length} ${mode === 'query' ? 'Einzelberechtigung(en)' : 'SoD-Regel(n)'} mit mindestens einem Treffer in diesem Lauf.`
+    : 'Keine Treffer in diesem Lauf.';
+  $('summaryBody').innerHTML = rows.map(r => {
+    const name = r.shortDescription || r.description || '';
+    return `<tr><td class="click" data-id="${r.id}" title="Ergebnisse zu dieser ${mode === 'query' ? 'Query' : 'Regel'} anzeigen">${r.id}</td>`
+      + `<td class="muted">${escapeHtml(name)}</td><td>${critTag(r.criticality)}</td><td>${r.userCount}</td></tr>`;
+  }).join('');
+  $('summaryBody').querySelectorAll('[data-id]').forEach(td => {
+    td.onclick = () => mode === 'query' ? jumpToQueryFilter(td.dataset.id) : jumpToRuleFilter(td.dataset.id);
+  });
+}
+// Wie die "nach User filtern"-Zelle in der Findings-Tabelle: andere Filter zuruecksetzen, Ziel
+// setzen, dieselbe applyFilters()-Logik wie ueberall sonst im Ergebnis-Bereich nutzen.
+function jumpToQueryFilter(qid) {
+  showResultsView();
+  $('filterUser').value = ''; $('filterRule').value = '';
+  ruleCritValue = ''; renderRuleCritPills(); sleepingValue = ''; renderSleepingPills();
+  resultTypeValue = 'query'; renderResultTypePills();
+  $('filterQuery').value = qid;
+  applyFilters();
+}
+function jumpToRuleFilter(ruleId) {
+  showResultsView();
+  $('filterUser').value = ''; $('filterQuery').value = '';
+  // Stehengebliebene Kritikalitaets-/Sleeping-Filter zuruecksetzen -- sonst koennte ein Klick
+  // auf eine Regel mit echten Treffern durch einen unpassenden Alt-Filter "0 Findings" zeigen.
+  ruleCritValue = ''; renderRuleCritPills(); sleepingValue = ''; renderSleepingPills();
+  resultTypeValue = 'sod'; renderResultTypePills();
+  renderRuleSelect(); $('filterRule').value = ruleId;
+  applyFilters();
+}
+$('summaryBackBtn').onclick = () => { $('summaryView').style.display = 'none'; showResultsView(); };
+$('cmdQuerySummary').onclick = () => openSummaryView('query');
+$('cmdSodSummary').onclick = () => openSummaryView('sod');
 
 function renderRootCause(data) {
   const box = $('rcObjects');

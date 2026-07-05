@@ -74,7 +74,10 @@ Gruppe öffnet eine Liste der Befehle, Klick daneben oder auf einen Befehl schli
 | Befehl | Wirkung |
 | --- | --- |
 | **Aktualisieren** | lädt Läufe, Datasets, Backups neu. |
-| **Export CSV** | Findings des **aktiven** Laufs als CSV (Semikolon, UTF-8 — Excel-tauglich). |
+| **Evidenz** | berechnet VIA_ROLE/VIA_PROFILE + intra/inter für den aktiven Lauf nach (teuer, daher Opt-in). |
+| **Export CSV** | Exportiert **exakt das, was gerade angezeigt wird** — Findings **oder** Matches (je nachdem, welche Tabelle sichtbar ist), mit denselben aktiven Filtern (User/Regel/Kritikalität/Sleeping/Nutzertyp) wie auf dem Bildschirm; ohne aktive Filter der komplette Lauf. Findings-Export enthält jetzt auch die Regel-**Bezeichnung** (nicht nur die ID). |
+| **Einzelberechtigungen** | Übersicht: **jede** SoD-relevante Query mit mindestens einem Treffer in diesem Lauf, mit Kritikalität und Anzahl matchender User. Klick auf eine Zeile springt in die normale Einzelfilter-Ansicht, gefiltert auf genau diese Query. |
+| **SoD-Regeln** | Dieselbe Übersicht für SoD-Regeln (Anzahl verletzender User statt matchender). Klick springt in die normale Findings-Ansicht, gefiltert auf diese Regel. |
 
 Im Hauptbereich: **KPI-Kacheln** (s. u.), **Läufe-Liste** (Klick = Lauf laden; jede Karte zeigt
 Bezeichnung, Stichtag und Erstellungs-Datum/-Zeit) und die **Ergebnistabelle** (Findings oder
