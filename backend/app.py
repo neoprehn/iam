@@ -1084,11 +1084,12 @@ def role_detail(roleId: str, runId: str, user: str | None = None):
         if user:
             v = s.run(
                 "MATCH (u:User {id:$u, dataset:$ds})-[g:ASSIGNED_TO]->(r:Role {id:$rid, dataset:$ds}) "
-                "RETURN g.validFrom AS validFrom, g.validTo AS validTo LIMIT 1",
+                "RETURN g.validFrom AS validFrom, g.validTo AS validTo, coalesce(u.name,'') AS userName LIMIT 1",
                 u=user, ds=ds, rid=roleId).single()
             out["userValidFrom"] = jsonable(v["validFrom"]) if v else None
             out["userValidTo"] = jsonable(v["validTo"]) if v else None
             out["forUser"] = user
+            out["forUserName"] = v["userName"] if v else ""
         out["menuTcodes"] = [r["t"] for r in s.run(
             "MATCH (r:Role {id:$rid, dataset:$ds})-[:HAS_MENU]->(t:Transaction) "
             "RETURN DISTINCT t.id AS t ORDER BY t", rid=roleId, ds=ds)]
@@ -1101,6 +1102,55 @@ def role_detail(roleId: str, runId: str, user: str | None = None):
             "RETURN o.id AS object, coalesce(o.text,'') AS text, count(DISTINCT a) AS instances "
             "ORDER BY object", rid=roleId, ds=ds)]
         return out
+
+
+# Gemeinsame Spalten fuer jede anklickbare "N User"-Kennzahl (Rollen-Detailseite, Konsistenzcheck-
+# Drilldown): ID/Name/Typ/Benutzergruppe/Letzter Login/Sleeping -- dieselbe Sleeping-Definition
+# wie im SoD-Root-Cause (s. evaluate_sod_one.cypher: lastLogonKnown/userSleeping).
+_USER_ENRICH_RETURN = (
+    "RETURN u.id AS id, coalesce(u.name,'') AS name, "
+    "  CASE WHEN 'Dialog' IN labels(u) THEN 'Dialog' WHEN 'System' IN labels(u) THEN 'System' "
+    "       WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Communication' "
+    "       WHEN 'Reference' IN labels(u) THEN 'Reference' ELSE '?' END AS userType, "
+    "  coalesce(u.userGroup,'') AS userGroup, u.lastLogon AS lastLogon, "
+    "  (u.lastLogon IS NOT NULL) AS lastLogonKnown, "
+    "  (u.lastLogon IS NOT NULL AND u.lastLogon < ($asOf - duration({days:$sleepDays}))) AS sleeping "
+    "ORDER BY id"
+)
+
+
+@app.get("/roles/{roleId}/users")
+def role_users(roleId: str, runId: str):
+    """Liste der einem Role zugewiesenen User fuer den anklickbaren "Zugewiesene User"-Zaehler
+    der Rollen-Detailseite -- dataset ueber den Lauf aufgeloest, Spalten wie POST /users/list."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.dataset AS dataset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        ds = run["dataset"]
+        as_of = _dataset_asof(s, ds)
+        sleep_days = profiles()["sleeping"]["sleepDays"]
+        return [jsonable(dict(r)) for r in s.run(
+            "MATCH (u:User {dataset:$ds})-[:ASSIGNED_TO]->(:Role {id:$rid, dataset:$ds}) " + _USER_ENRICH_RETURN,
+            rid=roleId, ds=ds, asOf=as_of, sleepDays=sleep_days)]
+
+
+class UsersListReq(BaseModel):
+    dataset: str
+    ids: list[str]
+
+
+@app.post("/users/list")
+def users_list(req: UsersListReq):
+    """Generisches Nutzer-Enrichment fuer eine gegebene ID-Liste -- speist z. B. den Klick auf eine
+    "N User"-Kennzahl im Konsistenzcheck-Ergebnis (die IDs kommen dort aus der bereits geladenen
+    Detailtabelle, dataset direkt vom Client). Gleiche Spalten wie GET /roles/{id}/users."""
+    with driver.session() as s:
+        as_of = _dataset_asof(s, req.dataset)
+        sleep_days = profiles()["sleeping"]["sleepDays"]
+        return [jsonable(dict(r)) for r in s.run(
+            "MATCH (u:User {dataset:$ds}) WHERE u.id IN $ids " + _USER_ENRICH_RETURN,
+            ds=req.dataset, ids=req.ids, asOf=as_of, sleepDays=sleep_days)]
 
 
 @app.get("/roles/{roleId}/can-do")

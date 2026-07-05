@@ -583,6 +583,32 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   vorher exportierten Findings-CSV für diese Regel; `/findings/export` liefert ungefiltert 501,
   mit `ruleCriticality=very-critical` 63 Zeilen (deckt sich mit der vom Nutzer beigelegten CSV);
   `/matches/export` liefert für eine Query exakt die `userCount` aus der Summary-Tabelle.
+- [x] **Rollen-Detailseite: Usernamen-Auflösung + anklickbare Nutzerliste — Nutzer-Wunsch.**
+  „Zuweisung"-Zeile der Stammdaten (Gültigkeit der `ASSIGNED_TO`-Kante des betrachteten Users)
+  zeigt jetzt ebenfalls „Name (ID)" statt der rohen ID (`GET /roles/{id}` liefert zusätzlich
+  `forUserName`, per `OPTIONAL MATCH` wie bei Ersteller/Änderer). Die **Anzahl zugewiesener User**
+  ist anklickbar und öffnet eine neue, wiederverwendbare **Nutzerliste-Seite** (`#userListView`,
+  in `.cols` verschachtelt wie Root-Cause/Rollen-Detail) mit den Spalten **ID · Name ·
+  Benutzertyp · Benutzergruppe · Letzter Login · Sleeping** (neuer Endpoint
+  `GET /roles/{id}/users?runId=`, dataset über den Lauf aufgelöst; Sleeping-Definition identisch
+  zum SoD-Root-Cause: `lastLogonKnown = lastLogon IS NOT NULL`,
+  `sleeping = lastLogon vorhanden UND älter als sleepDays`).
+  **Dieselbe Nutzerliste-Seite** wird auch aus den **Konsistenzchecks** heraus angeboten: hat ein
+  Check-Ergebnis genau **eine** Summary-Kachel und ist die Detailtabelle eine Nutzerliste (Spalte
+  `user` vorhanden — Heuristik, da Check-Ergebnisse strukturell sehr unterschiedlich sind, vgl.
+  Rollenpaare/Objektlisten bei anderen Checks), wird die große Kennzahl anklickbar; die IDs aus der
+  bereits geladenen Detailtabelle gehen an den neuen generischen Endpoint `POST /users/list`
+  (Body `{dataset, ids}`), der sie mit denselben 6 Spalten frisch aus der Datenbank anreichert
+  (liefert z. B. Benutzergruppe/Sleeping, die viele Check-Cyphers selbst nicht zurückgeben).
+  Rückweg (`ulBackBtn`) merkt sich die Herkunft (`ulReturnTo`: „role" → zurück zur Rollen-
+  Detailseite mit Sidebar, „consistency" → zurück zum Konsistenzcheck-Ergebnis ohne Sidebar,
+  analog zum bestehenden `rcReturnTo`-Muster des Root-Cause). Verifiziert gegen den laufenden
+  Container (nur IDs/Zahlen, keine Namen ausgegeben): `/roles/{id}/users` liefert für eine Rolle
+  mit bekannter Zuweisungszahl (3) exakt 3 Zeilen mit allen 6 Feldern; `/users/list` liefert für
+  eine gemischte ID-Liste (inkl. einer nicht existierenden ID) genau die tatsächlich vorhandenen
+  Nutzer; `forUserName`/`createUsrName` lösen für einen bekannten User erfolgreich auf; ein echter
+  Konsistenzcheck (B1, „aktive Dialog-User ohne Anmeldung") liefert genau eine Summary-Kachel +
+  eine Detailtabelle mit `user`-Spalte (26.823 Zeilen) — Drilldown-Bedingung korrekt erkannt.
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren

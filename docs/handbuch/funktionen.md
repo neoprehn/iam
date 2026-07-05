@@ -212,7 +212,12 @@ Klick eine **Rollen-Detailseite** (die linke Filter-/Läufe-Sidebar bleibt dabei
 immer sichtbar die **Stammdaten** (Beschreibung, Subtyp, Elternrolle, generiertes Profil +
 Generierungsstatus inkl. Profilstatus-Bedeutung, Ersteller/letzter Änderer als „Name (Kürzel)" +
 Datum, Gültigkeit der Zuweisung des betrachteten Users, Anzahl zugewiesener User) — analog den
-immer sichtbaren Metadaten im Query-Editor. Darunter als Reiter: **TCodes** (effektiv aus
+immer sichtbaren Metadaten im Query-Editor. Ersteller/Änderer **und** die Zuweisungs-Gültigkeit
+zeigen den Usernamen, sofern der betreffende User (noch) im Dataset vorhanden ist — sonst nur das
+SAP-Kürzel (Basis-Team-Accounts ohne Dialog-Zugang stehen z. B. nicht zwingend als eigener User im
+Extrakt). Die **Anzahl zugewiesener User** ist anklickbar und öffnet eine eigene **Nutzerliste**
+(ID · Name · Benutzertyp · Benutzergruppe · Letzter Login · Sleeping) — dieselbe Listenseite wie
+beim Konsistenzcheck-Drilldown (s. u.). Darunter als Reiter: **TCodes** (effektiv aus
 `S_TCODE` + Rollenmenü), **Berechtigungsobjekte** (mit Instanz-Anzahl), **Einzelberechtigungen**
 (welche Einzelfilter die Rolle **allein** erfüllt) und **SoD-Regeln** (welche Regeln die Rolle
 **allein** auslösen kann — Intra-Rollen-Konflikt); die letzten beiden **rollenzentrisch** (frisch
@@ -274,7 +279,11 @@ A4) erscheint je Zeile zusätzlich ein **„Root-Cause"-Button**, der auf diesel
 wechselt wie beim SoD-/Einzelfilter-Root-Cause (s. o.) und zeigt, welche konkrete(n) Rolle(n)/
 Profil(e) mit welchen Berechtigungswerten den Treffer auslösen; deren „← zurück" führt wieder zu
 diesem Konsistenzcheck-Ergebnis (nicht zum Katalog). Checks ohne Zusammenfassung zeigen nur die
-Detailtabelle. „← zurück zum Katalog" (eigener Button am Check-Ergebnis selbst) wechselt zurück
+Detailtabelle. Besteht die Summary aus **genau einer** Kachel und ist die Detailtabelle eine
+Nutzerliste (z. B. „Aktive Dialog-User ohne Anmeldung" B1), ist die große Kennzahl **anklickbar**
+und öffnet — frisch aus der Datenbank angereichert (ID · Name · Benutzertyp · Benutzergruppe ·
+Letzter Login · Sleeping) — dieselbe Nutzerliste-Seite wie bei „Zugewiesene User" auf der
+Rollen-Detailseite. „← zurück zum Katalog" (eigener Button am Check-Ergebnis selbst) wechselt zurück
 zum Katalog. Noch nicht implementierte Checks zeigen rechts nur einen Hinweis statt eines Ergebnisses.
 
 **Keine Persistenz (bewusst):** ein Check-Lauf erzeugt keinen `(:Run)`-Knoten und wird nirgends

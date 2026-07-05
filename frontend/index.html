@@ -107,8 +107,8 @@
   .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
   .tag.low { background:rgba(70,167,88,.18); color:#7bd690; }
   .tag.info { background:rgba(76,139,245,.20); color:#8ab4f8; }
-  td.click, th.click { cursor:pointer; }
-  td.click:hover { color:var(--accent); text-decoration:underline; }
+  td.click, th.click, .click { cursor:pointer; }
+  td.click:hover, .click:hover { color:var(--accent); text-decoration:underline; }
   .runsbox { border:1px solid var(--line); border-radius:8px; padding:10px; }
   .runsbox .runs { margin:0; }
   .filterbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
@@ -486,6 +486,20 @@
       <table id="summaryTable">
         <thead><tr><th id="summaryIdHead">ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Anzahl Nutzer</th></tr></thead>
         <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Anklickbare "N User"-Kennzahlen (Rollen-Detailseite "Zugewiesene User", Konsistenzcheck-
+         KPI) landen hier -- immer dieselben 6 Spalten, egal woher die ID-Liste kommt. -->
+    <div id="userListView" style="display:none">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:6px">
+        <h2 style="margin:0" id="ulTitle">Nutzer</h2>
+        <button class="ghost" id="ulBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+      </div>
+      <div class="sub" id="ulSub"></div>
+      <table id="ulTable">
+        <thead><tr><th>ID</th><th>Name</th><th>Benutzertyp</th><th>Benutzergruppe</th><th>Letzter Login</th><th>Sleeping</th></tr></thead>
+        <tbody id="ulBody"></tbody>
       </table>
     </div>
   </div>
@@ -1181,15 +1195,21 @@ function ccFmtLabelValue(v) {
   const tr = x => CC_LABEL_MAP[x] || x;
   return Array.isArray(v) ? v.map(tr).join(' · ') : tr(v);
 }
-function renderCcdSummary(rows) {
+// drilldownRows: nur gesetzt, wenn genau eine Summary-Zeile vorliegt UND die Detailtabelle eine
+// 'user'-Spalte hat -- in diesem (haeufigsten) Fall deckt sich die grosse Kennzahl exakt mit der
+// Anzahl der Detailzeilen, die Kennzahl wird dann anklickbar (oeffnet dieselbe User-Liste-Seite
+// wie "Zugewiesene User" auf der Rollen-Detailseite, s. openConsistencyUserList).
+function renderCcdSummary(rows, drilldownRows) {
   const box = $('ccdSummary');
   if (!rows || !rows.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
   box.style.display = 'flex';
   const cols = Object.keys(rows[0]);
   const big = cols[cols.length - 1], rest = cols.slice(0, -1);
-  box.innerHTML = rows.map(r => `<div class="kpi"><b>${escapeHtml(r[big])}</b><span>${
+  const canDrill = !!(drilldownRows && drilldownRows.length);
+  box.innerHTML = rows.map(r => `<div class="kpi"><b${canDrill ? ' class="click" title="Nutzerliste anzeigen"' : ''}>${escapeHtml(r[big])}</b><span>${
     rest.map(c => escapeHtml(ccFmtLabelValue(r[c]))).join(' · ')
   }</span></div>`).join('');
+  if (canDrill) box.querySelector('b.click').onclick = () => openConsistencyUserList(drilldownRows);
 }
 // Spaltennamen aus den Cypher-RETURN-Aliasen (camelCase, ASCII statt Umlaute, z. B.
 // "gueltigVon") sind als Tabellen-Header unprofessionell -- auf Nutzer-Feedback: feste
@@ -1443,7 +1463,8 @@ async function runConsistencyCheck() {
       body: JSON.stringify({ dataset, params: ccdParamValues }) });
     const detail = res.results[res.results.length - 1];
     const summary = res.results.length > 1 ? res.results[0] : null;
-    renderCcdSummary(summary);
+    const drilldownRows = summary && summary.length === 1 && detail.length && ('user' in detail[0]) ? detail : null;
+    renderCcdSummary(summary, drilldownRows);
     renderCcdDetailTable(detail);
     const asOf = $('ccdAsOfDisplay').textContent;
     $('ccdResultMeta').textContent = `· ${detail.length} Treffer · ${dataset} · Stichtag ${asOf}`;
@@ -1515,6 +1536,7 @@ function showRootCauseView() {
   // Sidebar nur bei Absprung aus Ergebnissen eingeblendet lassen
   $('colsLeft').style.display = rcReturnTo === 'results' ? '' : 'none';
   $('rootCauseView').style.display = '';
+  $('userListView').style.display = 'none';
 }
 $('rcBackBtn').onclick = () => {
   if (asst.active) { goToAsstStep(5); return; }
@@ -2524,6 +2546,7 @@ function showRoleDetailView() {
   $('colsLeft').style.display = rcReturnTo === 'results' ? '' : 'none';
   $('rootCauseView').style.display = 'none';
   if ($('assistentView')) $('assistentView').style.display = 'none';
+  $('userListView').style.display = 'none';
   $('roleDetailView').style.display = '';
 }
 async function openRoleDetail(roleId) {
@@ -2583,7 +2606,7 @@ function rdRenderStammdaten() {
   const d = rdData; if (!d) { $('rdStamm').innerHTML = ''; return; }
   const subtype = d.composite ? 'Sammelrolle' : d.derived ? 'abgeleitete Rolle' : 'Einzelrolle';
   const gen = d.profileGenerated === true ? 'ja (aktiv)' : d.profileGenerated === false ? 'nein (nicht generiert)' : '–';
-  const valid = d.forUser ? `${rdFmtDate(d.userValidFrom)} &ndash; ${rdFmtDate(d.userValidTo)} <span class="muted">(Zuweisung ${esc(d.forUser)})</span>` : null;
+  const valid = d.forUser ? `${rdFmtDate(d.userValidFrom)} &ndash; ${rdFmtDate(d.userValidTo)} <span class="muted">(Zuweisung ${rdPerson(d.forUser, d.forUserName)})</span>` : null;
   const created = d.createUsr ? `${rdPerson(d.createUsr, d.createUsrName)}${d.createDat ? ' &middot; ' + rdFmtDate(d.createDat) : ''}` : '–';
   const changed = d.changeUsr ? `${rdPerson(d.changeUsr, d.changeUsrName)}${d.changeDat ? ' &middot; ' + rdFmtDate(d.changeDat) : ''}` : '–';
   $('rdStamm').innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
@@ -2596,8 +2619,9 @@ function rdRenderStammdaten() {
     + rdRow('Zuletzt geändert', changed)
     + rdRow('Generierungsdatum', '<span class="muted">nicht im Extrakt</span>')
     + (valid ? rdRow('Gültigkeit', valid) : '')
-    + rdRow('Zugewiesene User', d.userCount)
+    + rdRow('Zugewiesene User', `<span class="click" id="rdUserCountLink" title="Liste der zugewiesenen User anzeigen">${d.userCount}</span>`)
     + '</table>';
+  if (d.userCount) $('rdUserCountLink').onclick = openRoleUserList;
 }
 async function rdRenderTab(tab) {
   rdTab = tab;
@@ -2657,6 +2681,7 @@ function showSummaryView() {
   $('colsLeft').style.display = '';
   $('rootCauseView').style.display = 'none';
   $('roleDetailView').style.display = 'none';
+  $('userListView').style.display = 'none';
   if ($('assistentView')) $('assistentView').style.display = 'none';
   $('summaryView').style.display = '';
 }
@@ -2711,6 +2736,74 @@ function jumpToRuleFilter(ruleId) {
 $('summaryBackBtn').onclick = () => { $('summaryView').style.display = 'none'; showResultsView(); };
 $('cmdQuerySummary').onclick = () => openSummaryView('query');
 $('cmdSodSummary').onclick = () => openSummaryView('sod');
+
+/* ── User-Liste: Ziel jeder anklickbaren "N User"-Kennzahl (Rollen-Detail "Zugewiesene User",
+   Konsistenzcheck-KPI). Immer dieselben 6 Spalten, egal ob die IDs aus einer Rolle (GET
+   .../users) oder einer beliebigen Konsistenzcheck-Trefferliste (POST /users/list) kommen. */
+let ulReturnTo = 'role';   // 'role' | 'consistency' -- steuert Sidebar-Sichtbarkeit + Zurueck-Ziel
+function showUserListView() {
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  document.querySelector('main .cols').style.display = '';
+  $('colsRight').style.display = 'none';
+  $('colsLeft').style.display = ulReturnTo === 'role' ? '' : 'none';
+  $('rootCauseView').style.display = 'none';
+  $('roleDetailView').style.display = 'none';
+  $('summaryView').style.display = 'none';
+  if ($('assistentView')) $('assistentView').style.display = 'none';
+  $('userListView').style.display = '';
+}
+function ulSleepCell(sleeping, lastLogonKnown) {
+  return sleeping ? '<span class="tag medium">sleeping</span>'
+    : lastLogonKnown === false ? '<span class="tag" title="kein Logon-Datum im Quellextrakt (TRDAT fehlt)" style="opacity:.6">unbekannt</span>'
+    : '&ndash;';
+}
+function renderUserListTable(rows) {
+  $('ulSub').textContent = rows.length ? `${rows.length} Nutzer` : 'Keine Nutzer gefunden.';
+  $('ulBody').innerHTML = rows.map(r => `<tr><td>${esc(r.id)}</td><td class="muted">${esc(r.name)}</td>`
+    + `<td>${esc(r.userType)}</td><td>${esc(r.userGroup)}</td><td>${rdFmtDate(r.lastLogon)}</td>`
+    + `<td>${ulSleepCell(r.sleeping, r.lastLogonKnown)}</td></tr>`).join('');
+}
+async function openRoleUserList() {
+  if (!rdRole || !activeRunId) return;
+  ulReturnTo = 'role';
+  showUserListView();
+  $('ulTitle').textContent = 'Zugewiesene User';
+  $('ulSub').textContent = 'lädt…';
+  $('ulBody').innerHTML = '';
+  try {
+    const rows = await api('/roles/' + encodeURIComponent(rdRole) + '/users?runId=' + encodeURIComponent(activeRunId));
+    renderUserListTable(rows);
+  } catch (err) {
+    $('ulSub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
+  }
+}
+async function openConsistencyUserList(detailRows) {
+  const ids = [...new Set(detailRows.map(r => r.user).filter(Boolean))];
+  const dataset = $('ccdDataset').value;
+  ulReturnTo = 'consistency';
+  showUserListView();
+  $('ulTitle').textContent = 'Nutzer';
+  $('ulSub').textContent = 'lädt…';
+  $('ulBody').innerHTML = '';
+  try {
+    const rows = await api('/users/list', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataset, ids }) });
+    renderUserListTable(rows);
+  } catch (err) {
+    $('ulSub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
+  }
+}
+$('ulBackBtn').onclick = () => {
+  $('userListView').style.display = 'none';
+  if (ulReturnTo === 'role') { showRoleDetailView(); return; }
+  $('colsLeft').style.display = '';
+  $('colsRight').style.display = '';
+  $('consistencyResultView').style.display = '';
+};
 
 function renderRootCause(data) {
   const box = $('rcObjects');
