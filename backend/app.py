@@ -221,6 +221,13 @@ class RunReq(BaseModel):
     # nur global ueber PUT /datasets/{id}/asof.
     userTypeProfile: str = "all"
     orgProfile: str = "standard"
+    # "all" (Default) materialisiert MATCHES fuer JEDE Query des Rulesets -- auch Einzelfilter,
+    # die in keiner SoD-Regel als Klausel verbaut sind. "sodOnly" beschraenkt die materialize-Phase
+    # auf die tatsaechlich von den SoD-Regeln benoetigten Queries (schneller, aber die Einzelfilter-
+    # Ergebnisse/Uebersicht zeigen dann nur diese Teilmenge) -- Nutzer-Wunsch: Standard ist "alles
+    # rechnen", Einschraenkung ist die bewusste Ausnahme (Ruleset-abhaengig, z. B. anders beim
+    # CSI-Filterset).
+    queryScope: str = "all"
     sleepDays: int | None = None
     minCriticalityRank: int = 0
     sodRules: list[str] = []
@@ -330,7 +337,7 @@ _RUN_PHASE_ORDER = ["ruleset", "materialize", "evaluate", "explain"]
 
 def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type_profile: str,
              org_profile: str, sleep_days: int, min_criticality_rank: int, sod_rules: list[str],
-             run_id: str, title: str, skip_ruleset_load: bool, skip_materialize: bool,
+             query_scope: str, run_id: str, title: str, skip_ruleset_load: bool, skip_materialize: bool,
              skip_explain: bool, step_prefix: str = "", checkpoint_base: dict | None = None,
              resume_phase: str | None = None, resume_units: list[str] | None = None) -> dict:
     """Ein einzelner Lauf ([ruleset] -> materialize -> evaluate -> [explain] -> Ergebnis-
@@ -388,7 +395,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                        state_path=state_path, reset_rel_path="sod/materialize_matches_reset.cypher",
                        candidates_rel_path="sod/materialize_matches_candidates.cypher",
                        one_rel_path="sod/materialize_matches_one.cypher", unit_param="qid",
-                       params={**base, **org}, resume_units=this_phase_resume,
+                       params={**base, **org, "queryScope": query_scope}, resume_units=this_phase_resume,
                        checkpoint_extra=checkpoint_extra)
 
         elif phase == "evaluate":
@@ -401,6 +408,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                 "sleepDays": sleep_days,
                 "minCriticalityRank": min_criticality_rank,
                 "sodRules": sod_rules,
+                "queryScope": query_scope,
                 "title": title,
             }
             if not this_phase_resume:
@@ -448,7 +456,7 @@ def do_run(job_id: str, req: RunReq):
             result = _run_one(s, job_id, cfg, ruleset=eff_req.ruleset, dataset=eff_req.dataset,
                                user_type_profile=eff_req.userTypeProfile, org_profile=eff_req.orgProfile,
                                sleep_days=sleep_days, min_criticality_rank=eff_req.minCriticalityRank,
-                               sod_rules=eff_req.sodRules, run_id=run_id, title=title,
+                               sod_rules=eff_req.sodRules, query_scope=eff_req.queryScope, run_id=run_id, title=title,
                                skip_ruleset_load=eff_req.skipRulesetLoad, skip_materialize=eff_req.skipMaterialize,
                                skip_explain=eff_req.skipExplain, checkpoint_base=checkpoint_base,
                                resume_phase=resume_phase, resume_units=resume_units)
@@ -470,6 +478,7 @@ class RunBatchReq(BaseModel):
     sleepDays: int | None = None
     minCriticalityRank: int = 0
     sodRules: list[str] = []
+    queryScope: str = "all"          # s. RunReq.queryScope
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
     skipExplain: bool = True
@@ -513,7 +522,7 @@ def do_run_batch(job_id: str, req: RunBatchReq):
                     s, job_id, cfg, ruleset=eff_req.ruleset, dataset=eff_req.dataset,
                     user_type_profile=eff_req.userTypeProfile, org_profile=profile_name,
                     sleep_days=sleep_days, min_criticality_rank=eff_req.minCriticalityRank,
-                    sod_rules=eff_req.sodRules, run_id=run_id, title=title,
+                    sod_rules=eff_req.sodRules, query_scope=eff_req.queryScope, run_id=run_id, title=title,
                     # Ruleset nur einmal laden (idempotent, aber unnoetig fuer jede Variante)
                     skip_ruleset_load=eff_req.skipRulesetLoad or i > 1,
                     skip_materialize=eff_req.skipMaterialize, skip_explain=eff_req.skipExplain,
@@ -2004,17 +2013,28 @@ def findings_summary(runId: str, minRank: int = 0, user: str | None = None, rule
         return jsonable(dict(rec))
 
 
+def _query_scope_where(query_scope: str) -> str:
+    """WHERE-Fragment fuer 'welche Queries wurden/werden in diesem Lauf betrachtet' -- muss
+    exakt widerspiegeln, was materialize_matches_candidates.cypher fuer den Query-Umfang eines
+    Laufs auswaehlt: 'all' -> jede Query des Rulesets, 'sodOnly' (Default fuer alte Laeufe ohne
+    gespeichertes queryScope) -> nur als SoD-Klausel verbaute Queries."""
+    return "" if query_scope == "all" else "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
+
+
 @app.get("/queries")
 def queries(runId: str):
-    """SoD-relevante Queries (Einzelfilter) des Rulesets eines Laufs — speist die
-    Query-Auswahl fuer den Matches-Drill-down ('wer matcht Query X')."""
+    """Queries (Einzelfilter) eines Laufs, beschraenkt auf dessen tatsaechlichen Query-Umfang
+    (s. r.queryScope / _query_scope_where) — speist die Query-Auswahl fuer den Matches-Drill-down
+    ('wer matcht Query X')."""
     with driver.session() as s:
-        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
+        run = s.run(
+            "MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, coalesce(r.queryScope,'sodOnly') AS queryScope",
+            id=runId).single()
         if not run:
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
         return [dict(r) for r in s.run(
             "MATCH (q:Query {ruleset:$ruleset}) "
-            "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
+            + _query_scope_where(run["queryScope"]) +
             "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
             "q.criticality AS criticality, q.module AS module ORDER BY id", ruleset=run["ruleset"])]
 
@@ -2036,10 +2056,12 @@ def sod_rules(runId: str):
 
 @app.get("/queries/summary")
 def queries_summary(runId: str):
-    """Einzelberechtigungs-Uebersicht (Ergebnisse-Menue): pro SoD-relevanter Query, wie viele
-    User sie in diesem Lauf matchen. Nur Queries mit mindestens einem Treffer (0-Treffer waere
-    Katalog-Browsing, kein Ergebnis -- die MATCH-Kardinalitaet filtert das implizit). Klick auf
-    eine Zeile filtert im Frontend die normale Einzelfilter-Ansicht auf diese Query.
+    """Einzelberechtigungs-Uebersicht (Ergebnisse-Menue): pro Query, wie viele User sie in diesem
+    Lauf matchen. Nur Queries mit mindestens einem Treffer (0-Treffer waere Katalog-Browsing, kein
+    Ergebnis -- die MATCH-Kardinalitaet filtert das implizit; welche Queries ueberhaupt eine
+    MATCHES-Kante bekommen konnten, entscheidet bereits der Query-Umfang des Laufs, s. r.queryScope
+    in materialize_matches_candidates.cypher -- hier also KEIN zusaetzlicher Klausel-Filter noetig).
+    Klick auf eine Zeile filtert im Frontend die normale Einzelfilter-Ansicht auf diese Query.
     totalUsers = distinkte User ueber ALLE Zeilen zusammen (fuer die Kopf-Kachel; naives Aufsummieren
     von userCount je Zeile waere falsch, da ein User i. d. R. mehrere Queries matcht)."""
     with driver.session() as s:
@@ -2048,17 +2070,14 @@ def queries_summary(runId: str):
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
         ruleset = run["ruleset"]
         rows = [dict(r) for r in s.run(
-            "MATCH (q:Query {ruleset:$ruleset}) "
-            "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
-            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q) "
+            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
             "WITH q, count(DISTINCT u) AS userCount "
             "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
             "  q.criticality AS criticality, q.module AS module, userCount "
             "ORDER BY coalesce(q.criticalityRank,0) DESC, userCount DESC",
             ruleset=ruleset, runId=runId)]
         total_users = s.run(
-            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
-            "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
+            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(:Query {ruleset:$ruleset}) "
             "RETURN count(DISTINCT u) AS c", ruleset=ruleset, runId=runId).single()["c"]
         return {"totalUsers": total_users, "rows": rows}
 

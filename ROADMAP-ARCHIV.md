@@ -398,6 +398,36 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   `do_explain` mit Fortschritt einmal komplett durchgelaufen (4219 Akteure, Ergebnis 492 intra /
   9 inter identisch zur vorherigen Berechnung). PowerShell-Host-Runner smoke-getestet (Auswerten
   von 5 bzw. 22 Regeln gegen bereits materialisierte Matches).
+- [x] **Einzelfilter-Umfang beim Lauf wählbar (Default umgedreht) — Nutzer-Wunsch, teilweise
+  Vorgriff auf „Katalog-Auswahl".** Bisher materialisierte `materialize_matches_candidates.cypher`
+  IMMER nur die Queries, die als Klausel-Baustein mindestens einer SoD-Regel des Rulesets dienen
+  (`WHERE EXISTS {(q)<-[:NEEDS]-(:Clause ...)}`, fest verdrahtet) — Nutzer-Beobachtung: von >600
+  Einzelfiltern im Vendor-Katalog erschienen dadurch nur 38 in der Einzelfilter-Übersicht, obwohl
+  alle 22 SoD-Regeln aufgetaucht sind (kein Bug, s. vorheriger Eintrag). Neues Feld **„Einzelfilter-
+  Umfang"** im „Neuer Lauf"-Dialog (`queryScope`, neuer `RunReq`/`RunBatchReq`-Parameter): **„Alle
+  Einzelfilter + SoD"** (neuer Default — bewusst umgedreht gegenüber dem bisherigen impliziten
+  Verhalten) materialisiert **jede** Query des Rulesets; **„Nur SoD-relevante Einzelfilter"**
+  behält das bisherige, schnellere Verhalten (Klausel-Queries only) bei — welche das sind, ist
+  ruleset-abhängig (z. B. andere Zahl bei einem anderen Filterset). `queryScope` wird am `(:Run)`
+  gespeichert (`evaluate_sod_init.cypher`); `GET /queries` (Einzelfilter-Dropdown) liest es zurück
+  (`coalesce(r.queryScope,'sodOnly')` für ältere Läufe ohne das Feld) und zeigt genau die Queries,
+  die in **diesem** Lauf tatsächlich materialisiert wurden — auch mit 0 Treffern (Katalog-Browsing).
+  `GET /queries/summary` brauchte **keine** Scope-Logik: die dortige `MATCH (u)-[:MATCHES]->(q)`-
+  Kardinalität filtert implizit exakt richtig (eine nie materialisierte Query kann nie eine
+  MATCHES-Kante haben), der bisherige zusätzliche Klausel-Filter dort war redundant und wurde
+  entfernt. **Performance-Hinweis dokumentiert** (Handbuch): „Alle" kann bei einem Katalog mit
+  deutlich mehr Einzelfiltern als SoD-Klauseln ein Vielfaches länger dauern; „Materialisierung
+  überspringen" federt das für Wiederholungsläufe auf denselben Stichtag ab. Verifiziert gegen den
+  laufenden Container (nur Cypher-Logik/Kandidaten-Zählung, **keine** volle Materialisierung mit
+  „alle" gegen die echten 27.000 User gefahren — das wäre ein Vielfaches der bereits als lang
+  bekannten Laufzeit): `materialize_matches_candidates.cypher` liefert mit `queryScope='all'`
+  genau 604 Kandidaten, mit `queryScope='sodOnly'` genau 38 (deckt sich mit dem vorherigen
+  Eintrag); `/queries` und `/queries/summary` liefern für einen bestehenden Lauf ohne gespeichertes
+  `queryScope` weiterhin unverändert 38 Zeilen (Rückwärtskompatibilität bestätigt); `POST /runs`
+  akzeptiert einen Request ohne `queryScope`-Feld (Default „all" greift, Pydantic-Validierung ok).
+  **Offen (ROADMAP „Katalog-Auswahl"):** dies ist nur ein binärer Umfang-Schalter, keine
+  Kritikalitäts-/Namensmuster-/Modul-Filterung einzelner Queries/Regeln — das bleibt der volle
+  Scoping-Schritt ③ im Assistenten.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`

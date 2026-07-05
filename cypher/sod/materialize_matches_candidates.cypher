@@ -15,8 +15,14 @@
 // eine Klausel, deren Kandidaten-Queries alle nicht org-relevant sind, bekommt fuer diesen Lauf
 // gar keine MATCHES-Kante -> die Regel kann unter dieser Variante nicht verletzt werden ("nur
 // die SoDs, die auf Grundlage der Einzel-Queries gehen" -- Nutzerfeedback).
-// Parameter: $ruleset, $dataset, $orgMode, $orgFilters.
-MATCH (q:Query {ruleset:$ruleset}) WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) }
+// $queryScope steuert den Query-Umfang (Nutzer-Wunsch): 'all' (Default) -> JEDE Query des
+// Rulesets, auch Einzelfilter ohne SoD-Klausel-Verwendung; 'sodOnly' -> nur die Queries, die
+// tatsaechlich als Klausel-Baustein einer SoD-Regel dieses Rulesets dienen (schneller, aber die
+// Einzelfilter-Ergebnisse/Uebersicht zeigen dann nur diese Teilmenge -- welche Queries das sind,
+// ist ruleset-abhaengig, nicht fest).
+// Parameter: $ruleset, $dataset, $orgMode, $orgFilters, $queryScope.
+MATCH (q:Query {ruleset:$ruleset})
+WHERE ($queryScope = 'all' OR EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) })
   AND ( $orgMode = 'ignoreOrg' OR EXISTS {
     MATCH (q)-[:REQUIRES]->(ar)
     WHERE EXISTS { MATCH (:OrgField {dataset:$dataset, field:ar.field}) }

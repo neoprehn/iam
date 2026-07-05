@@ -54,6 +54,24 @@ Ob die Auswertung auf Organisationsebenen (z. B. Buchungskreis) eingeschränkt w
 > Einkaufsorg). Bewertet werden die **echten Berechtigungswerte** der Nutzer (aus den Rollen-/
 > Profil-Auths), nicht SU24-Vorschläge. Der gewählte Modus/Filter wird am Lauf protokolliert.
 
+### Einzelfilter-Umfang
+
+Welche Queries des Rulesets die Materialisierung überhaupt betrachtet (`(:User)-[:MATCHES]->(:Query)`
+— die Grundlage sowohl der SoD-Auswertung als auch der Einzelfilter-Ansicht/-Übersicht):
+
+| Modus | Bedeutung |
+| --- | --- |
+| **Alle Einzelfilter + SoD** (Standard) | materialisiert **jede** Query des Rulesets, auch solche, die in keiner SoD-Regel als Klausel verbaut sind. |
+| **Nur SoD-relevante Einzelfilter** | beschränkt die Materialisierung auf genau die Queries, die die SoD-Regeln dieses Rulesets tatsächlich brauchen — schneller, aber die Einzelfilter-Ergebnisse/-Übersicht zeigen dann nur diese (ruleset-abhängige) Teilmenge. |
+
+> „Alle" berechnet spürbar mehr Queries als „Nur SoD-relevant" und dauert entsprechend länger —
+> bei einem Katalog mit deutlich mehr Einzelfiltern als SoD-Klauseln ein Vielfaches. Der Mehraufwand
+> fällt nur beim **ersten** Lauf je Stichtag an: „Materialisierung überspringen" (s. u.) nutzt bei
+> Wiederholungsläufen das bereits berechnete Zwischenergebnis weiter. Welche Queries als „SoD-
+> relevant" gelten, hängt vom jeweiligen Ruleset ab (z. B. andere Zahl bei einem anderen
+> Filterset) und wird am Lauf gespeichert (`queryScope`) — Einzelfilter-Auswahl/-Übersicht eines
+> Laufs zeigen immer genau die Queries, die in **diesem** Lauf tatsächlich materialisiert wurden.
+
 ### Weitere Parameter
 
 - **Stichtag** — Bewertungsdatum (Rollen-Gültigkeit + Sleeping). **Keine Eingabe mehr**, sondern
@@ -76,7 +94,7 @@ Gruppe öffnet eine Liste der Befehle, Klick daneben oder auf einen Befehl schli
 | **Aktualisieren** | lädt Läufe, Datasets, Backups neu. |
 | **Evidenz** | berechnet VIA_ROLE/VIA_PROFILE + intra/inter für den aktiven Lauf nach (teuer, daher Opt-in). |
 | **Export CSV** | Exportiert **exakt das, was gerade angezeigt wird** — Findings **oder** Matches (je nachdem, welche Tabelle sichtbar ist), mit denselben aktiven Filtern (User/Regel/Kritikalität/Sleeping/Nutzertyp) wie auf dem Bildschirm; ohne aktive Filter der komplette Lauf. Findings-Export enthält jetzt auch die Regel-**Bezeichnung** (nicht nur die ID). |
-| **Einzelberechtigungen** | Übersicht: **jede** SoD-relevante Query mit mindestens einem Treffer in diesem Lauf, mit Kritikalität und Anzahl matchender User. Kachel oben zeigt die **distinkte** Gesamtzahl betroffener User über alle Zeilen (kein Aufsummieren der Einzelzeilen, da ein User meist mehrere Queries matcht). Klick auf eine Zeile springt in die normale Einzelfilter-Ansicht, gefiltert auf genau diese Query. „SoD-relevant" heißt hier wie überall im Ruleset: als Baustein (Klausel) mindestens einer SoD-Regel verwendet — der Vendor-Katalog kann deutlich mehr Einzelberechtigungs-Queries enthalten, als tatsächlich in Regeln verbaut sind; nur die verbauten werden pro Lauf materialisiert/ausgewertet (s. Roadmap „Katalog-Auswahl-UI"). |
+| **Einzelberechtigungen** | Übersicht: **jede** Query mit mindestens einem Treffer in diesem Lauf (innerhalb des am Lauf gewählten Einzelfilter-Umfangs, s. „Neuer Lauf"), mit Kritikalität und Anzahl matchender User. Kachel oben zeigt die **distinkte** Gesamtzahl betroffener User über alle Zeilen (kein Aufsummieren der Einzelzeilen, da ein User meist mehrere Queries matcht). Klick auf eine Zeile springt in die normale Einzelfilter-Ansicht, gefiltert auf genau diese Query. |
 | **SoD-Regeln** | Dieselbe Übersicht für SoD-Regeln (Anzahl verletzender User statt matchender, Kachel entsprechend). Klick springt in die normale Findings-Ansicht, gefiltert auf diese Regel. |
 
 Im Hauptbereich: **KPI-Kacheln** (s. u.), **Läufe-Liste** (Klick = Lauf laden; jede Karte zeigt

@@ -765,6 +765,18 @@
     </div>
     <label for="userTypeProfile">Nutzertyp-Profil</label>
     <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
+    <label for="queryScope">Einzelfilter-Umfang</label>
+    <select id="queryScope">
+      <option value="all" selected>Alle Einzelfilter + SoD (empfohlen)</option>
+      <option value="sodOnly">Nur SoD-relevante Einzelfilter (schneller)</option>
+    </select>
+    <div class="hint">Materialisiert „wer kann was" f&uuml;r den <b>gesamten</b> Einzelfilter-Katalog
+      des Rulesets, nicht nur f&uuml;r die als SoD-Regel-Baustein verwendeten Queries &mdash; kann bei
+      gro&szlig;en Katalogen deutlich l&auml;nger dauern als bisher. „Nur SoD-relevant" beschr&auml;nkt
+      die Materialisierung (und damit auch die Einzelfilter-Ergebnisse/-&Uuml;bersicht) auf genau die
+      Queries, die dieses Ruleset f&uuml;r seine SoD-Regeln braucht &mdash; wie viele das sind, h&auml;ngt
+      vom Ruleset ab. Bei „Materialisierung &uuml;berspringen" (s. u.) f&auml;llt der Mehraufwand nur
+      beim ersten Lauf je Stichtag an.</div>
     <label for="orgProfileBtn">Org-Varianten <span class="muted">(Mehrfachauswahl m&ouml;glich)</span></label>
     <div class="ddcheck" id="orgProfileDD">
       <button type="button" class="ddcheck-btn" id="orgProfileBtn">&ndash; w&auml;hlen &ndash;</button>
@@ -3401,7 +3413,7 @@ $('formRun').addEventListener('submit', async e => {
   if (!orgProfiles.length) { alert('Bitte mindestens eine Org-Variante w\xe4hlen.'); return; }
   const common = {
     ruleset: $('ruleset').value, dataset: $('runDataset').value,
-    userTypeProfile: $('userTypeProfile').value,
+    userTypeProfile: $('userTypeProfile').value, queryScope: $('queryScope').value,
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
     skipExplain: !$('withExplain').checked,
