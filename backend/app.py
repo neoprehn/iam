@@ -1049,6 +1049,72 @@ def user_detail(userId: str, runId: str):
         return dict(rec)
 
 
+@app.get("/roles/{roleId}")
+def role_detail(roleId: str, runId: str, user: str | None = None):
+    """Rollen-Detailseite: Stammdaten + TCodes (Menue + effektive S_TCODE) + Berechtigungsobjekte.
+    dataset ueber den Lauf aufgeloest; optional ?user= fuer die Gueltigkeit der Zuweisung dieses
+    Users (Rolle wird i. d. R. aus dem Root-Cause eines konkreten Users geoeffnet)."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.dataset AS dataset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        ds = run["dataset"]
+        rec = s.run(
+            "MATCH (r:Role {id:$rid, dataset:$ds}) "
+            "OPTIONAL MATCH (r)-[:HAS_PROFILE]->(p:Profile) "
+            "WITH r, collect(DISTINCT p.id) AS profiles "
+            "OPTIONAL MATCH (u:User)-[:ASSIGNED_TO]->(r) "
+            "RETURN r.id AS id, coalesce(r.text,'') AS text, r.parentAgr AS parentAgr, "
+            "  r.profileGenerated AS profileGenerated, r.profileState AS profileState, "
+            "  r.createUsr AS createUsr, r.createDat AS createDat, "
+            "  r.changeUsr AS changeUsr, r.changeDat AS changeDat, "
+            "  ('Composite' IN labels(r)) AS composite, "
+            "  (r.parentAgr IS NOT NULL) AS derived, "
+            "  profiles, count(DISTINCT u) AS userCount",
+            rid=roleId, ds=ds).single()
+        if not rec:
+            raise HTTPException(404, f"Rolle '{roleId}' nicht gefunden")
+        out = jsonable(dict(rec))
+        if user:
+            v = s.run(
+                "MATCH (u:User {id:$u, dataset:$ds})-[g:ASSIGNED_TO]->(r:Role {id:$rid, dataset:$ds}) "
+                "RETURN g.validFrom AS validFrom, g.validTo AS validTo LIMIT 1",
+                u=user, ds=ds, rid=roleId).single()
+            out["userValidFrom"] = jsonable(v["validFrom"]) if v else None
+            out["userValidTo"] = jsonable(v["validTo"]) if v else None
+            out["forUser"] = user
+        out["menuTcodes"] = [r["t"] for r in s.run(
+            "MATCH (r:Role {id:$rid, dataset:$ds})-[:HAS_MENU]->(t:Transaction) "
+            "RETURN DISTINCT t.id AS t ORDER BY t", rid=roleId, ds=ds)]
+        out["authTcodes"] = [r["tc"] for r in s.run(
+            "MATCH (r:Role {id:$rid, dataset:$ds})-[:HAS_AUTH]->(a:Authorization {object:'S_TCODE'}) "
+            "WITH apoc.any.property(a,'f_TCD') AS tcds WHERE tcds IS NOT NULL "
+            "UNWIND tcds AS tc RETURN DISTINCT tc ORDER BY tc", rid=roleId, ds=ds)]
+        out["objects"] = [dict(r) for r in s.run(
+            "MATCH (r:Role {id:$rid, dataset:$ds})-[:HAS_AUTH]->(a:Authorization)-[:FOR_OBJECT]->(o:AuthObject) "
+            "RETURN o.id AS object, coalesce(o.text,'') AS text, count(DISTINCT a) AS instances "
+            "ORDER BY object", rid=roleId, ds=ds)]
+        return out
+
+
+@app.get("/roles/{roleId}/can-do")
+def role_can_do(roleId: str, runId: str):
+    """Rollenzentrisch (lauf-unabhaengig): welche Einzelberechtigungs-Queries erfuellt die Rolle
+    allein, und welche SoD-Regeln kann sie allein ausloesen (Intra-Rollen-Konflikt). Ruleset aus
+    dem Lauf. Kann etwas dauern (eine Rolle x alle Ruleset-Queries) -> Frontend laedt lazy."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, r.dataset AS dataset",
+                    id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        q_stmt = split_statements((CYPHER_DIR / "roles/role_can_do.cypher").read_text(encoding="utf-8"))[0]
+        queries = [dict(r) for r in s.run(q_stmt, ruleset=run["ruleset"], dataset=run["dataset"], roleId=roleId)]
+        provided = [q["id"] for q in queries]
+        r_stmt = split_statements((CYPHER_DIR / "roles/role_sod_rules.cypher").read_text(encoding="utf-8"))[0]
+        rules = [dict(r) for r in s.run(r_stmt, ruleset=run["ruleset"], providedIds=provided)]
+        return {"role": roleId, "queries": queries, "sodRules": rules}
+
+
 @app.get("/profiles")
 def profiles_meta():
     """Speist die Formular-Dropdowns der UI (datengetrieben aus config + rules)."""
