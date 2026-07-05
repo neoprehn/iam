@@ -600,6 +600,25 @@
     </div>
 
   </div>
+
+  <!-- Rollen-Detailseite (aus dem Root-Cause per Klick auf einen Rollennamen) -->
+  <div id="roleDetailView" style="display:none">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:6px">
+      <h2 style="margin:0">Rolle <span class="muted" id="rdTitle" style="font-weight:400"></span></h2>
+      <button class="ghost" id="rdBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px">&larr; zur&uuml;ck</button>
+    </div>
+    <div class="sub" id="rdText" style="margin-bottom:10px"></div>
+    <div class="resultbar">
+      <div class="pillgroup" id="rdTabPills">
+        <button type="button" class="pill active" data-tab="stamm">Stammdaten</button>
+        <button type="button" class="pill" data-tab="tcodes">TCodes</button>
+        <button type="button" class="pill" data-tab="objects">Berechtigungsobjekte</button>
+        <button type="button" class="pill" data-tab="queries">Einzelberechtigungen</button>
+        <button type="button" class="pill" data-tab="sod">SoD-Regeln</button>
+      </div>
+    </div>
+    <div id="rdContent" style="margin-top:12px"></div>
+  </div>
 </main>
 
 <!-- Dialog: Import -->
@@ -1575,7 +1594,10 @@ function rcAttachHandlers(cy) {
   cy.on('mouseover', 'node', e => { const d = e.target.data('detail'); if (d) { tip.innerHTML = d; tip.style.display = 'block'; } });
   cy.on('mousemove', 'node', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
   cy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
-  cy.on('tap', 'node', e => { const n = e.target; cy.elements().addClass('rcfade');
+  cy.on('tap', 'node', e => {
+    const n = e.target; const rid = n.data('roleId');
+    if (rid) { openRoleDetail(rid); return; }   // Rollen-Knoten -> Detailseite statt Pfad-Highlight
+    cy.elements().addClass('rcfade');
     n.predecessors().union(n.successors()).union(n).removeClass('rcfade'); });
   cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('rcfade'); });
   cy.on('zoom', rcZoomToSlider);   // Slider folgt Maus-/Pinch-Zoom
@@ -1586,6 +1608,7 @@ function rcActorDetail(a) {
   else if (a.technical) n.push('technisch, generiert');
   if (a.via) n.push('&uuml;ber generiertes Profil ' + a.via.id);
   if (a.coincidesProfile) n.push('Definition = generiertes Profil ' + a.coincidesProfile);
+  if (a.actorType === 'Role') n.push('<b style="color:var(--accent)">Klick: Rollendetails</b>');
   const vals = (a.authValues || []).join(' &middot; ');
   return `<b>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}</b>`
     + (vals ? `<br><span style="color:var(--muted)">tr&auml;gt ${vals}</span>` : '')
@@ -1595,7 +1618,7 @@ function rcBuildGraph(data, mode) {
   let seq = 0; const gid = p => `rc_${p}_${seq++}`;
   const els = []; const ring = { user: 6, rule: 5, clause: 4, query: 3, object: 2, actor: 1 };
   const trunc = s => !s ? '' : (s.length > 44 ? s.slice(0, 42) + '…' : s);
-  const N = (id, label, cls, r, detail) => els.push({ data: { id, label, ring: r, detail: detail || '' }, classes: cls });
+  const N = (id, label, cls, r, detail, extra) => els.push({ data: { id, label, ring: r, detail: detail || '', ...(extra || {}) }, classes: cls });
   const E = (s, t, cls, elabel) => els.push({ data: { id: gid('e'), source: s, target: t, elabel: elabel || '' }, classes: cls || '' });
   // Im Modus 'nur generierte Rollen' jeden Akteur nur EINMAL: Knoten je actorId cachen und aus
   // mehreren Objekten heraus wiederverwenden (Graph wird zum DAG statt Baum -> viel schmaler).
@@ -1620,7 +1643,8 @@ function rcBuildGraph(data, mode) {
       // Dedup-Knoten spannt ueber mehrere Objekte -> keine objektspezifischen Werte im Label.
       const vals = actorCache ? '' : (a.authValues || []).join(' · ');
       N(an, `${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}${vals ? `\n${vals}` : ''}`,
-        cls.join(' '), ring.actor, rcActorDetail(a));
+        cls.join(' '), ring.actor, rcActorDetail(a),
+        (a.actorType === 'Role' && rcReturnTo !== 'consistency') ? { roleId: a.actorId } : null);
       if (actorCache) actorCache.set(key, an);
       E(on, an, a.via ? 'rc-via' : '', 'ODER');
     });
@@ -2428,11 +2452,126 @@ async function openCheckById(checkId, area) {
   openConsistencyDetail(c);
 }
 $('rcObjects').addEventListener('click', e => {
+  const rl = e.target.closest('.rc-rolelink');
+  if (rl) { openRoleDetail(rl.dataset.role); return; }
   const link = e.target.closest('.rcD4Link');
   if (!link) return;
   e.preventDefault();
   openCheckById(link.dataset.checkid, 'user');
 });
+
+/* ── Rollen-Detailseite (aus Root-Cause per Klick auf einen Rollennamen) ──────────────── */
+let rdRole = null, rdData = null, rdCanDo = null, rdTab = 'stamm';
+const esc = s => escapeHtml(s == null ? '' : s);
+function rdFmtDate(iso) {
+  if (!iso) return '–';
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : String(iso);
+}
+function showRoleDetailView() {
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  document.querySelector('main .cols').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  $('rootCauseView').style.display = 'none';
+  if ($('assistentView')) $('assistentView').style.display = 'none';
+  $('roleDetailView').style.display = '';
+}
+async function openRoleDetail(roleId) {
+  // Nur aus dem lauf-basierten Root-Cause: dort ist das Dataset ueber activeRunId eindeutig.
+  // Aus einem Konsistenzcheck-Root-Cause (anderes Dataset via ccdDataset) waere die Zuordnung
+  // ueber activeRunId nicht garantiert korrekt -> dort keine Rollen-Detailseite.
+  if (!activeRunId || rcReturnTo === 'consistency') return;
+  rdRole = roleId; rdData = null; rdCanDo = null; rdTab = 'stamm';
+  $('rdTitle').textContent = roleId;
+  $('rdText').textContent = '';
+  $('rdContent').innerHTML = '<div class="muted">lädt&hellip;</div>';
+  document.querySelectorAll('#rdTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === 'stamm'));
+  showRoleDetailView();
+  try {
+    const u = rcUserId ? '&user=' + encodeURIComponent(rcUserId) : '';
+    rdData = await api('/roles/' + encodeURIComponent(roleId) + '?runId=' + encodeURIComponent(activeRunId) + u);
+    $('rdText').textContent = rdData.text || '';
+    rdRenderTab('stamm');
+  } catch (err) {
+    $('rdContent').innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>';
+  }
+}
+function rdRow(label, val) {
+  return `<tr><td style="padding:4px 16px 4px 0;color:var(--muted);white-space:nowrap;vertical-align:top">${label}</td>`
+    + `<td style="padding:4px 0">${val == null ? '–' : val}</td></tr>`;
+}
+function rdChips(label, arr) {
+  if (!arr.length) return `<div style="margin-top:10px"><b>${label}</b> <span class="muted">&ndash; keine &ndash;</span></div>`;
+  return `<div style="margin-top:10px"><b>${label}</b> <span class="muted">(${arr.length})</span>`
+    + `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">`
+    + arr.map(t => `<span class="chip" style="font-family:monospace">${esc(t)}</span>`).join('') + '</div></div>';
+}
+function rdList(items) {
+  return '<ul style="list-style:none;padding:0;margin:8px 0">'
+    + items.map(h => `<li style="padding:5px 0;border-top:1px solid var(--line)">${h}</li>`).join('') + '</ul>';
+}
+async function rdRenderTab(tab) {
+  rdTab = tab;
+  document.querySelectorAll('#rdTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === tab));
+  const box = $('rdContent');
+  if (!rdData) { box.innerHTML = '<div class="muted">–</div>'; return; }
+  const d = rdData;
+  if (tab === 'stamm') {
+    const subtype = d.composite ? 'Sammelrolle' : d.derived ? 'abgeleitete Rolle' : 'Einzelrolle';
+    const gen = d.profileGenerated === true ? 'ja (aktiv)' : d.profileGenerated === false ? 'nein (nicht generiert)' : '–';
+    const valid = d.forUser ? `${rdFmtDate(d.userValidFrom)} &ndash; ${rdFmtDate(d.userValidTo)} <span class="muted">(Zuweisung ${esc(d.forUser)})</span>` : null;
+    box.innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
+      + rdRow('Beschreibung', esc(d.text) || '–')
+      + rdRow('Subtyp', subtype + (d.parentAgr ? ` <span class="muted">&middot; Elternrolle ${esc(d.parentAgr)}</span>` : ''))
+      + rdRow('Generiertes Profil', d.profiles && d.profiles.length ? d.profiles.map(esc).join(', ') : '–')
+      + rdRow('Profil generiert/aktiv', gen)
+      + rdRow('Profilstatus (PSTATE)', d.profileState && d.profileState.length ? d.profileState.map(esc).join(', ') : '–')
+      + rdRow('Erstellt', d.createUsr ? `${esc(d.createUsr)}${d.createDat ? ' &middot; ' + rdFmtDate(d.createDat) : ''}` : '–')
+      + rdRow('Zuletzt geändert', d.changeUsr ? `${esc(d.changeUsr)}${d.changeDat ? ' &middot; ' + rdFmtDate(d.changeDat) : ''}` : '–')
+      + rdRow('Generierungsdatum', '<span class="muted">nicht im Extrakt</span>')
+      + (valid ? rdRow('Gültigkeit', valid) : '')
+      + rdRow('Zugewiesene User', d.userCount)
+      + '</table>';
+  } else if (tab === 'tcodes') {
+    box.innerHTML = `<div class="sub">Effektive TCode-Berechtigung (aus S_TCODE) und Rollenmenü &mdash; das echte Recht läuft über S_TCODE.</div>`
+      + rdChips('Effektiv (S_TCODE)', d.authTcodes || []) + rdChips('Rollenmenü', d.menuTcodes || []);
+  } else if (tab === 'objects') {
+    const o = d.objects || [];
+    box.innerHTML = `<div class="sub">${o.length} Berechtigungsobjekt(e) in der Rolle (mit Anzahl Instanzen).</div>`
+      + '<table style="border-collapse:collapse;font-size:13px;margin-top:8px"><thead><tr>'
+      + '<th style="text-align:left;padding:4px 16px 4px 0;border-bottom:1px solid var(--line)">Objekt</th>'
+      + '<th style="text-align:left;padding:4px 16px 4px 0;border-bottom:1px solid var(--line)">Bezeichnung</th>'
+      + '<th style="text-align:right;padding:4px 0;border-bottom:1px solid var(--line)">Instanzen</th></tr></thead><tbody>'
+      + o.map(x => `<tr><td style="padding:3px 16px 3px 0;font-family:monospace">${esc(x.object)}</td>`
+          + `<td style="padding:3px 16px 3px 0;color:var(--muted)">${esc(x.text)}</td>`
+          + `<td style="padding:3px 0;text-align:right">${x.instances}</td></tr>`).join('')
+      + '</tbody></table>';
+  } else if (tab === 'queries' || tab === 'sod') {
+    if (!rdCanDo) {
+      box.innerHTML = '<div class="muted">berechne rollenzentrische Treffer&hellip;</div>';
+      try { rdCanDo = await api('/roles/' + encodeURIComponent(rdRole) + '/can-do?runId=' + encodeURIComponent(activeRunId)); }
+      catch (err) { box.innerHTML = '<div class="muted">Fehler: ' + (err.detail || JSON.stringify(err)) + '</div>'; return; }
+      if (rdTab !== tab) return;   // Nutzer hat inzwischen den Reiter gewechselt
+    }
+    if (tab === 'queries') {
+      const q = rdCanDo.queries || [];
+      box.innerHTML = `<div class="sub">${q.length} Einzelberechtigung(en), die diese Rolle allein erfüllt (rollenzentrisch, unabhängig vom Lauf).</div>`
+        + (q.length ? rdList(q.map(x => `<b>${esc(x.id)}</b>${x.name ? ' &middot; ' + esc(x.name) : ''}`
+            + `${x.module ? ` <span class="muted">${esc(x.module)}</span>` : ''}${x.criticality ? ' ' + critTag(x.criticality) : ''}`))
+            : '<div class="muted">keine</div>');
+    } else {
+      const r = rdCanDo.sodRules || [];
+      box.innerHTML = `<div class="sub">${r.length} SoD-Regel(n), die diese Rolle allein auslösen kann (Intra-Rollen-Konflikt).</div>`
+        + (r.length ? rdList(r.map(x => `<b>${esc(x.id)}</b>${x.name ? ' &middot; ' + esc(x.name) : ''}`
+            + `${x.criticality ? ' ' + critTag(x.criticality) : ''}`)) : '<div class="muted">keine</div>');
+    }
+  }
+}
+document.querySelectorAll('#rdTabPills .pill').forEach(b => b.addEventListener('click', () => rdRenderTab(b.dataset.tab)));
+$('rdBackBtn').onclick = () => { $('roleDetailView').style.display = 'none'; showRootCauseView(); };
 
 function renderRootCause(data) {
   const box = $('rcObjects');
@@ -2504,8 +2643,11 @@ function renderRootCause(data) {
         if (!groups.has(k)) { groups.set(k, []); groupOrder.push(k); }
         groups.get(k).push(a);
       });
-      // Phase A: Name schlicht. Klickbarkeit -> Rollen-Detailseite kommt in Phase B3.
-      const roleLink = a => a.actorId;
+      // Rollenname klickbar -> Rollen-Detailseite (Profile bleiben schlicht; im Konsistenzcheck-
+      // Root-Cause nicht klickbar, s. openRoleDetail — dort ist das Dataset nicht eindeutig).
+      const roleLink = a => (a.actorType === 'Role' && rcReturnTo !== 'consistency')
+        ? `<span class="rc-rolelink" data-role="${a.actorId}" title="Rollendetails ansehen">${a.actorId}</span>`
+        : a.actorId;
       const actors = shown.length
         ? groupOrder.map(k => {
             const g = groups.get(k); const a0 = g[0];
