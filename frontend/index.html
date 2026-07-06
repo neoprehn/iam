@@ -103,6 +103,12 @@
   th[data-sort-key] { cursor:pointer; user-select:none; }
   th[data-sort-key]:hover { color:var(--fg); }
   .sort-ind { display:inline-block; width:1em; }
+  /* Export-als-PDF (Rollen-Detail/Root-Cause): nur die gerade sichtbare Ansicht drucken, Ribbon/
+     Sidebar/Findings-Tabelle ausblenden -- aktiv nur waehrend body.exporting-pdf (s. exportViewAsPdf). */
+  @media print {
+    body.exporting-pdf > header, body.exporting-pdf > nav.ribbon,
+    body.exporting-pdf main > .cols { display:none !important; }
+  }
   .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
   .tag.verycritical { background:rgba(217,42,42,.30); color:#ff5c5c; }
   .tag.critical { background:rgba(229,72,77,.24); color:#ff7a66; }
@@ -945,11 +951,77 @@ $('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); 
 $('cmdBackup').onclick = () => { openDlg('dlg-backup'); refreshImportFilesInfo(); };
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
-// Export folgt exakt derselben Verzweigung/denselben Parametern wie applyFilters() -- sonst
-// exportiert der Button unabhaengig von der Ansicht immer "alle SoD-Findings", auch waehrend
-// gerade eine gefilterte Ansicht oder die Einzelfilter-Matches-Tabelle sichtbar ist.
+// Export exportiert immer genau die gerade sichtbare Ansicht -- Tabelle -> CSV, "Ansicht"
+// (Rollen-Detail/Root-Cause, keine flache Tabelle) -> PDF (Browser-Druckdialog, "Als PDF
+// speichern"). Style.display der Ansichts-Container entscheidet, welcher Fall vorliegt (dieselbe
+// Sichtbarkeitslogik wie die show*View()-Funktionen).
+function currentResultView() {
+  if ($('roleDetailView').style.display !== 'none') return 'role';
+  if ($('rootCauseView').style.display !== 'none') return 'rootcause';
+  if ($('userListView').style.display !== 'none') return 'userlist';
+  if ($('summaryView').style.display !== 'none') return 'summary';
+  return 'findings';
+}
+function refreshExportButtonLabel() {
+  const isPdf = ['role', 'rootcause'].includes(currentResultView());
+  $('cmdExport').innerHTML = `<span class="ico">&#128202;</span>Export ${isPdf ? 'PDF' : 'CSV'}`;
+}
+function csvEscape(v) {
+  const s = v === null || v === undefined ? '' : String(v);
+  return /[;"\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+// Gleiche Konvention wie die Server-CSV-Exporte (Semikolon, UTF-8-BOM -> Excel-tauglich), aber
+// rein clientseitig aus den bereits geladenen (und ggf. sortierten) Zeilen gebaut -- exportiert
+// so exakt das, was gerade auf dem Bildschirm steht, ohne die aktuelle Sortierung erneut an den
+// Server uebergeben zu muessen.
+function downloadCsv(rows, fields, filenameBase) {
+  const lines = [fields.join(';')];
+  rows.forEach(r => lines.push(fields.map(f => csvEscape(r[f])).join(';')));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${filenameBase}_${activeRunId}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(a.href);
+}
+// "PDF-Export" ueber den Browser-Druckdialog (Ziel "Als PDF speichern") statt eigener
+// Serverseitiger HTML->PDF-Erzeugung -- fuer Ansichten wie Rollen-Detail/Root-Cause, die keine
+// flache Tabelle sind, ausreichend und ohne neue Backend-Abhaengigkeit umsetzbar. body.exporting-pdf
+// blendet per @media print Ribbon/Sidebar/Findings-Tabelle aus (s. CSS), so bleibt nur die
+// aktuell sichtbare Ansicht im Ausdruck.
+function exportViewAsPdf(filenameHint) {
+  const prevTitle = document.title;
+  document.title = filenameHint;
+  document.body.classList.add('exporting-pdf');
+  const cleanup = () => {
+    document.body.classList.remove('exporting-pdf');
+    document.title = prevTitle;
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  window.print();
+}
 $('cmdExport').onclick = () => {
   if (!activeRunId) return;
+  const view = currentResultView();
+  if (view === 'role') { exportViewAsPdf(`Rolle_${rdRole || ''}_${activeRunId}`); return; }
+  if (view === 'rootcause') { exportViewAsPdf(`Root-Cause_${activeRunId}`); return; }
+  if (view === 'userlist') {
+    downloadCsv(ulRows, ['id', 'name', 'userType', 'userGroup', 'lastLogon', 'sleeping'], 'nutzerliste');
+    return;
+  }
+  if (view === 'summary') {
+    downloadCsv(
+      summaryRows.map(r => ({ id: r.id, name: r.shortDescription || r.description || '',
+        criticality: r.criticality, userCount: r.userCount })),
+      ['id', 'name', 'criticality', 'userCount'],
+      summaryMode === 'query' ? 'einzelfilter_uebersicht' : 'sod_uebersicht');
+    return;
+  }
+  // Findings/Matches (Standardfall): folgt exakt derselben Verzweigung/denselben Parametern wie
+  // applyFilters() -- sonst exportiert der Button unabhaengig vom Filter immer "alle
+  // SoD-Findings", auch waehrend gerade eine gefilterte Ansicht oder die Einzelfilter-
+  // Matches-Tabelle sichtbar ist.
   const u = $('filterUser').value, r = $('filterRule').value, q = $('filterQuery').value;
   const uts = userTypeValues();
   if (q || resultTypeValue === 'query') {
@@ -1526,6 +1598,12 @@ function _showResultsLayout() {
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
   $('rootCauseView').style.display = 'none';
+  // Diese drei wurden bisher nicht ausgeblendet -- z. B. blieb die Ergebnisse-Uebersicht nach
+  // einem Klick auf eine Zeile (jumpToQueryFilter/jumpToRuleFilter -> showResultsView) unter der
+  // Findings-Tabelle stehen (zwei Ansichten gleichzeitig sichtbar).
+  $('summaryView').style.display = 'none';
+  $('roleDetailView').style.display = 'none';
+  $('userListView').style.display = 'none';
   $('colsLeft').style.display = '';
   $('colsRight').style.display = '';
   document.querySelector('main .cols').style.display = '';
@@ -1816,6 +1894,7 @@ function renderRootCauseGraph(data, mode) {
 document.querySelectorAll('.menu-trigger').forEach(btn => {
   btn.addEventListener('click', e => {
     e.stopPropagation();
+    if (btn.dataset.menu === 'grpErgebnisse') refreshExportButtonLabel();
     const grp = $(btn.dataset.menu);
     const isOpen = grp.classList.contains('open');
     document.querySelectorAll('.group.menu.open').forEach(g => g.classList.remove('open'));
