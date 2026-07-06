@@ -104,10 +104,14 @@
   th[data-sort-key]:hover { color:var(--fg); }
   .sort-ind { display:inline-block; width:1em; }
   /* Export-als-PDF (Rollen-Detail/Root-Cause): nur die gerade sichtbare Ansicht drucken, Ribbon/
-     Sidebar/Findings-Tabelle ausblenden -- aktiv nur waehrend body.exporting-pdf (s. exportViewAsPdf). */
+     Sidebar/Findings-Tabelle ausblenden -- aktiv nur waehrend body.exporting-pdf (s. exportViewAsPdf).
+     Root-Cause-/Rollen-Detail-/Summary-/Nutzerliste-Ansicht sind KEINE Geschwister von .cols,
+     sondern selbst Grid-Kinder darin (grid-column:2, s. #rootCauseView etc.) -- .cols komplett
+     auszublenden wuerde sie mit verschwinden lassen (0x0, s. Bugreport). Daher gezielt nur
+     Sidebar/Findings-Tabelle ausblenden, nicht den Grid-Container selbst. */
   @media print {
     body.exporting-pdf > header, body.exporting-pdf > nav.ribbon,
-    body.exporting-pdf main > .cols { display:none !important; }
+    body.exporting-pdf #colsLeft, body.exporting-pdf #colsRight { display:none !important; }
   }
   .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
   .tag.verycritical { background:rgba(217,42,42,.30); color:#ff5c5c; }
@@ -991,11 +995,18 @@ function downloadCsv(rows, fields, filenameBase) {
 // aktuell sichtbare Ansicht im Ausdruck.
 function exportViewAsPdf(filenameHint) {
   const prevTitle = document.title;
+  // Browser drucken Hintergrundfarben standardmaessig nicht (nur mit explizit aktiviertem
+  // "Hintergrundgrafiken drucken") -- der helle Fliesstext des Dark-Themes waere auf weissem
+  // Papier praktisch unsichtbar. Fuer den Druck kurz auf das (bereits vorhandene) Hell-Theme
+  // wechseln statt eigene Druckfarben zu erfinden, danach das zuvor aktive Theme wiederherstellen.
+  const prevTheme = document.documentElement.getAttribute('data-theme');
+  applyTheme('light');
   document.title = filenameHint;
   document.body.classList.add('exporting-pdf');
   const cleanup = () => {
     document.body.classList.remove('exporting-pdf');
     document.title = prevTitle;
+    applyTheme(prevTheme === 'light' ? 'light' : 'dark');
     window.removeEventListener('afterprint', cleanup);
   };
   window.addEventListener('afterprint', cleanup);
