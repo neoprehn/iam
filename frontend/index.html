@@ -100,6 +100,9 @@
   table { width:100%; border-collapse:collapse; font-size:13px; }
   th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); }
   th { color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--bg); }
+  th[data-sort-key] { cursor:pointer; user-select:none; }
+  th[data-sort-key]:hover { color:var(--fg); }
+  .sort-ind { display:inline-block; width:1em; }
   .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
   .tag.verycritical { background:rgba(217,42,42,.30); color:#ff5c5c; }
   .tag.critical { background:rgba(229,72,77,.24); color:#ff7a66; }
@@ -485,7 +488,12 @@
       <div class="sub" id="summarySub"></div>
       <div id="summaryKpis" class="kpis" style="display:none"></div>
       <table id="summaryTable">
-        <thead><tr><th id="summaryIdHead">ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Anzahl Nutzer</th></tr></thead>
+        <thead><tr>
+          <th data-sort-key="id"><span id="summaryIdHead">ID</span><span class="sort-ind"></span></th>
+          <th data-sort-key="name">Bezeichnung<span class="sort-ind"></span></th>
+          <th data-sort-key="criticality">Kritikalit&auml;t<span class="sort-ind"></span></th>
+          <th data-sort-key="userCount">Anzahl Nutzer<span class="sort-ind"></span></th>
+        </tr></thead>
         <tbody id="summaryBody"></tbody>
       </table>
     </div>
@@ -499,7 +507,14 @@
       </div>
       <div class="sub" id="ulSub"></div>
       <table id="ulTable">
-        <thead><tr><th>ID</th><th>Name</th><th>Benutzertyp</th><th>Benutzergruppe</th><th>Letzter Login</th><th>Sleeping</th></tr></thead>
+        <thead><tr>
+          <th data-sort-key="id">ID<span class="sort-ind"></span></th>
+          <th data-sort-key="name">Name<span class="sort-ind"></span></th>
+          <th data-sort-key="userType">Benutzertyp<span class="sort-ind"></span></th>
+          <th data-sort-key="userGroup">Benutzergruppe<span class="sort-ind"></span></th>
+          <th data-sort-key="lastLogon">Letzter Login<span class="sort-ind"></span></th>
+          <th data-sort-key="sleeping">Sleeping<span class="sort-ind"></span></th>
+        </tr></thead>
         <tbody id="ulBody"></tbody>
       </table>
     </div>
@@ -2680,6 +2695,37 @@ async function rdRenderTab(tab) {
 document.querySelectorAll('#rdTabPills .pill').forEach(b => b.addEventListener('click', () => rdRenderTab(b.dataset.tab)));
 $('rdBackBtn').onclick = () => { $('roleDetailView').style.display = 'none'; showRootCauseView(); };
 
+/* ── Generische Sortierbarkeit fuer Ergebnistabellen: Klick auf eine <th data-sort-key> sortiert
+   die zugrundeliegende Zeilenliste (in-place) und rendert per Callback neu, erneuter Klick kehrt
+   die Richtung um (Pfeil-Indikator in der Kopfzelle). Design-Regel: jede tabellarische
+   Ergebnisuebersicht/-liste bekommt sortierbare Spalten -- ueber diese Funktion, nicht neu
+   erfunden je Tabelle. */
+function genericCompare(av, bv) {
+  if (typeof av === 'number' && typeof bv === 'number') return av - bv;
+  return String(av ?? '').localeCompare(String(bv ?? ''), 'de', { numeric: true });
+}
+function makeSortable(table, getRows, keyFns, renderBody) {
+  const state = { key: null, dir: 1 };
+  function updateIndicators() {
+    table.querySelectorAll('thead th[data-sort-key]').forEach(th => {
+      const ind = th.querySelector('.sort-ind');
+      if (ind) ind.textContent = th.dataset.sortKey === state.key ? (state.dir === 1 ? '▲' : '▼') : '';
+    });
+  }
+  table.querySelectorAll('thead th[data-sort-key]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sortKey;
+      state.dir = state.key === key ? -state.dir : 1;
+      state.key = key;
+      const keyFn = keyFns[key];
+      getRows().sort((a, b) => state.dir * genericCompare(keyFn(a), keyFn(b)));
+      renderBody();
+      updateIndicators();
+    });
+  });
+  return { reset() { state.key = null; state.dir = 1; updateIndicators(); } };
+}
+
 /* ── Ergebnisse-Uebersicht (Einzelberechtigungen/SoD-Regeln, je Anzahl Nutzer) ────────────── */
 function showSummaryView() {
   // Direkt aus dem Ribbon erreichbar (nicht aus Root-Cause/Rollen-Detail) -> Sidebar immer an,
@@ -2714,7 +2760,10 @@ async function openSummaryView(mode) {   // mode: 'query' | 'sod'
     $('summarySub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
   }
 }
+let summaryRows = [];
+let summaryMode = 'query';
 function renderSummaryTable(rows, mode, totalUsers) {
+  summaryRows = rows; summaryMode = mode;
   $('summarySub').textContent = rows.length
     ? `${rows.length} ${mode === 'query' ? 'Einzelberechtigung(en)' : 'SoD-Regel(n)'} mit mindestens einem Treffer in diesem Lauf.`
     : 'Keine Treffer in diesem Lauf.';
@@ -2722,15 +2771,25 @@ function renderSummaryTable(rows, mode, totalUsers) {
     $('summaryKpis').style.display = 'flex';
     $('summaryKpis').innerHTML = `<div class="kpi"><b>${totalUsers}</b><span>Betroffene User (distinkt, ${mode === 'query' ? 'über alle Einzelberechtigungen' : 'über alle SoD-Regeln'})</span></div>`;
   }
-  $('summaryBody').innerHTML = rows.map(r => {
+  summarySort.reset();
+  renderSummaryRows();
+}
+function renderSummaryRows() {
+  $('summaryBody').innerHTML = summaryRows.map(r => {
     const name = r.shortDescription || r.description || '';
-    return `<tr><td class="click" data-id="${r.id}" title="Ergebnisse zu dieser ${mode === 'query' ? 'Query' : 'Regel'} anzeigen">${r.id}</td>`
+    return `<tr><td class="click" data-id="${r.id}" title="Ergebnisse zu dieser ${summaryMode === 'query' ? 'Query' : 'Regel'} anzeigen">${r.id}</td>`
       + `<td class="muted">${escapeHtml(name)}</td><td>${critTag(r.criticality)}</td><td>${r.userCount}</td></tr>`;
   }).join('');
   $('summaryBody').querySelectorAll('[data-id]').forEach(td => {
-    td.onclick = () => mode === 'query' ? jumpToQueryFilter(td.dataset.id) : jumpToRuleFilter(td.dataset.id);
+    td.onclick = () => summaryMode === 'query' ? jumpToQueryFilter(td.dataset.id) : jumpToRuleFilter(td.dataset.id);
   });
 }
+const summarySort = makeSortable($('summaryTable'), () => summaryRows, {
+  id: r => r.id,
+  name: r => r.shortDescription || r.description || '',
+  criticality: r => r.criticalityRank ?? 0,
+  userCount: r => r.userCount,
+}, renderSummaryRows);
 // Wie die "nach User filtern"-Zelle in der Findings-Tabelle: andere Filter zuruecksetzen, Ziel
 // setzen, dieselbe applyFilters()-Logik wie ueberall sonst im Ergebnis-Bereich nutzen.
 function jumpToQueryFilter(qid) {
@@ -2779,12 +2838,26 @@ function ulSleepCell(sleeping, lastLogonKnown) {
     : lastLogonKnown === false ? '<span class="tag" title="kein Logon-Datum im Quellextrakt (TRDAT fehlt)" style="opacity:.6">unbekannt</span>'
     : '&ndash;';
 }
+let ulRows = [];
 function renderUserListTable(rows) {
+  ulRows = rows;
   $('ulSub').textContent = rows.length ? `${rows.length} Nutzer` : 'Keine Nutzer gefunden.';
-  $('ulBody').innerHTML = rows.map(r => `<tr><td>${esc(r.id)}</td><td class="muted">${esc(r.name)}</td>`
+  ulSort.reset();
+  renderUserListRows();
+}
+function renderUserListRows() {
+  $('ulBody').innerHTML = ulRows.map(r => `<tr><td>${esc(r.id)}</td><td class="muted">${esc(r.name)}</td>`
     + `<td>${esc(r.userType)}</td><td>${esc(r.userGroup)}</td><td>${rdFmtDate(r.lastLogon)}</td>`
     + `<td>${ulSleepCell(r.sleeping, r.lastLogonKnown)}</td></tr>`).join('');
 }
+const ulSort = makeSortable($('ulTable'), () => ulRows, {
+  id: r => r.id,
+  name: r => r.name,
+  userType: r => r.userType,
+  userGroup: r => r.userGroup,
+  lastLogon: r => r.lastLogon || '',
+  sleeping: r => r.sleeping ? 1 : 0,
+}, renderUserListRows);
 async function openRoleUserList() {
   if (!rdRole || !activeRunId) return;
   ulReturnTo = 'role';

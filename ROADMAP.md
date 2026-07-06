@@ -144,6 +144,14 @@ klickbare Drill-downs (Findings-Filter, KPI-Kontext-Chips, Ergebnistyp-Pills), R
   einmal (Heatmap/Matrix-artig, viele User × Regeln) statt des fokussierten Einzel-Pfads; sowie die
   perf-optimierte Variante über die vorab geflachten Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`, s.
   „Evidenz-Perf") statt der Root-Cause-Live-Abfrage.
+- [~] **Design-Regel: sortierbare Spalten in Ergebnistabellen.** Klick auf eine Kopfzelle sortiert,
+  erneuter Klick kehrt die Richtung um (Pfeil-Indikator) — generische `makeSortable()`-Hilfsfunktion
+  im Frontend statt Einzellösung je Tabelle. **Umgesetzt:** Ergebnisse-Übersicht (Einzelfilter
+  **und** SoD-Regeln, dieselbe `summaryTable`-Komponente), Nutzerliste (`ulTable`), Konsistenzcheck-
+  Detail (`ccdDetailTable`, dort schon vorher vorhanden — eigene Implementierung wegen dynamischer
+  Spalten aus den Zeilen-Keys, nicht auf `makeSortable()` umgestellt). **Gilt als Standard für jede
+  neue tabellarische Ergebnisliste.** Noch offen: Findings-/Matches-Haupttabelle (`findingsTable`/
+  `matchesTable`) und der Konsistenzcheck-Katalog (`ccGrid`) sind bisher nicht sortierbar.
 
 #### Anzeige, Vergleich, Export, Admin
 - [ ] **„Fancy" Aufbereitung — gebrandetes Frontend mit Cytoscape.js.** **Ersetzt den temporären NeoDash-PoC** (Phase 6, Archiv). KPIs, **Graph-Darstellung der Konfliktpfade** (Cytoscape.js statt Neo4j Visualization Library — NVL verworfen, Lizenz nur für Aura/kommerzielle Subscription, s. Phase 7 Graph-Pilot) — visualisiert genau die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (`dashboards/sod_poc.json`) sind die Vorlage.

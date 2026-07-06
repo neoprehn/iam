@@ -2073,7 +2073,8 @@ def queries_summary(runId: str):
             "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
             "WITH q, count(DISTINCT u) AS userCount "
             "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
-            "  q.criticality AS criticality, q.module AS module, userCount "
+            "  q.criticality AS criticality, coalesce(q.criticalityRank,0) AS criticalityRank, "
+            "  q.module AS module, userCount "
             "ORDER BY coalesce(q.criticalityRank,0) DESC, userCount DESC",
             ruleset=ruleset, runId=runId)]
         total_users = s.run(
@@ -2098,7 +2099,8 @@ def sod_rules_summary(runId: str):
             "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId, ruleId:rule.id}) "
             "WITH rule, count(DISTINCT u) AS userCount "
             "RETURN rule.id AS id, rule.description AS description, "
-            "  rule.shortDescription AS shortDescription, rule.criticality AS criticality, userCount "
+            "  rule.shortDescription AS shortDescription, rule.criticality AS criticality, "
+            "  coalesce(rule.criticalityRank,0) AS criticalityRank, userCount "
             "ORDER BY coalesce(rule.criticalityRank,0) DESC, userCount DESC",
             ruleset=ruleset, runId=runId)]
         total_users = s.run(
