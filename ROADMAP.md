@@ -130,6 +130,14 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
 - [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten", noch offen): „wer kann *Funktion* in
   *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…
   (Matching-Seite ✓, Org-Varianten ✓; braucht nur noch die kombinierte Einzelfilter-nach-Org-Ansicht).
+  **Bewusst entschieden (2026-07-11):** über den bestehenden Org-Varianten-Mechanismus (dedizierter,
+  eigener `(:Run)` je Org-Kombination) lösen — **kein** Live-Post-hoc-Filter auf einem bereits
+  materialisierten Standard-Lauf. Die `MATCHES`-Kante ist rein boolesch (kein Org-Wert/keine
+  Authorization-Referenz gespeichert), ein Nachfiltern müsste dieselbe `$orgMode`/`$orgFilters`-Logik
+  aus `materialize_matches_one.cypher` separat als Live-Query nachbauen (analog, aber nicht identisch
+  zu `_SATISFIED_BY_CYPHER`) — wäre zwar ergebnisgleich, aber zusätzlicher Code-Pfad ohne echten
+  Vorteil gegenüber einem weiteren benannten Lauf (Titel/Beschreibung jetzt nachträglich änderbar,
+  s. Archiv).
 - [x] **Multi-Varianten-Läufe — erledigt.** Jede Variante (z. B. „Standard", „Übergreifend", „BUKRS=…") = ein eigener, **benannter** `(:Run)` (Titel-Feld, Lauf-Liste zeigt Titel als Hauptlabel + Run-ID als Mini-Chip). **Org-Varianten sind jetzt frei konfigurierbar:** neue Admin-Seite **„Org-Varianten"** (`frontend/admin-org-profiles.html`, verlinkt aus Ribbon „Admin") — wählt aus den tatsächlich im Dataset vorkommenden Org-Feldern (`GET /admin/org-profiles/org-fields`) und Werten (`GET /admin/org-profiles/org-field-values`, **echte Werte aus den Authorization-Daten**, kein Freitext) ein oder mehrere Kriterien (UND/ODER/Bereich) und speichert sie unter einem Namen. Overlay-Mechanismus wie bei Query-/SoD-Metadaten (`config/analysis_profiles.custom.json`, Vendor-Datei `analysis_profiles.json` bleibt unberührt) — **aber bewusst `.gitignore`d** (anders als `queries.custom.json`), da Org-Varianten echte Mandanten-Org-Codes enthalten können. **„Standard"/„Übergreifend" sind geschützt** (nicht editierbar/löschbar, `PROTECTED_ORG_PROFILES`). **Paralleles Anlegen mehrerer Varianten in einem Schritt:** „Neuer Lauf"-Dialog hat jetzt eine **Mehrfachauswahl** (Checkbox-Dropdown, gleiches `ddcheck`-Pattern wie der Nutzertyp-Filter) statt eines Single-Select; bei mehreren gewählten Varianten entsteht über den neuen Endpoint `POST /runs/batch` **ein Job mit je einem eigenen Lauf pro Variante** (Titel = Variantenname, sequenziell abgearbeitet — gemeinsame Neo4j-Session, kein Parallel-Schreiben). Backend-Refactor: `do_run()`-Kern in `_run_one()` ausgelagert, von Einzel- (`do_run`) und Batch-Lauf (`do_run_batch`) gemeinsam genutzt. Verifiziert gegen den laufenden Container: Variante mit echten Org-Werten angelegt/bearbeitet/gelöscht (Vendor-Datei unverändert, geschützte Profile lehnen Edit/Delete mit 400 ab), Batch-Lauf mit drei Varianten erzeugt drei `(:Run)` mit unterschiedlichen Trefferzahlen und kurzen Titeln. **Nicht Teil dieses Schritts:** sichtbare Gruppierung mehrerer Läufe als „Varianten-Set" in der UI (jeder Batch-Lauf erscheint einzeln in der Lauf-Liste).
   **Nachträglicher Korrekturbedarf (Nutzer-Feedback nach erster Nutzung):** `materialize_matches.cypher`
   ließ unter `wildcardOnly`/`filtered` **alle** Queries laufen, nicht nur die org-relevanten — die
@@ -143,6 +151,11 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
   keine `MATCHES`-Kante mehr, die Regel kann unter der Variante nicht mehr verletzt werden, ganz
   ohne separate SoD-Filterlogik). Verifiziert: „Übergreifend" sank von 22 auf 16 betroffene Regeln
   (38 → 22 betrachtete Queries), eine BUKRS-spezifische Testvariante auf 4 Regeln (10 Queries).
+  **Titel/Beschreibung nachträglich änderbar (2026-07-11):** neuer Endpoint
+  `PUT /runs/{runId}/meta` (reines Metadaten-Update, kein Neu-Lauf); Stift-Icon an jeder
+  Lauf-Karte öffnet einen Dialog mit Titel-Input + mehrzeiliger, per Ziehgriff vergrößerbarer
+  Beschreibung (`textarea{resize:vertical}`, analog Risiko-Feld im Editor) — Nutzer-Feedback,
+  dass ein einmal vergebener Variantenname bisher nicht korrigierbar war.
 - [~] **Nutzer-Scope verfeinern:** Nutzertyp und Sleeping sind bereits zusätzlich **Ergebnisfilter** (nicht nur Lauf-Kriterium, Details im Archiv). Offen: **Sleeping-Schnellwahl 90/180/360 Tage** als eigenes Eingabefeld (Sleeping ist bisher nur das beim Lauf gesetzte `sleepDays`-Fenster, nicht frei wählbar pro Filter); **Gesperrte nach Sperrtyp** auswählbar (failed_logons / admin_local / admin_global — Daten liegen als `lockReasons` vor) statt nur `excludeLocked`-Bool. *(Sperrtyp-Filter neu.)*
 - [ ] **Evidenz-Perf:** vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)` (transitive Hülle CONTAINS/HAS_PROFILE), damit `explain_sod` (intra/inter + VIA_ROLE) ein Lookup statt variabler Pfadsuche wird → **Evidenz default-on** möglich. *(Optimierung der v1.)*
 
@@ -152,7 +165,12 @@ Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mi
 Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse-drill-down--graphtabelle)):
 klickbare Drill-downs (Findings-Filter, KPI-Kontext-Chips, Ergebnistyp-Pills), Root-Cause-Drill-down
 (Einzelfilter **und** SoD-Regeln), kaskadierende Sidebar-Filter, SoD-Kurzbezeichnung,
-**Root-Cause-Graph (Pfad + Radial, Cytoscape)** als Ansicht-Umschalter neben der Tabelle.
+**Root-Cause-Graph (Pfad + Radial, Cytoscape)** als Ansicht-Umschalter neben der Tabelle. **Nachgezogen
+(2026-07-11):** Regel-Zelle der Findings-Übersicht klickbar (analog User-Zelle, filtert per
+`jumpToRuleFilter()`); Root-Cause-Default auf **„nur Treffer"** gedreht (statt „alle"); **Bugfix**
+Pfadgraph/Radial ignorierten den „nur Treffer"-Umschalter bisher komplett (zeigten immer die vollen
+`authValues` in Knoten-Label + Tooltip statt der Wertreduktion aus `highlightAuthValues()`) — neue
+`rcHitFilteredAuthValues()` als Graph-Pendant behebt das.
 
 - [~] **Umschalter Tabelle/Graph — echter Graph für SoD-Konfliktpfade.** **Auf Root-Cause-Ebene
   erledigt:** die Root-Cause-Seite hat jetzt einen Ansicht-Umschalter **Tabelle · Pfadgraph ·
@@ -258,7 +276,7 @@ Lokal, ein Compose, Vertrauensgrenze bleibt — **keine Mandantendaten verlassen
 
 ```
 iam/
-├─ ROADMAP.md / ROADMAP-ARCHIV.md / README.md
+├─ ROADMAP.md / ROADMAP-ARCHIV.md / README.md 
 ├─ docker-compose.yml          # neo4j + neodash + backend (+ migrations als tools-Profil), gepinnt
 ├─ .gitignore                  # /data, /backups, .env, *.dump
 ├─ .gitattributes              # Zeilenenden (LF für .cypher/.sh) für Linux-Container
