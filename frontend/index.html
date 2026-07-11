@@ -940,10 +940,11 @@
     <div class="check"><input type="checkbox" id="skipRulesetLoad" />
       <div><label for="skipRulesetLoad">Ruleset-Laden &uuml;berspringen</label>
         <small>Nur setzen, wenn das Ruleset bereits aus einem fr&uuml;heren Lauf geladen ist.</small></div></div>
-    <div class="check"><input type="checkbox" id="withExplain" />
-      <div><label for="withExplain">Evidenz mitberechnen</label>
-        <small>verursachende Rollen/Profile + intra/inter &mdash; <b>deutlich langsamer</b>. Sonst
-          sp&auml;ter per „Evidenz" (Ribbon) nachrechenbar.</small></div></div>
+    <div class="check"><input type="checkbox" id="skipExplainOpt" />
+      <div><label for="skipExplainOpt">Evidenz &uuml;berspringen</label>
+        <small>verursachende Rollen/Profile + intra/inter werden sonst automatisch mitberechnet
+          &mdash; hier abw&auml;hlbar, wenn es schneller gehen soll; sp&auml;ter per „Evidenz"
+          (Ribbon) jederzeit nachrechenbar.</small></div></div>
     <button class="primary" type="submit" id="runBtn">Auswertung starten</button>
   </form>
   </div><!-- /#runForms -->
@@ -3741,7 +3742,7 @@ $('formRun').addEventListener('submit', async e => {
     userTypeProfile: $('userTypeProfile').value, queryScope: $('queryScope').value,
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
-    skipExplain: !$('withExplain').checked,
+    skipExplain: $('skipExplainOpt').checked,
     ...asstRunScopingPayload(),
   };
   await _runRun(async () => {

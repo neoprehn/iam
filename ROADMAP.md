@@ -157,7 +157,7 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
   Beschreibung (`textarea{resize:vertical}`, analog Risiko-Feld im Editor) — Nutzer-Feedback,
   dass ein einmal vergebener Variantenname bisher nicht korrigierbar war.
 - [~] **Nutzer-Scope verfeinern:** Nutzertyp und Sleeping sind bereits zusätzlich **Ergebnisfilter** (nicht nur Lauf-Kriterium, Details im Archiv). Offen: **Sleeping-Schnellwahl 90/180/360 Tage** als eigenes Eingabefeld (Sleeping ist bisher nur das beim Lauf gesetzte `sleepDays`-Fenster, nicht frei wählbar pro Filter); **Gesperrte nach Sperrtyp** auswählbar (failed_logons / admin_local / admin_global — Daten liegen als `lockReasons` vor) statt nur `excludeLocked`-Bool. *(Sperrtyp-Filter neu.)*
-- [~] **Evidenz-Perf (2026-07-11).** Vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)`
+- [x] **Evidenz-Perf (2026-07-11) — erledigt.** Vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)`
   (transitive Hülle CONTAINS/HAS_PROFILE, `load/91_materialize_grants.cypher`, einmal je Dataset
   beim Import, ~62s für 5,1 Mio. Kanten) — `explain_sod_one.cypher` nutzt sie jetzt als Lookup statt
   der `CONTAINS|HAS_PROFILE*0..4`-Pfadsuche. **Benchmark-Überraschung:** die Traversierung selbst war
@@ -179,9 +179,12 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
      501 Findings.
   **Gesamtergebnis (verifiziert, bit-identische Resultate vor/nach allen drei Fixes):** kompletter
   `/runs/{id}/explain`-Durchlauf für ~4.200 Akteure/501 Findings von ~90–100s auf **~27,6s**
-  (≈3,5×). **Noch offen:** ob **Evidenz default-on** jetzt sinnvoll ist, ist eine bewusste
-  Abwägung (27s zusätzliche Laufzeit **je Lauf**, nicht mehr nur bei explizitem Klick auf
-  „Evidenz") — Entscheidung steht noch aus, `skipExplain` bleibt vorerst `True`.
+  (≈3,5×). **Evidenz default-on aktiviert:** `RunReq.skipExplain`/`RunBatchReq.skipExplain`
+  Default auf `False` gedreht, „Neuer Lauf"-Formular hat jetzt eine **„Evidenz überspringen"**-
+  Checkbox (Default aus, analog „Materialisierung überspringen"/„Ruleset-Laden überspringen") statt
+  der bisherigen Opt-in-Checkbox „Evidenz mitberechnen" — jeder neue Lauf berechnet VIA_ROLE/
+  VIA_PROFILE/intra-inter jetzt automatisch mit, abwählbar für schnellere Läufe, Ribbon „Evidenz"
+  bleibt für ältere Läufe ohne Evidenz.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mit vorhandenen Daten:

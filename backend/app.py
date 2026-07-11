@@ -245,8 +245,11 @@ class RunReq(BaseModel):
                                      # leer -> runId als Fallback (siehe do_run)
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
-    skipExplain: bool = True         # Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) ist teuer ->
-                                     # Default aus; per Formular oder POST /runs/{id}/explain anfordern
+    skipExplain: bool = False        # Evidenz (VIA_ROLE/VIA_PROFILE + intra/inter) -- seit
+                                     # Evidenz-Perf (GRANTS-Kante + Checkpoint-Throttling +
+                                     # explain_sod_finalize-Fix, s. ROADMAP.md) Default AN;
+                                     # abwaehlbar fuer schnellere Laeufe, sonst per Formular oder
+                                     # POST /runs/{id}/explain nachtraeglich anforderbar
     resume: bool = False             # Ab dem gespeicherten Lauf-Checkpoint weitermachen (_run_state.json);
                                      # alle anderen Felder werden dann ignoriert -> die Original-Parameter
                                      # aus dem Checkpoint gelten (siehe do_run()).
@@ -517,7 +520,7 @@ class RunBatchReq(BaseModel):
     evaluateSod: bool = True         # s. RunReq.evaluateSod
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
-    skipExplain: bool = True
+    skipExplain: bool = False        # s. RunReq.skipExplain
     resume: bool = False             # s. RunReq.resume
 
 
