@@ -1910,11 +1910,14 @@ def _merged_sodrules(ruleset: str) -> tuple[dict[str, dict], set[str]]:
 @app.get("/admin/rulesets/{ruleset}/sodrules")
 def admin_list_sodrules(ruleset: str):
     """Alle SoD-Regeln eines Rulesets (Vendor + Overlay gemerged) fuer das Query Management
-    (Modus 'SoD'); 'custom' markiert eigene Edits."""
+    (Modus 'SoD'); 'custom' markiert eigene Edits. 'clauses' (CNF: UND ueber Klauseln, ODER
+    innerhalb einer Klausel -- nur bei Rulesets mit CNF-Struktur, aktuell nur kpmg_r3, sonst [])
+    speist die clientseitige bidirektionale Einzelfilter<->SoD-Verknuepfung der Katalog-Auswahl
+    (Assistent Schritt Scoping / Admin-Seite "Scope")."""
     merged, custom_ids = _merged_sodrules(ruleset)
     return [{"id": rid, "description": r.get("description", ""),
              "shortDescription": r.get("shortDescription", ""), "criticality": r.get("criticality"),
-             "criticalityRank": r.get("criticalityRank", 0),
+             "criticalityRank": r.get("criticalityRank", 0), "clauses": r.get("clauses", []),
              "reasonCode": r.get("reasonCode"), "custom": rid in custom_ids}
             for rid, r in sorted(merged.items())]
 

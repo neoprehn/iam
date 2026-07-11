@@ -414,15 +414,31 @@ dadurch nicht. Speichern/Ableiten wirkt **sofort** (kein extra Reload-Schritt n&
 
 Erreichbar über das Menü „Admin" (Gruppe „7 · Admin") → „Scope". Verwaltet **persistente,
 benannte Scope-Profile** — dieselbe Katalog-Auswahl (Einzelfilter/SoD-Regeln, filterbar nach
-Namensmuster/Modul/Kritikalität/Query-Typ, Mehrfachauswahl per Checkbox) wie im Assistenten-
-Schritt „Scoping", aber **dauerhaft gespeichert** und über beliebig viele Läufe/Datasets
-desselben Rulesets hinweg wiederverwendbar (siehe „Gespeicherter Scope" oben).
+Namensmuster **der Bezeichnung** /Modul/Kritikalität/Query-Typ, Mehrfachauswahl per Checkbox) wie
+im Assistenten-Schritt „Scoping", aber **dauerhaft gespeichert** und über beliebig viele Läufe/
+Datasets desselben Rulesets hinweg wiederverwendbar (siehe „Gespeicherter Scope" oben).
 
 Links: **Ruleset** wählen, darunter die Liste der für dieses Ruleset gespeicherten Scopes (mit
-Zählung „N Einzelfilter, M SoD-Regel(n)"), „+ Neuer Scope". Rechts: Name (nur bei Neuanlage
-änderbar) und Beschreibung, darunter die beiden Katalog-Panels — Speichern erfordert mindestens
-einen ausgewählten Einzelfilter **oder** eine SoD-Regel. Ein Scope lässt sich jederzeit
-nachträglich bearbeiten (Auswahl ändern, speichern) oder löschen.
+Zählung „N Einzelfilter, M SoD-Regel(n)"), „+ Neuer Scope". Rechts ein frei klickbarer
+Mini-Stepper **① Einzelfilter · ② SoD-Regeln · ③ Speichern**:
+
+- **① Einzelfilter** — Katalog-Tabelle (ca. 20 Zeilen sichtbar, Rest scrollt), Filter Namensmuster
+  (matcht die Bezeichnung)/Modul/Query-Typ/Kritikalität, „alle (gefiltert) wählen"/„Auswahl
+  leeren". Optional — auch ganz ohne Auswahl weiter zu ②.
+- **② SoD-Regeln** — dieselbe Tabellenlogik für SoD-Regeln, zusätzlich ein Umschalter **„alle" /
+  „nur mögliche"**: „nur mögliche" zeigt nur Regeln, deren sämtliche Klauseln durch die unter ①
+  gewählten Einzelfilter abgedeckt sind (bidirektionale Verknüpfung über die CNF-Klausel-Struktur
+  des Rulesets — aktuell nur bei KPMG R/3 vorhanden; ohne diese Struktur erscheint ein Hinweis
+  statt des Umschalters, alle Regeln bleiben sichtbar).
+- **③ Speichern** — Name (nur bei Neuanlage änderbar), Beschreibung, Zusammenfassung. Wählt man
+  eine SoD-Regel, deren Klausel-Queries nicht schon unter ① angehakt sind, ergänzt die App diese
+  beim Speichern **automatisch** (nie löschend) — die Zusammenfassung weist das aus („davon N
+  automatisch ergänzt"), damit die Regel später auch tatsächlich auswertbar ist. Speichern
+  erfordert mindestens einen Einzelfilter **oder** eine SoD-Regel.
+
+Ein **neuer** Scope startet geführt bei ①; ein **bestehender** Scope öffnet sich direkt bei ③
+(Zusammenfassung) — über den Stepper jederzeit zurück zu ①/② zum Nachjustieren, danach erneut
+speichern oder löschen.
 
 Scope-Profile beziehen sich auf Query-/SoD-Regel-**IDs** eines Rulesets — reines
 Katalog-Vokabular, keine Mandantendaten — und liegen daher wie die Einzelfilter-/SoD-Regel-

@@ -88,23 +88,41 @@
   .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
   .tag.low { background:rgba(70,167,88,.18); color:#7bd690; }
 
+  .pillgroup { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .pill { cursor:pointer; border:1px solid transparent; }
+  .pill:not(.tag) { background:var(--bg); color:var(--muted); border-color:var(--line); }
+  .pill:not(.tag):hover { border-color:var(--accent); }
+  .pill.active:not(.tag) { color:var(--fg); border-color:var(--accent); }
+
+  /* Mini-Stepper (frei klickbar, anders als der erzwungene Assistent-Ablauf): ① Einzelfilter
+     ② SoD-Regeln ③ Speichern. Neuer Scope startet bei ①, ein bestehender wird direkt bei ③
+     geoeffnet (mit Ruecksprung in ①/② zum Nachjustieren der Auswahl). */
+  .sp-stepper { display:flex; gap:8px; margin:4px 0 16px; }
+  .sp-stepper button { width:auto; padding:7px 14px; font-size:12.5px; background:transparent;
+    border:1px solid var(--line); color:var(--muted); border-radius:20px; cursor:pointer; font:inherit; }
+  .sp-stepper button:hover { border-color:var(--accent); }
+  .sp-stepper button.active { color:var(--fg); border-color:var(--accent); background:rgba(76,139,245,.10); }
+
   /* Katalog-Browser (Einzelfilter + SoD-Regeln), identisches Muster wie Assistent Schritt
      "Scoping" (frontend/index.html) -- bewusst dupliziert, keine Shared-JS-Datei in diesem
-     Projekt ueblich (admin.html/admin-org-profiles.html sind ebenso eigenstaendig). */
-  .sp-scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0; }
-  .sp-scope-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--bg); }
+     Projekt ueblich (admin.html/admin-org-profiles.html sind ebenso eigenstaendig). Ein Panel
+     je Stufe (nicht mehr nebeneinander) -- mehr Platz fuer die jetzt hoehere Tabelle. */
+  .sp-scope-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--bg); margin-bottom:14px; }
   .sp-scope-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
   .sp-scope-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
   .sp-scope-filters input, .sp-scope-filters select { width:auto; flex:1 1 120px; padding:5px 7px; font-size:12px; }
   .sp-scope-actions { display:flex; gap:8px; margin-bottom:8px; }
   .sp-scope-actions button { width:auto; padding:4px 10px; font-size:11.5px; margin:0; }
-  .sp-scope-tablewrap { max-height:280px; overflow:auto; border-top:1px solid var(--line); }
+  .sp-scope-tablewrap { max-height:min(620px, 65vh); overflow:auto; border-top:1px solid var(--line); }
   .sp-scope-box table { width:100%; border-collapse:collapse; margin:0; font-size:12px; }
   .sp-scope-box th, .sp-scope-box td { text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); }
   .sp-scope-box th { color:var(--muted); font-weight:600; }
   .sp-scope-box td.ck, .sp-scope-box th.ck { width:22px; padding-right:0; }
   .sp-scope-box input[type=checkbox] { width:auto; margin:0; vertical-align:middle; }
   .sp-scope-box tr.sel { background:rgba(76,139,245,.08); }
+  .sp-scope-mininav { display:flex; gap:10px; }
+  .sp-scope-mininav button { width:auto; padding:8px 16px; margin:0; }
+  .sp-scope-mininav button:last-child { margin-left:auto; }
 </style>
 </head>
 <body>
@@ -165,18 +183,18 @@
           <span class="badge" id="spBadge"></span>
         </h2>
 
-        <div class="row" style="max-width:600px">
-          <div><label for="spName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
-            <input id="spName" placeholder="z. B. fi-audit-2026" /></div>
-          <div><label for="spDescription">Beschreibung</label>
-            <input id="spDescription" placeholder="z. B. FI-Audit-Scope Q1 2026" /></div>
+        <div class="sp-stepper" id="spStepper">
+          <button type="button" data-stage="query">&#9312; Einzelfilter</button>
+          <button type="button" data-stage="sod">&#9313; SoD-Regeln</button>
+          <button type="button" data-stage="save">&#9314; Speichern</button>
         </div>
 
-        <div class="sp-scope-grid">
+        <!-- Stufe 1: Einzelfilter -->
+        <div id="sp-stage-query">
           <div class="sp-scope-box">
             <h3>Einzelfilter <span id="sp-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
             <div class="sp-scope-filters">
-              <input type="text" id="sp-q-pattern" placeholder="Namensmuster (z. B. BC_*)">
+              <input type="text" id="sp-q-pattern" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
               <select id="sp-q-module"><option value="">alle Module</option></select>
               <select id="sp-q-type"><option value="">alle Typen</option></select>
               <select id="sp-q-rank">
@@ -196,17 +214,29 @@
               </table>
             </div>
           </div>
+          <div class="hint" style="margin-bottom:10px">Diese Stufe ist optional &mdash; ohne Auswahl einfach weiter zu den SoD-Regeln.</div>
+          <div class="sp-scope-mininav">
+            <button class="ghost" id="sp-q-next">Weiter &#8594; SoD-Regeln</button>
+          </div>
+        </div>
 
+        <!-- Stufe 2: SoD-Regeln -->
+        <div id="sp-stage-sod" style="display:none">
           <div class="sp-scope-box">
             <h3>SoD-Regeln <span id="sp-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
             <div class="sp-scope-filters">
-              <input type="text" id="sp-r-pattern" placeholder="Namensmuster (z. B. BC_*)">
+              <input type="text" id="sp-r-pattern" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
               <select id="sp-r-rank">
                 <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
                 <option value="3">ab high</option><option value="4">ab critical</option>
                 <option value="5">nur very critical</option>
               </select>
+              <div class="pillgroup" id="sp-r-possible-pills">
+                <button type="button" class="pill" data-value="all">alle</button>
+                <button type="button" class="pill" data-value="possible">nur m&ouml;gliche</button>
+              </div>
             </div>
+            <div class="hint" id="sp-r-possible-hint" style="margin-bottom:8px"></div>
             <div class="sp-scope-actions">
               <button type="button" class="ghost" id="sp-r-all">alle (gefiltert) w&auml;hlen</button>
               <button type="button" class="ghost" id="sp-r-none">Auswahl leeren</button>
@@ -218,12 +248,27 @@
               </table>
             </div>
           </div>
+          <div class="sp-scope-mininav">
+            <button class="ghost" id="sp-r-prev">&#8592; Zur&uuml;ck (Einzelfilter)</button>
+            <button class="ghost" id="sp-r-next">Weiter &#8594; Speichern</button>
+          </div>
         </div>
 
-        <div class="actions">
-          <button class="primary" id="spSaveBtn" disabled>Speichern</button>
-          <button class="ghost" id="spCancelBtn" disabled>Abbrechen</button>
-          <button class="ghost" id="spDeleteBtn" style="margin-left:auto;display:none">L&ouml;schen</button>
+        <!-- Stufe 3: Speichern -->
+        <div id="sp-stage-save" style="display:none">
+          <div class="row" style="max-width:600px">
+            <div><label for="spName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
+              <input id="spName" placeholder="z. B. fi-audit-2026" /></div>
+            <div><label for="spDescription">Beschreibung</label>
+              <input id="spDescription" placeholder="z. B. FI-Audit-Scope Q1 2026" /></div>
+          </div>
+          <div class="hint" id="sp-save-summary" style="margin-top:10px"></div>
+
+          <div class="actions">
+            <button class="primary" id="spSaveBtn" disabled>Speichern</button>
+            <button class="ghost" id="spCancelBtn" disabled>Abbrechen</button>
+            <button class="ghost" id="spDeleteBtn" style="margin-left:auto;display:none">L&ouml;schen</button>
+          </div>
         </div>
       </div>
     </div>
@@ -251,9 +296,33 @@ function setStatus(html, isErr) {
   const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
 }
 
+/* Bidirektionale Einzelfilter<->SoD-Verknuepfung -- identische Helper wie im Assistenten
+   (frontend/index.html), hier dupliziert (keine Shared-JS-Datei in diesem Projekt ueblich). */
+function computeRequiredQueryIds(sodRuleIds, sodRules) {
+  const need = new Set();
+  sodRules.forEach(r => { if (sodRuleIds.has(r.id)) (r.clauses || []).forEach(cl => cl.forEach(qid => need.add(qid))); });
+  return need;
+}
+function computePossibleSodRuleIds(queryIds, sodRules) {
+  const possible = new Set();
+  sodRules.forEach(r => {
+    const clauses = r.clauses || [];
+    if (clauses.length && clauses.every(cl => cl.some(qid => queryIds.has(qid)))) possible.add(r.id);
+  });
+  return possible;
+}
+function rulesetHasClauses(sodRules) { return sodRules.some(r => (r.clauses || []).length > 0); }
+function effectiveQueryIds(queryIds, sodRuleIds, sodRules) {
+  const eff = new Set(queryIds);
+  computeRequiredQueryIds(sodRuleIds, sodRules).forEach(qid => eff.add(qid));
+  return eff;
+}
+
 let scopes = [], selectedName = null, isNew = false, dirty = false;
 let spCatalog = { ruleset: null, queries: [], sodRules: [] };
 let spQueryIds = new Set(), spSodRuleIds = new Set();
+let spStage = 'query';           // 'query' | 'sod' | 'save'
+let spRPossibleMode = 'all';     // 'all' | 'possible'
 
 function setDirty(v) {
   dirty = v;
@@ -325,14 +394,16 @@ function spFilterQueries() {
     (q.criticalityRank || 0) >= minRank
     && (!module || q.module === module)
     && (!qType || q.queryType === qType)
-    && (_spMatchesPattern(q.id, pattern) || _spMatchesPattern(q.description, pattern)));
+    && _spMatchesPattern(q.shortDescription || q.description, pattern));
 }
 function spFilterSodRules() {
   const pattern = $('sp-r-pattern').value;
   const minRank = parseInt($('sp-r-rank').value, 10) || 0;
+  const possible = spRPossibleMode === 'possible' ? computePossibleSodRuleIds(spQueryIds, spCatalog.sodRules) : null;
   return spCatalog.sodRules.filter(r =>
     (r.criticalityRank || 0) >= minRank
-    && (_spMatchesPattern(r.id, pattern) || _spMatchesPattern(r.description, pattern)));
+    && (!possible || possible.has(r.id))
+    && _spMatchesPattern(r.shortDescription || r.description, pattern));
 }
 function spRenderQueryTable() {
   const rows = spFilterQueries();
@@ -381,6 +452,58 @@ $('sp-q-all').onclick = () => { spFilterQueries().forEach(q => spQueryIds.add(q.
 $('sp-q-none').onclick = () => { spQueryIds.clear(); spRenderQueryTable(); setDirty(true); };
 $('sp-r-all').onclick = () => { spFilterSodRules().forEach(r => spSodRuleIds.add(r.id)); spRenderRuleTable(); setDirty(true); };
 $('sp-r-none').onclick = () => { spSodRuleIds.clear(); spRenderRuleTable(); setDirty(true); };
+$('sp-r-possible-pills').querySelectorAll('.pill').forEach(p => p.onclick = () => {
+  spRPossibleMode = p.dataset.value;
+  spRenderRPossiblePills(); spRenderRuleTable();
+});
+
+/* Mini-Stepper: frei klickbar (kein erzwungener linearer Zwang wie im Assistenten) -- ein
+   bestehender Scope soll sich jederzeit direkt bearbeiten lassen. */
+function spShowStage(stage) {
+  spStage = stage;
+  $('spStepper').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.stage === stage));
+  $('sp-stage-query').style.display = stage === 'query' ? '' : 'none';
+  $('sp-stage-sod').style.display = stage === 'sod' ? '' : 'none';
+  $('sp-stage-save').style.display = stage === 'save' ? '' : 'none';
+  if (stage === 'sod') {
+    spRPossibleMode = (spQueryIds.size > 0 && rulesetHasClauses(spCatalog.sodRules)) ? 'possible' : 'all';
+    spRenderRPossiblePills();
+    spRenderRuleTable();
+  } else if (stage === 'save') {
+    spUpdateSaveSummary();
+  }
+}
+$('spStepper').querySelectorAll('button').forEach(b => b.onclick = () => spShowStage(b.dataset.stage));
+$('sp-q-next').onclick = () => spShowStage('sod');
+$('sp-r-prev').onclick = () => spShowStage('query');
+$('sp-r-next').onclick = () => spShowStage('save');
+
+function spRenderRPossiblePills() {
+  const hasClauses = rulesetHasClauses(spCatalog.sodRules);
+  $('sp-r-possible-pills').style.display = hasClauses ? '' : 'none';
+  $('sp-r-possible-pills').querySelectorAll('.pill').forEach(p =>
+    p.classList.toggle('active', p.dataset.value === spRPossibleMode));
+  const hint = $('sp-r-possible-hint');
+  hint.textContent = !hasClauses
+    ? 'Dieses Ruleset hat noch keine Klausel-Struktur (CNF) — automatische Verkn\xfcpfung mit Einzelfiltern ist hier nicht m\xf6glich, es werden alle SoD-Regeln angezeigt.'
+    : (spRPossibleMode === 'possible'
+        ? '„Nur m\xf6gliche" zeigt nur Regeln, deren s\xe4mtliche Klauseln durch die Einzelfilter-Auswahl abgedeckt sind.'
+        : '');
+}
+
+function spUpdateSaveSummary() {
+  const required = computeRequiredQueryIds(spSodRuleIds, spCatalog.sodRules);
+  const added = [...required].filter(qid => !spQueryIds.has(qid)).length;
+  const effQ = spQueryIds.size + added;
+  const nr = spSodRuleIds.size;
+  const el = $('sp-save-summary');
+  if (!effQ && !nr) {
+    el.textContent = 'Noch keine Auswahl — mindestens ein Einzelfilter oder eine SoD-Regel ist zum Speichern erforderlich.';
+  } else {
+    el.textContent = effQ + ' Einzelfilter' + (added ? ' (davon ' + added + ' automatisch erg\xe4nzt f\xfcr die gew\xe4hlten SoD-Regeln)' : '')
+      + ' \xb7 ' + nr + ' SoD-Regel(n) werden gespeichert.';
+  }
+}
 
 function selectScope(name) {
   if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
@@ -397,6 +520,7 @@ function selectScope(name) {
   spSodRuleIds = new Set(s.sodRuleIds || []);
   spRenderQueryTable(); spRenderRuleTable();
   setDirty(false);
+  spShowStage('save');   // bestehender Scope: direkt Zusammenfassung, Ruecksprung in ①/② moeglich
 }
 
 function newScope() {
@@ -412,6 +536,7 @@ function newScope() {
   spQueryIds = new Set(); spSodRuleIds = new Set();
   spRenderQueryTable(); spRenderRuleTable();
   setDirty(false);
+  spShowStage('query');   // neuer Scope: gefuehrt bei Stufe 1 starten
 }
 $('spNewBtn').onclick = newScope;
 $('spName').addEventListener('input', () => setDirty(true));
@@ -420,13 +545,14 @@ $('spDescription').addEventListener('input', () => setDirty(true));
 function formPayload() {
   return {
     description: $('spDescription').value.trim() || null,
-    queryIds: Array.from(spQueryIds),
+    queryIds: Array.from(effectiveQueryIds(spQueryIds, spSodRuleIds, spCatalog.sodRules)),
     sodRuleIds: Array.from(spSodRuleIds),
   };
 }
 
 async function saveCurrent() {
-  if (!spQueryIds.size && !spSodRuleIds.size) {
+  const payload = formPayload();
+  if (!payload.queryIds.length && !payload.sodRuleIds.length) {
     setStatus('<b>Fehler:</b> mindestens ein Einzelfilter oder eine SoD-Regel erforderlich.', true); return;
   }
   const rs = $('spRuleset').value;
@@ -436,13 +562,13 @@ async function saveCurrent() {
       const name = $('spName').value.trim();
       if (!name) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
       await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes',
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, ...formPayload() }) });
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, ...payload }) });
       setStatus(`${doneTag} Scope <b>${name}</b> angelegt.`);
       await loadScopesAndCatalog();
       selectScope(name);
     } else {
       await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes/' + encodeURIComponent(selectedName),
-        { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formPayload()) });
+        { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       setStatus(`${doneTag} Scope <b>${selectedName}</b> gespeichert.`);
       const keep = selectedName;
       await loadScopesAndCatalog();

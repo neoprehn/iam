@@ -182,21 +182,24 @@
   .cc-box.full { grid-column:1 / -1; max-width:600px; margin:0 auto; }
   .cc-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
   .cc-box table { margin:0; }
-  /* Assistent Schritt "Scoping" -- Katalog-Browser (Einzelfilter + SoD-Regeln nebeneinander,
-     je Filterzeile + scrollbare Checkbox-Tabelle). Layout an .cc-grid/.cc-box angelehnt. */
-  .asst-scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0; }
-  .asst-scope-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--panel); }
+  /* Assistent Schritt "Scoping" -- Katalog-Browser, zweistufig (Einzelfilter -> SoD-Regeln,
+     je EIN vollbreites Panel zur Zeit statt nebeneinander -- mehr Platz fuer die Tabelle).
+     Layout an .cc-box angelehnt. */
+  .asst-scope-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--panel); margin:14px 0; }
   .asst-scope-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
   .asst-scope-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
   .asst-scope-filters input, .asst-scope-filters select { width:auto; flex:1 1 120px; padding:5px 7px; font-size:12px; }
-  .asst-scope-actions { display:flex; gap:8px; margin-bottom:8px; }
+  .asst-scope-actions { display:flex; gap:8px; margin-bottom:8px; align-items:center; }
   .asst-scope-actions button { width:auto; padding:4px 10px; font-size:11.5px; margin:0; }
-  .asst-scope-tablewrap { max-height:280px; overflow:auto; border-top:1px solid var(--line); }
+  .asst-scope-tablewrap { max-height:min(620px, 65vh); overflow:auto; border-top:1px solid var(--line); }
   .asst-scope-box table { margin:0; font-size:12px; }
   .asst-scope-box th, .asst-scope-box td { padding:5px 8px; }
   .asst-scope-box td.ck, .asst-scope-box th.ck { width:22px; padding-right:0; }
   .asst-scope-box input[type=checkbox] { width:auto; margin:0; vertical-align:middle; }
   .asst-scope-box tr.sel { background:rgba(76,139,245,.08); }
+  .asst-scope-mininav { display:flex; gap:10px; margin-top:14px; }
+  .asst-scope-mininav button.ghost { width:auto; padding:8px 16px; margin:0; }
+  .asst-scope-mininav button.ghost:last-child { margin-left:auto; }
   .pill { cursor:pointer; border:1px solid transparent; }
   .pill:not(.tag) { background:var(--bg); color:var(--muted); border-color:var(--line); }
   .pill:not(.tag):hover { border-color:var(--accent); }
@@ -651,7 +654,7 @@
       </div>
     </div>
 
-    <!-- Step 3: Scoping -->
+    <!-- Step 3: Scoping (zweistufig: Einzelfilter -> SoD-Regeln) -->
     <div id="asst-step-3" style="display:none">
       <h2>&#9314;&nbsp;Scoping <span class="muted" style="font-weight:400;font-size:14px">&mdash; optional</span></h2>
       <p class="sub">W&auml;hlen Sie einzelne Einzelfilter und/oder SoD-Regeln aus dem Katalog. Ohne Auswahl wird beim n&auml;chsten Lauf das gesamte Ruleset gepr&uuml;ft.</p>
@@ -660,11 +663,12 @@
         <div><label for="asst-scope-ruleset">Ruleset</label><select id="asst-scope-ruleset"></select></div>
       </div>
 
-      <div class="asst-scope-grid">
+      <!-- Stufe 1: Einzelfilter -->
+      <div id="asst-scope-stage-query">
         <div class="asst-scope-box">
-          <h3>Einzelfilter <span id="asst-scope-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+          <h3>Stufe 1 von 2 &middot; Einzelfilter <span id="asst-scope-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
           <div class="asst-scope-filters">
-            <input type="text" id="asst-scope-q-pattern" placeholder="Namensmuster (z. B. BC_*)">
+            <input type="text" id="asst-scope-q-pattern" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
             <select id="asst-scope-q-module"><option value="">alle Module</option></select>
             <select id="asst-scope-q-type"><option value="">alle Typen</option></select>
             <select id="asst-scope-q-rank">
@@ -684,17 +688,30 @@
             </table>
           </div>
         </div>
+        <div class="hint">Diese Stufe ist optional &mdash; ohne Auswahl einfach weiter zu den SoD-Regeln.</div>
+        <div class="asst-scope-mininav">
+          <button class="ghost" id="asst-3-prev">&#8592; Zur&uuml;ck (Bestand)</button>
+          <button class="ghost" id="asst-scope-q-next">Weiter &#8594; SoD-Regeln</button>
+        </div>
+      </div>
 
+      <!-- Stufe 2: SoD-Regeln -->
+      <div id="asst-scope-stage-sod" style="display:none">
         <div class="asst-scope-box">
-          <h3>SoD-Regeln <span id="asst-scope-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+          <h3>Stufe 2 von 2 &middot; SoD-Regeln <span id="asst-scope-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
           <div class="asst-scope-filters">
-            <input type="text" id="asst-scope-r-pattern" placeholder="Namensmuster (z. B. BC_*)">
+            <input type="text" id="asst-scope-r-pattern" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
             <select id="asst-scope-r-rank">
               <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
               <option value="3">ab high</option><option value="4">ab critical</option>
               <option value="5">nur very critical</option>
             </select>
+            <div class="pillgroup" id="asst-scope-r-possible-pills">
+              <button type="button" class="pill" data-value="all">alle</button>
+              <button type="button" class="pill" data-value="possible">nur m&ouml;gliche</button>
+            </div>
           </div>
+          <div class="hint" id="asst-scope-r-possible-hint" style="margin-bottom:8px"></div>
           <div class="asst-scope-actions">
             <button type="button" class="ghost" id="asst-scope-r-all">alle (gefiltert) w&auml;hlen</button>
             <button type="button" class="ghost" id="asst-scope-r-none">Auswahl leeren</button>
@@ -706,13 +723,13 @@
             </table>
           </div>
         </div>
-      </div>
 
-      <div id="asst-scope-summary" class="hint"></div>
+        <div id="asst-scope-summary" class="hint"></div>
 
-      <div class="asst-nav">
-        <button class="ghost" id="asst-3-prev">&#8592; Zur&uuml;ck</button>
-        <button class="ghost" id="asst-3-next" style="margin-left:auto">Weiter &#8594; Konsistenz</button>
+        <div class="asst-scope-mininav">
+          <button class="ghost" id="asst-scope-r-prev">&#8592; Zur&uuml;ck (Einzelfilter)</button>
+          <button class="ghost" id="asst-3-next">Weiter &#8594; Konsistenz</button>
+        </div>
       </div>
     </div>
 
@@ -3770,7 +3787,7 @@ $('clearRunBtn').addEventListener('click', () => {
 
 // ── Assistent ────────────────────────────────────────────────────────────────
 const asst = { active: false, step: 0, visited: new Set(), dataset: '',
-  ruleset: '', queryIds: new Set(), sodRuleIds: new Set() };
+  ruleset: '', queryIds: new Set(), sodRuleIds: new Set(), scopeStage: 'query' };
 
 function _asstAllViews(hide = true) {
   const v = hide ? 'none' : '';
@@ -3853,7 +3870,33 @@ async function goToAsstStep(n) {
    runId noetig -- dieselben Endpunkte wie das Query-Management, Katalog-Browsing statt Editor).
    Auswahl liegt in asst.queryIds/asst.sodRuleIds (Sets von IDs); leer = kein Scoping (Default-
    Verhalten unveraendert). Wird beim Absenden von "Neuer Lauf" (formRun) mitgegeben. */
+/* Bidirektionale Einzelfilter<->SoD-Verknuepfung -- gemeinsame, reine Helper (auch in
+   admin-scopes.html dupliziert, s. dort). Datengrundlage: r.clauses = [[qid,...],[qid,...]]
+   (UND ueber Klauseln, ODER innerhalb einer Klausel) -- nur Rulesets mit CNF-Struktur (aktuell
+   nur kpmg_r3) liefern das ueberhaupt; sonst leer -> Funktionen degradieren graziös zu "nichts
+   berechenbar" (computePossibleSodRuleIds liefert dann leer, computeRequiredQueryIds ebenso). */
+function computeRequiredQueryIds(sodRuleIds, sodRules) {
+  const need = new Set();
+  sodRules.forEach(r => { if (sodRuleIds.has(r.id)) (r.clauses || []).forEach(cl => cl.forEach(qid => need.add(qid))); });
+  return need;
+}
+function computePossibleSodRuleIds(queryIds, sodRules) {
+  const possible = new Set();
+  sodRules.forEach(r => {
+    const clauses = r.clauses || [];
+    if (clauses.length && clauses.every(cl => cl.some(qid => queryIds.has(qid)))) possible.add(r.id);
+  });
+  return possible;
+}
+function rulesetHasClauses(sodRules) { return sodRules.some(r => (r.clauses || []).length > 0); }
+function effectiveQueryIds(queryIds, sodRuleIds, sodRules) {
+  const eff = new Set(queryIds);
+  computeRequiredQueryIds(sodRuleIds, sodRules).forEach(qid => eff.add(qid));
+  return eff;
+}
+
 let asstCatalog = { ruleset: null, queries: [], sodRules: [] };
+let asstRPossibleMode = 'all';   // 'all' | 'possible' -- Umschalter Stufe 2
 
 async function asstInitScoping() {
   const sel = $('asst-scope-ruleset');
@@ -3879,10 +3922,44 @@ async function asstInitScoping() {
     $('asst-scope-r-none').onclick = () => {
       asst.sodRuleIds.clear(); asstRenderRuleTable(); asstUpdateScopeSummary();
     };
+    $('asst-scope-r-possible-pills').querySelectorAll('.pill').forEach(p => p.onclick = () => {
+      asstRPossibleMode = p.dataset.value;
+      asstRenderRPossiblePills(); asstRenderRuleTable();
+    });
+    $('asst-scope-q-next').onclick = () => asstShowScopeStage('sod');
+    $('asst-scope-r-prev').onclick = () => asstShowScopeStage('query');
   }
   if (!asst.ruleset) asst.ruleset = metaCache.defaultRuleset || $('ruleset').value || sel.value;
   sel.value = asst.ruleset;
+  asst.scopeStage = asst.scopeStage || 'query';
   await asstLoadCatalog();
+  asstShowScopeStage(asst.scopeStage);
+}
+
+function asstShowScopeStage(stage) {
+  asst.scopeStage = stage;
+  $('asst-scope-stage-query').style.display = stage === 'query' ? '' : 'none';
+  $('asst-scope-stage-sod').style.display = stage === 'sod' ? '' : 'none';
+  if (stage === 'sod') {
+    // Default beim Betreten von Stufe 2: "nur moegliche", wenn Stufe 1 nicht leer und das
+    // Ruleset ueberhaupt CNF-Klauseln hat -- sonst "alle" (nichts sinnvoll einschraenkbar).
+    asstRPossibleMode = (asst.queryIds.size > 0 && rulesetHasClauses(asstCatalog.sodRules)) ? 'possible' : 'all';
+    asstRenderRPossiblePills();
+    asstRenderRuleTable();
+  }
+}
+
+function asstRenderRPossiblePills() {
+  const hasClauses = rulesetHasClauses(asstCatalog.sodRules);
+  $('asst-scope-r-possible-pills').style.display = hasClauses ? '' : 'none';
+  $('asst-scope-r-possible-pills').querySelectorAll('.pill').forEach(p =>
+    p.classList.toggle('active', p.dataset.value === asstRPossibleMode));
+  const hint = $('asst-scope-r-possible-hint');
+  hint.textContent = !hasClauses
+    ? 'Dieses Ruleset hat noch keine Klausel-Struktur (CNF) — automatische Verkn\xfcpfung mit Einzelfiltern ist hier nicht m\xf6glich, es werden alle SoD-Regeln angezeigt.'
+    : (asstRPossibleMode === 'possible'
+        ? '„Nur m\xf6gliche" zeigt nur Regeln, deren s\xe4mtliche Klauseln durch die Stufe-1-Auswahl abgedeckt sind.'
+        : '');
 }
 
 async function asstLoadCatalog() {
@@ -3922,15 +3999,17 @@ function asstFilterQueries() {
     (q.criticalityRank || 0) >= minRank
     && (!module || q.module === module)
     && (!qType || q.queryType === qType)
-    && (_asstMatchesPattern(q.id, pattern) || _asstMatchesPattern(q.description, pattern)));
+    && _asstMatchesPattern(q.shortDescription || q.description, pattern));
 }
 
 function asstFilterSodRules() {
   const pattern = $('asst-scope-r-pattern').value;
   const minRank = parseInt($('asst-scope-r-rank').value, 10) || 0;
+  const possible = asstRPossibleMode === 'possible' ? computePossibleSodRuleIds(asst.queryIds, asstCatalog.sodRules) : null;
   return asstCatalog.sodRules.filter(r =>
     (r.criticalityRank || 0) >= minRank
-    && (_asstMatchesPattern(r.id, pattern) || _asstMatchesPattern(r.description, pattern)));
+    && (!possible || possible.has(r.id))
+    && _asstMatchesPattern(r.shortDescription || r.description, pattern));
 }
 
 function asstRenderQueryTable() {
@@ -3975,16 +4054,19 @@ function asstRenderRuleTable() {
 }
 
 function asstUpdateScopeSummary() {
-  const nq = asst.queryIds.size, nr = asst.sodRuleIds.size;
+  const nr = asst.sodRuleIds.size;
+  const required = computeRequiredQueryIds(asst.sodRuleIds, asstCatalog.sodRules);
+  const added = [...required].filter(qid => !asst.queryIds.has(qid)).length;
+  const effQ = asst.queryIds.size + added;
   const el = $('asst-scope-summary');
-  if (!nq && !nr) {
+  if (!effQ && !nr) {
     el.textContent = 'Keine Auswahl — der n\xe4chste Lauf pr\xfcft das gesamte Ruleset (heutiges Verhalten).';
   } else if (nr > 0) {
-    el.textContent = nq + ' Einzelfilter \xb7 ' + nr + ' SoD-Regel(n) ausgew\xe4hlt — der n\xe4chste Lauf '
-      + 'materialisiert nur die Klausel-Queries dieser Regeln (+ ggf. zus\xe4tzlich gew\xe4hlte Einzelfilter) '
+    el.textContent = effQ + ' Einzelfilter' + (added ? ' (davon ' + added + ' automatisch erg\xe4nzt f\xfcr die gew\xe4hlten SoD-Regeln)' : '')
+      + ' \xb7 ' + nr + ' SoD-Regel(n) ausgew\xe4hlt — der n\xe4chste Lauf materialisiert nur diese Einzelfilter '
       + 'und wertet nur diese Regeln aus.';
   } else {
-    el.textContent = nq + ' Einzelfilter ausgew\xe4hlt, keine SoD-Regel — der n\xe4chste Lauf materialisiert nur '
+    el.textContent = effQ + ' Einzelfilter ausgew\xe4hlt, keine SoD-Regel — der n\xe4chste Lauf materialisiert nur '
       + 'diese Einzelfilter (Can-Do) und \xfcberspringt die SoD-Auswertung.';
   }
   refreshRunScopingSummary();
@@ -4022,7 +4104,12 @@ function currentRunScopingSource() {
     if (sp) return { source: 'saved', name: sp.name, queryIds: sp.queryIds || [], sodRuleIds: sp.sodRuleIds || [] };
   }
   if (asstScopingActive()) {
-    return { source: 'assistant', queryIds: Array.from(asst.queryIds), sodRuleIds: Array.from(asst.sodRuleIds) };
+    // effectiveQueryIds: die Stufe-1-Auswahl PLUS automatisch ergaenzte Klausel-Queries der in
+    // Stufe 2 gewaehlten SoD-Regeln -- sonst koennte materialize_matches_candidates.cypher (Prio
+    // 1: explizite queryIds) eine benoetigte Klausel-Query auslassen und die Regel waere nie
+    // erfuellbar (s. ROADMAP/Handoff-Notiz).
+    const eff = effectiveQueryIds(asst.queryIds, asst.sodRuleIds, asstCatalog.sodRules);
+    return { source: 'assistant', ruleset: asst.ruleset, queryIds: Array.from(eff), sodRuleIds: Array.from(asst.sodRuleIds) };
   }
   return null;
 }
@@ -4040,6 +4127,14 @@ function refreshRunScopingSummary() {
   $('queryScopeGroup').style.display = cur ? 'none' : '';
   $('runScopingSummary').style.display = cur ? '' : 'none';
   if (cur) {
+    // Assistent-Ruleset und Dialog-Ruleset muessen uebereinstimmen -- sonst wuerden queryIds/
+    // sodRules aus dem falschen Katalog abgesendet (die beiden Ruleset-Selects sind unabhaengig).
+    if (cur.source === 'assistant' && cur.ruleset && $('ruleset').value !== cur.ruleset
+        && [...$('ruleset').options].some(o => o.value === cur.ruleset)) {
+      $('ruleset').value = cur.ruleset;
+      loadScopeProfilesForRunDialog();
+      return;
+    }
     const isSaved = cur.source === 'saved';
     $('runScopingSummaryLabel').textContent = isSaved ? ('Katalog-Auswahl (Scope „' + cur.name + '")')
       : 'Katalog-Auswahl (aus Assistent, Schritt Scoping)';
@@ -4106,6 +4201,7 @@ function startAssistent() {
   asst.visited.clear();
   asst.queryIds.clear();
   asst.sodRuleIds.clear();
+  asst.scopeStage = 'query';
   $('assistentStepper').style.display = '';
   goToAsstStep(1);
 }

@@ -494,6 +494,46 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Link ausgeblendet (kein Rücksprung zu Assistent-Schritt ③ bei einem gespeicherten Scope); Reset
   auf „kein gespeicherter Scope" stellt das alte Dropdown wieder her; danach Löschen bestätigt.
   Keine Konsolenfehler.
+- [x] **Katalog-Auswahl verfeinert (Nutzer-Feedback nach erster Nutzung): Bezeichnung- statt
+  ID-Filter, mehr Zeilen, bidirektionale Einzelfilter↔SoD-Verknüpfung, zweistufiger Ablauf.**
+  Betrifft Assistent Schritt ③ **und** die Admin-Seite „Scope" (Nutzer-Wunsch: beide
+  Oberflächen). Vier Korrekturen:
+  1. **Namensmuster matcht nur noch die Bezeichnung** (`shortDescription || description`, dieselbe
+     Spalte wie in der Tabelle) statt zusätzlich die ID — ID-Treffer waren „ungünstig"
+     (Nutzer-Zitat), da IDs oft keine sprechenden Substrings tragen.
+  2. **Tabelle zeigt ~20 Zeilen ohne Scrollen** (`max-height` von `280px` auf `min(620px, 65vh)`),
+     mehr Scrollen darüber hinaus ist bewusst in Kauf genommen.
+  3. **Bidirektionale Verknüpfung** über die CNF-Klausel-Struktur (`clauses: [[qid,...],...]`,
+     jetzt zusätzlich in `GET /admin/rulesets/{r}/sodrules` projiziert, lag in `_merged_sodrules()`
+     schon vor) — **„nur mögliche SoD-Regeln"**-Umschalter (Pill „alle"/„nur mögliche") in Stufe 2:
+     eine Regel gilt als möglich, wenn jede ihrer Klauseln mindestens eine Query der
+     Einzelfilter-Auswahl enthält (clientseitig berechnet, keine neue Cypher-Logik). Nur `kpmg_r3`
+     hat heute CNF-Klauseln (CSI/CSI_BI: 0 von je 455 Regeln) — dort zeigt der Umschalter
+     stattdessen einen Hinweis („keine Klausel-Struktur, automatische Verknüpfung nicht möglich")
+     und bleibt auf „alle". **Korrektheits-Sicherheitsnetz:** da
+     `materialize_matches_candidates.cypher` bei gesetzten `queryIds` diese **immer** vor der
+     SoD-Regel-Ableitung priorisiert, würde eine gewählte SoD-Regel ohne alle ihre Klausel-Queries
+     in der Einzelfilter-Auswahl sonst nie erfüllbar sein (stille Fehlauswertung) — eine neue
+     `effectiveQueryIds()`-Funktion ergänzt beim Finalisieren automatisch **additiv** (nie
+     löschend) die fehlenden Klausel-Queries; Summary/Speichern-Zusammenfassung weisen „davon N
+     automatisch ergänzt" separat aus.
+  4. **Zweistufiger Ablauf** statt zwei Panels nebeneinander: **Stufe 1 Einzelfilter** (optional,
+     überspringbar) → **Stufe 2 SoD-Regeln** (mit dem „nur mögliche"-Umschalter). Im Assistenten
+     als erzwungene Mini-Navigation innerhalb Schritt ③ (`asst.scopeStage`, „Weiter"/„Zurück"
+     zwischen den Stufen, wie der übrige Assistent); auf der Admin-Seite „Scope" als **frei
+     klickbarer** Mini-Stepper „① Einzelfilter · ② SoD-Regeln · ③ Speichern" (kein erzwungener
+     linearer Zwang — ein bestehender Scope öffnet direkt bei ③ mit Rücksprung in ①/② zum
+     Nachjustieren, ein neuer startet bei ①). Layout je Stufe jetzt vollbreites Einzelpanel statt
+     Zwei-Spalten-Grid (mehr Platz für die höhere Tabelle).
+  Verifiziert gegen den laufenden Container: Namensmuster, das nur in einer ID (nicht der
+  Bezeichnung) vorkommt, liefert jetzt 0 Treffer, ein Bezeichnungs-Muster weiterhin Treffer;
+  Modul-Filter „Basis Module" + „alle wählen" (90 Queries) → Stufe 2 zeigt unter „nur mögliche"
+  automatisch exakt `BCX_0001/0002/0003` (3 von 22 Regeln) — genau das vom Nutzer vorhergesagte
+  Beispiel; ohne Stufe-1-Auswahl bleibt der Default korrekt „alle" (sonst wäre „nur mögliche"
+  leer); eine SoD-Regel ohne vorherige Einzelfilter-Auswahl gewählt → Speichern-Zusammenfassung
+  weist alle 5 benötigten Klausel-Queries korrekt als „automatisch ergänzt" aus; bestehender
+  Scope öffnet direkt bei Stufe „Speichern", Rücksprung nach „Einzelfilter" zeigt die
+  gespeicherte Auswahl korrekt vorbelegt. Keine Konsolenfehler auf beiden Oberflächen.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`

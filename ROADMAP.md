@@ -115,7 +115,10 @@ scoped SoD-Konflikte — nur die Klausel-Queries der gewählten Regeln materiali
 Katalog-Auswahl wie im Assistenten, aber benannt gespeichert je Ruleset unter
 `rules/<Ruleset>/scope_profiles.custom.json` — git-getrackt wie die Query-/SoD-Overlays, da
 keine Mandantendaten enthalten — und im „Neuer Lauf"-Dialog auswählbar, unabhängig vom
-Assistenten und über Datasets hinweg wiederverwendbar).
+Assistenten und über Datasets hinweg wiederverwendbar) + **verfeinerter Katalog-Browser**
+(Namensmuster filtert nur die Bezeichnung, ~20 Tabellenzeilen ohne Scrollen, zweistufiger Ablauf
+Einzelfilter→SoD-Regeln mit „nur mögliche SoD-Regeln"-Umschalter über die CNF-Klausel-Struktur,
+inkl. automatischer additiver Ergänzung fehlender Klausel-Queries beim Finalisieren).
 
 - [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten", noch offen): „wer kann *Funktion* in
   *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…
