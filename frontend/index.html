@@ -435,6 +435,26 @@
           <button type="button" class="pill" data-value="false">nicht sleeping</button>
           <button type="button" class="pill" data-value="unknown" title="kein Logon-Datum im Quellextrakt (TRDAT fehlt)">unbekannt</button>
         </div>
+        <span class="muted" style="font-size:12px" id="sleepDaysLabel">Tage:</span>
+        <div class="pillgroup" id="sleepDaysPills">
+          <button type="button" class="pill active" data-value="" title="Fenster des Laufs (sleepDays)">Lauf-Standard</button>
+          <button type="button" class="pill" data-value="90">90</button>
+          <button type="button" class="pill" data-value="180">180</button>
+          <button type="button" class="pill" data-value="360">360</button>
+        </div>
+        <span class="muted" style="font-size:12px" id="lockedLabel">Gesperrt:</span>
+        <div class="pillgroup" id="lockedPills">
+          <button type="button" class="pill active" data-value="">alle</button>
+          <button type="button" class="pill" data-value="true">gesperrt</button>
+          <button type="button" class="pill" data-value="false">nicht gesperrt</button>
+        </div>
+        <span class="muted" style="font-size:12px" id="lockReasonLabel">Sperrgrund:</span>
+        <div class="pillgroup" id="lockReasonPills">
+          <button type="button" class="pill active" data-value="alle">alle</button>
+          <button type="button" class="pill" data-value="failed_logons">Fehlanmeldungen</button>
+          <button type="button" class="pill" data-value="admin_local">Admin (lokal)</button>
+          <button type="button" class="pill" data-value="admin_global">Admin (global)</button>
+        </div>
         <div class="pillgroup" id="viewTogglePills" style="margin-left:auto">
           <button type="button" class="pill active" data-value="table">Tabelle</button>
           <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (Cytoscape.js)">Graph</button>
@@ -1167,12 +1187,18 @@ $('cmdExport').onclick = () => {
     return;
   }
   const rc = ruleCritValue, sl = sleepingValue;
+  const sdOv = (sl === 'true' || sl === 'false') ? sleepDaysOverrideValue : '';
+  const lk = lockedValue;
+  const lkr = (lk === 'true' && lockReasonValue !== 'alle') ? lockReasonValue : '';
   let url = '/findings/export?runId=' + encodeURIComponent(activeRunId);
   if (u) url += '&user=' + encodeURIComponent(u);
   if (r) url += '&rule=' + encodeURIComponent(r);
   uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
   if (rc) url += '&ruleCriticality=' + encodeURIComponent(rc);
   if (sl) url += '&sleeping=' + sl;
+  if (sdOv) url += '&sleepDaysOverride=' + sdOv;
+  if (lk) url += '&locked=' + lk;
+  if (lkr) url += '&lockReason=' + lkr;
   location.href = url;
 };
 $('cmdExplain').onclick = () => {
@@ -2389,7 +2415,9 @@ async function showFindings(runId) {
   $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
   resetUserTypeFilter();
   ruleCritValue = ''; resultTypeValue = ''; sleepingValue = ''; userMatchedQueryIds = null;
+  sleepDaysOverrideValue = ''; lockedValue = ''; lockReasonValue = 'alle';
   renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
+  renderSleepDaysPills(); renderLockedPills(); renderLockReasonPills();
   hideFilterActive(); updateResultContext('', ''); renderCausingActors(null);
   refreshKpis({});
   // Parallel laden (nicht sequenziell) und ERST rendern, wenn beides da ist -- sonst ist
@@ -2439,6 +2467,9 @@ async function refreshKpis(f) {
   (f.userTypes || []).forEach(t => url += '&userType=' + encodeURIComponent(t));
   if (f.ruleCriticality) url += '&ruleCriticality=' + encodeURIComponent(f.ruleCriticality);
   if (f.sleeping) url += '&sleeping=' + f.sleeping;
+  if (f.sleepDaysOverride) url += '&sleepDaysOverride=' + f.sleepDaysOverride;
+  if (f.locked) url += '&locked=' + f.locked;
+  if (f.lockReason) url += '&lockReason=' + f.lockReason;
   setKpis(await api(url));
 }
 
@@ -2575,21 +2606,54 @@ function hideFilterActive() { $('filterActive').classList.remove('show'); }
 const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
 
 let ruleCritValue = '', resultTypeValue = '', sleepingValue = '';
+let sleepDaysOverrideValue = '', lockedValue = '', lockReasonValue = 'alle';
 function renderRuleCritPills() {
   document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === ruleCritValue));
 }
 function renderResultTypePills() {
   document.querySelectorAll('#resultTypePills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === resultTypeValue));
-  /* Sleeping ist nur fuer "alle" (= unverfaelschte SoD-Findings-Sicht) sinnvoll; bei
-     "Einzelfilter" gibt es ohnehin kein Sleeping-Konzept, bei "SoD" ausdruecklich nicht mehr
+  /* Sleeping/Gesperrt sind nur fuer "alle" (= unverfaelschte SoD-Findings-Sicht) sinnvoll; bei
+     "Einzelfilter" gibt es ohnehin kein Sleeping-/Sperr-Konzept, bei "SoD" ausdruecklich nicht mehr
      anwendbar gewuenscht. */
   const showSleeping = resultTypeValue === '';
   $('sleepingLabel').style.display = showSleeping ? '' : 'none';
   $('sleepingPills').style.display = showSleeping ? '' : 'none';
+  $('lockedLabel').style.display = showSleeping ? '' : 'none';
+  $('lockedPills').style.display = showSleeping ? '' : 'none';
   if (!showSleeping && sleepingValue) { sleepingValue = ''; renderSleepingPills(); }
+  if (!showSleeping && lockedValue) { lockedValue = ''; renderLockedPills(); }
+  renderSleepDaysVisibility();
+  renderLockReasonVisibility();
 }
 function renderSleepingPills() {
   document.querySelectorAll('#sleepingPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === sleepingValue));
+  renderSleepDaysVisibility();
+}
+/* Sleeping-Schnellwahl (90/180/360 Tage) nur sinnvoll/sichtbar, wenn ueberhaupt nach sleeping
+   gefiltert wird (sonst greift kein Tage-Fenster) -- schaltet serverseitig von der beim Lauf
+   materialisierten f.userSleeping auf eine Live-Berechnung gegen u.lastLogon um (s. _FINDINGS_WHERE). */
+function renderSleepDaysVisibility() {
+  const show = resultTypeValue === '' && (sleepingValue === 'true' || sleepingValue === 'false');
+  $('sleepDaysLabel').style.display = show ? '' : 'none';
+  $('sleepDaysPills').style.display = show ? '' : 'none';
+}
+function renderSleepDaysPills() {
+  document.querySelectorAll('#sleepDaysPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === sleepDaysOverrideValue));
+}
+function renderLockedPills() {
+  document.querySelectorAll('#lockedPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === lockedValue));
+  renderLockReasonVisibility();
+}
+/* Sperrgrund-Auswahl nur sichtbar/wirksam bei "gesperrt" -- bei "alle"/"nicht gesperrt" gibt es
+   keinen Sperrgrund zu waehlen. Funktioniert nur fuer Laeufe, die gesperrte User nicht schon beim
+   Materialisieren ausgeschlossen haben (s. _FINDINGS_WHERE-Kommentar). */
+function renderLockReasonVisibility() {
+  const show = resultTypeValue === '' && lockedValue === 'true';
+  $('lockReasonLabel').style.display = show ? '' : 'none';
+  $('lockReasonPills').style.display = show ? '' : 'none';
+}
+function renderLockReasonPills() {
+  document.querySelectorAll('#lockReasonPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === lockReasonValue));
 }
 document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.addEventListener('click', () => {
   ruleCritValue = b.dataset.value; renderRuleCritPills(); renderRuleSelect(); applyFilters();
@@ -2599,6 +2663,15 @@ document.querySelectorAll('#resultTypePills .pill').forEach(b => b.addEventListe
 }));
 document.querySelectorAll('#sleepingPills .pill').forEach(b => b.addEventListener('click', () => {
   sleepingValue = b.dataset.value; renderSleepingPills(); applyFilters();
+}));
+document.querySelectorAll('#sleepDaysPills .pill').forEach(b => b.addEventListener('click', () => {
+  sleepDaysOverrideValue = b.dataset.value; renderSleepDaysPills(); applyFilters();
+}));
+document.querySelectorAll('#lockedPills .pill').forEach(b => b.addEventListener('click', () => {
+  lockedValue = b.dataset.value; renderLockedPills(); applyFilters();
+}));
+document.querySelectorAll('#lockReasonPills .pill').forEach(b => b.addEventListener('click', () => {
+  lockReasonValue = b.dataset.value; renderLockReasonPills(); applyFilters();
 }));
 
 function renderMatchesTable(rows) {
@@ -2640,7 +2713,10 @@ async function applyFilters() {
     return;
   }
   const sl = sleepingValue;
-  if (!u && !r && !uts.length && !rc && !sl) {
+  const sdOv = (sl === 'true' || sl === 'false') ? sleepDaysOverrideValue : '';
+  const lk = lockedValue;
+  const lkr = (lk === 'true' && lockReasonValue !== 'alle') ? lockReasonValue : '';
+  if (!u && !r && !uts.length && !rc && !sl && !lk) {
     renderFindingsTable(allFindingsForRun, true); setFindingsMeta(allFindingsForRun.length);
     hideFilterActive(); refreshKpis({}); renderCausingActors(null); return;
   }
@@ -2650,14 +2726,20 @@ async function applyFilters() {
   uts.forEach(t => url += '&userType=' + encodeURIComponent(t));
   if (rc) url += '&ruleCriticality=' + encodeURIComponent(rc);
   if (sl) url += '&sleeping=' + sl;
+  if (sdOv) url += '&sleepDaysOverride=' + sdOv;
+  if (lk) url += '&locked=' + lk;
+  if (lkr) url += '&lockReason=' + lkr;
   const rows = await api(url);
   renderFindingsTable(rows);
   setFindingsMeta(rows.length);
+  const lockReasonLabels = { failed_logons: 'Fehlanmeldungen', admin_local: 'Admin (lokal)', admin_global: 'Admin (global)' };
   showFilterActive([u && `User „${u}"`, r && `Regel „${r}"`, uts.length && `Typ ${uts.join('+')}`,
     rc && `Kritikalität „${rc}"`,
-    sl && (sl === 'true' ? 'nur sleeping' : sl === 'false' ? 'nicht sleeping' : 'nur unbekannt (kein Logon-Datum)')]
+    sl && (sl === 'true' ? `nur sleeping${sdOv ? ' (' + sdOv + ' Tage)' : ''}` : sl === 'false' ? `nicht sleeping${sdOv ? ' (' + sdOv + ' Tage)' : ''}` : 'nur unbekannt (kein Logon-Datum)'),
+    lk && (lk === 'true' ? `gesperrt${lkr ? ' · ' + lockReasonLabels[lkr] : ''}` : 'nicht gesperrt')]
     .filter(Boolean).join(' · '));
-  refreshKpis({ user: u, rule: r, userTypes: uts, ruleCriticality: rc, sleeping: sl });
+  refreshKpis({ user: u, rule: r, userTypes: uts, ruleCriticality: rc, sleeping: sl,
+    sleepDaysOverride: sdOv, locked: lk, lockReason: lkr });
   renderCausingActors((u && r && rows.length === 1) ? rows[0] : null);
 }
 
@@ -2665,7 +2747,9 @@ $('filterResetBtn').onclick = () => {
   $('filterUser').value = ''; $('filterRule').value = ''; $('filterQuery').value = '';
   resetUserTypeFilter();
   ruleCritValue = ''; resultTypeValue = ''; sleepingValue = ''; userMatchedQueryIds = null;
+  sleepDaysOverrideValue = ''; lockedValue = ''; lockReasonValue = 'alle';
   renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
+  renderSleepDaysPills(); renderLockedPills(); renderLockReasonPills();
   renderRuleSelect(); renderQuerySelect();
   renderFindingsTable(allFindingsForRun, true); setFindingsMeta(allFindingsForRun.length);
   hideFilterActive(); updateResultContext('', ''); renderCausingActors(null); refreshKpis({});
@@ -3049,6 +3133,7 @@ function jumpToQueryFilter(qid) {
   showResultsView();
   $('filterUser').value = ''; $('filterRule').value = '';
   ruleCritValue = ''; renderRuleCritPills(); sleepingValue = ''; renderSleepingPills();
+  lockedValue = ''; renderLockedPills();
   resultTypeValue = 'query'; renderResultTypePills();
   $('filterQuery').value = qid;
   applyFilters();
@@ -3056,9 +3141,10 @@ function jumpToQueryFilter(qid) {
 function jumpToRuleFilter(ruleId) {
   showResultsView();
   $('filterUser').value = ''; $('filterQuery').value = '';
-  // Stehengebliebene Kritikalitaets-/Sleeping-Filter zuruecksetzen -- sonst koennte ein Klick
-  // auf eine Regel mit echten Treffern durch einen unpassenden Alt-Filter "0 Findings" zeigen.
+  // Stehengebliebene Kritikalitaets-/Sleeping-/Sperr-Filter zuruecksetzen -- sonst koennte ein
+  // Klick auf eine Regel mit echten Treffern durch einen unpassenden Alt-Filter "0 Findings" zeigen.
   ruleCritValue = ''; renderRuleCritPills(); sleepingValue = ''; renderSleepingPills();
+  lockedValue = ''; renderLockedPills();
   resultTypeValue = 'sod'; renderResultTypePills();
   renderRuleSelect(); $('filterRule').value = ruleId;
   applyFilters();

@@ -2098,15 +2098,34 @@ def list_runs():
 
 
 _FINDINGS_WHERE = (
+    # effSleeping/effLastLogonKnown: ohne $sleepDaysOverride die beim Lauf materialisierten Werte
+    # (f.userSleeping/f.lastLogonKnown, fest an run.sleepDays gebunden) -- mit Override live gegen
+    # u.lastLogon/run.asOf gerechnet (identische Formel wie _USER_ENRICH_RETURN), damit die
+    # Sleeping-Schnellwahl (90/180/360 Tage) im Ergebnisfilter unabhaengig vom beim Lauf gewaehlten
+    # Fenster funktioniert, ohne den Lauf neu zu materialisieren.
+    "WITH u, f, rule, run, "
+    "     CASE WHEN $sleepDaysOverride IS NULL THEN coalesce(f.userSleeping,false) "
+    "          ELSE (u.lastLogon IS NOT NULL AND u.lastLogon < (run.asOf - duration({days: $sleepDaysOverride}))) END AS effSleeping, "
+    "     CASE WHEN $sleepDaysOverride IS NULL THEN coalesce(f.lastLogonKnown,true) "
+    "          ELSE (u.lastLogon IS NOT NULL) END AS effLastLogonKnown "
     "WHERE coalesce(f.criticalityRank,0) >= $minRank "
     "  AND ($user IS NULL OR u.id = $user) "
     "  AND ($rule IS NULL OR f.ruleId = $rule) "
     "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
     "  AND ($sleeping IS NULL "
-    "       OR ($sleeping = 'true' AND coalesce(f.userSleeping,false) = true) "
-    "       OR ($sleeping = 'false' AND coalesce(f.userSleeping,false) = false AND coalesce(f.lastLogonKnown,true) = true) "
-    "       OR ($sleeping = 'unknown' AND coalesce(f.lastLogonKnown,true) = false)) "
+    "       OR ($sleeping = 'true' AND effSleeping = true) "
+    "       OR ($sleeping = 'false' AND effSleeping = false AND effLastLogonKnown = true) "
+    "       OR ($sleeping = 'unknown' AND effLastLogonKnown = false)) "
     "  AND ($ruleCriticality IS NULL OR f.criticality = $ruleCriticality) "
+    # locked/lockReason: Sperrstatus/-grund liegen direkt am User (u.lockReasons, aus dem UFLAG-
+    # Bitfeld, s. load/01_users.cypher) -- kein materialisiertes Aequivalent am Finding noetig.
+    # Funktioniert nur fuer Laeufe, die gesperrte User nicht schon beim Materialisieren ausgeschlossen
+    # haben (excludeLocked=false, s. userTypeProfile) -- sonst existieren dafuer schlicht keine
+    # Findings.
+    "  AND ($locked IS NULL "
+    "       OR ($locked = 'true' AND 'Locked' IN labels(u) "
+    "           AND ($lockReason IS NULL OR $lockReason = 'alle' OR $lockReason IN coalesce(u.lockReasons,[]))) "
+    "       OR ($locked = 'false' AND NOT 'Locked' IN labels(u))) "
 )
 
 
@@ -2114,40 +2133,50 @@ _FINDINGS_WHERE = (
 def findings(runId: str, minRank: int = 0, limit: int = 200,
              user: str | None = None, rule: str | None = None,
              userType: list[str] = Query(default=[]), sleeping: str | None = None,
-             ruleCriticality: str | None = None):
-    """Findings eines Laufs; optional auf User/Regel/Nutzertyp(en)/Sleeping/Kritikalitaet
-    eingeschraenkt (Drill-down: Klick auf User-/Regel-Zelle, oder Ergebnisfilter in der Sidebar).
-    sleeping: 'true' (bestaetigt sleeping) / 'false' (bestaetigt aktiv) / 'unknown' (kein TRDAT)."""
+             ruleCriticality: str | None = None, sleepDaysOverride: int | None = None,
+             locked: str | None = None, lockReason: str | None = None):
+    """Findings eines Laufs; optional auf User/Regel/Nutzertyp(en)/Sleeping/Kritikalitaet/
+    Sperrstatus eingeschraenkt (Drill-down: Klick auf User-/Regel-Zelle, oder Ergebnisfilter in
+    der Sidebar). sleeping: 'true' (bestaetigt sleeping) / 'false' (bestaetigt aktiv) / 'unknown'
+    (kein TRDAT). sleepDaysOverride: weicht vom beim Lauf gesetzten sleepDays-Fenster ab (Sleeping-
+    Schnellwahl 90/180/360) -- schaltet die Sleeping-Berechnung von materialisiert auf live gegen
+    u.lastLogon um. locked: 'true'/'false'; lockReason: 'alle'/'failed_logons'/'admin_local'/
+    'admin_global' (nur wirksam bei locked='true')."""
     with driver.session() as s:
         return [jsonable(dict(r)) for r in s.run(
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
+            "MATCH (run:Run {runId:$runId}) "
             + _FINDINGS_WHERE +
             "RETURN u.id AS user, f.ruleId AS rule, f.criticality AS criticality, "
-            "       coalesce(f.userSleeping,false) AS sleeping, "
-            "       coalesce(f.lastLogonKnown,true) AS lastLogonKnown, f.conflictType AS conflictType, "
+            "       effSleeping AS sleeping, effLastLogonKnown AS lastLogonKnown, "
+            "       f.conflictType AS conflictType, "
             "       [(f)-[:VIA_ROLE]->(r) | r.id] AS roles, "
             "       [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles "
             "ORDER BY coalesce(f.criticalityRank,0) DESC, user LIMIT $limit",
             runId=runId, minRank=minRank, limit=limit, user=user, rule=rule,
-            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality)]
+            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality,
+            sleepDaysOverride=sleepDaysOverride, locked=locked, lockReason=lockReason)]
 
 
 @app.get("/findings/summary")
 def findings_summary(runId: str, minRank: int = 0, user: str | None = None, rule: str | None = None,
                       userType: list[str] = Query(default=[]), sleeping: str | None = None,
-                      ruleCriticality: str | None = None):
+                      ruleCriticality: str | None = None, sleepDaysOverride: int | None = None,
+                      locked: str | None = None, lockReason: str | None = None):
     """KPI-Aggregate (Findings/betroffene Regeln/sleeping/unbekannt) fuer den aktuellen
     Filterkontext — unabhaengig vom Limit der Findings-Liste, damit die KPI-Kacheln zum
-    gewaehlten Filter passen."""
+    gewaehlten Filter passen. Parameter s. GET /findings."""
     with driver.session() as s:
         rec = s.run(
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
+            "MATCH (run:Run {runId:$runId}) "
             + _FINDINGS_WHERE +
             "RETURN count(f) AS findings, count(DISTINCT f.ruleId) AS rules, "
-            "       sum(CASE WHEN coalesce(f.userSleeping,false) THEN 1 ELSE 0 END) AS sleeping, "
-            "       sum(CASE WHEN NOT coalesce(f.lastLogonKnown,true) THEN 1 ELSE 0 END) AS unknownLogon",
+            "       sum(CASE WHEN effSleeping THEN 1 ELSE 0 END) AS sleeping, "
+            "       sum(CASE WHEN NOT effLastLogonKnown THEN 1 ELSE 0 END) AS unknownLogon",
             runId=runId, minRank=minRank, user=user, rule=rule,
-            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality).single()
+            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality,
+            sleepDaysOverride=sleepDaysOverride, locked=locked, lockReason=lockReason).single()
         return jsonable(dict(rec))
 
 
@@ -2423,7 +2452,8 @@ def root_cause(runId: str, user: str, query: str | None = None, rule: str | None
 @app.get("/findings/export")
 def export_findings(runId: str, minRank: int = 0, user: str | None = None, rule: str | None = None,
                      userType: list[str] = Query(default=[]), sleeping: str | None = None,
-                     ruleCriticality: str | None = None):
+                     ruleCriticality: str | None = None, sleepDaysOverride: int | None = None,
+                     locked: str | None = None, lockReason: str | None = None):
     """Findings eines Laufs als CSV (Semikolon, UTF-8-BOM -> Excel-tauglich) — Ergebnis-Export
     getrennt vom Quell-Backup. Nimmt dieselben Filter-Parameter wie GET /findings (identische
     _FINDINGS_WHERE) an, damit der Export standardmaessig zur gerade angezeigten (gefilterten)
@@ -2432,18 +2462,20 @@ def export_findings(runId: str, minRank: int = 0, user: str | None = None, rule:
     with driver.session() as s:
         rows = list(s.run(
             "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {runId:$runId})-[:BASED_ON]->(rule:SoDRule) "
+            "MATCH (run:Run {runId:$runId}) "
             + _FINDINGS_WHERE +
             "RETURN u.id AS user, f.ruleId AS rule, "
             "coalesce(rule.shortDescription, rule.description, '') AS ruleName, "
             "f.ruleset AS ruleset, f.dataset AS dataset, "
             "f.criticality AS criticality, coalesce(f.criticalityRank,0) AS criticalityRank, "
-            "coalesce(f.userSleeping,false) AS sleeping, coalesce(f.lastLogonKnown,true) AS lastLogonKnown, "
+            "effSleeping AS sleeping, effLastLogonKnown AS lastLogonKnown, "
             "f.conflictType AS conflictType, "
             "[(f)-[:VIA_ROLE]->(r) | r.id] AS roles, [(f)-[:VIA_PROFILE]->(p) | p.id] AS profiles, "
             "f.reasonCode AS reasonCode "
             "ORDER BY criticalityRank DESC, user",
             runId=runId, minRank=minRank, user=user, rule=rule,
-            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality))
+            userTypes=userType, sleeping=sleeping, ruleCriticality=ruleCriticality,
+            sleepDaysOverride=sleepDaysOverride, locked=locked, lockReason=lockReason))
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=";")
     w.writerow(["user", "rule", "ruleName", "ruleset", "dataset", "criticality", "criticalityRank",

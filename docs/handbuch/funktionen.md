@@ -139,8 +139,16 @@ gewählten Einzelfilter bzw. SoD-Regeln zur Auswahl — nicht der gesamte Rulese
 
 Über der Ergebnistabelle, in einer eigenen Zeile: **Kritikalität** (very-critical…low) immer,
 **Ergebnistyp** (`alle` / `Einzelfilter` / `SoD`) **nur außerhalb der Einstiegstabelle** (s. u.)
-und — nur bei Ergebnistyp „alle" — **Sleeping** (`alle` / `nur sleeping` / `nicht sleeping`) als
-farbige Klick-Buttons (Pills), wirken sofort. Rechtsbündig in derselben Zeile: der **Tabelle/
+und — nur bei Ergebnistyp „alle" — **Sleeping** (`alle` / `nur sleeping` / `nicht sleeping` /
+`unbekannt`) sowie **Gesperrt** (`alle` / `gesperrt` / `nicht gesperrt`) als farbige Klick-Buttons
+(Pills), wirken sofort. Bei „nur sleeping"/„nicht sleeping" erscheint zusätzlich eine
+**Tage-Schnellwahl** (`Lauf-Standard` / `90` / `180` / `360`) — weicht sie vom beim Lauf gesetzten
+`sleepDays`-Fenster ab, rechnet der Filter live gegen das Logon-Datum statt gegen den beim Lauf
+materialisierten Wert (funktioniert nur, wenn TRDAT im Extrakt vorhanden ist). Bei „gesperrt"
+erscheint zusätzlich der **Sperrgrund** (`alle` / `Fehlanmeldungen` / `Admin (lokal)` /
+`Admin (global)`, aus dem UFLAG-Bitfeld) — wirkt nur für Läufe, die gesperrte User nicht bereits
+beim Materialisieren ausgeschlossen haben (Nutzertyp-Profil ohne „nicht gesperrt", s. o.), sonst
+fehlen deren Findings von vornherein. Rechtsbündig in derselben Zeile: der **Tabelle/
 Graph-Umschalter** (Graph ist als Vorgriff auf das künftige Cytoscape.js-Frontend angelegt,
 für SoD-Konfliktpfade aktuell noch deaktiviert — „kommt später"; für die Konsistenzchecks A1–A3
 bereits scharf, s. Kapitel Konsistenzchecks). „Einzelfilter" zeigt die **Matches-Tabelle** („wer matcht

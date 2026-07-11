@@ -156,7 +156,23 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
   Lauf-Karte öffnet einen Dialog mit Titel-Input + mehrzeiliger, per Ziehgriff vergrößerbarer
   Beschreibung (`textarea{resize:vertical}`, analog Risiko-Feld im Editor) — Nutzer-Feedback,
   dass ein einmal vergebener Variantenname bisher nicht korrigierbar war.
-- [~] **Nutzer-Scope verfeinern:** Nutzertyp und Sleeping sind bereits zusätzlich **Ergebnisfilter** (nicht nur Lauf-Kriterium, Details im Archiv). Offen: **Sleeping-Schnellwahl 90/180/360 Tage** als eigenes Eingabefeld (Sleeping ist bisher nur das beim Lauf gesetzte `sleepDays`-Fenster, nicht frei wählbar pro Filter); **Gesperrte nach Sperrtyp** auswählbar (failed_logons / admin_local / admin_global — Daten liegen als `lockReasons` vor) statt nur `excludeLocked`-Bool. *(Sperrtyp-Filter neu.)*
+- [x] **Nutzer-Scope verfeinern — erledigt (2026-07-11).** Nutzertyp und Sleeping waren bereits
+  zusätzlich **Ergebnisfilter** (nicht nur Lauf-Kriterium, Details im Archiv). Jetzt ergänzt:
+  **Sleeping-Schnellwahl 90/180/360 Tage** — erscheint bei „nur sleeping"/„nicht sleeping" als
+  eigene Pillgroup; weicht der gewählte Wert vom beim Lauf gesetzten `sleepDays`-Fenster ab, schaltet
+  `GET /findings`/`/findings/summary`/`/findings/export` (`_FINDINGS_WHERE`, `backend/app.py`) von
+  der materialisierten `f.userSleeping`/`f.lastLogonKnown` auf eine **Live-Berechnung** gegen
+  `u.lastLogon`/`run.asOf` um (gleiche Formel wie `_USER_ENRICH_RETURN`) — ohne Override unverändert
+  die materialisierten Werte. **Gesperrte nach Sperrtyp:** neuer Ergebnisfilter „Gesperrt"
+  (alle/gesperrt/nicht gesperrt) + bei „gesperrt" Sperrgrund-Pills (alle/`failed_logons`/
+  `admin_local`/`admin_global`, direkt gegen `u.lockReasons` — kein materialisiertes Äquivalent
+  am Finding nötig, da `u` in `_FINDINGS_WHERE` bereits gebunden ist). Wirkt nur für Läufe, die
+  gesperrte User nicht schon beim Materialisieren ausgeschlossen haben (`excludeLocked=false`) —
+  sonst fehlen deren Findings von vornherein, dokumentiert im Code-Kommentar. Verifiziert:
+  Pass-Through-Grenzfälle gegen echte Lauf-Daten (`locked=false` bzw. `sleeping=unknown` liefern
+  exakt dieselbe Trefferzahl wie ganz ohne Filter, da dieses Dataset weder TRDAT noch gesperrte
+  User enthält — bekannte Datenlücke) sowie Playwright-UI-Test (Pill-Sichtbarkeit, Request-Parameter,
+  Filter-Chip-Text, Reset).
 - [x] **Evidenz-Perf (2026-07-11) — erledigt.** Vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)`
   (transitive Hülle CONTAINS/HAS_PROFILE, `load/91_materialize_grants.cypher`, einmal je Dataset
   beim Import, ~62s für 5,1 Mio. Kanten) — `explain_sod_one.cypher` nutzt sie jetzt als Lookup statt
