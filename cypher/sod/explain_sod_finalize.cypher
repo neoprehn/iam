@@ -24,15 +24,19 @@ WHERE EXISTS { MATCH (actor)-[:PROVIDES {ruleset:$ruleset}]->(q)<-[:NEEDS]-(:Cla
 MERGE (f)-[:VIA_PROFILE]->(actor);
 
 // --- conflictType: intra, wenn EIN Akteur alle Klauseln deckt; sonst inter -------------------
+// (u bleibt ueber alle WITH-Projektionen gebunden statt in der EXISTS-Klausel erneut ueber
+// (f)<-[:VIOLATES]-(:User) hergeleitet zu werden -- eine SoDConflict-Finding hat ohnehin genau
+// einen violierenden User, die Neuherleitung war ein reiner, je Akteur*Klausel wiederholter
+// Zusatz-Hop ohne semantischen Unterschied. Evidenz-Perf.)
 MATCH (u:User {dataset:$dataset})-[:VIOLATES]->(f:SoDConflict {ruleset:$ruleset, runId:$runId})-[:BASED_ON]->(rule:SoDRule)
 WITH f, u, rule, size([(rule)-[:HAS_CLAUSE]->(c) | c]) AS nClauses
 OPTIONAL MATCH (u)-[g:ASSIGNED_TO|HAS_PROFILE]->(actor)
 WHERE (type(g)='HAS_PROFILE' OR ((g.validFrom IS NULL OR g.validFrom<=$asOf) AND (g.validTo IS NULL OR $asOf<=g.validTo)))
-WITH f, rule, nClauses, actor,
+WITH f, u, rule, nClauses, actor,
      size([ (rule)-[:HAS_CLAUSE]->(cl)
             WHERE actor IS NOT NULL AND EXISTS {
               MATCH (actor)-[:PROVIDES {ruleset:$ruleset}]->(q)<-[:NEEDS]-(cl)
-              WHERE (f)<-[:VIOLATES]-(:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q) } | cl ]) AS nCov
+              WHERE (u)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q) } | cl ]) AS nCov
 WITH f, nClauses, max(nCov) AS bestCoverage
 SET f.conflictType = CASE WHEN nClauses > 0 AND bestCoverage >= nClauses THEN 'intra' ELSE 'inter' END,
     f.viaRoleCount = size([(f)-[:VIA_ROLE]->(r) | r]),

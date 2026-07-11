@@ -4,6 +4,9 @@
 // Statement uebernommen, nur das bisher implizite `actor` (aus der Batch-Zeile) wird jetzt
 // explizit ueber $actorId (elementId) gebunden. PROVIDES ist lauf-unabhaengig (Fakt ueber
 // Akteur+Auths) -> idempotent ge-MERGE-t, ueber Laeufe wiederverwendbar.
+// Evidenz-Perf: die Erreichbarkeit Akteur->Authorization ist die vorab materialisierte
+// GRANTS-Kante (s. load/91_materialize_grants.cypher) statt einer variablen
+// CONTAINS|HAS_PROFILE*0..4-Pfadsuche je Aufruf.
 // Parameter: $ruleset, $dataset, $actorId.
 MATCH (actor) WHERE elementId(actor) = $actorId
 MATCH (of:OrgField {dataset:$dataset})
@@ -15,7 +18,7 @@ WITH actor, q, orgFields, reqs, tcodes, disregard, apoc.coll.toSet([r IN reqs | 
 WHERE
   all(obj IN objects WHERE
     EXISTS {
-      MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:obj})
+      MATCH (actor)-[:GRANTS]->(a:Authorization {dataset:$dataset, object:obj})
       WHERE all(r IN [x IN reqs WHERE x.object=obj] WHERE
               r.field IN orgFields
               OR ( apoc.any.property(a,'f_'+r.field) IS NOT NULL
@@ -30,7 +33,7 @@ WHERE
   )
   AND ( disregard OR size(tcodes)=0 OR '*' IN tcodes OR
     EXISTS {
-      MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:'S_TCODE'})
+      MATCH (actor)-[:GRANTS]->(a:Authorization {dataset:$dataset, object:'S_TCODE'})
       WHERE apoc.any.property(a,'f_TCD') IS NOT NULL
         AND ( '*' IN apoc.any.property(a,'f_TCD')
               OR any(tc IN tcodes WHERE tc IN apoc.any.property(a,'f_TCD')

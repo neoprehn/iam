@@ -157,7 +157,31 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
   Beschreibung (`textarea{resize:vertical}`, analog Risiko-Feld im Editor) — Nutzer-Feedback,
   dass ein einmal vergebener Variantenname bisher nicht korrigierbar war.
 - [~] **Nutzer-Scope verfeinern:** Nutzertyp und Sleeping sind bereits zusätzlich **Ergebnisfilter** (nicht nur Lauf-Kriterium, Details im Archiv). Offen: **Sleeping-Schnellwahl 90/180/360 Tage** als eigenes Eingabefeld (Sleeping ist bisher nur das beim Lauf gesetzte `sleepDays`-Fenster, nicht frei wählbar pro Filter); **Gesperrte nach Sperrtyp** auswählbar (failed_logons / admin_local / admin_global — Daten liegen als `lockReasons` vor) statt nur `excludeLocked`-Bool. *(Sperrtyp-Filter neu.)*
-- [ ] **Evidenz-Perf:** vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)` (transitive Hülle CONTAINS/HAS_PROFILE), damit `explain_sod` (intra/inter + VIA_ROLE) ein Lookup statt variabler Pfadsuche wird → **Evidenz default-on** möglich. *(Optimierung der v1.)*
+- [~] **Evidenz-Perf (2026-07-11).** Vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)`
+  (transitive Hülle CONTAINS/HAS_PROFILE, `load/91_materialize_grants.cypher`, einmal je Dataset
+  beim Import, ~62s für 5,1 Mio. Kanten) — `explain_sod_one.cypher` nutzt sie jetzt als Lookup statt
+  der `CONTAINS|HAS_PROFILE*0..4`-Pfadsuche. **Benchmark-Überraschung:** die Traversierung selbst war
+  in diesem Datenbestand gar nicht der Flaschenhals (~2ms/Akteur vorher, GRANTS spart davon nur
+  ~10–15 %) — die eigentlichen Kostentreiber lagen woanders und wurden mit behoben:
+  1. `_run_phase()` (gemeinsamer Batching-Rahmen für Materialisierung/Auswertung/Evidenz) schrieb
+     nach **jeder einzelnen** Einheit die komplette, wachsende Checkpoint-Liste neu auf die
+     Festplatte (O(n²) bei tausenden Akteuren). **Nutzer-Entscheidung:** Wiederaufnehmen
+     abgebrochener Läufe bleibt wichtiger als ein einziger gebatchter `apoc.periodic.iterate`-Aufruf
+     (der die Pro-Akteur-Resume-Granularität gekostet hätte) — also stattdessen zeitgesteuertes
+     Schreiben (höchstens alle 2s + garantiert am Ende), bei exakt gleicher Resume-Granularität;
+     ein Absturz verliert dadurch höchstens ein paar Sekunden bereits erledigter, aber ohnehin
+     idempotenter (`MERGE`) Arbeit.
+  2. `explain_sod_finalize.cypher` (intra/inter-Berechnung) leitete den violierenden User in der
+     verschachtelten `EXISTS`-Klausel je Akteur×Klausel **redundant neu her**
+     (`(f)<-[:VIOLATES]-(:User)-[:MATCHES]->(q)`), obwohl `u` aus dem äußeren `MATCH` bereits
+     gebunden war und nur durch ein zwischenzeitliches `WITH` aus dem Scope gefallen ist — Fix:
+     `u` durchreichen, direkt `(u)-[:MATCHES]->(q)` prüfen. **Effekt: 53,5s → 0,7s** (72×) für
+     501 Findings.
+  **Gesamtergebnis (verifiziert, bit-identische Resultate vor/nach allen drei Fixes):** kompletter
+  `/runs/{id}/explain`-Durchlauf für ~4.200 Akteure/501 Findings von ~90–100s auf **~27,6s**
+  (≈3,5×). **Noch offen:** ob **Evidenz default-on** jetzt sinnvoll ist, ist eine bewusste
+  Abwägung (27s zusätzliche Laufzeit **je Lauf**, nicht mehr nur bei explizitem Klick auf
+  „Evidenz") — Entscheidung steht noch aus, `skipExplain` bleibt vorerst `True`.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mit vorhandenen Daten:

@@ -10,6 +10,7 @@ import re
 import io
 import csv
 import json
+import time
 import uuid
 import shutil
 import zipfile
@@ -297,8 +298,14 @@ def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
     ermitteln -> pro Einheit' statt als ein einziger, nicht unterbrechbarer Aufruf. Bei
     resume_units (nicht leer): reset_rel_path wird uebersprungen (sonst waeren bereits fertige
     Einheiten wieder weg) und bereits erledigte Einheiten werden nicht erneut gerechnet.
-    Schreibt nach JEDER Einheit einen Checkpoint (data/<dataset>/_run_state.json bzw. das vom
-    Aufrufer uebergebene state_path) -- ein Absturz verliert hoechstens eine Einheit."""
+    Checkpoint (data/<dataset>/_run_state.json bzw. das vom Aufrufer uebergebene state_path) wird
+    zeitgesteuert geschrieben (hoechstens alle CHECKPOINT_MIN_INTERVAL Sekunden, plus garantiert
+    nach der letzten Einheit) statt nach JEDER Einheit -- ein volles Neuschreiben der wachsenden
+    completedUnits-Liste bei jeder Einheit ist O(n^2) und wurde bei mehreren tausend Einheiten
+    (z. B. Evidenz-Akteure) zum dominanten Zeitfresser, weit vor der eigentlichen Cypher-Query
+    (s. Evidenz-Perf-Benchmark). Ein Absturz verliert dadurch hoechstens die letzten paar Sekunden
+    bereits erledigter Einheiten -- unkritisch, da jede Einheit idempotent per MERGE schreibt und
+    beim Resume einfach nochmal (billig) laeuft."""
     if not resume_units and reset_rel_path:
         run_file(s, reset_rel_path, params)
 
@@ -307,7 +314,13 @@ def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
     completed = list(resume_units)
     completed_set = set(completed)
 
+    def _persist():
+        _write_checkpoint(state_path, {**checkpoint_extra, "phase": phase,
+                                       "completedUnits": completed, "unitTotal": total})
+
     jobs[job_id].update(step=step_label, stepNum=len(completed), stepTotal=total)
+    CHECKPOINT_MIN_INTERVAL = 2.0   # Sekunden
+    last_persist = time.monotonic()
     for unit_id in candidates:
         if unit_id in completed_set:
             continue
@@ -316,10 +329,14 @@ def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
         completed.append(unit_id)
         completed_set.add(unit_id)
         jobs[job_id].update(stepNum=len(completed), stepTotal=total)
-        _write_checkpoint(state_path, {**checkpoint_extra, "phase": phase,
-                                       "completedUnits": completed, "unitTotal": total})
+        now = time.monotonic()
+        if now - last_persist >= CHECKPOINT_MIN_INTERVAL:
+            _persist()
+            last_persist = now
     jobs[job_id].pop("stepNum", None)
     jobs[job_id].pop("stepTotal", None)
+    if completed:
+        _persist()   # garantierter Abschluss-Checkpoint, auch wenn das Intervall nicht erreicht wurde
 
 
 def _explain_one(s, job_id: str, *, ruleset: str, dataset: str, as_of, run_id: str,

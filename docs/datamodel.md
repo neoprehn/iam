@@ -85,9 +85,15 @@ Knoten, dessen Feldwerte als **Properties** anliegen. Identität entsteht über 
 | `CONTAINS` | `Profile`(Collective) → `Profile`(Single) | UST10C | — |
 | `HAS_REFERENCE` | `User` → `User` (Referenzbenutzer) | USREFUS | — |
 | `HAS_MENU` | `Role` → `Transaction` (Rollenmenü, informativ) | AGR_TCODES | — |
+| `GRANTS` | `Role`/`Profile` → `Authorization` | abgeleitet (`load/91_materialize_grants.cypher`) | — |
 
 **Invariante:** Kanten verlaufen immer *innerhalb* eines `dataset` (beide Endpunkte teilen
 denselben `dataset`-Wert). Ein Extrakt ist self-contained.
+
+**`GRANTS` ist keine Rohdaten-Kante**, sondern die vorab geflachte transitive Hülle über
+`CONTAINS`/`HAS_PROFILE` bis zur `Authorization` (Evidenz-Perf) — spart die sonst nötige
+`CONTAINS|HAS_PROFILE*0..4`-Pfadsuche bei jeder Auswertung. Wird einmal je Dataset beim Import
+materialisiert (nicht je Ruleset/Lauf), regeneriert sich bei jedem (Re-)Import.
 
 ## Diagramm
 
