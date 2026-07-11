@@ -246,9 +246,12 @@ dafür vorgesehene Konsistenzcheck.
 **Gruppierung + Werte-Filter.** Eine Rolle mit **mehreren Berechtigungsinstanzen** für dasselbe
 Objekt (in SAP zulässig; die Instanzen dürfen **nicht** aggregiert werden, s. AE-03) erscheint
 **einmal** als Kopf, ihre matchenden Instanzen darunter eingerückt — statt vieler Zeilen mit
-gleichem Rollennamen. Ein zweiter Umschalter **„alle" / „nur Treffer"** zeigt wahlweise alle
-Feldwerte (Treffer grün markiert) oder **nur** die zur Anforderung passenden Werte (ohne Markierung)
-— hilfreich bei Rollen mit sehr vielen TCodes/Werten.
+gleichem Rollennamen. Ein zweiter Umschalter **„alle" / „nur Treffer"** (Default **„nur Treffer"**)
+zeigt wahlweise alle Feldwerte (Treffer grün markiert) oder **nur** die zur Anforderung passenden
+Werte (ohne Markierung) — hilfreich bei Rollen mit sehr vielen TCodes/Werten. Wirkt gleichermaßen in
+der Tabelle wie in den **Graph-Ansichten** (Knoten-Label + Hover-Tooltip zeigen dieselbe Reduktion);
+liefert die Reduktion für ein Feld keinen Treffer (z. B. weil der Treffer nur über ein anderes Feld
+zustande kommt), fällt die Anzeige auf die vollen Werte zurück statt leer zu bleiben.
 
 **Rolle anklickbar → Detailseite.** Rollennamen (Tabelle) bzw. Rollen-Knoten (Graph) öffnen per
 Klick eine **Rollen-Detailseite** (die linke Filter-/Läufe-Sidebar bleibt dabei sichtbar). Oben
@@ -270,8 +273,10 @@ enthalten und wird daher nicht gezeigt.
 Die Matches-Tabelle zeigt dafür **User · Name · Query · Bezeichnung (Kurzbezeichnung der Query) ·
 Kritikalität · Root-Cause** — Nutzertyp/Status sind hier bewusst weggelassen (stehen ggf. in der
 Stammdaten-Kachel), stattdessen ist auf einen Blick erkennbar, **welche** Query mit **welcher
-Kritikalität** gematcht wurde. Die Findings-Tabelle hat **keine klickbare Regel-Zelle** mehr (der
-Root-Cause-Button deckt diesen Absprung jetzt ab) und zeigt keine Sleeping-Spalte mehr.
+Kritikalität** gematcht wurde. Die Findings-Tabelle zeigt keine Sleeping-Spalte mehr (dafür den
+Root-Cause-Button, s. o.). Die **Regel-Zelle** der Findings-Tabelle ist klickbar — filtert (analog
+zur klickbaren User-Zelle sowie zur Regel-/Query-Spalte der Ergebnisse-Übersicht) dieselbe Ansicht
+auf diese Regel, statt zur Root-Cause-Seite zu wechseln (die braucht immer einen konkreten User).
 
 ## 4 · Konsistenzchecks
 

@@ -473,8 +473,8 @@
         </div>
         <span class="muted" style="font-size:12px">Werte:</span>
         <div class="pillgroup" id="rcHitPills">
-          <button type="button" class="pill active" data-value="all">alle</button>
-          <button type="button" class="pill" data-value="hits" title="Nur die zur Anforderung passenden (grünen) Werte zeigen — hilfreich bei Rollen mit sehr vielen TCodes/Werten">nur Treffer</button>
+          <button type="button" class="pill" data-value="all">alle</button>
+          <button type="button" class="pill active" data-value="hits" title="Nur die zur Anforderung passenden (grünen) Werte zeigen — hilfreich bei Rollen mit sehr vielen TCodes/Werten">nur Treffer</button>
         </div>
         <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px">Einpassen</button>
       </div>
@@ -1733,7 +1733,7 @@ function showResultsView() {
    Overlay" + "← zurück"-Muster wie Konsistenzcheck-Katalog/-Ergebnis. rcReturnTo merkt sich,
    ob "zurück" zu den Ergebnissen (Findings/Matches) oder zum Konsistenzcheck-Ergebnis fuehrt. */
 let rcReturnTo = 'results', rcLastData = null, rcTechMode = 'hide',
-    rcDisplayMode = 'table', rcUserId = null, rcHitMode = 'all';
+    rcDisplayMode = 'table', rcUserId = null, rcHitMode = 'hits';
 // Sichtbarkeit eines Akteurs je Profil-Filter-Modus ('hide' | 'show' | 'generated').
 // 'generated' = nur Rollen, die ueber ihr generiertes Profil aktiv sind (coincidesProfile ODER
 // via-Profil -> das, was zur Laufzeit in UST04 zieht; reine Design-only-Zeilen ohne Profil-Deckung
@@ -1888,14 +1888,30 @@ function rcAttachHandlers(cy) {
   cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('rcfade'); });
   cy.on('zoom', rcZoomToSlider);   // Slider folgt Maus-/Pinch-Zoom
 }
-function rcActorDetail(a) {
+/* Graph-Pendant zu highlightAuthValues() (Tabellen-Pfad): dieselbe "nur Treffer"-Reduktion
+   (rcHitMode), aber als Klartext-Array statt HTML-String -- fuer Knoten-Label (Cytoscape zeigt
+   kein HTML) und Tooltip. Ohne Anforderungsbezug (reqValuesByField fehlt) unveraendert. */
+function rcHitFilteredAuthValues(authValues, reqValuesByField) {
+  if (rcHitMode !== 'hits' || !reqValuesByField) return authValues || [];
+  const parts = (authValues || []).map(av => {
+    const eq = av.indexOf('=');
+    if (eq < 0) return null;
+    const field = av.slice(0, eq), vals = av.slice(eq + 1).split(',');
+    const reqVals = reqValuesByField.get(field);
+    if (!reqVals) return null;
+    const hit = vals.filter(v => actorValueHits(v, reqVals));
+    return hit.length ? `${field}=${hit.join(',')}` : null;
+  }).filter(x => x != null);
+  return parts.length ? parts : (authValues || []);
+}
+function rcActorDetail(a, reqValuesByField) {
   const n = [];
   if (a.technical && a.orphaned) n.push('technisch generiert &mdash; erzeugende Rolle nicht mehr im Bestand, laut UST04 trotzdem aktiv');
   else if (a.technical) n.push('technisch, generiert');
   if (a.via) n.push('&uuml;ber generiertes Profil ' + a.via.id);
   if (a.coincidesProfile) n.push('Definition = generiertes Profil ' + a.coincidesProfile);
   if (a.actorType === 'Role') n.push('<b style="color:var(--accent)">Klick: Rollendetails</b>');
-  const vals = (a.authValues || []).join(' &middot; ');
+  const vals = rcHitFilteredAuthValues(a.authValues, reqValuesByField).join(' &middot; ');
   return `<b>${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}</b>`
     + (vals ? `<br><span style="color:var(--muted)">tr&auml;gt ${vals}</span>` : '')
     + (n.length ? `<br><span style="color:var(--muted)">${n.join('<br>')}</span>` : '');
@@ -1912,6 +1928,7 @@ function rcBuildGraph(data, mode) {
   function attachObject(parentId, o) {
     const on = gid('o');
     const reqText = (o.requirement || []).map(r => `${r.field}=${(r.values || []).join(',')}`).join(' · ');
+    const reqValuesByField = new Map((o.requirement || []).map(r => [r.field, r.values]));
     N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, 'rc-object', ring.object,
       `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">Anforderung ${reqText}</span>` : ''}`);
     E(parentId, on, '', 'UND');
@@ -1927,9 +1944,9 @@ function rcBuildGraph(data, mode) {
       if (a.technical) cls.push('rc-technical');
       if (a.orphaned) cls.push('rc-orphaned');
       // Dedup-Knoten spannt ueber mehrere Objekte -> keine objektspezifischen Werte im Label.
-      const vals = actorCache ? '' : (a.authValues || []).join(' · ');
+      const vals = actorCache ? '' : rcHitFilteredAuthValues(a.authValues, reqValuesByField).join(' · ');
       N(an, `${a.actorType === 'Role' ? 'Rolle' : 'Profil'}: ${a.actorId}${vals ? `\n${vals}` : ''}`,
-        cls.join(' '), ring.actor, rcActorDetail(a),
+        cls.join(' '), ring.actor, rcActorDetail(a, reqValuesByField),
         (a.actorType === 'Role' && rcReturnTo !== 'consistency') ? { roleId: a.actorId } : null);
       if (actorCache) actorCache.set(key, an);
       E(on, an, a.via ? 'rc-via' : '', 'ODER');
@@ -2454,7 +2471,7 @@ function renderFindingsTable(findings, isEntry) {
       ? `<td>${sleepCell}</td>`
       : `<td><button type="button" class="ghost" style="padding:3px 10px">Root-Cause</button></td>`;
     tr.innerHTML = `<td class="click" data-user="${f.user}" title="nach diesem User filtern">${f.user}</td>`
-      + `<td>${f.rule}</td>`
+      + `<td class="click" data-rule="${f.rule}" title="nach dieser Regel filtern">${f.rule}</td>`
       + `<td class="muted">${sodRuleNames[f.rule] || ''}</td>`
       + `<td>${critTag(f.criticality)}</td>`
       + `<td>${typ}</td>`
@@ -2465,6 +2482,7 @@ function renderFindingsTable(findings, isEntry) {
       ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = '';
       applyFilters();
     };
+    tr.querySelector('[data-rule]').onclick = () => jumpToRuleFilter(f.rule);
     body.appendChild(tr);
   });
 }
