@@ -418,6 +418,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                 "sleepDays": sleep_days,
                 "minCriticalityRank": min_criticality_rank,
                 "sodRules": sod_rules,
+                "queryIds": query_ids,
                 "queryScope": query_scope,
                 "title": title,
             }
@@ -2130,45 +2131,60 @@ def findings_summary(runId: str, minRank: int = 0, user: str | None = None, rule
         return jsonable(dict(rec))
 
 
-def _query_scope_where(query_scope: str) -> str:
-    """WHERE-Fragment fuer 'welche Queries wurden/werden in diesem Lauf betrachtet' -- muss
-    exakt widerspiegeln, was materialize_matches_candidates.cypher fuer den Query-Umfang eines
-    Laufs auswaehlt: 'all' -> jede Query des Rulesets, 'sodOnly' (Default fuer alte Laeufe ohne
-    gespeichertes queryScope) -> nur als SoD-Klausel verbaute Queries."""
+def _query_scope_where(query_ids: list[str], sod_rules: list[str], query_scope: str) -> str:
+    """WHERE-Fragment fuer 'welche Queries wurden/werden in diesem Lauf betrachtet' -- muss exakt
+    widerspiegeln, was materialize_matches_candidates.cypher fuer den Query-Umfang eines Laufs
+    auswaehlt, gleiche Prioritaet: explizite $queryIds (Katalog-Auswahl) > $sodRules-Scoping (nur
+    Klausel-Queries dieser Regeln) > altes $queryScope ('all' -> jede Query des Rulesets,
+    'sodOnly' -> nur als SoD-Klausel verbaute Queries; Default fuer Laeufe ohne gespeichertes
+    queryScope). Aeltere Laeufe ohne queryIds/sodRules (coalesce -> []) fallen automatisch auf
+    das bisherige queryScope-Verhalten zurueck."""
+    if query_ids:
+        return "WHERE q.id IN $queryIds "
+    if sod_rules:
+        return ("WHERE EXISTS { MATCH (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset})<-[:HAS_CLAUSE]-(rule:SoDRule {ruleset:$ruleset}) "
+                 "WHERE rule.id IN $sodRules } ")
     return "" if query_scope == "all" else "WHERE EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) } "
 
 
 @app.get("/queries")
 def queries(runId: str):
     """Queries (Einzelfilter) eines Laufs, beschraenkt auf dessen tatsaechlichen Query-Umfang
-    (s. r.queryScope / _query_scope_where) — speist die Query-Auswahl fuer den Matches-Drill-down
-    ('wer matcht Query X')."""
+    (s. r.queryScope/r.queryIds/r.sodRules + _query_scope_where) — speist die Query-Auswahl fuer
+    den Matches-Drill-down ('wer matcht Query X') und die Sidebar-Filter der Ergebnis-Ansicht."""
     with driver.session() as s:
         run = s.run(
-            "MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, coalesce(r.queryScope,'sodOnly') AS queryScope",
+            "MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, coalesce(r.queryScope,'sodOnly') AS queryScope, "
+            "coalesce(r.queryIds,[]) AS queryIds, coalesce(r.sodRules,[]) AS sodRules",
             id=runId).single()
         if not run:
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
         return [dict(r) for r in s.run(
             "MATCH (q:Query {ruleset:$ruleset}) "
-            + _query_scope_where(run["queryScope"]) +
+            + _query_scope_where(run["queryIds"], run["sodRules"], run["queryScope"]) +
             "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
-            "q.criticality AS criticality, q.module AS module ORDER BY id", ruleset=run["ruleset"])]
+            "q.criticality AS criticality, q.module AS module ORDER BY id",
+            ruleset=run["ruleset"], queryIds=run["queryIds"], sodRules=run["sodRules"])]
 
 
 @app.get("/sodrules")
 def sod_rules(runId: str):
-    """SoD-Regeln (mit Bezeichnung) des Rulesets eines Laufs — speist die SoD-Auswahl
-    in der Sidebar (Bezeichnung statt nur der Regel-ID)."""
+    """SoD-Regeln (mit Bezeichnung) eines Laufs — speist die SoD-Auswahl in der Sidebar
+    (Bezeichnung statt nur der Regel-ID). Wurden beim Lauf explizit SoD-Regeln ausgewaehlt
+    (Katalog-Auswahl-Scope, r.sodRules), zeigt die Liste nur diese; sonst (queryScope-basierter
+    oder alter Lauf ohne r.sodRules) weiterhin alle SoD-Regeln des Rulesets."""
     with driver.session() as s:
-        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=runId).single()
+        run = s.run(
+            "MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, coalesce(r.sodRules,[]) AS sodRules",
+            id=runId).single()
         if not run:
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        where = "WHERE rule.id IN $sodRules " if run["sodRules"] else ""
         return [dict(r) for r in s.run(
-            "MATCH (rule:SoDRule {ruleset:$ruleset}) "
+            "MATCH (rule:SoDRule {ruleset:$ruleset}) " + where +
             "RETURN rule.id AS id, rule.description AS description, "
             "rule.shortDescription AS shortDescription, rule.criticality AS criticality "
-            "ORDER BY id", ruleset=run["ruleset"])]
+            "ORDER BY id", ruleset=run["ruleset"], sodRules=run["sodRules"])]
 
 
 @app.get("/queries/summary")

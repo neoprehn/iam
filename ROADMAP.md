@@ -121,7 +121,11 @@ Einzelfilter→SoD-Regeln mit „nur mögliche SoD-Regeln"-Umschalter über die 
 inkl. automatischer additiver Ergänzung fehlender Klausel-Queries beim Finalisieren) +
 **Voreinstellung inkl. Benutzergruppe/Sleeping** (Scope-Profile und Assistent-Ad-hoc-Auswahl
 legen jetzt auch Nutzertyp-Profil + Sleeping fest — bei aktiver Voreinstellung verschwinden die
-entsprechenden Felder im „Neuer Lauf"-Dialog zugunsten der Voreinstellungswerte).
+entsprechenden Felder im „Neuer Lauf"-Dialog zugunsten der Voreinstellungswerte) +
+**Sidebar-Filter scope-treu** (Einzelberechtigung/SoD-Dropdown in der Ergebnis-Ansicht zeigen bei
+einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfilter/SoD-Regeln,
+`run.queryIds`/`run.sodRules` jetzt am Run-Knoten persistiert, volle Rückwärtskompatibilität für
+ältere Läufe).
 
 - [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten", noch offen): „wer kann *Funktion* in
   *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…

@@ -132,7 +132,10 @@ Bezeichnung** (Kurzbezeichnung, falls gepflegt, sonst die Langbezeichnung); die 
 wird. Auswahl wendet über „Filtern" an bzw. sofort bei Klick auf eine User-Zelle in der
 Findings-Tabelle. Ist ein **User** gewählt, schränken sich **Einzelberechtigung**- und
 **SoD**-Dropdown automatisch auf das für ihn tatsächlich Gefundene ein (kaskadierender Filter)
-statt immer den vollen Katalog/alle Lauf-Regeln zu zeigen.
+statt immer den vollen Katalog/alle Lauf-Regeln zu zeigen. **Einzelberechtigung**/**SoD** zeigen
+außerdem von sich aus nur das, was für **diesen Lauf** tatsächlich in Frage kam: lief der Lauf
+mit einer Katalog-Auswahl/Voreinstellung (s. „Voreinstellung" oben), stehen nur die dabei
+gewählten Einzelfilter bzw. SoD-Regeln zur Auswahl — nicht der gesamte Ruleset-Katalog.
 
 Über der Ergebnistabelle, in einer eigenen Zeile: **Kritikalität** (very-critical…low) immer,
 **Ergebnistyp** (`alle` / `Einzelfilter` / `SoD`) **nur außerhalb der Einstiegstabelle** (s. u.)

@@ -556,6 +556,26 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Scope „dialog-active"/90 Tage, Assistent „dialog-only"/365 Tage), dass alle drei Gruppen im
   „Neuer Lauf"-Dialog korrekt aus-/eingeblendet werden und die Zusammenfassung die richtigen
   Werte zeigt. Keine Konsolenfehler.
+- [x] **Sidebar-Filter (Einzelfilter/SoD) auf den tatsächlichen Katalog-Auswahl-Scope des Laufs
+  beschränkt (Nutzer-Feedback: „nur die möglichen Einzel-/SoD-Filter").** `GET /queries`/
+  `GET /sodrules` (Sidebar-Dropdowns der normalen Ergebnis-Ansicht, nicht die schon vorher
+  korrekte Ergebnisse-Übersicht `/queries/summary`/`/sodrules/summary`, die über echte
+  `MATCHES`/`VIOLATES`-Kanten filtert) kannten bislang nur das alte binäre `queryScope`
+  („all"/„sodOnly") — bei einem Lauf mit `queryIds`/`sodRules`-Katalog-Auswahl zeigten sie
+  trotzdem weiterhin den **gesamten** Ruleset-Katalog, weil diese beiden Felder bisher gar nicht
+  am `(:Run)`-Knoten gespeichert wurden (nur als Cypher-Laufzeitparameter für die Materialisierung
+  existent). Fix: `evaluate_sod_init.cypher` speichert jetzt zusätzlich `run.queryIds`/
+  `run.sodRules` (leere Liste = altes Verhalten, volle Rückwärtskompatibilität für Läufe vor
+  diesem Fix); `_query_scope_where()` in `backend/app.py` bekommt dieselbe Prioritätslogik wie
+  `materialize_matches_candidates.cypher`: explizite `queryIds` > `sodRules`-Scoping (nur
+  Klausel-Queries dieser Regeln) > altes `queryScope`. `GET /sodrules` filtert zusätzlich analog
+  auf `run.sodRules`, wenn gesetzt (sonst weiterhin alle Regeln, da `queryScope` allein die
+  SoD-Regel-Auswahl nicht einschränkt). Verifiziert gegen den laufenden Container: ein Lauf mit
+  `queryIds=[2 IDs]` liefert über `/queries` exakt diese 2 (statt 604/38); ein Lauf mit
+  `sodRules=['BCX_0001']` liefert über `/sodrules` exakt 1 Regel und über `/queries` exakt deren
+  5 Klausel-Queries; drei bestehende, vor diesem Fix gelaufene Läufe (ohne `queryIds`/`sodRules`
+  am Run-Knoten) liefern weiterhin unverändert 38/604 Queries bzw. alle 22 SoD-Regeln —
+  Rückwärtskompatibilität bestätigt. Testläufe danach gelöscht.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`
