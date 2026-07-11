@@ -428,6 +428,72 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   **Offen (ROADMAP „Katalog-Auswahl"):** dies ist nur ein binärer Umfang-Schalter, keine
   Kritikalitäts-/Namensmuster-/Modul-Filterung einzelner Queries/Regeln — das bleibt der volle
   Scoping-Schritt ③ im Assistenten.
+- [x] **Katalog-Auswahl — füllt Schritt ③ „Scoping" im Assistenten (voller Katalog-Browser statt
+  Platzhalter/binärem Schalter) + zwei Auswertungsarten (Can-Do vs. scoped SoD).** Schritt ③
+  zeigt jetzt zwei nebeneinander liegende Panels (Einzelfilter, SoD-Regeln), gespeist aus den
+  bestehenden `GET /admin/rulesets/{ruleset}/queries`/`/sodrules` (kein `runId` nötig,
+  Katalog-Browsing statt Editor — dafür beide Endpunkte um `criticalityRank` ergänzt, das JSON-Feld
+  war zuvor nur intern am Neo4j-Knoten genutzt) — je Panel Filter (Namensmuster inkl. `*`-Wildcard,
+  Modul, queryType nur bei Queries, Mindest-Kritikalität) über eine scrollbare Checkbox-Tabelle,
+  „alle (gefiltert)"/„leeren"-Buttons, Live-Summary. Auswahl liegt in `asst.queryIds`/
+  `asst.sodRuleIds` (Sets), wird beim Verlassen des Assistenten (`startAssistent()`) zurückgesetzt.
+  **Backend:** `RunReq`/`RunBatchReq` um `queryIds: list[str]` und `evaluateSod: bool` erweitert.
+  `materialize_matches_candidates.cypher` bekommt `$queryIds`/`$sodRules` mit Priorität vor
+  `$queryScope` (explizite Query-Auswahl > nur die Klausel-Queries der gewählten SoD-Regeln >
+  bisherige `all`/`sodOnly`-Logik, unverändert wenn beide leer). `_run_one()`: `evaluate_sod_init.cypher`
+  legt den `(:Run)`-Knoten weiterhin **immer** an (Ergebnis-Views brauchen ihn), der eigentliche
+  Regel-Auswertungs-Loop + Explain laufen aber nur noch `if evaluate_sod` — Can-Do-Modus (nur
+  Einzelfilter gewählt, keine SoD-Regel) materialisiert und überspringt SoD komplett automatisch
+  (`evaluateSod = asst.sodRuleIds.size > 0` beim Absenden von „Neuer Lauf"). **„Neuer Lauf"-Dialog:**
+  solange eine Assistent-Katalog-Auswahl besteht, ersetzt eine Zusammenfassungszeile („Katalog-Auswahl
+  aus Assistent … / Auswahl ändern…") den `queryScope`-Dropdown; ohne Auswahl unverändertes
+  Verhalten (volle Rückwärtskompatibilität, leere Listen = alter Default). Verifiziert gegen den
+  laufenden Container: `materialize_matches_candidates.cypher` liefert mit `queryScope='all'`
+  weiterhin 604 und mit `sodOnly` weiterhin 38 Kandidaten (Regressionscheck); explizite
+  `queryIds`-Auswahl (1 Query) liefert genau 1 Kandidaten; `sodRules`-Scoping (1 Regel) liefert
+  exakt die Anzahl ihrer Klausel-Queries (Cypher-Zählung gegen manuelle `HAS_CLAUSE`/`NEEDS`-
+  Traversierung abgeglichen, 5 von 5); ein echter `POST /runs` mit `queryIds` + `evaluateSod:false`
+  erzeugt einen `(:Run)`-Knoten mit `findings:0`/`rules:0`, `GET /queries/summary` zeigt korrekt nur
+  die gewählte Query mit echter Nutzerzahl (Testlauf danach über `POST /runs/{id}/delete` entfernt).
+  Playwright-UI-Check: Katalog lädt (604/22 Zeilen), Namensmuster- und Kritikalitäts-Filter grenzen
+  sichtbar ein, Checkbox-Auswahl bleibt über Filteränderungen hinweg erhalten, Summary-Text
+  aktualisiert korrekt zwischen „nur Einzelfilter → Can-Do" und „+ SoD-Regel → scoped SoD", „Neuer
+  Lauf" zeigt die Scoping-Zusammenfassung statt des Dropdowns, keine Konsolenfehler.
+  **Nicht Teil dieses Schritts:** Host-Runner (`run/run_evaluate.ps1`) übergibt weiterhin kein
+  `$queryScope`/`$queryIds`/`$sodRules` an die Cypher-Datei (vorbestehende Lücke, App-Endpunkte
+  sind die maßgebliche Variante); USOBT-Query-Builder und Threat-Baum bleiben eigene, größere
+  Vorhaben (s. Admin-Bereich-Backlog).
+- [x] **Persistente Scope-Profile — neue Admin-Seite „Scope" (Nutzer-Wunsch nach der
+  Katalog-Auswahl: dieselbe Auswahl-Erfahrung, aber gespeichert statt nur session-gebunden im
+  Assistenten).** Neue Seite `frontend/admin-scopes.html` (Layout/Ribbon/Theme wie
+  `admin-org-profiles.html`): links Ruleset-Auswahl + Liste der gespeicherten Scope-Profile
+  dieses Rulesets (mit Zählung „N Einzelfilter, M SoD-Regel(n)"), rechts derselbe
+  Zwei-Panel-Katalog-Browser wie Assistent Schritt ③ (Namensmuster/Modul/Kritikalität/queryType-
+  Filter + Checkbox-Tabellen je Einzelfilter/SoD-Regeln — Logik dupliziert, kein Shared-JS in
+  diesem Projekt üblich), darunter Name/Beschreibung + Speichern/Löschen. **Backend:** neue
+  Endpunkte `GET/POST/PUT/DELETE /admin/rulesets/{ruleset}/scopes`, Speicherort
+  `rules/<RulesetDir>/scope_profiles.custom.json` (reine Custom-Datei ohne Vendor-Gegenstück,
+  analog `queries.custom.json`/`sod_rules.custom.json` — **git-getrackt**, da Query-/SoD-Regel-
+  IDs Ruleset-Vokabular sind, keine Mandantendaten; anders als die bewusst `.gitignore`te
+  `config/analysis_profiles.custom.json` der Org-Varianten). Validierung: `_SAFE_NAME` für den
+  Namen, Namenskollision → 409, leere Auswahl (weder Query- noch SoD-Regel-IDs) → 400. Ein totes
+  Phase-3-Scaffold (`config/analysis_profiles.json` Key `scopeProfiles`, nie ins Frontend/einen
+  Lauf verdrahtet) bleibt bewusst unangetastet stehen — die neue Funktion ersetzt es funktional.
+  **„Neuer Lauf"-Dialog:** neues Auswahlfeld „Gespeicherter Scope" (`#scopeProfileSel`, lädt bei
+  jedem Ruleset-Wechsel neu); Scoping-Quellen-Auflösung verallgemeinert
+  (`currentRunScopingSource()`) mit Priorität **gewählter gespeicherter Scope** > **aktive
+  Assistent-Ad-hoc-Auswahl** > keiner (altes `queryScope`-Verhalten) — ersetzt die bisherige, nur
+  auf den Assistenten bezogene `asstRunScopingPayload()`/`refreshRunScopingSummary()`-Logik.
+  Verifiziert gegen den laufenden Container: `POST/GET/PUT/DELETE` auf `/scopes` mit korrekten
+  Statuscodes (201-artig `saved:true`/409/400/404), Datei landet unter
+  `rules/KPMG_R3/scope_profiles.custom.json` und ist git-sichtbar (nicht ignoriert). Playwright:
+  Scope in der Admin-Seite anlegen (2 Einzelfilter + 1 SoD-Regel per Filter+Checkbox ausgewählt),
+  erscheint in der Liste mit korrekter Zählung, übersteht einen Seiten-Reload, Checkbox-
+  Vorbelegung beim erneuten Öffnen korrekt; im „Neuer Lauf"-Dialog Scope ausgewählt → Dropdown
+  „Einzelfilter-Umfang" verschwindet, Zusammenfassung zeigt Namen + korrekte Zahlen, Bearbeiten-
+  Link ausgeblendet (kein Rücksprung zu Assistent-Schritt ③ bei einem gespeicherten Scope); Reset
+  auf „kein gespeicherter Scope" stellt das alte Dropdown wieder her; danach Löschen bestätigt.
+  Keine Konsolenfehler.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`

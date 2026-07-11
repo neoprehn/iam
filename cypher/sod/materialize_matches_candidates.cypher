@@ -19,10 +19,28 @@
 // Rulesets, auch Einzelfilter ohne SoD-Klausel-Verwendung; 'sodOnly' -> nur die Queries, die
 // tatsaechlich als Klausel-Baustein einer SoD-Regel dieses Rulesets dienen (schneller, aber die
 // Einzelfilter-Ergebnisse/Uebersicht zeigen dann nur diese Teilmenge -- welche Queries das sind,
-// ist ruleset-abhaengig, nicht fest).
-// Parameter: $ruleset, $dataset, $orgMode, $orgFilters, $queryScope.
+// ist ruleset-abhaengig, nicht fest). $queryScope greift nur, wenn WEDER $queryIds NOCH $sodRules
+// gesetzt sind (s. u.) -- bisheriges Verhalten bleibt fuer alle Aufrufer ohne Katalog-Auswahl
+// unveraendert.
+//
+// Katalog-Auswahl (Assistent Schritt "Scoping"), Prioritaet vor $queryScope:
+//   $queryIds nicht leer  -> NUR diese Queries (explizite Einzelfilter-Auswahl, ignoriert
+//                            $sodRules/$queryScope komplett).
+//   sonst $sodRules nicht leer -> nur Queries, die ueber (q)<-[:NEEDS]-(:Clause)<-[:HAS_CLAUSE]-
+//                            (:SoDRule) von EINER der gewaehlten Regeln erreichbar sind ("scoped
+//                            materialize" -- nur deren Klausel-Queries statt aller SoD-Queries).
+//   beide leer             -> bestehende $queryScope-Logik.
+// Parameter: $ruleset, $dataset, $orgMode, $orgFilters, $queryScope, $queryIds, $sodRules.
 MATCH (q:Query {ruleset:$ruleset})
-WHERE ($queryScope = 'all' OR EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) })
+WHERE (
+    ( size($queryIds) > 0 AND q.id IN $queryIds )
+    OR ( size($queryIds) = 0 AND size($sodRules) > 0 AND EXISTS {
+      MATCH (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset})<-[:HAS_CLAUSE]-(rule:SoDRule {ruleset:$ruleset})
+      WHERE rule.id IN $sodRules
+    } )
+    OR ( size($queryIds) = 0 AND size($sodRules) = 0 AND
+      ($queryScope = 'all' OR EXISTS { (q)<-[:NEEDS]-(:Clause {ruleset:$ruleset}) }) )
+  )
   AND ( $orgMode = 'ignoreOrg' OR EXISTS {
     MATCH (q)-[:REQUIRES]->(ar)
     WHERE EXISTS { MATCH (:OrgField {dataset:$dataset, field:ar.field}) }

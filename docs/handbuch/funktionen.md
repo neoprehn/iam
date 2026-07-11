@@ -72,6 +72,26 @@ Welche Queries des Rulesets die Materialisierung überhaupt betrachtet (`(:User)
 > Filterset) und wird am Lauf gespeichert (`queryScope`) — Einzelfilter-Auswahl/-Übersicht eines
 > Laufs zeigen immer genau die Queries, die in **diesem** Lauf tatsächlich materialisiert wurden.
 
+### Gespeicherter Scope (statt „Einzelfilter-Umfang")
+
+Neben dem groben „alle/nur SoD-relevant"-Umfang oben lässt sich der nächste Lauf auch auf ein
+**gezielt gewähltes Subset** an Einzelfiltern und/oder SoD-Regeln einschränken — über das Feld
+**„Gespeicherter Scope"** im Formular. Zwei Quellen speisen dieses Subset, mit fester Priorität:
+
+1. **Ein gespeicherter Scope** (Auswahl im Dropdown) — angelegt über die Admin-Seite **„Scope"**
+   (s. u.), wiederverwendbar über beliebig viele Läufe/Datasets desselben Rulesets hinweg.
+2. **Eine Ad-hoc-Auswahl aus der geführten Auswertung** (Assistent, Schritt „Scoping") — gilt nur
+   für die laufende Sitzung, verschwindet beim Neustart des Assistenten.
+3. Ist beides leer, greift ganz normal der „Einzelfilter-Umfang"-Umschalter oben (heutiges
+   Standardverhalten).
+
+Ist eine der beiden Quellen aktiv, ersetzt eine Zusammenfassungszeile („N Einzelfilter, M
+SoD-Regel(n) ausgewählt") den „Einzelfilter-Umfang"-Umschalter. Zwei Auswertungsarten ergeben
+sich automatisch aus der Auswahl: **nur Einzelfilter** (keine SoD-Regel dabei) materialisiert
+ausschließlich diese Einzelfilter und überspringt die SoD-Auswertung komplett („Can-Do"); sind
+**auch SoD-Regeln** ausgewählt, materialisiert der Lauf nur deren Klausel-Queries (statt aller
+SoD-relevanten Queries des Rulesets) und wertet nur diese Regeln aus.
+
 ### Weitere Parameter
 
 - **Stichtag** — Bewertungsdatum (Rollen-Gültigkeit + Sleeping). **Keine Eingabe mehr**, sondern
@@ -341,6 +361,7 @@ Beide Aktionen fragen vor dem Ausführen nach.
 | Befehl | Wirkung |
 | --- | --- |
 | **Query Management** | Link direkt auf die eigene Seite `/admin.html` (kein Zwischendialog). |
+| **Scope** | Link direkt auf die eigene Seite `/admin-scopes.html` (kein Zwischendialog). |
 | **Fehlerprotokoll** | Dialog mit fehlgeschlagenen Jobs (Import/Lauf/Backup/Restore/Bereinigen) — **persistent**, überlebt einen Container-Neustart (Datei `data/logs/job_errors.jsonl`). Neueste zuerst. |
 
 ### Query Management (eigene Seite, eigene Ribbon-Bar)
@@ -388,6 +409,24 @@ Metadaten-Edits an bestehenden Regeln. Speichern/Abbrechen (Ribbon **oder** Deta
 &Auml;nderungen schreiben **nie** in die Vendor-Datei (`queries.json`), sondern in ein separates
 Overlay (`queries.custom.json`) je Ruleset — Vendor-Updates &uuml;berschreiben eigene Anpassungen
 dadurch nicht. Speichern/Ableiten wirkt **sofort** (kein extra Reload-Schritt n&ouml;tig).
+
+### Scope (eigene Seite, eigene Ribbon-Bar)
+
+Erreichbar über das Menü „Admin" (Gruppe „7 · Admin") → „Scope". Verwaltet **persistente,
+benannte Scope-Profile** — dieselbe Katalog-Auswahl (Einzelfilter/SoD-Regeln, filterbar nach
+Namensmuster/Modul/Kritikalität/Query-Typ, Mehrfachauswahl per Checkbox) wie im Assistenten-
+Schritt „Scoping", aber **dauerhaft gespeichert** und über beliebig viele Läufe/Datasets
+desselben Rulesets hinweg wiederverwendbar (siehe „Gespeicherter Scope" oben).
+
+Links: **Ruleset** wählen, darunter die Liste der für dieses Ruleset gespeicherten Scopes (mit
+Zählung „N Einzelfilter, M SoD-Regel(n)"), „+ Neuer Scope". Rechts: Name (nur bei Neuanlage
+änderbar) und Beschreibung, darunter die beiden Katalog-Panels — Speichern erfordert mindestens
+einen ausgewählten Einzelfilter **oder** eine SoD-Regel. Ein Scope lässt sich jederzeit
+nachträglich bearbeiten (Auswahl ändern, speichern) oder löschen.
+
+Scope-Profile beziehen sich auf Query-/SoD-Regel-**IDs** eines Rulesets — reines
+Katalog-Vokabular, keine Mandantendaten — und liegen daher wie die Einzelfilter-/SoD-Regel-
+Overlays im Ruleset-Ordner (`rules/<Ruleset>/scope_profiles.custom.json`), git-getrackt.
 
 **Geplant** in diesem Bereich:
 

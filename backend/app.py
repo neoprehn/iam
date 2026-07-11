@@ -231,6 +231,14 @@ class RunReq(BaseModel):
     sleepDays: int | None = None
     minCriticalityRank: int = 0
     sodRules: list[str] = []
+    # Explizite Einzelfilter-Auswahl (Katalog-Auswahl, Assistent Schritt ③) -- nicht leer:
+    # materialisiert NUR diese Queries, unabhaengig von queryScope/sodRules (s.
+    # materialize_matches_candidates.cypher). Leer (Default) = bisheriges Verhalten.
+    queryIds: list[str] = []
+    # False = Can-Do-Modus (Katalog-Auswahl mit reinen Einzelfiltern, ohne SoD-Regeln): die
+    # evaluate-Phase legt weiterhin den (:Run)-Knoten an, ueberspringt aber die eigentliche
+    # SoD-Regel-Auswertung + Explain komplett (s. _run_one).
+    evaluateSod: bool = True
     runId: str | None = None
     title: str | None = None        # menschenlesbarer Name der Variante (z. B. "Übergreifend");
                                      # leer -> runId als Fallback (siehe do_run)
@@ -337,7 +345,8 @@ _RUN_PHASE_ORDER = ["ruleset", "materialize", "evaluate", "explain"]
 
 def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type_profile: str,
              org_profile: str, sleep_days: int, min_criticality_rank: int, sod_rules: list[str],
-             query_scope: str, run_id: str, title: str, skip_ruleset_load: bool, skip_materialize: bool,
+             query_scope: str, query_ids: list[str], evaluate_sod: bool, run_id: str, title: str,
+             skip_ruleset_load: bool, skip_materialize: bool,
              skip_explain: bool, step_prefix: str = "", checkpoint_base: dict | None = None,
              resume_phase: str | None = None, resume_units: list[str] | None = None) -> dict:
     """Ein einzelner Lauf ([ruleset] -> materialize -> evaluate -> [explain] -> Ergebnis-
@@ -365,7 +374,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
     checkpoint_extra = checkpoint_base or {}
 
     enabled = {"ruleset": not skip_ruleset_load, "materialize": not skip_materialize,
-               "evaluate": True, "explain": not skip_explain}
+               "evaluate": True, "explain": not skip_explain and evaluate_sod}
     reached = resume_phase is None
     resume_units_set = set(resume_units or [])
 
@@ -395,8 +404,9 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                        state_path=state_path, reset_rel_path="sod/materialize_matches_reset.cypher",
                        candidates_rel_path="sod/materialize_matches_candidates.cypher",
                        one_rel_path="sod/materialize_matches_one.cypher", unit_param="qid",
-                       params={**base, **org, "queryScope": query_scope}, resume_units=this_phase_resume,
-                       checkpoint_extra=checkpoint_extra)
+                       params={**base, **org, "queryScope": query_scope, "sodRules": sod_rules,
+                               "queryIds": query_ids},
+                       resume_units=this_phase_resume, checkpoint_extra=checkpoint_extra)
 
         elif phase == "evaluate":
             _check_cancel(job_id)
@@ -412,13 +422,17 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                 "title": title,
             }
             if not this_phase_resume:
+                # Legt/aktualisiert den (:Run)-Knoten IMMER an (Ergebnis-Views wie /queries/summary
+                # brauchen ihn) -- auch im Can-Do-Modus (evaluate_sod=False), dort dann ohne
+                # anschliessenden Regel-Loop.
                 run_file(s, "sod/evaluate_sod_init.cypher", eval_params)
-            _run_phase(s, job_id, phase="evaluate", step_label=step_prefix + "evaluate",
-                       state_path=state_path, reset_rel_path=None,
-                       candidates_rel_path="sod/evaluate_sod_candidates.cypher",
-                       one_rel_path="sod/evaluate_sod_one.cypher", unit_param="ruleId",
-                       params=eval_params, resume_units=this_phase_resume,
-                       checkpoint_extra=checkpoint_extra)
+            if evaluate_sod:
+                _run_phase(s, job_id, phase="evaluate", step_label=step_prefix + "evaluate",
+                           state_path=state_path, reset_rel_path=None,
+                           candidates_rel_path="sod/evaluate_sod_candidates.cypher",
+                           one_rel_path="sod/evaluate_sod_one.cypher", unit_param="ruleId",
+                           params=eval_params, resume_units=this_phase_resume,
+                           checkpoint_extra=checkpoint_extra)
 
         elif phase == "explain":
             _explain_one(s, job_id, ruleset=ruleset, dataset=dataset, as_of=as_of, run_id=run_id,
@@ -456,7 +470,9 @@ def do_run(job_id: str, req: RunReq):
             result = _run_one(s, job_id, cfg, ruleset=eff_req.ruleset, dataset=eff_req.dataset,
                                user_type_profile=eff_req.userTypeProfile, org_profile=eff_req.orgProfile,
                                sleep_days=sleep_days, min_criticality_rank=eff_req.minCriticalityRank,
-                               sod_rules=eff_req.sodRules, query_scope=eff_req.queryScope, run_id=run_id, title=title,
+                               sod_rules=eff_req.sodRules, query_scope=eff_req.queryScope,
+                               query_ids=eff_req.queryIds, evaluate_sod=eff_req.evaluateSod,
+                               run_id=run_id, title=title,
                                skip_ruleset_load=eff_req.skipRulesetLoad, skip_materialize=eff_req.skipMaterialize,
                                skip_explain=eff_req.skipExplain, checkpoint_base=checkpoint_base,
                                resume_phase=resume_phase, resume_units=resume_units)
@@ -479,6 +495,8 @@ class RunBatchReq(BaseModel):
     minCriticalityRank: int = 0
     sodRules: list[str] = []
     queryScope: str = "all"          # s. RunReq.queryScope
+    queryIds: list[str] = []         # s. RunReq.queryIds
+    evaluateSod: bool = True         # s. RunReq.evaluateSod
     skipRulesetLoad: bool = True
     skipMaterialize: bool = False
     skipExplain: bool = True
@@ -522,7 +540,9 @@ def do_run_batch(job_id: str, req: RunBatchReq):
                     s, job_id, cfg, ruleset=eff_req.ruleset, dataset=eff_req.dataset,
                     user_type_profile=eff_req.userTypeProfile, org_profile=profile_name,
                     sleep_days=sleep_days, min_criticality_rank=eff_req.minCriticalityRank,
-                    sod_rules=eff_req.sodRules, query_scope=eff_req.queryScope, run_id=run_id, title=title,
+                    sod_rules=eff_req.sodRules, query_scope=eff_req.queryScope,
+                    query_ids=eff_req.queryIds, evaluate_sod=eff_req.evaluateSod,
+                    run_id=run_id, title=title,
                     # Ruleset nur einmal laden (idempotent, aber unnoetig fuer jede Variante)
                     skip_ruleset_load=eff_req.skipRulesetLoad or i > 1,
                     skip_materialize=eff_req.skipMaterialize, skip_explain=eff_req.skipExplain,
@@ -1751,6 +1771,7 @@ def admin_list_queries(ruleset: str):
     merged, custom_ids = _merged_queries(ruleset)
     return [{"id": qid, "description": q.get("description", ""),
              "shortDescription": q.get("shortDescription", ""), "criticality": q.get("criticality"),
+             "criticalityRank": q.get("criticalityRank", 0),
              "module": q.get("module"), "queryType": q.get("queryType"),
              "disregardTcode": bool(q.get("disregardTcode", False)), "custom": qid in custom_ids}
             for qid, q in sorted(merged.items())]
@@ -1893,6 +1914,7 @@ def admin_list_sodrules(ruleset: str):
     merged, custom_ids = _merged_sodrules(ruleset)
     return [{"id": rid, "description": r.get("description", ""),
              "shortDescription": r.get("shortDescription", ""), "criticality": r.get("criticality"),
+             "criticalityRank": r.get("criticalityRank", 0),
              "reasonCode": r.get("reasonCode"), "custom": rid in custom_ids}
             for rid, r in sorted(merged.items())]
 
@@ -1941,6 +1963,89 @@ def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
     custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
     reload_ruleset(ruleset)
     return {"sodRule": ruleId, "saved": fields}
+
+
+# --- Scope-Profile (persistente Katalog-Auswahl, Admin-Seite "Scope") -------------------
+# Analog zu den Query-/SoD-Regel-Overlays: reine Custom-Datei je Ruleset-Ordner (kein Vendor-
+# Gegenstueck noetig), git-getrackt wie queries.custom.json/sod_rules.custom.json -- anders als
+# die Org-Varianten (config/analysis_profiles.custom.json, bewusst .gitignore'd) enthalten
+# Query-/SoD-Regel-IDs keine Mandantendaten. Ersetzt funktional das nie verdrahtete Phase-3-
+# Scaffold "scopeProfiles" in config/analysis_profiles.json (bleibt unangetastet stehen).
+def _scope_profiles_path(ruleset: str) -> Path:
+    rdir = ruleset_dir(ruleset)
+    if not rdir:
+        raise HTTPException(404, f"Ruleset '{ruleset}' nicht gefunden")
+    return RULES_DIR / rdir / "scope_profiles.custom.json"
+
+
+def ensure_custom_scope_profiles_file(ruleset: str) -> Path:
+    path = _scope_profiles_path(ruleset)
+    if not path.is_file():
+        path.write_text("[]", encoding="utf-8")
+    return path
+
+
+class ScopeProfileEditReq(BaseModel):
+    description: str | None = None
+    queryIds: list[str] = []
+    sodRuleIds: list[str] = []
+
+
+class ScopeProfileCreateReq(ScopeProfileEditReq):
+    name: str
+
+
+def _scope_profile_nonempty(req: ScopeProfileEditReq) -> None:
+    if not req.queryIds and not req.sodRuleIds:
+        raise HTTPException(400, "mindestens ein Einzelfilter oder eine SoD-Regel erforderlich")
+
+
+@app.get("/admin/rulesets/{ruleset}/scopes")
+def admin_list_scopes(ruleset: str):
+    """Gespeicherte Scope-Profile eines Rulesets (Katalog-Auswahl, wiederverwendbar ueber
+    Datasets hinweg) -- speist die Admin-Seite 'Scope' und die Auswahl im 'Neuer Lauf'-Dialog."""
+    return _load_json_list(_scope_profiles_path(ruleset))
+
+
+@app.post("/admin/rulesets/{ruleset}/scopes")
+def admin_create_scope(ruleset: str, req: ScopeProfileCreateReq):
+    if not _SAFE_NAME.match(req.name):
+        raise HTTPException(400, "ungueltiger Name (erlaubt: Buchstaben/Ziffern/._-)")
+    _scope_profile_nonempty(req)
+    path = ensure_custom_scope_profiles_file(ruleset)
+    scopes = _load_json_list(path)
+    if any(s["name"] == req.name for s in scopes):
+        raise HTTPException(409, f"Scope-Profil '{req.name}' existiert bereits")
+    scopes.append({"name": req.name, "description": req.description or "",
+                   "queryIds": req.queryIds, "sodRuleIds": req.sodRuleIds})
+    path.write_text(json.dumps(scopes, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"name": req.name, "saved": True}
+
+
+@app.put("/admin/rulesets/{ruleset}/scopes/{name}")
+def admin_update_scope(ruleset: str, name: str, req: ScopeProfileEditReq):
+    _scope_profile_nonempty(req)
+    path = ensure_custom_scope_profiles_file(ruleset)
+    scopes = _load_json_list(path)
+    entry = next((s for s in scopes if s["name"] == name), None)
+    if not entry:
+        raise HTTPException(404, f"Scope-Profil '{name}' nicht gefunden")
+    entry["description"] = req.description or ""
+    entry["queryIds"] = req.queryIds
+    entry["sodRuleIds"] = req.sodRuleIds
+    path.write_text(json.dumps(scopes, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"name": name, "saved": True}
+
+
+@app.delete("/admin/rulesets/{ruleset}/scopes/{name}")
+def admin_delete_scope(ruleset: str, name: str):
+    path = ensure_custom_scope_profiles_file(ruleset)
+    scopes = _load_json_list(path)
+    remaining = [s for s in scopes if s["name"] != name]
+    if len(remaining) == len(scopes):
+        raise HTTPException(404, f"Scope-Profil '{name}' nicht gefunden")
+    path.write_text(json.dumps(remaining, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"name": name, "deleted": True}
 
 
 @app.get("/runs")

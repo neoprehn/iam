@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scope — IAM</title>
+<style>
+  :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
+          --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
+  html[data-theme="light"] { --bg:#f5f7fa; --panel:#ffffff; --line:#d7dee6; --fg:#1b232c;
+          --muted:#5b6b7a; --accent:#2f6fe0; --crit:#c0392b; --ok:#1f7a37; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+  a { color:var(--accent); }
+  html[data-theme="light"] header { background:linear-gradient(110deg,#eef2f7 0%,#ffffff 60%); }
+
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 22px; background:linear-gradient(110deg,#141d2b 0%,#0f1419 60%);
+    border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:13px; }
+  .brand .mark { width:38px; height:38px; border-radius:9px; flex:none;
+    background:linear-gradient(135deg,var(--accent),#7b5cf5); display:flex; align-items:center;
+    justify-content:center; font-weight:800; font-size:17px; color:#fff; letter-spacing:.5px;
+    box-shadow:0 2px 10px rgba(76,139,245,.35); }
+  .brand .title { font-size:18px; font-weight:700; line-height:1.15; }
+  .brand .title b { color:var(--accent); font-weight:700; }
+  .brand .tag { color:var(--muted); font-size:12px; margin-top:1px; }
+  .bctx { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .chip { font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    border-radius:20px; padding:3px 11px; white-space:nowrap; }
+  .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
+    background:var(--panel); margin-top:8px; overflow-x:auto; }
+  .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
+    border-right:1px solid var(--line); }
+  .group:last-child { border-right:0; }
+  .group .cmds { display:flex; gap:6px; }
+  .group .lbl { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+    margin-top:5px; }
+  .cmd { display:flex; flex-direction:column; align-items:center; gap:3px; min-width:64px;
+    padding:7px 10px; background:transparent; color:var(--fg); border:1px solid transparent;
+    border-radius:7px; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap;
+    text-decoration:none; }
+  .cmd:hover { background:rgba(76,139,245,.12); border-color:var(--line); }
+  .cmd .ico { font-size:18px; line-height:1; }
+  .cmd:disabled { opacity:.4; cursor:default; background:transparent; border-color:transparent; }
+
+  #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
+    border:1px solid var(--line); background:var(--panel); }
+  #status.err { border-color:var(--crit); color:#ffb3b5; }
+
+  main { padding:16px 20px 28px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 10px; }
+  .cols { display:grid; grid-template-columns:320px 1fr; gap:22px; align-items:start; }
+  .filterbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
+  label:first-child { margin-top:0; }
+  input, select, textarea { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
+    border:1px solid var(--line); border-radius:6px; font:inherit; }
+  .row { display:flex; gap:10px; } .row > div { flex:1; }
+  .muted { color:var(--muted); }
+  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
+  button.primary { padding:9px 18px; background:var(--accent); color:#fff;
+    border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+  button.ghost { padding:9px 14px; background:transparent; border:1px solid var(--line);
+    color:var(--fg); border-radius:6px; font:inherit; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+
+  .runs { list-style:none; padding:0; margin:0; }
+  .runs li { padding:8px 10px; border-radius:6px; margin-bottom:5px; cursor:pointer;
+    border:1px solid var(--line); background:var(--bg); font-size:13px; }
+  .runs li:hover { border-color:var(--accent); }
+  .runs li.active { border-color:var(--accent); background:rgba(76,139,245,.10); }
+  .runs li small { color:var(--muted); }
+
+  .actions { display:flex; gap:8px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
+  .badge { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
+    border-radius:10px; padding:3px 9px; white-space:nowrap; }
+  .badge.custom { color:var(--accent); border-color:var(--accent); }
+  .empty { color:var(--muted); padding:40px; text-align:center; }
+  .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
+    border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+
+  .tag { padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
+  .tag.verycritical { background:rgba(217,42,42,.30); color:#ff5c5c; }
+  .tag.critical { background:rgba(229,72,77,.24); color:#ff7a66; }
+  .tag.high { background:rgba(235,123,46,.20); color:#ffa552; }
+  .tag.medium { background:rgba(245,166,35,.18); color:#f5c451; }
+  .tag.low { background:rgba(70,167,88,.18); color:#7bd690; }
+
+  /* Katalog-Browser (Einzelfilter + SoD-Regeln), identisches Muster wie Assistent Schritt
+     "Scoping" (frontend/index.html) -- bewusst dupliziert, keine Shared-JS-Datei in diesem
+     Projekt ueblich (admin.html/admin-org-profiles.html sind ebenso eigenstaendig). */
+  .sp-scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0; }
+  .sp-scope-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--bg); }
+  .sp-scope-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  .sp-scope-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .sp-scope-filters input, .sp-scope-filters select { width:auto; flex:1 1 120px; padding:5px 7px; font-size:12px; }
+  .sp-scope-actions { display:flex; gap:8px; margin-bottom:8px; }
+  .sp-scope-actions button { width:auto; padding:4px 10px; font-size:11.5px; margin:0; }
+  .sp-scope-tablewrap { max-height:280px; overflow:auto; border-top:1px solid var(--line); }
+  .sp-scope-box table { width:100%; border-collapse:collapse; margin:0; font-size:12px; }
+  .sp-scope-box th, .sp-scope-box td { text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); }
+  .sp-scope-box th { color:var(--muted); font-weight:600; }
+  .sp-scope-box td.ck, .sp-scope-box th.ck { width:22px; padding-right:0; }
+  .sp-scope-box input[type=checkbox] { width:auto; margin:0; vertical-align:middle; }
+  .sp-scope-box tr.sel { background:rgba(76,139,245,.08); }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark">IAM</div>
+    <div>
+      <div class="title"><b>IAM</b> &middot; Scope</div>
+      <div class="tag">Persistente Katalog-Auswahl (Einzelfilter/SoD-Regeln) f&uuml;r „Neuer Lauf"</div>
+    </div>
+  </div>
+  <div class="bctx">
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
+    <span class="chip" id="spDirtyChip" style="display:none">&#9679; ungespeichert</span>
+  </div>
+</header>
+
+<nav class="ribbon">
+  <div class="group">
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
+    <div class="lbl">Anzeige</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
+      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+    </div>
+    <div class="lbl">Editieren</div>
+  </div>
+  <div class="group">
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
+    <div class="lbl">Zur&uuml;ck</div>
+  </div>
+</nav>
+
+<div id="status"></div>
+
+<main>
+  <div class="cols">
+    <div>
+      <h2>Ruleset</h2>
+      <div class="filterbox">
+        <label for="spRuleset">Ruleset</label>
+        <select id="spRuleset"></select>
+        <div class="hint">Scope-Profile beziehen sich auf Query-/SoD-Regel-IDs eines Rulesets —
+          nicht auf ein bestimmtes Dataset, daher &uuml;ber Datasets hinweg wiederverwendbar.</div>
+      </div>
+      <h2>Gespeicherte Scopes</h2>
+      <ul class="runs" id="spList"></ul>
+      <button class="ghost" id="spNewBtn" style="width:100%;margin-top:8px">+ Neuer Scope</button>
+    </div>
+
+    <div>
+      <div id="spEmpty" class="empty">Links einen Scope w&auml;hlen oder einen neuen anlegen.</div>
+      <div id="spDetail" style="display:none">
+        <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
+          <span id="spTitle"></span>
+          <span class="badge" id="spBadge"></span>
+        </h2>
+
+        <div class="row" style="max-width:600px">
+          <div><label for="spName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
+            <input id="spName" placeholder="z. B. fi-audit-2026" /></div>
+          <div><label for="spDescription">Beschreibung</label>
+            <input id="spDescription" placeholder="z. B. FI-Audit-Scope Q1 2026" /></div>
+        </div>
+
+        <div class="sp-scope-grid">
+          <div class="sp-scope-box">
+            <h3>Einzelfilter <span id="sp-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+            <div class="sp-scope-filters">
+              <input type="text" id="sp-q-pattern" placeholder="Namensmuster (z. B. BC_*)">
+              <select id="sp-q-module"><option value="">alle Module</option></select>
+              <select id="sp-q-type"><option value="">alle Typen</option></select>
+              <select id="sp-q-rank">
+                <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
+                <option value="3">ab high</option><option value="4">ab critical</option>
+                <option value="5">nur very critical</option>
+              </select>
+            </div>
+            <div class="sp-scope-actions">
+              <button type="button" class="ghost" id="sp-q-all">alle (gefiltert) w&auml;hlen</button>
+              <button type="button" class="ghost" id="sp-q-none">Auswahl leeren</button>
+            </div>
+            <div class="sp-scope-tablewrap">
+              <table id="sp-q-table">
+                <thead><tr><th class="ck"></th><th>ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Modul</th><th>Typ</th></tr></thead>
+                <tbody id="sp-q-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="sp-scope-box">
+            <h3>SoD-Regeln <span id="sp-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+            <div class="sp-scope-filters">
+              <input type="text" id="sp-r-pattern" placeholder="Namensmuster (z. B. BC_*)">
+              <select id="sp-r-rank">
+                <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
+                <option value="3">ab high</option><option value="4">ab critical</option>
+                <option value="5">nur very critical</option>
+              </select>
+            </div>
+            <div class="sp-scope-actions">
+              <button type="button" class="ghost" id="sp-r-all">alle (gefiltert) w&auml;hlen</button>
+              <button type="button" class="ghost" id="sp-r-none">Auswahl leeren</button>
+            </div>
+            <div class="sp-scope-tablewrap">
+              <table id="sp-r-table">
+                <thead><tr><th class="ck"></th><th>ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th></tr></thead>
+                <tbody id="sp-r-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="spSaveBtn" disabled>Speichern</button>
+          <button class="ghost" id="spCancelBtn" disabled>Abbrechen</button>
+          <button class="ghost" id="spDeleteBtn" style="margin-left:auto;display:none">L&ouml;schen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
+const doneTag = '<span style="color:var(--ok)">&#10003;</span>';
+function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLowerCase()}">${c || '?'}</span>`; }
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+}
+applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
+$('themeToggle').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', next); applyTheme(next);
+};
+
+function setStatus(html, isErr) {
+  const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
+}
+
+let scopes = [], selectedName = null, isNew = false, dirty = false;
+let spCatalog = { ruleset: null, queries: [], sodRules: [] };
+let spQueryIds = new Set(), spSodRuleIds = new Set();
+
+function setDirty(v) {
+  dirty = v;
+  $('spDirtyChip').style.display = v ? '' : 'none';
+  $('spSaveBtn').disabled = !v; $('spCancelBtn').disabled = !v;
+  $('cmdSave').disabled = !v; $('cmdCancel').disabled = !v;
+}
+
+async function loadRulesets() {
+  const meta = await api('/profiles');
+  const sel = $('spRuleset'); const cur = sel.value; sel.innerHTML = '';
+  (meta.rulesets || []).forEach(r => { const o = document.createElement('option'); o.value = r.id; o.textContent = r.name; sel.appendChild(o); });
+  if ((meta.rulesets || []).some(r => r.id === cur)) sel.value = cur;
+  else if (meta.defaultRuleset) sel.value = meta.defaultRuleset;
+  await loadScopesAndCatalog();
+}
+$('spRuleset').addEventListener('change', async () => {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) { $('spRuleset').value = spCatalog.ruleset; return; }
+  selectedName = null; isNew = false;
+  $('spDetail').style.display = 'none'; $('spEmpty').style.display = '';
+  await loadScopesAndCatalog();
+});
+
+async function loadScopesAndCatalog() {
+  const rs = $('spRuleset').value; if (!rs) return;
+  const [list, queries, sodRules] = await Promise.all([
+    api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes'),
+    api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries'),
+    api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules'),
+  ]);
+  scopes = list;
+  spCatalog = { ruleset: rs, queries, sodRules };
+  const modSel = $('sp-q-module'), typeSel = $('sp-q-type');
+  modSel.innerHTML = '<option value="">alle Module</option>';
+  typeSel.innerHTML = '<option value="">alle Typen</option>';
+  [...new Set(queries.map(q => q.module).filter(Boolean))].sort().forEach(m => {
+    const o = document.createElement('option'); o.value = m; o.textContent = m; modSel.appendChild(o);
+  });
+  [...new Set(queries.map(q => q.queryType).filter(Boolean))].sort().forEach(t => {
+    const o = document.createElement('option'); o.value = t; o.textContent = t; typeSel.appendChild(o);
+  });
+  renderList();
+}
+
+function renderList() {
+  const ul = $('spList'); ul.innerHTML = '';
+  if (!scopes.length) { ul.innerHTML = '<li class="muted" style="cursor:default">noch keine Scopes gespeichert</li>'; return; }
+  scopes.forEach(s => {
+    const li = document.createElement('li');
+    li.className = s.name === selectedName ? 'active' : '';
+    const nq = (s.queryIds || []).length, nr = (s.sodRuleIds || []).length;
+    li.innerHTML = `<b>${escapeHtml(s.name)}</b><br><small>${escapeHtml(s.description || '')}${s.description ? ' — ' : ''}${nq} Einzelfilter, ${nr} SoD-Regel(n)</small>`;
+    li.onclick = () => selectScope(s.name);
+    ul.appendChild(li);
+  });
+}
+
+function _spMatchesPattern(text, pattern) {
+  if (!pattern) return true;
+  const esc = pattern.trim().replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+  try { return new RegExp(esc, 'i').test(text || ''); } catch { return true; }
+}
+function spFilterQueries() {
+  const pattern = $('sp-q-pattern').value;
+  const module = $('sp-q-module').value;
+  const qType = $('sp-q-type').value;
+  const minRank = parseInt($('sp-q-rank').value, 10) || 0;
+  return spCatalog.queries.filter(q =>
+    (q.criticalityRank || 0) >= minRank
+    && (!module || q.module === module)
+    && (!qType || q.queryType === qType)
+    && (_spMatchesPattern(q.id, pattern) || _spMatchesPattern(q.description, pattern)));
+}
+function spFilterSodRules() {
+  const pattern = $('sp-r-pattern').value;
+  const minRank = parseInt($('sp-r-rank').value, 10) || 0;
+  return spCatalog.sodRules.filter(r =>
+    (r.criticalityRank || 0) >= minRank
+    && (_spMatchesPattern(r.id, pattern) || _spMatchesPattern(r.description, pattern)));
+}
+function spRenderQueryTable() {
+  const rows = spFilterQueries();
+  $('sp-q-count').textContent = '(' + rows.length + ' von ' + spCatalog.queries.length + ')';
+  $('sp-q-body').innerHTML = rows.map(q => {
+    const checked = spQueryIds.has(q.id) ? 'checked' : '';
+    const name = q.shortDescription || q.description || '';
+    return `<tr class="${checked ? 'sel' : ''}" data-id="${escapeHtml(q.id)}">`
+      + `<td class="ck"><input type="checkbox" ${checked}></td>`
+      + `<td>${escapeHtml(q.id)}</td><td class="muted">${escapeHtml(name)}</td>`
+      + `<td>${critTag(q.criticality)}</td><td class="muted">${escapeHtml(q.module || '')}</td>`
+      + `<td class="muted">${escapeHtml(q.queryType || '')}</td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="muted">keine Treffer für diesen Filter</td></tr>';
+  $('sp-q-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.onclick = () => {
+      const id = tr.dataset.id;
+      if (spQueryIds.has(id)) spQueryIds.delete(id); else spQueryIds.add(id);
+      spRenderQueryTable(); setDirty(true);
+    };
+  });
+}
+function spRenderRuleTable() {
+  const rows = spFilterSodRules();
+  $('sp-r-count').textContent = '(' + rows.length + ' von ' + spCatalog.sodRules.length + ')';
+  $('sp-r-body').innerHTML = rows.map(r => {
+    const checked = spSodRuleIds.has(r.id) ? 'checked' : '';
+    const name = r.shortDescription || r.description || '';
+    return `<tr class="${checked ? 'sel' : ''}" data-id="${escapeHtml(r.id)}">`
+      + `<td class="ck"><input type="checkbox" ${checked}></td>`
+      + `<td>${escapeHtml(r.id)}</td><td class="muted">${escapeHtml(name)}</td>`
+      + `<td>${critTag(r.criticality)}</td></tr>`;
+  }).join('') || '<tr><td colspan="4" class="muted">keine Treffer für diesen Filter</td></tr>';
+  $('sp-r-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.onclick = () => {
+      const id = tr.dataset.id;
+      if (spSodRuleIds.has(id)) spSodRuleIds.delete(id); else spSodRuleIds.add(id);
+      spRenderRuleTable(); setDirty(true);
+    };
+  });
+}
+['sp-q-pattern', 'sp-q-module', 'sp-q-type', 'sp-q-rank'].forEach(id =>
+  $(id).addEventListener('input', spRenderQueryTable));
+['sp-r-pattern', 'sp-r-rank'].forEach(id =>
+  $(id).addEventListener('input', spRenderRuleTable));
+$('sp-q-all').onclick = () => { spFilterQueries().forEach(q => spQueryIds.add(q.id)); spRenderQueryTable(); setDirty(true); };
+$('sp-q-none').onclick = () => { spQueryIds.clear(); spRenderQueryTable(); setDirty(true); };
+$('sp-r-all').onclick = () => { spFilterSodRules().forEach(r => spSodRuleIds.add(r.id)); spRenderRuleTable(); setDirty(true); };
+$('sp-r-none').onclick = () => { spSodRuleIds.clear(); spRenderRuleTable(); setDirty(true); };
+
+function selectScope(name) {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  selectedName = name; isNew = false;
+  const s = scopes.find(x => x.name === name);
+  renderList();
+  $('spEmpty').style.display = 'none'; $('spDetail').style.display = '';
+  $('spTitle').textContent = s.name;
+  $('spBadge').textContent = 'gespeicherter Scope'; $('spBadge').className = 'badge custom';
+  $('spDeleteBtn').style.display = '';
+  $('spName').value = s.name; $('spName').disabled = true;
+  $('spDescription').value = s.description || '';
+  spQueryIds = new Set(s.queryIds || []);
+  spSodRuleIds = new Set(s.sodRuleIds || []);
+  spRenderQueryTable(); spRenderRuleTable();
+  setDirty(false);
+}
+
+function newScope() {
+  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  selectedName = null; isNew = true;
+  renderList();
+  $('spEmpty').style.display = 'none'; $('spDetail').style.display = '';
+  $('spTitle').textContent = 'Neuer Scope';
+  $('spBadge').textContent = 'neu'; $('spBadge').className = 'badge custom';
+  $('spDeleteBtn').style.display = 'none';
+  $('spName').value = ''; $('spName').disabled = false;
+  $('spDescription').value = '';
+  spQueryIds = new Set(); spSodRuleIds = new Set();
+  spRenderQueryTable(); spRenderRuleTable();
+  setDirty(false);
+}
+$('spNewBtn').onclick = newScope;
+$('spName').addEventListener('input', () => setDirty(true));
+$('spDescription').addEventListener('input', () => setDirty(true));
+
+function formPayload() {
+  return {
+    description: $('spDescription').value.trim() || null,
+    queryIds: Array.from(spQueryIds),
+    sodRuleIds: Array.from(spSodRuleIds),
+  };
+}
+
+async function saveCurrent() {
+  if (!spQueryIds.size && !spSodRuleIds.size) {
+    setStatus('<b>Fehler:</b> mindestens ein Einzelfilter oder eine SoD-Regel erforderlich.', true); return;
+  }
+  const rs = $('spRuleset').value;
+  setStatus('<span class="spin"></span> Speichern&hellip;');
+  try {
+    if (isNew) {
+      const name = $('spName').value.trim();
+      if (!name) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
+      await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes',
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, ...formPayload() }) });
+      setStatus(`${doneTag} Scope <b>${name}</b> angelegt.`);
+      await loadScopesAndCatalog();
+      selectScope(name);
+    } else {
+      await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes/' + encodeURIComponent(selectedName),
+        { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formPayload()) });
+      setStatus(`${doneTag} Scope <b>${selectedName}</b> gespeichert.`);
+      const keep = selectedName;
+      await loadScopesAndCatalog();
+      selectScope(keep);
+    }
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+}
+function cancelCurrent() { if (isNew) newScope(); else selectScope(selectedName); }
+$('spSaveBtn').onclick = saveCurrent;
+$('cmdSave').onclick = saveCurrent;
+$('spCancelBtn').onclick = cancelCurrent;
+$('cmdCancel').onclick = cancelCurrent;
+
+$('spDeleteBtn').onclick = async () => {
+  if (!selectedName || !confirm(`Scope "${selectedName}" wirklich löschen?`)) return;
+  const rs = $('spRuleset').value;
+  setStatus('<span class="spin"></span> L&ouml;schen&hellip;');
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes/' + encodeURIComponent(selectedName), { method: 'DELETE' });
+    setStatus(`${doneTag} Scope gel&ouml;scht.`);
+    selectedName = null;
+    $('spDetail').style.display = 'none'; $('spEmpty').style.display = '';
+    await loadScopesAndCatalog();
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+};
+
+$('cmdRefresh').onclick = async () => {
+  const keep = selectedName;
+  await loadScopesAndCatalog();
+  if (keep) selectScope(keep);
+  setStatus(`${doneTag} aktualisiert.`);
+};
+
+loadRulesets().catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+</script>
+</body>
+</html>

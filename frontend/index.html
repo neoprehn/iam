@@ -182,6 +182,21 @@
   .cc-box.full { grid-column:1 / -1; max-width:600px; margin:0 auto; }
   .cc-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
   .cc-box table { margin:0; }
+  /* Assistent Schritt "Scoping" -- Katalog-Browser (Einzelfilter + SoD-Regeln nebeneinander,
+     je Filterzeile + scrollbare Checkbox-Tabelle). Layout an .cc-grid/.cc-box angelehnt. */
+  .asst-scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0; }
+  .asst-scope-box { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--panel); }
+  .asst-scope-box h3 { margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  .asst-scope-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .asst-scope-filters input, .asst-scope-filters select { width:auto; flex:1 1 120px; padding:5px 7px; font-size:12px; }
+  .asst-scope-actions { display:flex; gap:8px; margin-bottom:8px; }
+  .asst-scope-actions button { width:auto; padding:4px 10px; font-size:11.5px; margin:0; }
+  .asst-scope-tablewrap { max-height:280px; overflow:auto; border-top:1px solid var(--line); }
+  .asst-scope-box table { margin:0; font-size:12px; }
+  .asst-scope-box th, .asst-scope-box td { padding:5px 8px; }
+  .asst-scope-box td.ck, .asst-scope-box th.ck { width:22px; padding-right:0; }
+  .asst-scope-box input[type=checkbox] { width:auto; margin:0; vertical-align:middle; }
+  .asst-scope-box tr.sel { background:rgba(76,139,245,.08); }
   .pill { cursor:pointer; border:1px solid transparent; }
   .pill:not(.tag) { background:var(--bg); color:var(--muted); border-color:var(--line); }
   .pill:not(.tag):hover { border-color:var(--accent); }
@@ -321,6 +336,7 @@
     <div class="cmds dropdown">
       <a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a>
       <a class="cmd" href="/admin-org-profiles.html"><span class="ico">&#127757;</span>Org-Varianten</a>
+      <a class="cmd" href="/admin-scopes.html"><span class="ico">&#127919;</span>Scope</a>
       <button class="cmd" id="cmdErrorLog"><span class="ico">&#128220;</span>Fehlerprotokoll</button>
     </div>
   </div>
@@ -638,10 +654,62 @@
     <!-- Step 3: Scoping -->
     <div id="asst-step-3" style="display:none">
       <h2>&#9314;&nbsp;Scoping <span class="muted" style="font-weight:400;font-size:14px">&mdash; optional</span></h2>
-      <p class="sub">Schr&auml;nken Sie die Auswertung auf bestimmte Bereiche ein. Ohne Einschr&auml;nkung wird das gesamte Dataset gepr&uuml;ft.</p>
-      <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 20px;margin:16px 0;color:var(--muted);font-size:13px">
-        &#128203; Einzelfilter und Varianten werden in einer kommenden Phase implementiert.<br>Sie k&ouml;nnen hier direkt weitergehen.
+      <p class="sub">W&auml;hlen Sie einzelne Einzelfilter und/oder SoD-Regeln aus dem Katalog. Ohne Auswahl wird beim n&auml;chsten Lauf das gesamte Ruleset gepr&uuml;ft.</p>
+
+      <div class="row" style="max-width:340px">
+        <div><label for="asst-scope-ruleset">Ruleset</label><select id="asst-scope-ruleset"></select></div>
       </div>
+
+      <div class="asst-scope-grid">
+        <div class="asst-scope-box">
+          <h3>Einzelfilter <span id="asst-scope-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+          <div class="asst-scope-filters">
+            <input type="text" id="asst-scope-q-pattern" placeholder="Namensmuster (z. B. BC_*)">
+            <select id="asst-scope-q-module"><option value="">alle Module</option></select>
+            <select id="asst-scope-q-type"><option value="">alle Typen</option></select>
+            <select id="asst-scope-q-rank">
+              <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
+              <option value="3">ab high</option><option value="4">ab critical</option>
+              <option value="5">nur very critical</option>
+            </select>
+          </div>
+          <div class="asst-scope-actions">
+            <button type="button" class="ghost" id="asst-scope-q-all">alle (gefiltert) w&auml;hlen</button>
+            <button type="button" class="ghost" id="asst-scope-q-none">Auswahl leeren</button>
+          </div>
+          <div class="asst-scope-tablewrap">
+            <table id="asst-scope-q-table">
+              <thead><tr><th class="ck"></th><th>ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Modul</th><th>Typ</th></tr></thead>
+              <tbody id="asst-scope-q-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="asst-scope-box">
+          <h3>SoD-Regeln <span id="asst-scope-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+          <div class="asst-scope-filters">
+            <input type="text" id="asst-scope-r-pattern" placeholder="Namensmuster (z. B. BC_*)">
+            <select id="asst-scope-r-rank">
+              <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
+              <option value="3">ab high</option><option value="4">ab critical</option>
+              <option value="5">nur very critical</option>
+            </select>
+          </div>
+          <div class="asst-scope-actions">
+            <button type="button" class="ghost" id="asst-scope-r-all">alle (gefiltert) w&auml;hlen</button>
+            <button type="button" class="ghost" id="asst-scope-r-none">Auswahl leeren</button>
+          </div>
+          <div class="asst-scope-tablewrap">
+            <table id="asst-scope-r-table">
+              <thead><tr><th class="ck"></th><th>ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th></tr></thead>
+              <tbody id="asst-scope-r-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="asst-scope-summary" class="hint"></div>
+
       <div class="asst-nav">
         <button class="ghost" id="asst-3-prev">&#8592; Zur&uuml;ck</button>
         <button class="ghost" id="asst-3-next" style="margin-left:auto">Weiter &#8594; Konsistenz</button>
@@ -774,6 +842,8 @@
       <div><label for="ruleset">Ruleset</label><select id="ruleset"></select></div>
       <div><label for="runDataset">System (dataset)</label><select id="runDataset"></select></div>
     </div>
+    <label for="scopeProfileSel">Gespeicherter Scope <span class="muted">(optional, unter Admin &rarr; Scope anlegen)</span></label>
+    <select id="scopeProfileSel"><option value="">&ndash; kein gespeicherter Scope &ndash;</option></select>
     <!-- Resume-Banner (eingeblendet wenn ein Lauf-Checkpoint fuer das Dataset vorliegt) -->
     <div id="runResumeBanner" style="display:none; background:rgba(76,139,245,.1); border:1px solid rgba(76,139,245,.3); border-radius:6px; padding:10px 12px; margin:8px 0">
       <div id="runResumeInfo" class="muted" style="font-size:12px; margin-bottom:8px"></div>
@@ -790,18 +860,25 @@
     </div>
     <label for="userTypeProfile">Nutzertyp-Profil</label>
     <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
-    <label for="queryScope">Einzelfilter-Umfang</label>
-    <select id="queryScope">
-      <option value="all" selected>Alle Einzelfilter + SoD (empfohlen)</option>
-      <option value="sodOnly">Nur SoD-relevante Einzelfilter (schneller)</option>
-    </select>
-    <div class="hint">Materialisiert „wer kann was" f&uuml;r den <b>gesamten</b> Einzelfilter-Katalog
-      des Rulesets, nicht nur f&uuml;r die als SoD-Regel-Baustein verwendeten Queries &mdash; kann bei
-      gro&szlig;en Katalogen deutlich l&auml;nger dauern als bisher. „Nur SoD-relevant" beschr&auml;nkt
-      die Materialisierung (und damit auch die Einzelfilter-Ergebnisse/-&Uuml;bersicht) auf genau die
-      Queries, die dieses Ruleset f&uuml;r seine SoD-Regeln braucht &mdash; wie viele das sind, h&auml;ngt
-      vom Ruleset ab. Bei „Materialisierung &uuml;berspringen" (s. u.) f&auml;llt der Mehraufwand nur
-      beim ersten Lauf je Stichtag an.</div>
+    <div id="queryScopeGroup">
+      <label for="queryScope">Einzelfilter-Umfang</label>
+      <select id="queryScope">
+        <option value="all" selected>Alle Einzelfilter + SoD (empfohlen)</option>
+        <option value="sodOnly">Nur SoD-relevante Einzelfilter (schneller)</option>
+      </select>
+      <div class="hint">Materialisiert „wer kann was" f&uuml;r den <b>gesamten</b> Einzelfilter-Katalog
+        des Rulesets, nicht nur f&uuml;r die als SoD-Regel-Baustein verwendeten Queries &mdash; kann bei
+        gro&szlig;en Katalogen deutlich l&auml;nger dauern als bisher. „Nur SoD-relevant" beschr&auml;nkt
+        die Materialisierung (und damit auch die Einzelfilter-Ergebnisse/-&Uuml;bersicht) auf genau die
+        Queries, die dieses Ruleset f&uuml;r seine SoD-Regeln braucht &mdash; wie viele das sind, h&auml;ngt
+        vom Ruleset ab. Bei „Materialisierung &uuml;berspringen" (s. u.) f&auml;llt der Mehraufwand nur
+        beim ersten Lauf je Stichtag an.</div>
+    </div>
+    <div id="runScopingSummary" style="display:none">
+      <label id="runScopingSummaryLabel">Katalog-Auswahl</label>
+      <div class="hint" id="runScopingSummaryText"></div>
+      <a href="#" id="runScopingSummaryEdit" style="font-size:12px;display:none">Auswahl &auml;ndern&hellip;</a>
+    </div>
     <label for="orgProfileBtn">Org-Varianten <span class="muted">(Mehrfachauswahl m&ouml;glich)</span></label>
     <div class="ddcheck" id="orgProfileDD">
       <button type="button" class="ddcheck-btn" id="orgProfileBtn">&ndash; w&auml;hlen &ndash;</button>
@@ -951,7 +1028,7 @@ document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e
 document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
 $('cmdImport').onclick = () => { openDlg('dlg-import'); checkImportState($('impDataset').value); };
-$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); openDlg('dlg-run'); checkRunState($('runDataset').value); };
+$('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); loadScopeProfilesForRunDialog(); openDlg('dlg-run'); checkRunState($('runDataset').value); };
 $('cmdBackup').onclick = () => { openDlg('dlg-backup'); refreshImportFilesInfo(); };
 $('cmdManage').onclick = () => openDlg('dlg-manage');
 $('cmdRefresh').onclick = () => refreshAll();
@@ -3580,6 +3657,7 @@ $('formRun').addEventListener('submit', async e => {
     sleepDays: parseInt($('sleepDays').value, 10), minCriticalityRank: parseInt($('minRank').value, 10),
     skipMaterialize: $('skipMaterialize').checked, skipRulesetLoad: $('skipRulesetLoad').checked,
     skipExplain: !$('withExplain').checked,
+    ...asstRunScopingPayload(),
   };
   await _runRun(async () => {
     if (orgProfiles.length === 1) {
@@ -3691,7 +3769,8 @@ $('clearRunBtn').addEventListener('click', () => {
 });
 
 // ── Assistent ────────────────────────────────────────────────────────────────
-const asst = { active: false, step: 0, visited: new Set(), dataset: '' };
+const asst = { active: false, step: 0, visited: new Set(), dataset: '',
+  ruleset: '', queryIds: new Set(), sodRuleIds: new Set() };
 
 function _asstAllViews(hide = true) {
   const v = hide ? 'none' : '';
@@ -3742,6 +3821,7 @@ async function goToAsstStep(n) {
     asst.dataset = sel.value;
   } else if (n === 3) {
     _asstShowInlineStep('asst-step-3');
+    await asstInitScoping();
   } else if (n === 4) {
     _asstAllViews(true);
     await loadConsistencyCatalog('user');
@@ -3767,6 +3847,212 @@ async function goToAsstStep(n) {
     $('asst-rpt-download').dataset.dataset = rptDs;
   }
 }
+
+/* ── Schritt 3 "Scoping" -- Katalog-Auswahl (Einzelfilter + SoD-Regeln) ───────────────────
+   Datenquelle: GET /admin/rulesets/{ruleset}/queries + /sodrules (Vendor+Overlay gemerged, kein
+   runId noetig -- dieselben Endpunkte wie das Query-Management, Katalog-Browsing statt Editor).
+   Auswahl liegt in asst.queryIds/asst.sodRuleIds (Sets von IDs); leer = kein Scoping (Default-
+   Verhalten unveraendert). Wird beim Absenden von "Neuer Lauf" (formRun) mitgegeben. */
+let asstCatalog = { ruleset: null, queries: [], sodRules: [] };
+
+async function asstInitScoping() {
+  const sel = $('asst-scope-ruleset');
+  if (!sel.dataset.wired) {
+    sel.dataset.wired = '1';
+    (metaCache.rulesets || []).forEach(r => opt(sel, r.id, r.name));
+    sel.addEventListener('change', () => { asst.ruleset = sel.value; asstLoadCatalog(); });
+    ['q-pattern', 'q-module', 'q-type', 'q-rank'].forEach(id =>
+      $('asst-scope-' + id).addEventListener('input', asstRenderQueryTable));
+    ['r-pattern', 'r-rank'].forEach(id =>
+      $('asst-scope-' + id).addEventListener('input', asstRenderRuleTable));
+    $('asst-scope-q-all').onclick = () => {
+      asstFilterQueries().forEach(q => asst.queryIds.add(q.id));
+      asstRenderQueryTable(); asstUpdateScopeSummary();
+    };
+    $('asst-scope-q-none').onclick = () => {
+      asst.queryIds.clear(); asstRenderQueryTable(); asstUpdateScopeSummary();
+    };
+    $('asst-scope-r-all').onclick = () => {
+      asstFilterSodRules().forEach(r => asst.sodRuleIds.add(r.id));
+      asstRenderRuleTable(); asstUpdateScopeSummary();
+    };
+    $('asst-scope-r-none').onclick = () => {
+      asst.sodRuleIds.clear(); asstRenderRuleTable(); asstUpdateScopeSummary();
+    };
+  }
+  if (!asst.ruleset) asst.ruleset = metaCache.defaultRuleset || $('ruleset').value || sel.value;
+  sel.value = asst.ruleset;
+  await asstLoadCatalog();
+}
+
+async function asstLoadCatalog() {
+  const ruleset = asst.ruleset;
+  if (!ruleset) return;
+  if (asstCatalog.ruleset !== ruleset) {
+    $('asst-scope-q-body').innerHTML = '<tr><td colspan="6" class="muted">l\xe4dt…</td></tr>';
+    $('asst-scope-r-body').innerHTML = '<tr><td colspan="4" class="muted">l\xe4dt…</td></tr>';
+    const [queries, sodRules] = await Promise.all([
+      api('/admin/rulesets/' + encodeURIComponent(ruleset) + '/queries').catch(() => []),
+      api('/admin/rulesets/' + encodeURIComponent(ruleset) + '/sodrules').catch(() => []),
+    ]);
+    asstCatalog = { ruleset, queries, sodRules };
+    const modSel = $('asst-scope-q-module'), typeSel = $('asst-scope-q-type');
+    modSel.innerHTML = '<option value="">alle Module</option>';
+    typeSel.innerHTML = '<option value="">alle Typen</option>';
+    [...new Set(queries.map(q => q.module).filter(Boolean))].sort().forEach(m => opt(modSel, m, m));
+    [...new Set(queries.map(q => q.queryType).filter(Boolean))].sort().forEach(t => opt(typeSel, t, t));
+  }
+  asstRenderQueryTable();
+  asstRenderRuleTable();
+  asstUpdateScopeSummary();
+}
+
+function _asstMatchesPattern(text, pattern) {
+  if (!pattern) return true;
+  const esc = pattern.trim().replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+  try { return new RegExp(esc, 'i').test(text || ''); } catch { return true; }
+}
+
+function asstFilterQueries() {
+  const pattern = $('asst-scope-q-pattern').value;
+  const module = $('asst-scope-q-module').value;
+  const qType = $('asst-scope-q-type').value;
+  const minRank = parseInt($('asst-scope-q-rank').value, 10) || 0;
+  return asstCatalog.queries.filter(q =>
+    (q.criticalityRank || 0) >= minRank
+    && (!module || q.module === module)
+    && (!qType || q.queryType === qType)
+    && (_asstMatchesPattern(q.id, pattern) || _asstMatchesPattern(q.description, pattern)));
+}
+
+function asstFilterSodRules() {
+  const pattern = $('asst-scope-r-pattern').value;
+  const minRank = parseInt($('asst-scope-r-rank').value, 10) || 0;
+  return asstCatalog.sodRules.filter(r =>
+    (r.criticalityRank || 0) >= minRank
+    && (_asstMatchesPattern(r.id, pattern) || _asstMatchesPattern(r.description, pattern)));
+}
+
+function asstRenderQueryTable() {
+  const rows = asstFilterQueries();
+  $('asst-scope-q-count').textContent = '(' + rows.length + ' von ' + asstCatalog.queries.length + ')';
+  $('asst-scope-q-body').innerHTML = rows.map(q => {
+    const checked = asst.queryIds.has(q.id) ? 'checked' : '';
+    const name = q.shortDescription || q.description || '';
+    return `<tr class="${checked ? 'sel' : ''}" data-id="${escapeHtml(q.id)}">`
+      + `<td class="ck"><input type="checkbox" ${checked}></td>`
+      + `<td>${escapeHtml(q.id)}</td><td class="muted">${escapeHtml(name)}</td>`
+      + `<td>${critTag(q.criticality)}</td><td class="muted">${escapeHtml(q.module || '')}</td>`
+      + `<td class="muted">${escapeHtml(q.queryType || '')}</td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="muted">keine Treffer f\xfcr diesen Filter</td></tr>';
+  $('asst-scope-q-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.onclick = e => {
+      const id = tr.dataset.id;
+      if (asst.queryIds.has(id)) asst.queryIds.delete(id); else asst.queryIds.add(id);
+      asstRenderQueryTable(); asstUpdateScopeSummary();
+    };
+  });
+}
+
+function asstRenderRuleTable() {
+  const rows = asstFilterSodRules();
+  $('asst-scope-r-count').textContent = '(' + rows.length + ' von ' + asstCatalog.sodRules.length + ')';
+  $('asst-scope-r-body').innerHTML = rows.map(r => {
+    const checked = asst.sodRuleIds.has(r.id) ? 'checked' : '';
+    const name = r.shortDescription || r.description || '';
+    return `<tr class="${checked ? 'sel' : ''}" data-id="${escapeHtml(r.id)}">`
+      + `<td class="ck"><input type="checkbox" ${checked}></td>`
+      + `<td>${escapeHtml(r.id)}</td><td class="muted">${escapeHtml(name)}</td>`
+      + `<td>${critTag(r.criticality)}</td></tr>`;
+  }).join('') || '<tr><td colspan="4" class="muted">keine Treffer f\xfcr diesen Filter</td></tr>';
+  $('asst-scope-r-body').querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.onclick = e => {
+      const id = tr.dataset.id;
+      if (asst.sodRuleIds.has(id)) asst.sodRuleIds.delete(id); else asst.sodRuleIds.add(id);
+      asstRenderRuleTable(); asstUpdateScopeSummary();
+    };
+  });
+}
+
+function asstUpdateScopeSummary() {
+  const nq = asst.queryIds.size, nr = asst.sodRuleIds.size;
+  const el = $('asst-scope-summary');
+  if (!nq && !nr) {
+    el.textContent = 'Keine Auswahl — der n\xe4chste Lauf pr\xfcft das gesamte Ruleset (heutiges Verhalten).';
+  } else if (nr > 0) {
+    el.textContent = nq + ' Einzelfilter \xb7 ' + nr + ' SoD-Regel(n) ausgew\xe4hlt — der n\xe4chste Lauf '
+      + 'materialisiert nur die Klausel-Queries dieser Regeln (+ ggf. zus\xe4tzlich gew\xe4hlte Einzelfilter) '
+      + 'und wertet nur diese Regeln aus.';
+  } else {
+    el.textContent = nq + ' Einzelfilter ausgew\xe4hlt, keine SoD-Regel — der n\xe4chste Lauf materialisiert nur '
+      + 'diese Einzelfilter (Can-Do) und \xfcberspringt die SoD-Auswertung.';
+  }
+  refreshRunScopingSummary();
+}
+
+/* Schnittstelle Assistent -> "Neuer Lauf"-Dialog: solange im Assistenten eine Katalog-Auswahl
+   besteht, ersetzt eine Zusammenfassung den queryScope-Dropdown; formRun uebernimmt die
+   Auswahl unveraendert (leer = heutiges Verhalten, volle Rueckwaertskompatibilitaet). */
+function asstScopingActive() {
+  return asst.active && (asst.queryIds.size > 0 || asst.sodRuleIds.size > 0);
+}
+
+/* Gespeicherte Scope-Profile (Admin -> "Scope") fuer das aktuell gewaehlte Ruleset -- laden bei
+   Ruleset-Wechsel im Dialog, damit die Auswahl immer zum gewaehlten Ruleset passt. */
+let scopeProfilesCache = [];
+async function loadScopeProfilesForRunDialog() {
+  const rs = $('ruleset').value; if (!rs) { scopeProfilesCache = []; return; }
+  scopeProfilesCache = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes').catch(() => []);
+  const sel = $('scopeProfileSel'); const cur = sel.value;
+  sel.innerHTML = '<option value="">– kein gespeicherter Scope –</option>';
+  scopeProfilesCache.forEach(s => opt(sel, s.name, s.name, s.description));
+  if (scopeProfilesCache.some(s => s.name === cur)) sel.value = cur;
+  refreshRunScopingSummary();
+}
+$('ruleset').addEventListener('change', loadScopeProfilesForRunDialog);
+$('scopeProfileSel').addEventListener('change', refreshRunScopingSummary);
+
+/* Aufloesung der aktuellen Scoping-Quelle fuer den naechsten Lauf -- Prioritaet: ein im Dialog
+   gewaehltes gespeichertes Scope-Profil (Admin -> "Scope") vor einer aktiven Ad-hoc-Auswahl aus
+   dem Assistenten (Schritt Scoping); ohne beides = heutiges Verhalten (queryScope-Dropdown). */
+function currentRunScopingSource() {
+  const savedName = $('scopeProfileSel').value;
+  if (savedName) {
+    const sp = scopeProfilesCache.find(s => s.name === savedName);
+    if (sp) return { source: 'saved', name: sp.name, queryIds: sp.queryIds || [], sodRuleIds: sp.sodRuleIds || [] };
+  }
+  if (asstScopingActive()) {
+    return { source: 'assistant', queryIds: Array.from(asst.queryIds), sodRuleIds: Array.from(asst.sodRuleIds) };
+  }
+  return null;
+}
+function asstRunScopingPayload() {
+  const cur = currentRunScopingSource();
+  if (!cur) return {};
+  return {
+    queryIds: cur.queryIds,
+    sodRules: cur.sodRuleIds,
+    evaluateSod: cur.sodRuleIds.length > 0,
+  };
+}
+function refreshRunScopingSummary() {
+  const cur = currentRunScopingSource();
+  $('queryScopeGroup').style.display = cur ? 'none' : '';
+  $('runScopingSummary').style.display = cur ? '' : 'none';
+  if (cur) {
+    const isSaved = cur.source === 'saved';
+    $('runScopingSummaryLabel').textContent = isSaved ? ('Katalog-Auswahl (Scope „' + cur.name + '")')
+      : 'Katalog-Auswahl (aus Assistent, Schritt Scoping)';
+    $('runScopingSummaryText').textContent = cur.queryIds.length + ' Einzelfilter, '
+      + cur.sodRuleIds.length + ' SoD-Regel(n) ausgew\xe4hlt.';
+    $('runScopingSummaryEdit').style.display = isSaved ? 'none' : '';
+  }
+}
+$('runScopingSummaryEdit').addEventListener('click', e => {
+  e.preventDefault();
+  closeDlg();
+  goToAsstStep(3);
+});
 
 async function asstRenderDatasets() {
   const el = $('asst-datasets-overview');
@@ -3818,6 +4104,8 @@ function startAssistent() {
   asst.active = true;
   asst.step   = 0;
   asst.visited.clear();
+  asst.queryIds.clear();
+  asst.sodRuleIds.clear();
   $('assistentStepper').style.display = '';
   goToAsstStep(1);
 }
@@ -3826,6 +4114,7 @@ function exitAssistent() {
   asst.active = false;
   $('assistentStepper').style.display = 'none';
   $('assistentView').style.display = 'none';
+  refreshRunScopingSummary();
   showResultsView();
 }
 
