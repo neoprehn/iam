@@ -125,7 +125,14 @@ entsprechenden Felder im „Neuer Lauf"-Dialog zugunsten der Voreinstellungswert
 **Sidebar-Filter scope-treu** (Einzelberechtigung/SoD-Dropdown in der Ergebnis-Ansicht zeigen bei
 einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfilter/SoD-Regeln,
 `run.queryIds`/`run.sodRules` jetzt am Run-Knoten persistiert, volle Rückwärtskompatibilität für
-ältere Läufe).
+ältere Läufe) + **Multi-Varianten-Läufe** (jede Variante ein eigener, benannter `(:Run)`, frei
+konfigurierbare Org-Varianten über eigene Admin-Seite, paralleles Anlegen mehrerer Varianten als
+Batch-Job, Titel/Beschreibung nachträglich änderbar) + **Nutzer-Scope verfeinern**
+(Sleeping-Schnellwahl 90/180/360 Tage als Ergebnisfilter, live gegen `u.lastLogon` statt nur das
+beim Lauf gesetzte Fenster; Gesperrte nach Sperrtyp `failed_logons`/`admin_local`/`admin_global`)
++ **Evidenz-Perf** (GRANTS-Kante + Checkpoint-Throttling + `explain_sod_finalize`-Fix senken
+`/explain` von ~90–100s auf ~27,6s bei ~4.200 Akteuren, dadurch **Evidenz jetzt default-on**
+bei jedem neuen Lauf statt Opt-in).
 
 - [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten", noch offen): „wer kann *Funktion* in
   *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…
@@ -138,70 +145,6 @@ einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfil
   zu `_SATISFIED_BY_CYPHER`) — wäre zwar ergebnisgleich, aber zusätzlicher Code-Pfad ohne echten
   Vorteil gegenüber einem weiteren benannten Lauf (Titel/Beschreibung jetzt nachträglich änderbar,
   s. Archiv).
-- [x] **Multi-Varianten-Läufe — erledigt.** Jede Variante (z. B. „Standard", „Übergreifend", „BUKRS=…") = ein eigener, **benannter** `(:Run)` (Titel-Feld, Lauf-Liste zeigt Titel als Hauptlabel + Run-ID als Mini-Chip). **Org-Varianten sind jetzt frei konfigurierbar:** neue Admin-Seite **„Org-Varianten"** (`frontend/admin-org-profiles.html`, verlinkt aus Ribbon „Admin") — wählt aus den tatsächlich im Dataset vorkommenden Org-Feldern (`GET /admin/org-profiles/org-fields`) und Werten (`GET /admin/org-profiles/org-field-values`, **echte Werte aus den Authorization-Daten**, kein Freitext) ein oder mehrere Kriterien (UND/ODER/Bereich) und speichert sie unter einem Namen. Overlay-Mechanismus wie bei Query-/SoD-Metadaten (`config/analysis_profiles.custom.json`, Vendor-Datei `analysis_profiles.json` bleibt unberührt) — **aber bewusst `.gitignore`d** (anders als `queries.custom.json`), da Org-Varianten echte Mandanten-Org-Codes enthalten können. **„Standard"/„Übergreifend" sind geschützt** (nicht editierbar/löschbar, `PROTECTED_ORG_PROFILES`). **Paralleles Anlegen mehrerer Varianten in einem Schritt:** „Neuer Lauf"-Dialog hat jetzt eine **Mehrfachauswahl** (Checkbox-Dropdown, gleiches `ddcheck`-Pattern wie der Nutzertyp-Filter) statt eines Single-Select; bei mehreren gewählten Varianten entsteht über den neuen Endpoint `POST /runs/batch` **ein Job mit je einem eigenen Lauf pro Variante** (Titel = Variantenname, sequenziell abgearbeitet — gemeinsame Neo4j-Session, kein Parallel-Schreiben). Backend-Refactor: `do_run()`-Kern in `_run_one()` ausgelagert, von Einzel- (`do_run`) und Batch-Lauf (`do_run_batch`) gemeinsam genutzt. Verifiziert gegen den laufenden Container: Variante mit echten Org-Werten angelegt/bearbeitet/gelöscht (Vendor-Datei unverändert, geschützte Profile lehnen Edit/Delete mit 400 ab), Batch-Lauf mit drei Varianten erzeugt drei `(:Run)` mit unterschiedlichen Trefferzahlen und kurzen Titeln. **Nicht Teil dieses Schritts:** sichtbare Gruppierung mehrerer Läufe als „Varianten-Set" in der UI (jeder Batch-Lauf erscheint einzeln in der Lauf-Liste).
-  **Nachträglicher Korrekturbedarf (Nutzer-Feedback nach erster Nutzung):** `materialize_matches.cypher`
-  ließ unter `wildcardOnly`/`filtered` **alle** Queries laufen, nicht nur die org-relevanten — die
-  `$orgMode`-Logik griff nur je Berechtigungsfeld, das *zufällig* ein Org-Feld ist; Queries ganz
-  ohne Org-Feld-Bezug liefen am Modus vorbei unverändert wie unter „Standard" durch (Ergebnis:
-  „Übergreifend" zeigte praktisch dieselben Treffer/Regeln wie „Standard"). Korrigiert: die
-  Driving-Query von `apoc.periodic.iterate` wählt jetzt **vorab nur Queries mit Bezug zu einem
-  relevanten Org-Feld** (`wildcardOnly` → irgendein Org-Feld; `filtered` → eines der in
-  `$orgFilters` gewählten Felder, z. B. nur Queries mit BUKRS bei einer BUKRS-Variante) — wirkt
-  automatisch auch auf SoD-Regeln durch (eine Klausel ohne org-relevante Kandidaten-Query bekommt
-  keine `MATCHES`-Kante mehr, die Regel kann unter der Variante nicht mehr verletzt werden, ganz
-  ohne separate SoD-Filterlogik). Verifiziert: „Übergreifend" sank von 22 auf 16 betroffene Regeln
-  (38 → 22 betrachtete Queries), eine BUKRS-spezifische Testvariante auf 4 Regeln (10 Queries).
-  **Titel/Beschreibung nachträglich änderbar (2026-07-11):** neuer Endpoint
-  `PUT /runs/{runId}/meta` (reines Metadaten-Update, kein Neu-Lauf); Stift-Icon an jeder
-  Lauf-Karte öffnet einen Dialog mit Titel-Input + mehrzeiliger, per Ziehgriff vergrößerbarer
-  Beschreibung (`textarea{resize:vertical}`, analog Risiko-Feld im Editor) — Nutzer-Feedback,
-  dass ein einmal vergebener Variantenname bisher nicht korrigierbar war.
-- [x] **Nutzer-Scope verfeinern — erledigt (2026-07-11).** Nutzertyp und Sleeping waren bereits
-  zusätzlich **Ergebnisfilter** (nicht nur Lauf-Kriterium, Details im Archiv). Jetzt ergänzt:
-  **Sleeping-Schnellwahl 90/180/360 Tage** — erscheint bei „nur sleeping"/„nicht sleeping" als
-  eigene Pillgroup; weicht der gewählte Wert vom beim Lauf gesetzten `sleepDays`-Fenster ab, schaltet
-  `GET /findings`/`/findings/summary`/`/findings/export` (`_FINDINGS_WHERE`, `backend/app.py`) von
-  der materialisierten `f.userSleeping`/`f.lastLogonKnown` auf eine **Live-Berechnung** gegen
-  `u.lastLogon`/`run.asOf` um (gleiche Formel wie `_USER_ENRICH_RETURN`) — ohne Override unverändert
-  die materialisierten Werte. **Gesperrte nach Sperrtyp:** neuer Ergebnisfilter „Gesperrt"
-  (alle/gesperrt/nicht gesperrt) + bei „gesperrt" Sperrgrund-Pills (alle/`failed_logons`/
-  `admin_local`/`admin_global`, direkt gegen `u.lockReasons` — kein materialisiertes Äquivalent
-  am Finding nötig, da `u` in `_FINDINGS_WHERE` bereits gebunden ist). Wirkt nur für Läufe, die
-  gesperrte User nicht schon beim Materialisieren ausgeschlossen haben (`excludeLocked=false`) —
-  sonst fehlen deren Findings von vornherein, dokumentiert im Code-Kommentar. Verifiziert:
-  Pass-Through-Grenzfälle gegen echte Lauf-Daten (`locked=false` bzw. `sleeping=unknown` liefern
-  exakt dieselbe Trefferzahl wie ganz ohne Filter, da dieses Dataset weder TRDAT noch gesperrte
-  User enthält — bekannte Datenlücke) sowie Playwright-UI-Test (Pill-Sichtbarkeit, Request-Parameter,
-  Filter-Chip-Text, Reset).
-- [x] **Evidenz-Perf (2026-07-11) — erledigt.** Vorab geflachte Erreichbarkeit `(:Role|:Profile)-[:GRANTS]->(:Authorization)`
-  (transitive Hülle CONTAINS/HAS_PROFILE, `load/91_materialize_grants.cypher`, einmal je Dataset
-  beim Import, ~62s für 5,1 Mio. Kanten) — `explain_sod_one.cypher` nutzt sie jetzt als Lookup statt
-  der `CONTAINS|HAS_PROFILE*0..4`-Pfadsuche. **Benchmark-Überraschung:** die Traversierung selbst war
-  in diesem Datenbestand gar nicht der Flaschenhals (~2ms/Akteur vorher, GRANTS spart davon nur
-  ~10–15 %) — die eigentlichen Kostentreiber lagen woanders und wurden mit behoben:
-  1. `_run_phase()` (gemeinsamer Batching-Rahmen für Materialisierung/Auswertung/Evidenz) schrieb
-     nach **jeder einzelnen** Einheit die komplette, wachsende Checkpoint-Liste neu auf die
-     Festplatte (O(n²) bei tausenden Akteuren). **Nutzer-Entscheidung:** Wiederaufnehmen
-     abgebrochener Läufe bleibt wichtiger als ein einziger gebatchter `apoc.periodic.iterate`-Aufruf
-     (der die Pro-Akteur-Resume-Granularität gekostet hätte) — also stattdessen zeitgesteuertes
-     Schreiben (höchstens alle 2s + garantiert am Ende), bei exakt gleicher Resume-Granularität;
-     ein Absturz verliert dadurch höchstens ein paar Sekunden bereits erledigter, aber ohnehin
-     idempotenter (`MERGE`) Arbeit.
-  2. `explain_sod_finalize.cypher` (intra/inter-Berechnung) leitete den violierenden User in der
-     verschachtelten `EXISTS`-Klausel je Akteur×Klausel **redundant neu her**
-     (`(f)<-[:VIOLATES]-(:User)-[:MATCHES]->(q)`), obwohl `u` aus dem äußeren `MATCH` bereits
-     gebunden war und nur durch ein zwischenzeitliches `WITH` aus dem Scope gefallen ist — Fix:
-     `u` durchreichen, direkt `(u)-[:MATCHES]->(q)` prüfen. **Effekt: 53,5s → 0,7s** (72×) für
-     501 Findings.
-  **Gesamtergebnis (verifiziert, bit-identische Resultate vor/nach allen drei Fixes):** kompletter
-  `/runs/{id}/explain`-Durchlauf für ~4.200 Akteure/501 Findings von ~90–100s auf **~27,6s**
-  (≈3,5×). **Evidenz default-on aktiviert:** `RunReq.skipExplain`/`RunBatchReq.skipExplain`
-  Default auf `False` gedreht, „Neuer Lauf"-Formular hat jetzt eine **„Evidenz überspringen"**-
-  Checkbox (Default aus, analog „Materialisierung überspringen"/„Ruleset-Laden überspringen") statt
-  der bisherigen Opt-in-Checkbox „Evidenz mitberechnen" — jeder neue Lauf berechnet VIA_ROLE/
-  VIA_PROFILE/intra-inter jetzt automatisch mit, abwählbar für schnellere Läufe, Ribbon „Evidenz"
-  bleibt für ältere Läufe ohne Evidenz.
-
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mit vorhandenen Daten:
 
@@ -252,19 +195,6 @@ Pfadgraph/Radial ignorierten den „nur Treffer"-Umschalter bisher komplett (zei
 
 ---
 
-### Phase 8 — Did-Do (Nutzung aus STAD/ST03N) — *die Kür, zuletzt*
-**Ziel:** Nutzungssicht und Can-Do×Did-Do-Matrix. Bewusst als Letztes — wertvoll, aber nicht auf dem kritischen Pfad.
-
-- [ ] Extraktionsweg festlegen: ST03N-Aggregate (`SWNC_COLLECTOR_GET_AGGREGATES`) als Einstieg; bei Bedarf Roh-STAD; für Forensik SAL/`CDHDR`.
-- [ ] `EXECUTED`-Kanten (User→Transaction) mit `count`/`firstSeen`/`lastSeen`/`taskType`/`asOf`/`runId` in die Snapshot-Schicht.
-- [ ] Matrix-Abfragen: ungenutzte Berechtigungen (Least-Privilege), materialisierte SoD (Did-Do auf beiden Konfliktseiten).
-- [ ] Caveats dokumentieren: Aufbewahrungsfenster, selten-aber-vital, indirekte Aufrufe, kein Audit-Log (AE-13), S/4-Fiori/OData.
-- [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): Pseudonymisierung der User-ID; Klartext nur im begründeten Einzelfall.
-
-**DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
-
----
-
 ### Phase 10 — Verteilung & Reproduzierbarkeit
 **Ziel:** Weitergabe an andere Rechner/User ohne Datenweitergabe.
 
@@ -281,6 +211,24 @@ ist **Kubernetes-fähig** (interner, abgesicherter Cluster):
 - Optional: Helm-Chart/Kustomize.
 
 **DoD:** Ein Kollege bringt das Projekt identisch zum Laufen, ohne dass Mandantendaten das Repo berühren.
+
+---
+
+### Phase 8 — Did-Do (Nutzung aus STAD/ST03N) — **blockiert, hinter Phase 10 verschoben**
+**Blockiert (2026-07-11):** Dem Mandanten liegt aktuell **kein STAD/ST03N-Auszug** (Nutzungsdaten)
+vor — ohne dieses Dataset ist an dieser Phase nichts umsetzbar. Deshalb bewusst hinter Phase 10
+zurückgestellt (statt wie zuvor nur „zuletzt, aber vor Verteilung"): sobald ein Extrakt mit
+Nutzungsdaten verfügbar ist, rückt die Phase wieder nach vorne.
+
+**Ziel:** Nutzungssicht und Can-Do×Did-Do-Matrix.
+
+- [ ] Extraktionsweg festlegen: ST03N-Aggregate (`SWNC_COLLECTOR_GET_AGGREGATES`) als Einstieg; bei Bedarf Roh-STAD; für Forensik SAL/`CDHDR`.
+- [ ] `EXECUTED`-Kanten (User→Transaction) mit `count`/`firstSeen`/`lastSeen`/`taskType`/`asOf`/`runId` in die Snapshot-Schicht.
+- [ ] Matrix-Abfragen: ungenutzte Berechtigungen (Least-Privilege), materialisierte SoD (Did-Do auf beiden Konfliktseiten).
+- [ ] Caveats dokumentieren: Aufbewahrungsfenster, selten-aber-vital, indirekte Aufrufe, kein Audit-Log (AE-13), S/4-Fiori/OData.
+- [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): Pseudonymisierung der User-ID; Klartext nur im begründeten Einzelfall.
+
+**DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
 
 ---
 
