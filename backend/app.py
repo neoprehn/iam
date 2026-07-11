@@ -2531,6 +2531,26 @@ def import_folders():
     return out
 
 
+class RunMetaReq(BaseModel):
+    title: str | None = None          # leer -> runId als Fallback (analog RunReq.title)
+    description: str | None = None    # freier, mehrzeiliger Text; leer -> geloescht
+
+
+@app.put("/runs/{runId}/meta")
+def set_run_meta(runId: str, req: RunMetaReq):
+    """Titel/Beschreibung eines bestehenden Laufs nachtraeglich aendern -- reine Metadaten,
+    kein Neu-Lauf (Nutzer-Feedback: Variantenname war nach dem Anlegen nicht mehr korrigierbar)."""
+    title = (req.title or "").strip() or runId
+    description = (req.description or "").strip() or None
+    with driver.session() as s:
+        rec = s.run("MATCH (r:Run {runId:$id}) SET r.title=$title, r.description=$description "
+                    "RETURN r.title AS title, r.description AS description",
+                    id=runId, title=title, description=description).single()
+        if not rec:
+            raise HTTPException(404, f"Run '{runId}' nicht gefunden")
+    return {"runId": runId, "title": rec["title"], "description": rec["description"]}
+
+
 @app.post("/runs/{runId}/explain")
 def explain_run(runId: str):
     """Evidenz (verursachende Rollen/Profile, intra/inter) fuer einen Lauf nachrechnen (teuer)."""

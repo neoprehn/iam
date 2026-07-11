@@ -231,7 +231,11 @@
   .run-card.dragging { opacity:.4; }
   .run-card-top { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
   .run-card-top .run-id { font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .run-card-edit { flex-shrink:0; color:var(--muted); cursor:pointer; font-size:12px; padding:0 2px; }
+  .run-card-edit:hover { color:var(--accent); }
   .run-card-meta { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+  .run-card-desc { color:var(--muted); font-size:11.5px; margin-top:3px; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; }
   .chip-mini { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
     border-radius:10px; padding:2px 7px; white-space:nowrap; }
   .chip-mini.warn { color:#f5c451; border-color:rgba(245,166,35,.4); }
@@ -251,9 +255,10 @@
   .dialog .sub { color:var(--muted); font-size:12px; margin-bottom:14px; }
   .dialog .x { float:right; cursor:pointer; color:var(--muted); font-size:18px; line-height:1; }
   label { display:block; margin:12px 0 4px; font-size:12px; color:var(--muted); }
-  input, select { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
+  input, select, textarea { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
     border:1px solid var(--line); border-radius:6px; font:inherit; }
   input[type=file] { padding:6px; }
+  textarea { resize:vertical; min-height:52px; }
   .row { display:flex; gap:10px; } .row > div { flex:1; }
   .check { display:flex; align-items:flex-start; gap:8px; margin-top:12px; }
   .check input { width:auto; margin-top:3px; }
@@ -974,6 +979,17 @@
   <button class="ghost" id="backupRunBtn">Lauf sichern</button>
   <h2>Lauf-Backups</h2>
   <ul class="runs" id="runBackups"></ul>
+</div></div>
+
+<!-- Dialog: Lauf-Titel/Beschreibung -->
+<div class="overlay" id="dlg-run-meta"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Titel &amp; Beschreibung</h3>
+  <div class="sub">Gilt nur f&uuml;r diesen Lauf/diese Variante &mdash; wertet nichts neu aus.</div>
+  <label for="rmTitle">Titel</label>
+  <input id="rmTitle" placeholder="Variantenname" />
+  <label for="rmDesc">Beschreibung (optional)</label>
+  <textarea id="rmDesc" placeholder="z. B. Zweck der Variante, Abgrenzung zu anderen L&auml;ufen&hellip;"></textarea>
+  <button class="primary" id="rmSaveBtn">Speichern</button>
 </div></div>
 
 <!-- Dialog: Verwalten -->
@@ -2315,13 +2331,16 @@ async function loadRuns() {
     const rsName = rs ? rs.name : r.ruleset;
     li.innerHTML = `<div class="run-card-top">`
       + `<span class="run-id">${label}</span>`
+      + `<span class="run-card-edit" data-edit-run="${r.runId}" title="Titel/Beschreibung &auml;ndern">&#9998;</span>`
       + `<span class="chip-mini" style="flex-shrink:0">${rsName}</span>`
       + `</div>`
       + `<div class="run-card-meta">`
       + `<span class="chip-mini">Stichtag ${r.asOf}</span>`
       + `<span class="chip-mini">${fmtDateTime(r.generatedAt)}</span>`
-      + `</div>`;
+      + `</div>`
+      + (r.description ? `<div class="run-card-desc" title="${r.description.replace(/"/g, '&quot;')}">${r.description}</div>` : '');
     li.onclick = () => { _showResultsLayout(); showFindings(r.runId); };
+    li.querySelector('[data-edit-run]').onclick = e => { e.stopPropagation(); openRunMetaDlg(r.runId); };
     _bindRunDnd(li);
     ul.appendChild(li);
   });
@@ -2331,6 +2350,25 @@ async function loadRuns() {
     if (runs.some(r => r.runId === cur)) sel.value = cur;
     else if (!runs.length) opt(sel, '', '— keine —');
   }
+}
+
+/* Titel/Beschreibung eines bestehenden Laufs nachtraeglich aendern (Nutzer-Feedback: Variantenname
+   war nach dem Anlegen nicht mehr korrigierbar) -- reines Metadaten-Update, kein Neu-Lauf. */
+function openRunMetaDlg(runId) {
+  const r = runsById[runId]; if (!r) return;
+  $('rmTitle').value = r.title || r.runId;
+  $('rmDesc').value = r.description || '';
+  $('rmSaveBtn').onclick = async () => {
+    try {
+      const updated = await api('/runs/' + encodeURIComponent(runId) + '/meta', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: $('rmTitle').value, description: $('rmDesc').value }) });
+      Object.assign(runsById[runId], updated);
+      closeDlg();
+      loadRuns();
+    } catch (e) { alert('Fehler: ' + (e.detail || JSON.stringify(e))); }
+  };
+  openDlg('dlg-run-meta');
 }
 
 /* Findings + Filter-Sidebar (User/Regel/Query) — Klick auf User-/Regel-Zelle setzt den

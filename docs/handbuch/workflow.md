@@ -53,7 +53,10 @@ ankreuzen — dann läuft nur die (schnelle) Regelauswertung.
 Der **Hauptbereich** zeigt die Ergebnisse durchgehend:
 
 - **KPIs** — Findings, betroffene Regeln, davon „sleeping".
-- **Läufe-Liste** — alle Läufe mit Findings-Zahl; ein Klick lädt den Lauf (KPIs + Findings).
+- **Läufe-Liste** — alle Läufe mit Findings-Zahl; ein Klick lädt den Lauf (KPIs + Findings). Titel
+  und eine optionale, mehrzeilige Beschreibung sind über das Stift-Symbol an jeder Lauf-Karte
+  jederzeit nachträglich änderbar (reines Metadaten-Update, wertet nichts neu aus) — hilfreich bei
+  mehreren benannten Varianten (s. Org-Profile), deren Name sich im Nachhinein noch ändern soll.
 - **Findings-Tabelle** — Benutzer · Regel · Kritikalität · Sleeping (nach Kritikalität sortiert).
 - **Export CSV** (Ribbon **Ergebnisse → Export CSV**) — die Findings des aktiven Laufs als CSV
   (Semikolon, UTF-8 — öffnet direkt in Excel).
