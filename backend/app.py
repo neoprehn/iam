@@ -1992,6 +1992,12 @@ class ScopeProfileEditReq(BaseModel):
     description: str | None = None
     queryIds: list[str] = []
     sodRuleIds: list[str] = []
+    # Voreinstellung fuer "Neuer Lauf": ueberschreibt dort userTypeProfile/sleepDays, wenn dieser
+    # Scope gewaehlt wird (s. currentRunScopingSource() im Frontend). Defaults hier nur Fallback
+    # fuer direkte API-Aufrufe ohne die Felder -- das Frontend befuellt sie beim Anlegen immer
+    # aus den echten aktuellen /profiles-Werten.
+    userTypeProfile: str = "all"
+    sleepDays: int = 180
 
 
 class ScopeProfileCreateReq(ScopeProfileEditReq):
@@ -2020,7 +2026,8 @@ def admin_create_scope(ruleset: str, req: ScopeProfileCreateReq):
     if any(s["name"] == req.name for s in scopes):
         raise HTTPException(409, f"Scope-Profil '{req.name}' existiert bereits")
     scopes.append({"name": req.name, "description": req.description or "",
-                   "queryIds": req.queryIds, "sodRuleIds": req.sodRuleIds})
+                   "queryIds": req.queryIds, "sodRuleIds": req.sodRuleIds,
+                   "userTypeProfile": req.userTypeProfile, "sleepDays": req.sleepDays})
     path.write_text(json.dumps(scopes, ensure_ascii=False, indent=2), encoding="utf-8")
     return {"name": req.name, "saved": True}
 
@@ -2036,6 +2043,8 @@ def admin_update_scope(ruleset: str, name: str, req: ScopeProfileEditReq):
     entry["description"] = req.description or ""
     entry["queryIds"] = req.queryIds
     entry["sodRuleIds"] = req.sodRuleIds
+    entry["userTypeProfile"] = req.userTypeProfile
+    entry["sleepDays"] = req.sleepDays
     path.write_text(json.dumps(scopes, ensure_ascii=False, indent=2), encoding="utf-8")
     return {"name": name, "saved": True}
 

@@ -262,6 +262,14 @@
             <div><label for="spDescription">Beschreibung</label>
               <input id="spDescription" placeholder="z. B. FI-Audit-Scope Q1 2026" /></div>
           </div>
+          <div class="row" style="max-width:600px">
+            <div><label for="spUserTypeProfile">Nutzertyp-Profil</label>
+              <select id="spUserTypeProfile"></select><div class="hint" id="spUserTypeHint"></div></div>
+            <div><label for="spSleepDays">Sleeping (Tage)</label>
+              <input type="number" id="spSleepDays" min="0" step="1" /></div>
+          </div>
+          <div class="hint">Diese beiden Werte werden bei „Neuer Lauf" verwendet, sobald dieser
+            Scope als Voreinstellung gew&auml;hlt ist &mdash; die eigenen Felder dort verschwinden dann.</div>
           <div class="hint" id="sp-save-summary" style="margin-top:10px"></div>
 
           <div class="actions">
@@ -323,6 +331,7 @@ let spCatalog = { ruleset: null, queries: [], sodRules: [] };
 let spQueryIds = new Set(), spSodRuleIds = new Set();
 let spStage = 'query';           // 'query' | 'sod' | 'save'
 let spRPossibleMode = 'all';     // 'all' | 'possible'
+let metaCache = { userTypeProfiles: [], sleepDays: 180 };
 
 function setDirty(v) {
   dirty = v;
@@ -331,12 +340,22 @@ function setDirty(v) {
   $('cmdSave').disabled = !v; $('cmdCancel').disabled = !v;
 }
 
+function spShowUserTypeHint() {
+  const p = metaCache.userTypeProfiles.find(x => x.name === $('spUserTypeProfile').value);
+  $('spUserTypeHint').textContent = p ? p.description : '';
+}
+$('spUserTypeProfile').addEventListener('change', () => { spShowUserTypeHint(); setDirty(true); });
+$('spSleepDays').addEventListener('input', () => setDirty(true));
+
 async function loadRulesets() {
   const meta = await api('/profiles');
+  metaCache = meta;
   const sel = $('spRuleset'); const cur = sel.value; sel.innerHTML = '';
   (meta.rulesets || []).forEach(r => { const o = document.createElement('option'); o.value = r.id; o.textContent = r.name; sel.appendChild(o); });
   if ((meta.rulesets || []).some(r => r.id === cur)) sel.value = cur;
   else if (meta.defaultRuleset) sel.value = meta.defaultRuleset;
+  $('spUserTypeProfile').innerHTML = '';
+  (meta.userTypeProfiles || []).forEach(p => { const o = document.createElement('option'); o.value = p.name; o.textContent = p.name; o.title = p.description || ''; $('spUserTypeProfile').appendChild(o); });
   await loadScopesAndCatalog();
 }
 $('spRuleset').addEventListener('change', async () => {
@@ -516,6 +535,9 @@ function selectScope(name) {
   $('spDeleteBtn').style.display = '';
   $('spName').value = s.name; $('spName').disabled = true;
   $('spDescription').value = s.description || '';
+  $('spUserTypeProfile').value = s.userTypeProfile || 'all';
+  $('spSleepDays').value = s.sleepDays != null ? s.sleepDays : metaCache.sleepDays;
+  spShowUserTypeHint();
   spQueryIds = new Set(s.queryIds || []);
   spSodRuleIds = new Set(s.sodRuleIds || []);
   spRenderQueryTable(); spRenderRuleTable();
@@ -533,6 +555,9 @@ function newScope() {
   $('spDeleteBtn').style.display = 'none';
   $('spName').value = ''; $('spName').disabled = false;
   $('spDescription').value = '';
+  $('spUserTypeProfile').value = (metaCache.userTypeProfiles[0] && metaCache.userTypeProfiles[0].name) || 'all';
+  $('spSleepDays').value = metaCache.sleepDays;
+  spShowUserTypeHint();
   spQueryIds = new Set(); spSodRuleIds = new Set();
   spRenderQueryTable(); spRenderRuleTable();
   setDirty(false);
@@ -547,6 +572,8 @@ function formPayload() {
     description: $('spDescription').value.trim() || null,
     queryIds: Array.from(effectiveQueryIds(spQueryIds, spSodRuleIds, spCatalog.sodRules)),
     sodRuleIds: Array.from(spSodRuleIds),
+    userTypeProfile: $('spUserTypeProfile').value,
+    sleepDays: parseInt($('spSleepDays').value, 10) || 0,
   };
 }
 

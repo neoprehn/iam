@@ -72,22 +72,24 @@ Welche Queries des Rulesets die Materialisierung überhaupt betrachtet (`(:User)
 > Filterset) und wird am Lauf gespeichert (`queryScope`) — Einzelfilter-Auswahl/-Übersicht eines
 > Laufs zeigen immer genau die Queries, die in **diesem** Lauf tatsächlich materialisiert wurden.
 
-### Gespeicherter Scope (statt „Einzelfilter-Umfang")
+### Voreinstellung (statt „Einzelfilter-Umfang"/Nutzertyp-Profil/Sleeping)
 
 Neben dem groben „alle/nur SoD-relevant"-Umfang oben lässt sich der nächste Lauf auch auf ein
-**gezielt gewähltes Subset** an Einzelfiltern und/oder SoD-Regeln einschränken — über das Feld
-**„Gespeicherter Scope"** im Formular. Zwei Quellen speisen dieses Subset, mit fester Priorität:
+**gezielt gewähltes Subset** an Einzelfiltern und/oder SoD-Regeln einschränken — **und** dabei
+gleich **Nutzertyp-Profil** und **Sleeping (Tage)** mitbestimmen — über das Feld **„Gespeicherter
+Scope"** im Formular. Zwei Quellen speisen diese Voreinstellung, mit fester Priorität:
 
 1. **Ein gespeicherter Scope** (Auswahl im Dropdown) — angelegt über die Admin-Seite **„Scope"**
    (s. u.), wiederverwendbar über beliebig viele Läufe/Datasets desselben Rulesets hinweg.
-2. **Eine Ad-hoc-Auswahl aus der geführten Auswertung** (Assistent, Schritt „Scoping") — gilt nur
-   für die laufende Sitzung, verschwindet beim Neustart des Assistenten.
-3. Ist beides leer, greift ganz normal der „Einzelfilter-Umfang"-Umschalter oben (heutiges
-   Standardverhalten).
+2. **Eine Ad-hoc-Auswahl aus der geführten Auswertung** (Assistent, Schritt „Scoping", Stufe
+   „SoD-Regeln") — gilt nur für die laufende Sitzung, verschwindet beim Neustart des Assistenten.
+3. Ist beides leer, bleiben „Einzelfilter-Umfang", Nutzertyp-Profil und Sleeping wie gewohnt
+   eigene, frei editierbare Felder (heutiges Standardverhalten).
 
-Ist eine der beiden Quellen aktiv, ersetzt eine Zusammenfassungszeile („N Einzelfilter, M
-SoD-Regel(n) ausgewählt") den „Einzelfilter-Umfang"-Umschalter. Zwei Auswertungsarten ergeben
-sich automatisch aus der Auswahl: **nur Einzelfilter** (keine SoD-Regel dabei) materialisiert
+Ist eine der beiden Quellen aktiv, ersetzt eine Zusammenfassungszeile den „Einzelfilter-Umfang"-
+Umschalter **und** blendet die eigenen Felder für Nutzertyp-Profil/Sleeping aus — die
+Voreinstellung bestimmt alle drei. Zwei Auswertungsarten ergeben sich automatisch aus der
+Einzelfilter-/SoD-Auswahl: **nur Einzelfilter** (keine SoD-Regel dabei) materialisiert
 ausschließlich diese Einzelfilter und überspringt die SoD-Auswertung komplett („Can-Do"); sind
 **auch SoD-Regeln** ausgewählt, materialisiert der Lauf nur deren Klausel-Queries (statt aller
 SoD-relevanten Queries des Rulesets) und wertet nur diese Regeln aus.
@@ -430,7 +432,8 @@ Mini-Stepper **① Einzelfilter · ② SoD-Regeln · ③ Speichern**:
   gewählten Einzelfilter abgedeckt sind (bidirektionale Verknüpfung über die CNF-Klausel-Struktur
   des Rulesets — aktuell nur bei KPMG R/3 vorhanden; ohne diese Struktur erscheint ein Hinweis
   statt des Umschalters, alle Regeln bleiben sichtbar).
-- **③ Speichern** — Name (nur bei Neuanlage änderbar), Beschreibung, Zusammenfassung. Wählt man
+- **③ Speichern** — Name (nur bei Neuanlage änderbar), Beschreibung, **Nutzertyp-Profil** und
+  **Sleeping (Tage)** (dieselben Achsen wie im „Neuer Lauf"-Formular), Zusammenfassung. Wählt man
   eine SoD-Regel, deren Klausel-Queries nicht schon unter ① angehakt sind, ergänzt die App diese
   beim Speichern **automatisch** (nie löschend) — die Zusammenfassung weist das aus („davon N
   automatisch ergänzt"), damit die Regel später auch tatsächlich auswertbar ist. Speichern

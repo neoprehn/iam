@@ -534,6 +534,28 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   weist alle 5 benötigten Klausel-Queries korrekt als „automatisch ergänzt" aus; bestehender
   Scope öffnet direkt bei Stufe „Speichern", Rücksprung nach „Einzelfilter" zeigt die
   gespeicherte Auswahl korrekt vorbelegt. Keine Konsolenfehler auf beiden Oberflächen.
+- [x] **Voreinstellung um Benutzergruppe + Sleeping erweitert (Nutzer-Wunsch direkt im
+  Anschluss).** Sowohl gespeicherte Scope-Profile (Admin „Scope", Stufe ③ „Speichern") als auch
+  die Ad-hoc-Auswahl im Assistenten (Schritt ③, Stufe „SoD-Regeln") legen jetzt zusätzlich
+  **Nutzertyp-Profil** und **Sleeping (Tage)** fest — dieselben Achsen, die „Neuer Lauf" schon
+  kennt. Backend: `ScopeProfileEditReq`/`-CreateReq` um `userTypeProfile: str = "all"`,
+  `sleepDays: int = 180` erweitert, 1:1 in den gespeicherten Eintrag übernommen (keine
+  Server-seitige Existenzprüfung des Profilnamens nötig, `_run_one()` validiert das ohnehin beim
+  Lauf). **„Neuer Lauf":** `currentRunScopingSource()` liefert jetzt zusätzlich
+  `userTypeProfile`/`sleepDays` der aktiven Quelle; ist eine Voreinstellung aktiv (gespeicherter
+  Scope **oder** Assistent-Ad-hoc-Auswahl), blendet `refreshRunScopingSummary()` zusätzlich zu
+  `#queryScopeGroup` auch die neuen Wrapper `#userTypeProfileGroup`/`#sleepDaysGroup` aus (Felder
+  bislang unverpackt bzw. Teil einer `.row`, jetzt mit eigener `id`) — die Formularfelder
+  „verschwinden", der Lauf nutzt die Werte der Voreinstellung. Zusammenfassungstext nennt sie
+  („… · Nutzertyp-Profil: X · Sleeping: Y Tage"), Label heißt jetzt generischer „Voreinstellung"
+  statt „Katalog-Auswahl" (spiegelt den breiteren Umfang, Seiten-/Menü-Branding „Scope" bleibt
+  unverändert). Verifiziert gegen den laufenden Container: `POST .../scopes` mit
+  `userTypeProfile`/`sleepDays` → `GET` liefert sie zurück (bestehender, vom Nutzer selbst
+  angelegter Scope „Basisberechtigungen" blieb dabei unangetastet, fehlende Felder degradieren
+  dort clientseitig sauber auf die Standardwerte); Playwright bestätigt für beide Quellen (Admin-
+  Scope „dialog-active"/90 Tage, Assistent „dialog-only"/365 Tage), dass alle drei Gruppen im
+  „Neuer Lauf"-Dialog korrekt aus-/eingeblendet werden und die Zusammenfassung die richtigen
+  Werte zeigt. Keine Konsolenfehler.
 
 #### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
 - [x] **Klickbare Drill-downs.** `GET /findings` nimmt optional `user`/`rule`/`userType`

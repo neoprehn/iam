@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "name": "Basisberechtigungen",
+    "description": "Nur die SAP Administration und JAP relevanten",
+    "queryIds": [
+      "1000_BC-SEC",
+      "1001_BC-SEC",
+      "1003_BC-SEC",
+      "1005_BC-SEC",
+      "1006_BC-SEC",
+      "1007_BC-SEC",
+      "1008_BC-SEC",
+      "1009_BC-SEC",
+      "1010_BC-SEC",
+      "1011_BC-SEC",
+      "1012_BC-SEC",
+      "1013_BC-SEC",
+      "1100_BC-DEV",
+      "1101_BC-DEV",
+      "1102_BC-DEV",
+      "1103_BC-DEV",
+      "1106_BC-DEV",
+      "1107_BC-DEV",
+      "1108_BC-DEV",
+      "1109_BC-DEV",
+      "1110_BC-DEV",
+      "1111_BC-DEV",
+      "1112_BC-DEV",
+      "1200_BC-USR",
+      "1201_BC-USR",
+      "1204_BC-USR",
+      "1205_BC-USR",
+      "1206_BC-USR",
+      "1207_BC-USR",
+      "1208_BC-USR",
+      "1209_BC-USR",
+      "1212_BC-USR",
+      "1213_BC-USR",
+      "1301_BC-CTS",
+      "1400_BC-SRV",
+      "1401_BC-SRV",
+      "1403_BC-SRV",
+      "1405_BC-SRV",
+      "1420_BC-SRV",
+      "1421_BC-SRV",
+      "1424_BC-SRV",
+      "1425_BC-SRV",
+      "1431_BC-SRV"
+    ],
+    "sodRuleIds": [
+      "BCX_0001",
+      "BCX_0002",
+      "BCX_0003"
+    ]
+  }
+]

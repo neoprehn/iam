@@ -724,6 +724,16 @@
           </div>
         </div>
 
+        <div class="asst-scope-box">
+          <h3>Voreinstellung f&uuml;r „Neuer Lauf" <span class="muted" style="text-transform:none;font-weight:400">&mdash; wird dort statt der eigenen Felder verwendet</span></h3>
+          <div class="row">
+            <div><label for="asst-scope-usertype">Nutzertyp-Profil</label>
+              <select id="asst-scope-usertype"></select><div class="hint" id="asst-scope-usertype-hint"></div></div>
+            <div><label for="asst-scope-sleepdays">Sleeping (Tage)</label>
+              <input type="number" id="asst-scope-sleepdays" min="0" step="1" /></div>
+          </div>
+        </div>
+
         <div id="asst-scope-summary" class="hint"></div>
 
         <div class="asst-scope-mininav">
@@ -873,10 +883,12 @@
           <a href="#" id="runAsOfEdit" style="margin-left:6px">&auml;ndern&hellip;</a></div>
         <small>= Downloaddatum der SAP-Extrakte, Eigenschaft des Datasets &mdash; kein
           Lauf-Filter. &Auml;nderung wirkt global auf alle Laeufe/Checks dieses Datasets.</small></div>
-      <div><label for="sleepDays">Sleeping (Tage)</label><input type="number" id="sleepDays" min="0" step="1" /></div>
+      <div id="sleepDaysGroup"><label for="sleepDays">Sleeping (Tage)</label><input type="number" id="sleepDays" min="0" step="1" /></div>
     </div>
-    <label for="userTypeProfile">Nutzertyp-Profil</label>
-    <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
+    <div id="userTypeProfileGroup">
+      <label for="userTypeProfile">Nutzertyp-Profil</label>
+      <select id="userTypeProfile"></select><div class="hint" id="utHint"></div>
+    </div>
     <div id="queryScopeGroup">
       <label for="queryScope">Einzelfilter-Umfang</label>
       <select id="queryScope">
@@ -3787,7 +3799,8 @@ $('clearRunBtn').addEventListener('click', () => {
 
 // ── Assistent ────────────────────────────────────────────────────────────────
 const asst = { active: false, step: 0, visited: new Set(), dataset: '',
-  ruleset: '', queryIds: new Set(), sodRuleIds: new Set(), scopeStage: 'query' };
+  ruleset: '', queryIds: new Set(), sodRuleIds: new Set(), scopeStage: 'query',
+  userTypeProfile: 'all', sleepDays: 180 };
 
 function _asstAllViews(hide = true) {
   const v = hide ? 'none' : '';
@@ -3928,7 +3941,19 @@ async function asstInitScoping() {
     });
     $('asst-scope-q-next').onclick = () => asstShowScopeStage('sod');
     $('asst-scope-r-prev').onclick = () => asstShowScopeStage('query');
+    (metaCache.userTypeProfiles || []).forEach(p => opt($('asst-scope-usertype'), p.name, p.name, p.description));
+    $('asst-scope-usertype').addEventListener('change', () => {
+      asst.userTypeProfile = $('asst-scope-usertype').value;
+      asstShowUserTypeHint();
+    });
+    $('asst-scope-sleepdays').addEventListener('input', () => {
+      asst.sleepDays = parseInt($('asst-scope-sleepdays').value, 10) || 0;
+      asstUpdateScopeSummary();
+    });
   }
+  $('asst-scope-usertype').value = asst.userTypeProfile;
+  $('asst-scope-sleepdays').value = asst.sleepDays;
+  asstShowUserTypeHint();
   if (!asst.ruleset) asst.ruleset = metaCache.defaultRuleset || $('ruleset').value || sel.value;
   sel.value = asst.ruleset;
   asst.scopeStage = asst.scopeStage || 'query';
@@ -3947,6 +3972,11 @@ function asstShowScopeStage(stage) {
     asstRenderRPossiblePills();
     asstRenderRuleTable();
   }
+}
+
+function asstShowUserTypeHint() {
+  const p = (metaCache.userTypeProfiles || []).find(x => x.name === asst.userTypeProfile);
+  $('asst-scope-usertype-hint').textContent = p ? p.description : '';
 }
 
 function asstRenderRPossiblePills() {
@@ -4101,7 +4131,8 @@ function currentRunScopingSource() {
   const savedName = $('scopeProfileSel').value;
   if (savedName) {
     const sp = scopeProfilesCache.find(s => s.name === savedName);
-    if (sp) return { source: 'saved', name: sp.name, queryIds: sp.queryIds || [], sodRuleIds: sp.sodRuleIds || [] };
+    if (sp) return { source: 'saved', name: sp.name, queryIds: sp.queryIds || [], sodRuleIds: sp.sodRuleIds || [],
+                      userTypeProfile: sp.userTypeProfile, sleepDays: sp.sleepDays };
   }
   if (asstScopingActive()) {
     // effectiveQueryIds: die Stufe-1-Auswahl PLUS automatisch ergaenzte Klausel-Queries der in
@@ -4109,7 +4140,8 @@ function currentRunScopingSource() {
     // 1: explizite queryIds) eine benoetigte Klausel-Query auslassen und die Regel waere nie
     // erfuellbar (s. ROADMAP/Handoff-Notiz).
     const eff = effectiveQueryIds(asst.queryIds, asst.sodRuleIds, asstCatalog.sodRules);
-    return { source: 'assistant', ruleset: asst.ruleset, queryIds: Array.from(eff), sodRuleIds: Array.from(asst.sodRuleIds) };
+    return { source: 'assistant', ruleset: asst.ruleset, queryIds: Array.from(eff), sodRuleIds: Array.from(asst.sodRuleIds),
+             userTypeProfile: asst.userTypeProfile, sleepDays: asst.sleepDays };
   }
   return null;
 }
@@ -4120,11 +4152,15 @@ function asstRunScopingPayload() {
     queryIds: cur.queryIds,
     sodRules: cur.sodRuleIds,
     evaluateSod: cur.sodRuleIds.length > 0,
+    userTypeProfile: cur.userTypeProfile,
+    sleepDays: cur.sleepDays,
   };
 }
 function refreshRunScopingSummary() {
   const cur = currentRunScopingSource();
   $('queryScopeGroup').style.display = cur ? 'none' : '';
+  $('userTypeProfileGroup').style.display = cur ? 'none' : '';
+  $('sleepDaysGroup').style.display = cur ? 'none' : '';
   $('runScopingSummary').style.display = cur ? '' : 'none';
   if (cur) {
     // Assistent-Ruleset und Dialog-Ruleset muessen uebereinstimmen -- sonst wuerden queryIds/
@@ -4136,10 +4172,12 @@ function refreshRunScopingSummary() {
       return;
     }
     const isSaved = cur.source === 'saved';
-    $('runScopingSummaryLabel').textContent = isSaved ? ('Katalog-Auswahl (Scope „' + cur.name + '")')
-      : 'Katalog-Auswahl (aus Assistent, Schritt Scoping)';
+    $('runScopingSummaryLabel').textContent = isSaved ? ('Voreinstellung (Scope „' + cur.name + '")')
+      : 'Voreinstellung (aus Assistent, Schritt Scoping)';
     $('runScopingSummaryText').textContent = cur.queryIds.length + ' Einzelfilter, '
-      + cur.sodRuleIds.length + ' SoD-Regel(n) ausgew\xe4hlt.';
+      + cur.sodRuleIds.length + ' SoD-Regel(n)'
+      + (cur.userTypeProfile ? ' \xb7 Nutzertyp-Profil: ' + cur.userTypeProfile : '')
+      + (cur.sleepDays != null ? ' \xb7 Sleeping: ' + cur.sleepDays + ' Tage' : '') + '.';
     $('runScopingSummaryEdit').style.display = isSaved ? 'none' : '';
   }
 }
@@ -4202,6 +4240,8 @@ function startAssistent() {
   asst.queryIds.clear();
   asst.sodRuleIds.clear();
   asst.scopeStage = 'query';
+  asst.userTypeProfile = (metaCache.userTypeProfiles && metaCache.userTypeProfiles[0] && metaCache.userTypeProfiles[0].name) || 'all';
+  asst.sleepDays = metaCache.sleepDays != null ? metaCache.sleepDays : 180;
   $('assistentStepper').style.display = '';
   goToAsstStep(1);
 }
