@@ -3088,16 +3088,18 @@ document.querySelectorAll('#rdTabPills .pill').forEach(b => b.addEventListener('
 $('rdBackBtn').onclick = () => { $('roleDetailView').style.display = 'none'; showRootCauseView(); };
 
 /* ── Generische Sortierbarkeit fuer Ergebnistabellen: Klick auf eine <th data-sort-key> sortiert
-   die zugrundeliegende Zeilenliste (in-place) und rendert per Callback neu, erneuter Klick kehrt
-   die Richtung um (Pfeil-Indikator in der Kopfzelle). Design-Regel: jede tabellarische
-   Ergebnisuebersicht/-liste bekommt sortierbare Spalten -- ueber diese Funktion, nicht neu
-   erfunden je Tabelle. */
+   die zugrundeliegende Zeilenliste (in-place) und rendert per Callback neu. Drei-Stufen-Zyklus je
+   Spalte: 1. Klick auf/steigend, 2. Klick ab/fallend, 3. Klick zurueck zur Ursprungsreihenfolge
+   (Pfeil verschwindet) -- Klick auf eine andere Spalte startet immer wieder bei "auf". Design-Regel:
+   jede tabellarische Ergebnisuebersicht/-liste bekommt sortierbare Spalten -- ueber diese Funktion,
+   nicht neu erfunden je Tabelle. */
 function genericCompare(av, bv) {
   if (typeof av === 'number' && typeof bv === 'number') return av - bv;
   return String(av ?? '').localeCompare(String(bv ?? ''), 'de', { numeric: true });
 }
 function makeSortable(table, getRows, keyFns, renderBody) {
-  const state = { key: null, dir: 1 };
+  const state = { key: null, dir: 0 };
+  let originalOrder = [];
   function updateIndicators() {
     table.querySelectorAll('thead th[data-sort-key]').forEach(th => {
       const ind = th.querySelector('.sort-ind');
@@ -3107,15 +3109,20 @@ function makeSortable(table, getRows, keyFns, renderBody) {
   table.querySelectorAll('thead th[data-sort-key]').forEach(th => {
     th.addEventListener('click', () => {
       const key = th.dataset.sortKey;
-      state.dir = state.key === key ? -state.dir : 1;
-      state.key = key;
-      const keyFn = keyFns[key];
-      getRows().sort((a, b) => state.dir * genericCompare(keyFn(a), keyFn(b)));
+      state.dir = state.key === key ? (state.dir === 1 ? -1 : state.dir === -1 ? 0 : 1) : 1;
+      state.key = state.dir === 0 ? null : key;
+      const rows = getRows();
+      if (state.dir === 0) {
+        rows.length = 0; rows.push(...originalOrder);
+      } else {
+        const keyFn = keyFns[key];
+        rows.sort((a, b) => state.dir * genericCompare(keyFn(a), keyFn(b)));
+      }
       renderBody();
       updateIndicators();
     });
   });
-  return { reset() { state.key = null; state.dir = 1; updateIndicators(); } };
+  return { reset() { state.key = null; state.dir = 0; originalOrder = getRows().slice(); updateIndicators(); } };
 }
 
 /* ── Ergebnisse-Uebersicht (Einzelberechtigungen/SoD-Regeln, je Anzahl Nutzer) ────────────── */

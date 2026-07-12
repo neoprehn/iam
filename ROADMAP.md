@@ -156,32 +156,39 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
 
 #### 9.1 Interaktive Ergebnisse & Graph-UX  ← als Nächstes
 - [~] **Sortierbare Spalten** in allen Ergebnistabellen (generische `makeSortable()`): umgesetzt für
-  Ergebnis-Übersicht (Einzelfilter+SoD), Nutzerliste, Konsistenzcheck-Detail **und jetzt die
+  Ergebnis-Übersicht (Einzelfilter+SoD), Nutzerliste, Konsistenzcheck-Detail **und die
   Findings-/Matches-Haupttabelle** (`findingsTable`/`matchesTable`, je erste 5 Spalten;
-  Sleeping/Root-Cause-Button bewusst nicht sortierbar; Kritikalität über `critRank`). **Offen nur
-  noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie, separater,
-  kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
+  Sleeping/Root-Cause-Button bewusst nicht sortierbar; Kritikalität über `critRank`). **Standard-
+  Klickzyklus je Spalte** (2026-07-12, generisch in `makeSortable()`): 1. Klick auf/steigend,
+  2. Klick ab/fallend, **3. Klick zurück zur Ursprungsreihenfolge** (Pfeil verschwindet,
+  `originalOrder`-Schnappschuss beim jeweiligen `reset()` je Tabelle) — Klick auf eine andere Spalte
+  startet den Zyklus immer wieder bei „auf". Gilt automatisch für alle vier sortierbaren Tabellen.
+  **Offen nur noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie,
+  separater, kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
 - [~] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`, „Graph"
   noch deaktiviert): ein Graph **aller** Findings eines Laufs (Heatmap/Matrix, User × Regeln) statt des
   fokussierten Einzelpfads — perf-optimiert über die geflachten Evidenz-Kanten
   (`VIA_ROLE`/`VIA_PROFILE`) statt Root-Cause-Live-Abfrage. (Root-Cause-Ebene erledigt: Umschalter
   Tabelle · Pfadgraph · Radial.)
-- [ ] **Farblegende in allen Graphansichten** — erklärt die Knotenbedeutung (User/Regel/Klausel/Query/
-  Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten Graphen.
-- [ ] **Vollbild-Bedienung der Graphen überarbeiten** — heutiger Vollbild-Knopf ist ungünstig; besseres
-  Muster (Toggle in der Ansichts-Leiste, ESC zum Verlassen).
 - [x] **Zurück-Button im Drill-down** — „← zurück" in der Aktiv-Filter-Leiste stellt die Ausgangsliste
   wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
   Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
-- [ ] **Kritikalität prominent an Einzelfilter/SoD** — dieselbe farbige Badge-Logik wie bei den Findings
-  (Farbwahl beibehalten) auch in Katalog/Auswahl/Ergebniszeilen der Einzelfilter und SoD-Regeln; Stufen/
-  Farben aus den Kritikalitäts-Stammdaten (→ 9.4).
+
+> **Farblegende + Vollbild-Bedienung der Graphen** sind nach **9.2** verschoben (2026-07-12) — beides
+> hängt am Cytoscape-Frontend, keine sinnvolle Zwischenlösung auf der heutigen Root-Cause-Graphseite.
+> **Kritikalität prominent an Einzelfilter/SoD** ist nach **9.4** verschoben (2026-07-12) — Farben/
+> Stufen kommen aus den dortigen Kritikalitäts-Stammdaten, vorher wäre die Badge-Logik hartkodiert.
 
 #### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung
 - [ ] **Gebrandetes Frontend mit Cytoscape.js** — ersetzt den temporären NeoDash-PoC (Phase 6). KPIs,
   Graph-Darstellung der Konfliktpfade (Cytoscape statt NVL — NVL verworfen, Lizenz nur Aura/kommerziell),
   Heatmap/Matrix, Drill-down; visualisiert die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`). Vorlage:
-  `dashboards/sod_poc.json`. Die Graph-UX-Punkte aus 9.1 (Legende, Vollbild) sind Teil davon.
+  `dashboards/sod_poc.json`.
+- [ ] **Farblegende in allen Graphansichten** (aus 9.1) — erklärt die Knotenbedeutung (User/Regel/
+  Klausel/Query/Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten
+  Graphen.
+- [ ] **Vollbild-Bedienung der Graphen überarbeiten** (aus 9.1) — heutiger Vollbild-Knopf ist
+  ungünstig; besseres Muster (Toggle in der Ansichts-Leiste, ESC zum Verlassen).
 - [ ] **NeoDash danach vollständig entfernen** — Compose-Service `iam-neodash` (Port 5005), Erwähnungen
   in `README.md`/`docs/`/Laufzeitdiagramm, `dashboards/sod_poc.json` archivieren/löschen, `AE-14`-Pin
   reduzieren.
@@ -217,10 +224,13 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   bleiben gesperrt).
 #### 9.4 Masterdata-Verwaltung (Admin)
 Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns, die
-Kritikalitäts-Anzeige (9.1) und den Reason-Code (9.6).
+Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
 - [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
   und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
   mitführen (später für Heatmap-Gewichtung).
+  - [ ] **Kritikalität prominent an Einzelfilter/SoD** (aus 9.1, 2026-07-12 verschoben — Farben/
+    Stufen kommen erst aus den Stammdaten hier): dieselbe farbige Badge-Logik wie bei den Findings
+    (Farbwahl beibehalten) auch in Katalog/Auswahl/Ergebniszeilen der Einzelfilter und SoD-Regeln.
 - [ ] **Reason-Code-Stammdaten (SoD)** — Reason Code als Prozess führen: `PtP_C` → Code `PtP`,
   Beschreibung „Purchase to Pay". Im SoD-Filter steht die Kritikalität bereits vorn; der Reason-Code
   wird durch den Prozessnamen ersetzt/angereichert.
