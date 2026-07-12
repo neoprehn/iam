@@ -165,8 +165,11 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   startet den Zyklus immer wieder bei „auf". Gilt automatisch für alle vier sortierbaren Tabellen.
   **Offen nur noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie,
   separater, kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
-- [x] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`) —
-  erledigt 2026-07-12, aber bewusst **nicht** als Heatmap/User×Regeln-Matrix oder Cytoscape-
+- [~] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`) —
+  funktional und end-to-end verifiziert (2026-07-12), **UX laut Nutzer-Feedback noch nicht
+  optimal** — welche Aspekte konkret (Layout/Farbwahl/Interaktion/Informationsdichte) ist noch
+  offen zu klären, bevor der Punkt als abgeschlossen gilt. Bewusst **nicht** als Heatmap/User×
+  Regeln-Matrix oder Cytoscape-
   Node-Graph umgesetzt: bei ~4.200 betroffenen Akteuren vs. wenigen Dutzend Regeln wäre ein Knoten
   je User unlesbar und eine literale Matrix ein DOM-Performance-Problem (Entscheidung nach
   Dataviz-Skill-Konsultation + Nutzerauswahl). Stattdessen ein **regel-/query-zentriertes
