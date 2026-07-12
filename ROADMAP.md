@@ -208,7 +208,10 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   materialisierter Lauf** (MATCHES über alle User × Queries je Variante). Ansätze: gemeinsame
   Kandidaten-Vorfilterung über Varianten hinweg, Wiederverwendung der org-unabhängigen MATCHES-Basis,
   Parallelität/Checkpoint-Throttling (analog Evidenz-Perf).
-- **Erledigt:** Variantenname/-beschreibung nachträglich editierbar (`PATCH` auf den `(:Run)`-Knoten).
+- **Erledigt:** Variantenname/-beschreibung nachträglich editierbar — sowohl je Lauf (`PATCH` auf den
+  `(:Run)`-Knoten) als auch im **Org-Varianten-Editor** (Umbenennen eigener Profile via
+  `PUT /admin/org-profiles/{name}` mit `newName`; Kollisions-/Schutz-Prüfung, geschützte Basis-Varianten
+  bleiben gesperrt).
 #### 9.4 Masterdata-Verwaltung (Admin)
 Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns, die
 Kritikalitäts-Anzeige (9.1) und den Reason-Code (9.6).

@@ -279,7 +279,7 @@ async function selectProfile(name) {
   $('opBadge').textContent = 'eigene Variante'; $('opBadge').className = 'badge custom';
   $('opProtectedInfo').style.display = 'none';
   $('opForm').style.display = '';
-  $('opName').value = p.name; $('opName').disabled = true;
+  $('opName').value = p.name; $('opName').disabled = false;
   $('opDescription').value = p.description || '';
   criteria = filtersToCriteria(p.org.filters);
   await Promise.all(criteria.map(c => valuesForField(c.field)));
@@ -385,7 +385,10 @@ function renderCriteria() {
 }
 
 ['opDescription'].forEach(id => $(id).addEventListener('input', () => setDirty(true)));
-$('opName').addEventListener('input', () => setDirty(true));
+$('opName').addEventListener('input', () => {
+  setDirty(true);
+  $('opTitle').textContent = $('opName').value.trim() || (isNew ? 'Neue Variante' : '');
+});
 
 function formPayload() {
   return {
@@ -412,11 +415,15 @@ async function saveCurrent() {
       await loadProfiles();
       await selectProfile(name);
     } else {
-      await api('/admin/org-profiles/' + encodeURIComponent(selectedName),
-        { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formPayload()) });
-      setStatus(`${doneTag} Variante <b>${selectedName}</b> gespeichert.`);
+      const newName = $('opName').value.trim();
+      if (!newName) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
+      const res = await api('/admin/org-profiles/' + encodeURIComponent(selectedName),
+        { method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...formPayload(), newName: newName !== selectedName ? newName : null }) });
+      const finalName = (res && res.name) || selectedName;
+      setStatus(`${doneTag} Variante <b>${finalName}</b> gespeichert.`);
       await loadProfiles();
-      await selectProfile(selectedName);
+      await selectProfile(finalName);
     }
   } catch (err) {
     setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);

@@ -1310,6 +1310,7 @@ class OrgCriterionReq(BaseModel):
 class OrgProfileEditReq(BaseModel):
     description: str | None = None
     criteria: list[OrgCriterionReq] = []
+    newName: str | None = None       # optionaler neuer Name -> Variante umbenennen (nur eigene)
 
 
 class OrgProfileCreateReq(OrgProfileEditReq):
@@ -1400,10 +1401,21 @@ def admin_update_org_profile(name: str, req: OrgProfileEditReq):
         raise HTTPException(404, f"Org-Profil '{name}' nicht gefunden (oder ist ein Vendor-Profil)")
     if not req.criteria:
         raise HTTPException(400, "mindestens ein Org-Kriterium erforderlich")
+    final_name = name
+    new_name = (req.newName or "").strip()
+    if new_name and new_name != name:
+        if not _SAFE_NAME.match(new_name):
+            raise HTTPException(400, "ungueltiger Name (erlaubt: Buchstaben/Ziffern/._-)")
+        if new_name in PROTECTED_ORG_PROFILES:
+            raise HTTPException(400, f"Name '{new_name}' ist reserviert (geschuetzte Basis-Variante)")
+        if any(p["name"] == new_name for p in profiles()["profiles"]):
+            raise HTTPException(409, f"Org-Profil '{new_name}' existiert bereits")
+        entry["name"] = new_name
+        final_name = new_name
     entry["description"] = req.description or ""
     entry["org"] = {"mode": "filtered", "filters": _org_filters_from_criteria(req.criteria)}
     custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
-    return {"name": name, "saved": True}
+    return {"name": final_name, "saved": True}
 
 
 @app.delete("/admin/org-profiles/{name}")
