@@ -28,8 +28,23 @@ Bricht das ab, meist zwei Ursachen: Virtualisierung im BIOS/UEFI deaktiviert (Ta
 Leistung → CPU → „Virtualisierung") oder Windows-Version zu alt (`winver`, mind. Version 2004 /
 Build 19041). RAM-Bedarf: Neo4j fordert per `docker-compose.yml` **8 GB Heap + 4 GB Pagecache** an
 (s. Phase 9) — WSL2 reserviert sich standardmäßig ~50 % des Host-RAM; ab **16 GB** Host-RAM
-komfortabel ausreichend, darunter ggf. `%UserProfile%\.wslconfig` anpassen (`memory=`-Wert) oder die
-Heap/Pagecache-Werte in `docker-compose.yml` für den Zielrechner reduzieren.
+komfortabel ausreichend, darunter ggf. die Heap/Pagecache-Werte in `docker-compose.yml` für den
+Zielrechner reduzieren.
+
+**`.wslconfig` explizit setzen (empfohlen, unabhängig vom RAM-Rechenexempel oben).** WSL2s
+Standardzuteilung schwankt je Windows-/WSL-Version — statt sich darauf zu verlassen, die Grenze
+explizit in `C:\Users\<Benutzername>\.wslconfig` setzen (reine Textdatei, ggf. neu anlegen):
+```ini
+[wsl2]
+memory=16GB
+```
+Bei 32 GB Host-RAM deckt das Neo4js Anforderung komfortabel und lässt Windows selbst genug Luft.
+Danach anwenden:
+```powershell
+wsl --shutdown
+```
+und Docker Desktop neu starten. Docker Desktop weist teils selbst proaktiv auf diesen Schritt hin
+(z. B. nach einer speicherintensiven Operation wie dem `neo4j-admin dump`/`load` weiter unten).
 
 ## Code übertragen — zwei Wege
 
