@@ -87,16 +87,56 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 
 Die App-Grundfunktionen stehen (siehe Archiv). Offen sind die folgenden Ausbauten.
 
-#### Import-Evidenz (Vollständigkeitsnachweis gegen Quell-SAP)
+#### Import-Evidenz (Vollständigkeitsnachweis gegen Quell-SAP) — erledigt (2026-07-12)
 Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#geführte-auswertung)): **Import-Robustheit** —
 Abbrechen laufender Importe, Resume über Checkpoint nach Abbruch/Fehler, fehlende optionale
 Quelltabelle bricht nicht mehr ab, parallele CSV-Konvertierung, Quelldateien nach Backup löschbar.
 
-- [ ] **Persistente, abrufbare Import-Statistik je Lauf.** Heute nur flüchtig (Job-Counts) bzw. Konsole (`99_validate`).
-  - **Persistenz:** `(:Import {dataset, importedAt, lang})` + je Tabelle `(:ImportTable {table, sourceRows, droppedColumns})` (der Konverter liefert Zeilen/verworfene Spalten bereits) + resultierende Graph-Zähler je Label/Kante.
-  - **Abgleich/Checks:** je Quelltabelle **Quellzeilen ↔ Graph-Ergebnis** mit dokumentierter Beziehung — **1:1** (USR02→User, AGR_DEFINE→Role …, Abweichung = Flag) vs. **aggregiert** (AGR_1251→gruppierte `Authorization` nach AE-03; UST12-Feldwerte) → beide Zahlen zeigen, nicht als Fehler werten. Gefilterte Zeilen (`DELETED='X'`) ausweisen.
-  - **API/UI:** `GET /datasets/{d}/import-evidence`; UI mit **KPI-Kacheln** (Knoten/Kanten, Tabellen, verworfene Sensibel-Spalten) **+ Reconciliation-Tabelle** (Tabelle · Quellzeilen · Graph · Status), hübsch.
-  - **Export:** **Import-Evidenz-Report** (CSV, später PDF).
+- [x] **Persistente, abrufbare Import-Statistik je Lauf.** War bisher nur flüchtig (Job-Counts)
+  bzw. verworfen (`99_validate.cypher` lief nur via `.consume()`, s. `run_cypher_path()`).
+  - **Persistenz:** `(:Dataset)-[:HAS_IMPORT]->(:Import {dataset, importedAt, lang})` (ein Knoten
+    je Import-Vorgang, keine Überschreibung → Historie über Re-Importe) mit
+    `-[:HAS_TABLE]->(:ImportTable {table, sourceRows, droppedColumns, filteredRows})` je
+    Quelltabelle (Konverter liefert Zeilen/verworfene Sensibel-Spalten bereits, `filteredRows`
+    zusätzlich per eigenem `DELETED='X'`-Zähler für AGR_1251) + `-[:HAS_NODE_COUNT]->`/
+    `-[:HAS_EDGE_COUNT]->` Graph-Zähler je Label-Kombination/Kantentyp (`99_validate.cypher`,
+    jetzt über `run_cypher_path_capturing()` statt verworfen). `backend/app.py
+    _persist_import_evidence()`, aufgerufen am Ende von `do_import()`. Migration
+    `V004__import_evidence.cypher` (Unique-Constraints).
+  - **Abgleich/Checks:** `cypher/checks/import_evidence.cypher` — 22 SAP-Quelltabellen als
+    literal eingebettete Zuordnung (node_1to1/edge_1to1 echte 1:1-Erwartung, edge_filtered
+    bewusst gefilterte Zeilen wie EXCLUDE='X', shared_edge_type mehrere Quelltabellen auf
+    denselben Kantentyp — z. B. CONTAINS für Rolle- **und** Profil-Hierarchie, aggregated
+    Bündelung nach AE-03/Dedupe, property reine Anreicherung ohne eigenen Zähler). **Wichtiger
+    Fund beim Testen:** Knoten tragen zusätzliche Subtyp-Labels (`User`+`Dialog`/`Active`/…,
+    `Role`+`Composite`/`Single`) — `99_validate.cypher` gruppiert nach der **exakten**
+    Label-Kombination, ein naiver Abgleich gegen `[Zielabel]` fand daher nie etwas; Fix: über
+    alle Kombinationen summieren, die das Ziel-Label enthalten (`CALL`-Subquery je
+    Rekonziliierungszeile).
+  - **Als eigene Konsistenzcheck-Kategorie „Import" (I) aufgenommen** (Nutzer-Wunsch, weicht vom
+    ursprünglichen Plan ab, das unter der bestehenden Kategorie E als E6 zu führen — E6 verweist
+    jetzt auf I1): `CHECK_AREAS`/`area_names` um `"import": ["I"]` erweitert, `checks/I1.json`
+    (`group` für die Box-Überschrift), dritter Ribbon-Punkt „Import" neben „User-spezifisch"/
+    „Rollen-spezifisch" — die komplette Rendering-Pipeline (Grid/Pillfilter/Detailansicht) war
+    bereits generisch über `CHECK_AREAS` gebaut, bis auf eine hart auf `.role` verdrahtete Stelle
+    in `ccGroupOrder()` (jetzt `consistencyCatalog[ccArea]`). Damit läuft I1 automatisch im
+    allgemeinen Konsistenz-Report (CSV/PDF, fpdf2) mit.
+  - **Dedizierter Import-Evidenz-Report** (`GET /datasets/{d}/import-evidence` JSON,
+    `.../export` CSV, `.../export/pdf` PDF) — der allgemeine Konsistenz-Report zeigt I1 nur als
+    einen Katalogeintrag mit Trefferzahl, für die Prüfungsnachweisführung („alle wichtigen
+    Informationen") braucht es die **volle** Tabelle-für-Tabelle-Rekonziliierung mit
+    Deckblatt-Metafeldern (Unternehmen/System/Anlass/Ersteller/Stichtag/Import-Zeitpunkt) —
+    `_build_import_evidence_pdf()` als Schwester-Funktion zu `_build_consistency_pdf()`, gleiche
+    fpdf2-Bibliothek/Optik. Downloadbar direkt vom I1-Check-Detail (eigener Report-Block, PDF/CSV,
+    Dataset aus dem Ausführen-Formular). Truncation über `pdf.get_string_width()` statt
+    Zeichen-Schätzung (sonst harte, wortmittige Abschnitte bei sehr langen Hinweistexten).
+  - Verifiziert gegen den laufenden Container: I1 im Leerzustand (Dataset noch nicht mit
+    Import-Evidenz importiert) liefert informativen Hinweis statt Fehler; mit simulierten
+    realistischen Zähldaten (echte Node-/Edge-Counts + eine bewusst falsche Zeile) liefert die
+    Rekonziliierung korrekt OK/Hinweis/Abweichung; allgemeiner CSV/PDF-Report läuft mit
+    Kategorie „Import" durch ohne Fehler; PDF-Layout Zelle für Zelle geprüft (keine
+    abgeschnittenen Texte mehr nach dem Truncation-Fix); Playwright-UI-Test (Ribbon-Button,
+    Single-Box-Grid, Detailansicht, Export-Links). Testdaten danach entfernt.
 
 #### Geführte Auswertung (Auswerten v2) — gezielte Filter-/Scope-Auswahl
 Statt „ein Lauf über alle 600+ Filter": gezielt **auswählen, was** ausgewertet wird, **für wen**, **wie

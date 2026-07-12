@@ -1,0 +1,12 @@
+[
+  {
+    "id": "I1",
+    "category": "I",
+    "group": "Vollständigkeitsnachweis gegen Quell-SAP",
+    "title": "Import-Evidenz: Quellzeilen je SAP-Tabelle gegen Graph-Ergebnis abgleichen",
+    "description": "Vollständigkeitsnachweis gegen den Quell-SAP-Extrakt (Prüfungsnachweisführung) — je Quelltabelle Quellzeilen gegen das resultierende Graph-Ergebnis (Knoten/Kanten), mit dokumentierter Beziehung (1:1, gebündelt nach AE-03, bewusst gefilterte Zeilen wie EXCLUDE=X/DELETED=X, geteilte Kantentypen). Ohne diesen Abgleich sind alle anderen Befunde nur so verlässlich wie der Import selbst.",
+    "prio": "Hoch",
+    "implemented": true,
+    "cypherFile": "cypher/checks/import_evidence.cypher"
+  }
+]

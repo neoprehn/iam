@@ -323,6 +323,7 @@
     <div class="cmds dropdown">
       <button class="cmd" id="cmdConsistencyUser"><span class="ico">&#128100;</span>User-spezifisch</button>
       <button class="cmd" id="cmdConsistencyRole"><span class="ico">&#127917;</span>Rollen-spezifisch</button>
+      <button class="cmd" id="cmdConsistencyImport"><span class="ico">&#128229;</span>Import</button>
       <button class="cmd" id="cmdConsistencyReport"><span class="ico">&#128202;</span>Bericht herunterladen</button>
     </div>
   </div>
@@ -606,6 +607,12 @@
               <a href="#" id="ccdAsOfEdit" style="margin-left:6px">&auml;ndern&hellip;</a></div>
             <button class="ghost" type="button" id="ccdRunBtn" style="margin-top:14px">Ausf&uuml;hren</button>
             <div class="hint" id="ccdRunError" style="display:none"></div>
+          </div>
+          <div id="ccdImportEvidenceExport" style="display:none;margin-top:10px">
+            <div class="hint">Vollst&auml;ndige Tabelle-f&uuml;r-Tabelle-Rekonziliierung (nicht nur die
+              Trefferzahl) f&uuml;r die Pr&uuml;fungsnachweisf&uuml;hrung:</div>
+            <a href="#" id="ccdIeExportPdf" style="margin-right:12px">&#128196; PDF</a>
+            <a href="#" id="ccdIeExportCsv">&#128202; CSV</a>
           </div>
         </div>
 
@@ -1210,6 +1217,7 @@ $('cmdExplain').onclick = () => {
 $('cmdErrorLog').onclick = () => { renderErrorLog(); openDlg('dlg-errorlog'); };
 $('cmdConsistencyUser').onclick = async () => { await loadConsistencyCatalog('user'); showConsistencyView('user'); };
 $('cmdConsistencyRole').onclick = async () => { await loadConsistencyCatalog('role'); showConsistencyView('role'); };
+$('cmdConsistencyImport').onclick = async () => { await loadConsistencyCatalog('import'); showConsistencyView('import'); };
 $('cmdConsistencyReport').onclick = () => {
   if (!$('rptDataset').value) {
     const ds = $('ccdDataset').value || (activeRunId && runsById[activeRunId] && runsById[activeRunId].dataset) || '';
@@ -1275,20 +1283,22 @@ const CC_AREA_META = {
       D: 'D · Gültigkeit', E: 'E · Integrität' } },
   role: { title: 'Konsistenzchecks &middot; Rollen-spezifisch',
     sub: 'Qualit&auml;t und Design des Rollenbestands selbst &mdash; Struktur/Generierung, Zuordnung/Reichweite, Risiko/SoD, Wartbarkeit. Klick auf eine Zeile zeigt das Detail samt Ausf&uuml;hrung.' },
+  import: { title: 'Konsistenzchecks &middot; Import',
+    sub: 'Vollst&auml;ndigkeitsnachweis des Imports gegen den Quell-SAP-Extrakt (Pr&uuml;fungsnachweisf&uuml;hrung) &mdash; je Quelltabelle Quellzeilen gegen das Graph-Ergebnis. Klick auf eine Zeile zeigt das Detail samt Ausf&uuml;hrung.' },
 };
 let ccArea = 'user';
-let consistencyCatalog = { user: [], role: [] };
+let consistencyCatalog = { user: [], role: [], import: [] };
 let ccCatFilter = '';
 
-// Raster-Schluessel je Zeile: bei "user" nach Kategorie (A-E, statisch); bei "role" nach dem
-// optionalen Feld "group" (Themen-Unterteilung innerhalb der einzigen Kategorie R, s.
+// Raster-Schluessel je Zeile: bei "user" nach Kategorie (A-E, statisch); sonst (role/import) nach
+// dem optionalen Feld "group" (Themen-Unterteilung innerhalb einer einzigen Kategorie, s.
 // checks/SCHEMA.md) -- faellt group, sollte es das mal nicht geben, auf category zurueck.
-function ccGroupKey(c) { return ccArea === 'role' ? (c.group || c.category) : c.category; }
+function ccGroupKey(c) { return ccArea !== 'user' ? (c.group || c.category) : c.category; }
 function ccGroupLabel(g) { return ccArea === 'user' ? CC_AREA_META.user.catLabels[g] : g; }
 function ccGroupOrder() {
   if (ccArea === 'user') return CC_AREA_META.user.catOrder;
   const seen = [];
-  consistencyCatalog.role.forEach(c => { const g = ccGroupKey(c); if (!seen.includes(g)) seen.push(g); });
+  consistencyCatalog[ccArea].forEach(c => { const g = ccGroupKey(c); if (!seen.includes(g)) seen.push(g); });
   return seen;
 }
 
@@ -1440,9 +1450,19 @@ function openConsistencyDetail(c) {
     }
     refreshCcdAsOfDisplay();
   }
+  // I1 hat einen eigenen, detaillierteren Report (volle Tabelle-fuer-Tabelle-Rekonziliierung)
+  // zusaetzlich zum allgemeinen Konsistenz-Report, der hier nur die Trefferzahl zeigen wuerde.
+  $('ccdImportEvidenceExport').style.display = c.id === 'I1' ? '' : 'none';
+  if (c.id === 'I1') refreshCcdIeExport();
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = '';
 }
+function refreshCcdIeExport() {
+  const ds = $('ccdDataset').value;
+  $('ccdIeExportPdf').href = ds ? '/datasets/' + encodeURIComponent(ds) + '/import-evidence/export/pdf' : '#';
+  $('ccdIeExportCsv').href = ds ? '/datasets/' + encodeURIComponent(ds) + '/import-evidence/export' : '#';
+}
+$('ccdDataset').addEventListener('change', () => { if (ccdCurrentCheck && ccdCurrentCheck.id === 'I1') refreshCcdIeExport(); });
 $('ccrBackBtn').onclick = () => {
   $('consistencyResultView').style.display = 'none';
   $('consistencyView').style.display = '';

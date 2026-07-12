@@ -95,6 +95,23 @@ denselben `dataset`-Wert). Ein Extrakt ist self-contained.
 `CONTAINS|HAS_PROFILE*0..4`-Pfadsuche bei jeder Auswertung. Wird einmal je Dataset beim Import
 materialisiert (nicht je Ruleset/Lauf), regeneriert sich bei jedem (Re-)Import.
 
+### Import-Evidenz (abgeleitete Metadaten-Schicht)
+
+Ebenfalls keine Rohdaten, sondern vom Backend nach jedem Import geschrieben (Vollständigkeits-
+nachweis gegen den Quell-SAP-Extrakt, s. [Konsistenzcheck I1](handbuch/funktionen.md#4-konsistenzchecks)):
+
+```
+(:Dataset)-[:HAS_IMPORT]->(:Import {dataset, importedAt, lang})
+                          -[:HAS_TABLE]->(:ImportTable {table, sourceRows, droppedColumns, filteredRows})
+                          -[:HAS_NODE_COUNT]->(:ImportNodeCount {labels, count})
+                          -[:HAS_EDGE_COUNT]->(:ImportEdgeCount {type, count})
+```
+
+Ein `(:Import)`-Knoten je Import-Vorgang (nicht überschrieben → Historie über Re-Importe hinweg).
+`ImportNodeCount.labels` ist die **exakte** Label-Kombination eines Knotens (z. B.
+`['User','Dialog','Active']`), nicht nur das Hauptlabel — Abfragen müssen entsprechend über alle
+Kombinationen summieren, die ein gesuchtes Label enthalten, statt exakte Gleichheit zu erwarten.
+
 ## Diagramm
 
 ```{mermaid}

@@ -48,7 +48,7 @@
     "id": "E6",
     "category": "E",
     "title": "Rowcount-Abgleich Knoten/Kanten gegen Quell-CSV",
-    "description": "Bestätigt die Import-Vollständigkeit (Phase-2-DoD). Ohne diesen Abgleich sind alle anderen Befunde nur so verlässlich wie der Import.",
+    "description": "Bestätigt die Import-Vollständigkeit (Phase-2-DoD). Ohne diesen Abgleich sind alle anderen Befunde nur so verlässlich wie der Import. Umgesetzt als eigene Kategorie 'Import' (I1, siehe checks/I.json) statt hier — dort passt der Tabellen-/Kanten-Abgleich thematisch besser als bei den User-Checks und läuft dataset-, nicht userweit.",
     "prio": "Hoch",
     "implemented": false
   },

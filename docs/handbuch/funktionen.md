@@ -288,13 +288,27 @@ auf diese Regel, statt zur Root-Cause-Seite zu wechseln (die braucht immer einen
 
 ## 4 · Konsistenzchecks
 
-Menü mit zwei Punkten — beide wechseln im Hauptbereich (anstelle von Filter/Ergebnisse) auf den
+Menü mit drei Punkten — alle wechseln im Hauptbereich (anstelle von Filter/Ergebnisse) auf den
 Check-Katalog des jeweiligen Bereichs; „&larr; zurück zu Ergebnisse" wechselt zurück.
 
 | Befehl | Wirkung |
 | --- | --- |
 | **User-spezifisch** | Check-Katalog Kategorien A/B/C/D/E (kritische Berechtigungen, Benutzerstamm-Hygiene, Zuweisungskonsistenz, Gültigkeit/Zeitbezug, referenzielle Integrität). |
 | **Rollen-spezifisch** | Check-Katalog Kategorie R (Rollendesign/-qualität — Struktur/Generierung, Zuordnung/Reichweite, Risiko/SoD, Wartbarkeit). |
+| **Import** | Check-Katalog Kategorie I — Import-Evidenz (I1): Vollständigkeitsnachweis gegen den Quell-SAP-Extrakt, je Quelltabelle Quellzeilen gegen das Graph-Ergebnis abgeglichen (Prüfungsnachweisführung). Dataset-weit, kein User-/Rollenbezug. |
+
+**Import-Evidenz (I1) im Detail.** Nutzt den bei jedem Import automatisch mitgeschriebenen
+Rekonziliierungsdatensatz (kein separater Lauf nötig — sofern das Dataset seit Einführung dieses
+Checks (Server-)importiert wurde, sonst erscheint ein Hinweis statt Zahlen). Je Quelltabelle:
+Quellzeilen, ggf. gefilterte Zeilen (z. B. `DELETED='X'`), verworfene Sensibel-Spalten, das
+resultierende Graph-Ergebnis (Knoten-/Kantenzahl) und ein Status — **OK** (echte 1:1-Erwartung
+erfüllt), **Hinweis** (Tabelle bündelt/dedupliziert bewusst, z. B. Berechtigungs-Feldwerte nach
+AE-03, oder ein Kantentyp wird von mehreren Quelltabellen gemeinsam genutzt), **Abweichung**
+(echte 1:1-Erwartung nicht erfüllt) oder **nicht im Extrakt** (optionale Tabelle fehlte). Auf der
+Check-Detailseite zusätzlich ein eigener **Report-Block** (PDF/CSV) mit der **vollständigen**
+Tabelle-für-Tabelle-Rekonziliierung inkl. Deckblatt (Unternehmen/System/Anlass/Ersteller/Stichtag)
+— der allgemeine „Bericht herunterladen" (s. u.) zeigt I1 nur als einen Katalogeintrag mit
+Trefferzahl, für die lückenlose Prüfungsnachweisführung ist dieser dedizierte Report gedacht.
 
 Adressiert die **Qualität und allgemeinen Risiken des geladenen Berechtigungskonzepts selbst** —
 unabhängig von einer konkreten SoD-Regel. **Je Raster-Box eine eigene, umrahmte Tabelle** — im

@@ -33,7 +33,7 @@ NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "/app/config"))
 RULES_DIR = Path(os.environ.get("RULES_DIR", "/app/rules"))
 CHECKS_DIR = Path(os.environ.get("CHECKS_DIR", "/app/checks"))
-CHECK_AREAS = {"user": ["A", "B", "C", "D", "E"], "role": ["R"]}
+CHECK_AREAS = {"user": ["A", "B", "C", "D", "E"], "role": ["R"], "import": ["I"]}
 CYPHER_DIR = Path(os.environ.get("CYPHER_DIR", "/app/cypher"))
 LOAD_DIR = Path(os.environ.get("LOAD_DIR", "/app/load"))
 MIGRATIONS_DIR = Path(os.environ.get("MIGRATIONS_DIR", "/app/migrations"))
@@ -624,6 +624,63 @@ def _clear_state(dataset: str) -> None:
         p.unlink()
 
 
+def _persist_import_evidence(session, dataset: str, lang: list[str], conv_tables: list[dict]) -> None:
+    """Import-Evidenz (Vollstaendigkeitsnachweis, ROADMAP.md) persistieren -- bisher flüchtig
+    (Job-Counts) bzw. verworfen (99_validate.cypher lief nur via .consume(), s. run_cypher_path()).
+    Ein (:Import)-Knoten je Import-Vorgang (nicht ueberschrieben -> Historie ueber Re-Importe),
+    mit Quellzeilen/verworfenen Spalten je Tabelle (aus dem Konverter, convert.py liefert das
+    schon) + Graph-Zaehlern je Label/Kantentyp (99_validate.cypher, hier ueber
+    run_cypher_path_capturing() erneut ausgefuehrt, um die sonst verworfenen Zeilen zu behalten --
+    rein lesend, keine zusaetzlichen Schreib-Kosten). Grundlage fuer Konsistenzcheck I1
+    (cypher/checks/import_evidence.cypher). conv_tables leer, wenn skipConvert gesetzt war (dann
+    fehlt nur die Quellzeilen-/Spalten-Statistik, die Graph-Zaehler bleiben live und korrekt)."""
+    imported_at = datetime.datetime.now()
+    key = f"{dataset}|{imported_at.isoformat()}"
+    session.run(
+        "MERGE (d:Dataset {id:$dataset}) "
+        "CREATE (i:Import {key:$key, dataset:$dataset, importedAt:datetime($importedAt), lang:$lang}) "
+        "MERGE (d)-[:HAS_IMPORT]->(i)",
+        dataset=dataset, key=key, importedAt=imported_at.isoformat(), lang=lang)
+
+    if conv_tables:
+        session.run(
+            "MATCH (i:Import {key:$key}) UNWIND $tables AS t "
+            "CREATE (it:ImportTable {key:$key + '|' + t.table, table:t.table, "
+            "  sourceRows:t.rows, droppedColumns:t.dropped}) "
+            "MERGE (i)-[:HAS_TABLE]->(it)",
+            key=key, tables=[{"table": t["table"], "rows": t["rows"],
+                              "dropped": t.get("dropped") or []} for t in conv_tables])
+
+    # DELETED='X' wird bislang nur bei AGR_1251 gefiltert (load/08_authorizations.cypher) -- der
+    # Konverter zaehlt das nicht mit (reine CSV-Konvertierung, kein fachlicher Filter), daher
+    # separat per LOAD CSV nachgezaehlt. Datei kann fehlen (z. B. skipConvert/Backup&Clear) --
+    # dann bleibt filteredRows einfach ungesetzt, kein harter Fehler.
+    if any(t["table"] == "agr_1251" for t in conv_tables):
+        try:
+            n = session.run(
+                "LOAD CSV WITH HEADERS FROM $url AS row FIELDTERMINATOR '\t' "
+                "WITH row WHERE coalesce(row.DELETED,'') = 'X' RETURN count(*) AS n",
+                url=f"file:///{dataset}/agr_1251.csv").single()["n"]
+            session.run("MATCH (it:ImportTable {key:$key + '|agr_1251'}) SET it.filteredRows=$n",
+                       key=key, n=n)
+        except Exception:
+            pass
+
+    node_rows, edge_rows = run_cypher_path_capturing(session, LOAD_DIR / "99_validate.cypher",
+                                                      {"dataset": dataset})
+    session.run(
+        "MATCH (i:Import {key:$key}) UNWIND $rows AS r "
+        "CREATE (c:ImportNodeCount {key:$key + '|n|' + apoc.text.join(r.labels,','), "
+        "  labels:r.labels, count:r.count}) "
+        "MERGE (i)-[:HAS_NODE_COUNT]->(c)",
+        key=key, rows=[{"labels": r["labels"], "count": r["knoten"]} for r in node_rows])
+    session.run(
+        "MATCH (i:Import {key:$key}) UNWIND $rows AS r "
+        "CREATE (c:ImportEdgeCount {key:$key + '|e|' + r.type, type:r.type, count:r.count}) "
+        "MERGE (i)-[:HAS_EDGE_COUNT]->(c)",
+        key=key, rows=[{"type": r["kante"], "count": r["anzahl"]} for r in edge_rows])
+
+
 def do_import(job_id: str, req: ImportReq):
     try:
         folder = DATA_DIR / req.dataset
@@ -697,13 +754,15 @@ def do_import(job_id: str, req: ImportReq):
                 _write_state(req.dataset, completed_list, len(load_files))
             jobs[job_id].pop("stepNum", None)
             jobs[job_id].pop("stepTotal", None)
-            # 4. Validieren (eigene Zaehler statt Konsolen-Output)
+            # 4. Validieren (eigene Zaehler statt Konsolen-Output) + Import-Evidenz persistieren
             jobs[job_id]["step"] = "validate"
             rec = s.run(
                 "OPTIONAL MATCH (u:User {dataset:$d}) WITH count(u) AS users "
                 "OPTIONAL MATCH (r:Role {dataset:$d}) WITH users, count(r) AS roles "
                 "OPTIONAL MATCH (a:Authorization {dataset:$d}) RETURN users, roles, count(a) AS auths",
                 d=req.dataset).single()
+            _persist_import_evidence(s, req.dataset, lang,
+                                     conv.get("tables", []) if not req.skipConvert else [])
         _clear_state(req.dataset)   # vollstaendig -> State-Datei nicht mehr benoetigt
         jobs[job_id].update(status="done", step="done",
                             users=rec["users"], roles=rec["roles"], auths=rec["auths"])
@@ -1534,7 +1593,7 @@ def _collect_checks_data(session, dataset: str) -> tuple[str, list[list]]:
     Gibt (as_of_str, rows) zurueck; jede Row:
     [dataset, asOf, bereich, checkId, category, title, prio, status, treffer, params]
     wobei treffer=int|'' und status='implementiert'|'nicht implementiert'|'Fehler: ...'."""
-    area_names = {"user": "User-spezifisch", "role": "Rollen-spezifisch"}
+    area_names = {"user": "User-spezifisch", "role": "Rollen-spezifisch", "import": "Import-spezifisch"}
     all_checks = []
     for area, cats in CHECK_AREAS.items():
         for cat in cats:
@@ -1767,6 +1826,220 @@ def export_consistency_checks_pdf(
     except ImportError:
         raise HTTPException(500, "fpdf2 nicht installiert — Image neu bauen: docker compose build backend")
     fname = f"konsistenz_{dataset}_{as_of_str or 'unbekannt'}.pdf"
+    return Response(content=pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+
+def _build_import_evidence_pdf(
+    dataset: str, as_of_str: str, summary: dict, rows: list[dict],
+    unternehmen: str, system: str, ersteller: str, anlass: str,
+) -> bytes:
+    """Import-Evidenz-Report als PDF (fpdf2, Querformat A4) -- dediziertes Pendant zu
+    _build_consistency_pdf() fuer die Pruefungsnachweisfuehrung: im allgemeinen Konsistenz-Report
+    zaehlt I1 nur als ein Katalogeintrag mit Trefferzahl, hier steht die volle
+    Tabelle-fuer-Tabelle-Rekonziliierung (Quellzeilen/Graph-Ergebnis/Status/Begruendung)."""
+    from fpdf import FPDF  # optional dep -- erst beim ersten PDF-Aufruf importiert
+
+    NAVY = (28, 40, 82)
+    STATUS_FG = {
+        "OK": (20, 110, 40), "Hinweis": (0, 70, 150),
+        "Abweichung": (170, 20, 20), "Tabelle nicht im Extrakt (optional)": (110, 110, 110),
+    }
+    STATUS_BG = {
+        "OK": (218, 248, 222), "Hinweis": (207, 227, 255),
+        "Abweichung": (255, 222, 222), "Tabelle nicht im Extrakt (optional)": (236, 236, 240),
+    }
+
+    class _PDF(FPDF):
+        def footer(self):
+            self.set_y(-11)
+            self.set_font("Helvetica", "I", 7)
+            self.set_text_color(150, 150, 150)
+            self.cell(
+                0, 5,
+                f"Vertraulich \xb7 Seite {self.page_no()}/{{nb}} \xb7 "
+                "Erstellt mit IAM-Analysetool \xb7 Mandantendaten verbleiben in der lokalen Umgebung",
+                align="C",
+            )
+
+    pdf = _PDF(orientation="L", format="A4")
+    pdf.alias_nb_pages()
+    pdf.set_margins(10, 10, 10)
+    pdf.set_auto_page_break(True, margin=15)
+    pdf.add_page()
+
+    # ── Titelblock ───────────────────────────────────────────────────────────
+    pdf.set_fill_color(*NAVY)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.cell(0, 12, "Import-Evidenz \xb7 Vollst\xe4ndigkeitsnachweis", fill=True, ln=True)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.cell(0, 7,
+             "Quellzeilen je SAP-Tabelle gegen das Graph-Ergebnis abgeglichen (Pr\xfcfungsnachweisf\xfchrung)",
+             fill=True, ln=True)
+    pdf.ln(5)
+
+    # ── Stammdaten ───────────────────────────────────────────────────────────
+    meta = [
+        ("Unternehmen / Auftraggeber",   unternehmen or "-"),
+        ("SAP-System / Mandant",          system      or "-"),
+        ("Pr\xfcfungsanlass / Zeitraum", anlass      or "-"),
+        ("Erstellt von",                 ersteller   or "-"),
+        ("Dataset",                      dataset),
+        ("Stichtag (Datenstand)",        as_of_str   or "-"),
+        ("Import-Zeitpunkt",             str(summary.get("importiertAm") or "-")),
+        ("Erstellt am",                  datetime.date.today().isoformat()),
+    ]
+    for label, value in meta:
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_fill_color(240, 242, 248)
+        pdf.set_text_color(40, 50, 90)
+        pdf.cell(65, 7, label, fill=True)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_fill_color(252, 252, 255)
+        pdf.set_text_color(0, 0, 0)
+        pdf.cell(212, 7, _pdf_safe(str(value)[:90]), fill=True, ln=True)
+    pdf.ln(6)
+
+    # ── Zusammenfassung ──────────────────────────────────────────────────────
+    pdf.set_text_color(*NAVY)
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.cell(0, 8, "Zusammenfassung", ln=True)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 6,
+             f"{summary.get('tabellenGeprueft', 0)} Tabellen gepr\xfcft \xb7 "
+             f"{summary.get('ok', 0)} OK \xb7 {summary.get('hinweis', 0)} Hinweis \xb7 "
+             f"{summary.get('nichtImExtrakt', 0)} nicht im Extrakt (optional) \xb7 "
+             f"{summary.get('abweichung', 0)} Abweichung", ln=True)
+    pdf.ln(4)
+
+    # ── Tabellen-Header ──────────────────────────────────────────────────────
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(*NAVY)
+    pdf.cell(0, 8, "Rekonziliierung je Quelltabelle", ln=True)
+    pdf.ln(1)
+    COL_W = [24, 22, 26, 20, 18, 20, 20, 127]
+    HEADERS = ["Tabelle", "Art", "Ziel", "Quellzeilen", "Gefiltert", "Graph", "Status", "Hinweis"]
+    pdf.set_fill_color(*NAVY)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 8)
+    for w, h in zip(COL_W, HEADERS):
+        pdf.cell(w, 8, h, fill=True)
+    pdf.ln(8)
+
+    # Kurzlabel fuers PDF -- "Tabelle nicht im Extrakt (optional)" sprengt jede sinnvolle
+    # Spaltenbreite, im JSON/in der interaktiven Ansicht bleibt der volle Text.
+    STATUS_SHORT = {"Tabelle nicht im Extrakt (optional)": "Optional"}
+
+    def _cut(s: str, max_w: float) -> str:
+        # Auf tatsaechliche Renderbreite (nicht Zeichenzahl) im gerade aktiven Font kuerzen --
+        # fpdf2s cell() bricht/umbricht nicht selbst, zu langer Text wuerde sonst hart am
+        # Zellenrand abgeschnitten (auch mitten im Wort, ohne Ellipse).
+        s = _pdf_safe(str(s))
+        if pdf.get_string_width(s) <= max_w:
+            return s
+        while s and pdf.get_string_width(s + "...") > max_w:
+            s = s[:-1]
+        return s + "..."
+
+    # ── Tabellenzeilen ───────────────────────────────────────────────────────
+    PAD = 2   # mm Innenabstand, damit der Text nicht bis an den Zellenrand reicht
+    for i, r in enumerate(rows):
+        status = r.get("status", "")
+        bg = STATUS_BG.get(status, (244, 244, 248) if i % 2 else (236, 236, 240))
+        fg = STATUS_FG.get(status, (0, 0, 0))
+        dropped = r.get("verworfeneSpalten") or []
+        hint = r.get("hinweis") or ""
+        if dropped:
+            hint = f"{hint} \xb7 verworfene Spalten: {', '.join(dropped)}"
+
+        pdf.set_fill_color(*bg)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.cell(COL_W[0], 7, _cut(r.get("tabelle") or "-", COL_W[0] - PAD), fill=True)
+        pdf.cell(COL_W[1], 7, _cut(r.get("art") or "-", COL_W[1] - PAD), fill=True)
+        pdf.cell(COL_W[2], 7, _cut(r.get("ziel") or "-", COL_W[2] - PAD), fill=True)
+        pdf.cell(COL_W[3], 7, "-" if r.get("quellzeilen") is None else str(r["quellzeilen"]),
+                 fill=True, align="R")
+        pdf.cell(COL_W[4], 7, "-" if r.get("gefiltert") is None else str(r["gefiltert"]),
+                 fill=True, align="R")
+        pdf.cell(COL_W[5], 7, "-" if r.get("graphErgebnis") is None else str(r["graphErgebnis"]),
+                 fill=True, align="R")
+        pdf.set_text_color(*fg)
+        pdf.set_font("Helvetica", "B", 8)
+        pdf.cell(COL_W[6], 7, _cut(STATUS_SHORT.get(status, status), COL_W[6] - PAD), fill=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Helvetica", "", 7)
+        pdf.cell(COL_W[7], 7, _cut(hint, COL_W[7] - PAD), fill=True, ln=True)
+
+    return bytes(pdf.output())
+
+
+@app.get("/datasets/{datasetId}/import-evidence/export")
+def export_import_evidence_csv(datasetId: str):
+    """Import-Evidenz-Rekonziliierung als CSV (Semikolon/UTF-8-BOM) -- Pendant zum PDF-Export
+    fuer die Weiterverarbeitung (Excel/Revisionssoftware)."""
+    with driver.session() as s:
+        as_of = _dataset_asof(s, datasetId)
+        results = run_cypher_path_capturing(
+            s, CYPHER_DIR / "checks" / "import_evidence.cypher", {"dataset": datasetId, "asOf": as_of})
+    rows = results[1] if len(results) > 1 else []
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter=";")
+    w.writerow(["Tabelle", "Art", "Ziel", "Quellzeilen", "Gefiltert", "Verworfene Spalten",
+                "Graph-Ergebnis", "Status", "Hinweis"])
+    for r in rows:
+        w.writerow([r.get("tabelle"), r.get("art"), r.get("ziel"), r.get("quellzeilen"),
+                    r.get("gefiltert"), "|".join(r.get("verworfeneSpalten") or []),
+                    r.get("graphErgebnis"), r.get("status"), r.get("hinweis")])
+    data = "﻿" + buf.getvalue()
+    fname = f"import_evidenz_{datasetId}_{as_of or 'unbekannt'}.csv"
+    return Response(content=data, media_type="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+
+@app.get("/datasets/{datasetId}/import-evidence")
+def get_import_evidence(datasetId: str):
+    """Import-Evidenz (Vollstaendigkeitsnachweis) des neuesten Imports dieses Datasets --
+    Rekonziliierung Quellzeilen je SAP-Tabelle gegen das Graph-Ergebnis. Nutzt denselben
+    Konsistenzcheck wie I1 (cypher/checks/import_evidence.cypher), hier als eigener,
+    JSON-formfreundlicher Endpoint (Summary + Detail-Rekonziliierungsliste)."""
+    with driver.session() as s:
+        as_of = _dataset_asof(s, datasetId)
+        results = run_cypher_path_capturing(
+            s, CYPHER_DIR / "checks" / "import_evidence.cypher", {"dataset": datasetId, "asOf": as_of})
+    return {
+        "dataset": datasetId,
+        "asOf": jsonable(as_of),
+        "summary": jsonable(results[0][0]) if results[0] else {},
+        "reconciliation": jsonable(results[1]),
+    }
+
+
+@app.get("/datasets/{datasetId}/import-evidence/export/pdf")
+def export_import_evidence_pdf(
+    datasetId: str,
+    unternehmen: str = Query(""),
+    system: str = Query(""),
+    ersteller: str = Query(""),
+    anlass: str = Query(""),
+):
+    """Import-Evidenz-Report als PDF (Querformat A4) mit voller Tabelle-fuer-Tabelle-
+    Rekonziliierung -- fuer die Pruefungsnachweisfuehrung (im Unterschied zum allgemeinen
+    Konsistenz-Report, der I1 nur als einen Katalogeintrag mit Trefferzahl zeigt)."""
+    with driver.session() as s:
+        as_of = _dataset_asof(s, datasetId)
+        results = run_cypher_path_capturing(
+            s, CYPHER_DIR / "checks" / "import_evidence.cypher", {"dataset": datasetId, "asOf": as_of})
+    summary = results[0][0] if results[0] else {}
+    rows = results[1]
+    try:
+        pdf_bytes = _build_import_evidence_pdf(
+            datasetId, str(as_of) if as_of else "", summary, rows, unternehmen, system, ersteller, anlass)
+    except ImportError:
+        raise HTTPException(500, "fpdf2 nicht installiert — Image neu bauen: docker compose build backend")
+    fname = f"import_evidenz_{datasetId}_{as_of or 'unbekannt'}.pdf"
     return Response(content=pdf_bytes, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="{fname}"'})
 
