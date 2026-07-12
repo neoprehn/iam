@@ -212,6 +212,14 @@
   .rc-graph-box { height:62vh; min-height:420px; }
   #rcGraphWrap:fullscreen { background:var(--bg); padding:16px; }
   #rcGraphWrap:fullscreen .rc-graph-box { height:calc(100vh - 32px); }
+  #findingsGraph { display:flex; flex-direction:column; gap:2px; }
+  .fg-row { display:grid; grid-template-columns:200px 1fr 52px auto; align-items:center; gap:10px;
+    padding:4px 6px; border-radius:6px; cursor:pointer; }
+  .fg-row:hover, .fg-row:focus { background:rgba(76,139,245,.08); outline:none; }
+  .fg-label { font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .fg-track { position:relative; height:16px; background:var(--line); border-radius:4px; opacity:.35; }
+  .fg-bar { position:absolute; left:0; top:0; height:100%; border-radius:0 4px 4px 0; }
+  .fg-count { text-align:right; font-variant-numeric:tabular-nums; font-size:12px; }
   /* Vertikaler Zoom-Slider am rechten Graph-Rand (schnelles Rein-/Rauszoomen) */
   #rcZoom { position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:5;
     writing-mode:vertical-lr; direction:rtl; -webkit-appearance:slider-vertical; appearance:slider-vertical;
@@ -458,7 +466,7 @@
         </div>
         <div class="pillgroup" id="viewTogglePills" style="margin-left:auto">
           <button type="button" class="pill active" data-value="table">Tabelle</button>
-          <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (Cytoscape.js)">Graph</button>
+          <button type="button" class="pill" data-value="graph" title="Regeln/Queries als Balkendiagramm nach betroffenen Usern &mdash; unabh&auml;ngig von Tabellenfiltern">Graph</button>
         </div>
       </div>
       <div id="filterActive">
@@ -487,6 +495,13 @@
         </tr></thead>
         <tbody id="matchesBody"></tbody>
       </table>
+      <div id="findingsGraphWrap" style="display:none">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div class="sub" id="findingsGraphSub"></div>
+          <button class="ghost" id="findingsGraphSummaryLink" style="width:auto;padding:3px 10px;font-size:12px">Als Tabelle (Ergebnisse-&Uuml;bersicht)</button>
+        </div>
+        <div id="findingsGraph" style="margin-top:8px"></div>
+      </div>
     </div>
     <div id="rootCauseView" style="display:none">
       <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:4px">
@@ -2563,9 +2578,10 @@ function renderRuleSelect() {
 let currentFindings = [], currentFindingsEntry = true;
 function renderFindingsTable(findings, isEntry) {
   currentFindings = findings; currentFindingsEntry = isEntry;
-  $('matchesTable').style.display = 'none'; $('findingsTable').style.display = '';
   toggleEntryUi(isEntry);
   document.querySelector('#findingsTable thead th:last-child').textContent = isEntry ? 'Sleeping' : 'Root-Cause';
+  if (findingsViewMode === 'graph') { $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none'; refreshFindingsGraph(); return; }
+  $('matchesTable').style.display = 'none'; $('findingsTable').style.display = '';
   findingsSort.reset();
   renderFindingsRows();
 }
@@ -2620,11 +2636,16 @@ async function updateResultContext(u, r) {
     activeUserInfo = null;
   }
 }
-document.querySelectorAll('#viewTogglePills .pill').forEach(b => b.addEventListener('click', () => {
-  if (b.disabled) return;
-  document.querySelectorAll('#viewTogglePills .pill').forEach(x => x.classList.remove('active'));
-  b.classList.add('active');
-}));
+document.querySelectorAll('#viewTogglePills .pill').forEach(b => b.addEventListener('click', () => setFindingsViewMode(b.dataset.value)));
+function setFindingsViewMode(mode) {
+  findingsViewMode = mode;
+  document.querySelectorAll('#viewTogglePills .pill').forEach(x => x.classList.toggle('active', x.dataset.value === mode));
+  $('findingsGraphWrap').style.display = mode === 'graph' ? '' : 'none';
+  if (mode === 'graph') {
+    $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none';
+    refreshFindingsGraph();
+  } else if (activeRunId) applyFilters();   // rendert wieder die passende Tabelle (findings/matches)
+}
 
 /* Verursachende Rollen/Profile — ersetzt die fruehere Tabellenspalte "Verursacht durch";
    nur sinnvoll im Nutzer+Regel-Kontext (genau ein Finding). Root-Cause-Button daneben erklaert,
@@ -2652,6 +2673,9 @@ const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ff
 const CRIT_RANK = { 'very-critical': 5, critical: 4, high: 3, medium: 2, low: 1 };
 function critRank(c) { return CRIT_RANK[(c || '').toLowerCase()] || 0; }
 
+let findingsViewMode = 'table';           // 'table' | 'graph'
+let fgRows = [], fgMode = 'sod', fgTotalUsers = 0, fgLoadSeq = 0;
+function currentFindingsGraphMode() { return resultTypeValue === 'query' ? 'query' : 'sod'; }
 let ruleCritValue = '', resultTypeValue = '', sleepingValue = '';
 let sleepDaysOverrideValue = '', lockedValue = '', lockReasonValue = 'alle';
 function renderRuleCritPills() {
@@ -2724,6 +2748,7 @@ document.querySelectorAll('#lockReasonPills .pill').forEach(b => b.addEventListe
 let currentMatches = [];
 function renderMatchesTable(rows) {
   currentMatches = rows;
+  if (findingsViewMode === 'graph') { $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none'; refreshFindingsGraph(); return; }
   $('findingsTable').style.display = 'none'; $('matchesTable').style.display = '';
   matchesSort.reset();
   renderMatchesRows();
@@ -2744,6 +2769,56 @@ function renderMatchesRows() {
     body.appendChild(tr);
   });
 }
+
+/* Listenweiter Graph (Regel-/Query-Balkendiagramm) -- Ersatz fuer den frueher dauerhaft
+   deaktivierten "Graph"-Pill neben "Tabelle". Bei ~4.200 betroffenen Akteuren vs. wenigen Dutzend
+   Regeln waere ein Knoten-je-User-Graph (Cytoscape) unlesbar; stattdessen eine Zeile je Regel/
+   Query (Balkenlaenge = Nutzerzahl, Farbe = bestehende Kritikalitaets-Statusfarbe), Einzel-User nur
+   per Drill-down. Nutzt die vorhandenen /sodrules/summary bzw. /queries/summary-Endpunkte (dieselben
+   Daten wie die Ergebnisse-Uebersicht) -- keine neue Backend-Aggregation, kein Sidebar-Filterbezug
+   (diese Endpunkte kennen nur runId, s. Untertitel-Hinweis). */
+async function refreshFindingsGraph() {
+  if (findingsViewMode !== 'graph' || !activeRunId) return;
+  const mode = currentFindingsGraphMode();
+  const seq = ++fgLoadSeq;
+  $('findingsGraphSub').textContent = 'lädt…';
+  try {
+    const url = (mode === 'query' ? '/queries/summary' : '/sodrules/summary') + '?runId=' + encodeURIComponent(activeRunId);
+    const res = await api(url);
+    if (seq !== fgLoadSeq) return;   // ueberholt durch neueren Aufruf (Run-/Modewechsel waehrend Fetch)
+    fgRows = res.rows.slice().sort((a, b) => b.userCount - a.userCount);
+    fgMode = mode; fgTotalUsers = res.totalUsers;
+    renderFindingsGraph();
+  } catch (err) {
+    if (seq !== fgLoadSeq) return;
+    $('findingsGraphSub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
+    $('findingsGraph').innerHTML = '';
+  }
+}
+function renderFindingsGraph() {
+  $('findingsGraphSub').textContent = fgRows.length
+    ? `${fgRows.length} ${fgMode === 'query' ? 'Einzelberechtigung(en)' : 'SoD-Regel(n)'} mit Treffern in diesem Lauf · ${fgTotalUsers} betroffene User gesamt (unabhängig von Tabellenfiltern)`
+    : 'Keine Treffer in diesem Lauf.';
+  const max = Math.max(1, ...fgRows.map(r => r.userCount));
+  $('findingsGraph').innerHTML = fgRows.map(r => {
+    const pct = Math.round(100 * r.userCount / max);
+    const color = CRIT_COLOR[r.criticality] || 'var(--muted)';
+    const name = r.shortDescription || r.description || '';
+    return `<div class="fg-row" data-id="${esc(r.id)}" tabindex="0" title="${esc(r.id)}${name ? ' — ' + esc(name) : ''}">`
+      + `<div class="fg-label"><b>${esc(r.id)}</b> <span class="muted">${esc(name)}</span></div>`
+      + `<div class="fg-track"><div class="fg-bar" style="width:${pct}%;background:${color}"></div></div>`
+      + `<div class="fg-count">${r.userCount}</div>${critTag(r.criticality)}`
+      + `</div>`;
+  }).join('');
+  $('findingsGraph').querySelectorAll('.fg-row').forEach(row => {
+    row.addEventListener('click', () => {
+      setFindingsViewMode('table');
+      fgMode === 'query' ? jumpToQueryFilter(row.dataset.id) : jumpToRuleFilter(row.dataset.id);
+    });
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); } });
+  });
+}
+$('findingsGraphSummaryLink').onclick = () => openSummaryView(fgMode);
 
 async function applyFilters() {
   if (!activeRunId) return;

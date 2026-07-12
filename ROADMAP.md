@@ -165,11 +165,21 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   startet den Zyklus immer wieder bei „auf". Gilt automatisch für alle vier sortierbaren Tabellen.
   **Offen nur noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie,
   separater, kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
-- [~] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`, „Graph"
-  noch deaktiviert): ein Graph **aller** Findings eines Laufs (Heatmap/Matrix, User × Regeln) statt des
-  fokussierten Einzelpfads — perf-optimiert über die geflachten Evidenz-Kanten
-  (`VIA_ROLE`/`VIA_PROFILE`) statt Root-Cause-Live-Abfrage. (Root-Cause-Ebene erledigt: Umschalter
-  Tabelle · Pfadgraph · Radial.)
+- [x] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`) —
+  erledigt 2026-07-12, aber bewusst **nicht** als Heatmap/User×Regeln-Matrix oder Cytoscape-
+  Node-Graph umgesetzt: bei ~4.200 betroffenen Akteuren vs. wenigen Dutzend Regeln wäre ein Knoten
+  je User unlesbar und eine literale Matrix ein DOM-Performance-Problem (Entscheidung nach
+  Dataviz-Skill-Konsultation + Nutzerauswahl). Stattdessen ein **regel-/query-zentriertes
+  Balkendiagramm** (`#findingsGraph`, `.fg-row`): eine Zeile je SoD-Regel bzw. Einzelfilter,
+  Balkenlänge = betroffene Nutzerzahl (absteigend sortiert), Farbe = bestehende
+  `CRIT_COLOR`-Statusfarbe (keine neue Palette). Datenquelle sind die schon vorhandenen
+  `/sodrules/summary`/`/queries/summary`-Endpunkte (dieselben wie die „Ergebnisse-Übersicht") —
+  **keine neue Backend-Aggregation**; folgt damit `resultTypeValue` (SoD vs. Einzelfilter) und
+  bleibt bewusst unabhängig von den Sidebar-Filtern (Untertitel weist explizit darauf hin).
+  Klick auf einen Balken nutzt die bestehenden `jumpToRuleFilter`/`jumpToQueryFilter` (inkl. des
+  neuen Zurück-Buttons darüber). „Als Tabelle"-Link führt zur bestehenden Ergebnisse-Übersicht
+  (Tabellen-Fallback laut Dataviz-Skill-Anforderung). Mit Playwright gegen den laufenden Container
+  end-to-end verifiziert (Sortierung, Farben, Drill-down, Modus-Wechsel, keine Konsolenfehler).
 - [x] **Zurück-Button im Drill-down** — „← zurück" in der Aktiv-Filter-Leiste stellt die Ausgangsliste
   wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
   Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
@@ -182,8 +192,10 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
 #### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung
 - [ ] **Gebrandetes Frontend mit Cytoscape.js** — ersetzt den temporären NeoDash-PoC (Phase 6). KPIs,
   Graph-Darstellung der Konfliktpfade (Cytoscape statt NVL — NVL verworfen, Lizenz nur Aura/kommerziell),
-  Heatmap/Matrix, Drill-down; visualisiert die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`). Vorlage:
-  `dashboards/sod_poc.json`.
+  Drill-down; visualisiert die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`). Vorlage:
+  `dashboards/sod_poc.json`. **Heatmap/Matrix bereits erledigt** (s. 9.1, regel-/query-zentriertes
+  Balkendiagramm statt User×Regel-Matrix) — hier nur noch der eigentliche Cytoscape-Konfliktpfad-Teil
+  offen.
 - [ ] **Farblegende in allen Graphansichten** (aus 9.1) — erklärt die Knotenbedeutung (User/Regel/
   Klausel/Query/Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten
   Graphen.
