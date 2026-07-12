@@ -309,7 +309,18 @@ verlassen.
 - [ ] `docker-compose.yml` mit gepinnten Versionen finalisieren.
 - [ ] Onboarding-`README`: klonen → `docker compose up` → eigene SAP-Extrakte (Ordner/ZIP) → App.
 - [ ] Klarstellen: Über Repo/Compose wandert nur Logik/Umgebung, nie Mandantendaten.
-- [ ] Verfahren für Ergebnisübergabe (`neo4j-admin database dump`, verschlüsselt, unter Auflagen) dokumentieren — Ausnahmefall.
+- [~] **Verfahren für Ergebnisübergabe** (`neo4j-admin database dump`/`load`, verschlüsselt, unter
+  Auflagen) — **Ablauf 2026-07-12 live end-to-end verifiziert** (Container stoppen,
+  `docker compose run --rm -v <host>:/hostout neo4j neo4j-admin database dump neo4j
+  --to-path=/hostout`, Restore via `load --overwrite-destination=true` in Test-Volume, Knotenzahl
+  1:1 bestätigt). Community Edition kann keine einzelne Datenbank pausieren (`STOP DATABASE`
+  ist Enterprise-only) — daher immer der ganze `neo4j`-Container kurz gestoppt. Noch offen: als
+  RTD-Seite dokumentieren statt nur Chat-Verlauf.
+- [ ] **Mandantendaten zwischen zwei eigenen Arbeitsgeräten synchron halten** (Heim-Rechner + mobiler
+  Laptop, Zugfahrten-Entwicklung) — aktuell zurückgestellt/unnötig, da Datenstand meist nur an einem
+  Gerät gebraucht wird. Bei Bedarf: derselbe `neo4j-admin dump`/`load`-Mechanismus wie oben, nur
+  wiederkehrend statt einmalig; Transport weiterhin verschlüsselt/persönlich (USB), nie über
+  Cloud-Sync/Git.
 
 **Deployment-Optionen.** Verteilungseinheit ist heute **Docker Compose** (lokal, ein Befehl). Der Stack
 ist **Kubernetes-fähig** (interner, abgesicherter Cluster):
