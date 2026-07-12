@@ -138,100 +138,152 @@ Quelltabelle bricht nicht mehr ab, parallele CSV-Konvertierung, Quelldateien nac
     abgeschnittenen Texte mehr nach dem Truncation-Fix); Playwright-UI-Test (Ribbon-Button,
     Single-Box-Grid, Detailansicht, Export-Links). Testdaten danach entfernt.
 
-#### Geführte Auswertung (Auswerten v2) — gezielte Filter-/Scope-Auswahl
-Statt „ein Lauf über alle 600+ Filter": gezielt **auswählen, was** ausgewertet wird, **für wen**, **wie
-tief**. Vieles existiert als Backend-Parameter (`sodRules`, `userTypes`, `excludeLocked`, `sleepDays`,
-`minCriticalityRank`) — es fehlt v. a. die **geführte Auswahl-UI** und etwas Backend.
+Die folgenden offenen Ausbauten wurden am **2026-07-12** mit den handschriftlichen Notizen aus
+`ideen.md` zusammengeführt und in thematische Arbeitspakete **9.1–9.8** gegliedert.
+**Reihenfolge (Nutzer-Steuerung):** zunächst **9.1 + 9.2** (Interaktive Ergebnisse / Graph-Frontend),
+danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen sich an.
 
-Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#geführte-auswertung)): Org-Filter im App-Lauf
-wirksam, MATCHES nach `runId` gescoped (Vorbedingung für Multi-Varianten-Läufe), Lauf
-verwalten + Backup/Restore, **Assistent-Stepper** (7 Schritte Import→Bestand→Scoping→Konsistenz→
-SoD→Root-Cause→Bericht, bindet für Konsistenz/SoD/Root-Cause die bestehenden Seiten ein),
-**Katalog-Auswahl** (voller Katalog-Browser in Schritt ③ Scoping: Queries + SoD-Regeln,
-filterbar nach Kritikalität/Namensmuster/Modul/queryType, Mehrfachauswahl) + **zwei
-Auswertungsarten** (Can-Do — nur Einzelfilter materialisiert, SoD-Auswertung übersprungen — vs.
-scoped SoD-Konflikte — nur die Klausel-Queries der gewählten Regeln materialisiert) +
-**persistente Scope-Profile** (neue Admin-Seite „Scope", `frontend/admin-scopes.html`: dieselbe
-Katalog-Auswahl wie im Assistenten, aber benannt gespeichert je Ruleset unter
-`rules/<Ruleset>/scope_profiles.custom.json` — git-getrackt wie die Query-/SoD-Overlays, da
-keine Mandantendaten enthalten — und im „Neuer Lauf"-Dialog auswählbar, unabhängig vom
-Assistenten und über Datasets hinweg wiederverwendbar) + **verfeinerter Katalog-Browser**
-(Namensmuster filtert nur die Bezeichnung, ~20 Tabellenzeilen ohne Scrollen, zweistufiger Ablauf
-Einzelfilter→SoD-Regeln mit „nur mögliche SoD-Regeln"-Umschalter über die CNF-Klausel-Struktur,
-inkl. automatischer additiver Ergänzung fehlender Klausel-Queries beim Finalisieren) +
-**Voreinstellung inkl. Benutzergruppe/Sleeping** (Scope-Profile und Assistent-Ad-hoc-Auswahl
-legen jetzt auch Nutzertyp-Profil + Sleeping fest — bei aktiver Voreinstellung verschwinden die
-entsprechenden Felder im „Neuer Lauf"-Dialog zugunsten der Voreinstellungswerte) +
-**Sidebar-Filter scope-treu** (Einzelberechtigung/SoD-Dropdown in der Ergebnis-Ansicht zeigen bei
-einem per Katalog-Auswahl gescopten Lauf nur noch die dabei gewählten Einzelfilter/SoD-Regeln,
-`run.queryIds`/`run.sodRules` jetzt am Run-Knoten persistiert, volle Rückwärtskompatibilität für
-ältere Läufe) + **Multi-Varianten-Läufe** (jede Variante ein eigener, benannter `(:Run)`, frei
-konfigurierbare Org-Varianten über eigene Admin-Seite, paralleles Anlegen mehrerer Varianten als
-Batch-Job, Titel/Beschreibung nachträglich änderbar) + **Nutzer-Scope verfeinern**
-(Sleeping-Schnellwahl 90/180/360 Tage als Ergebnisfilter, live gegen `u.lastLogon` statt nur das
-beim Lauf gesetzte Fenster; Gesperrte nach Sperrtyp `failed_logons`/`admin_local`/`admin_global`)
-+ **Evidenz-Perf** (GRANTS-Kante + Checkpoint-Throttling + `explain_sod_finalize`-Fix senken
-`/explain` von ~90–100s auf ~27,6s bei ~4.200 Akteuren, dadurch **Evidenz jetzt default-on**
-bei jedem neuen Lauf statt Opt-in).
+#### Kürzlich erledigt (Kontext, Details im Archiv)
+- **Geführte Auswertung** — Assistent-Stepper, Katalog-Auswahl, zwei Auswertungsarten, persistente
+  Scope-Profile, verfeinerter Katalog-Browser, Voreinstellung inkl. Benutzergruppe/Sleeping,
+  scope-treue Sidebar-Filter, **Multi-Varianten-Läufe** (jede Variante ein eigener benannter `(:Run)`;
+  **Titel/Beschreibung nachträglich editierbar** — `PATCH` auf den Run-Knoten), **Nutzer-Scope
+  verfeinern** (Sleeping-Schnellwahl, Sperrtyp-Filter), **Evidenz default-on** (Evidenz-Perf:
+  `/explain` ~90–100s → ~27,6s). [Archiv](ROADMAP-ARCHIV.md#geführte-auswertung).
+- **Interaktive Drill-downs** — Findings-/Regel-/KPI-Klick, Root-Cause inkl. Pfad-/Radialgraph
+  (Cytoscape). [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse-drill-down--graphtabelle).
+- **Import-Evidenz** — s. Block oben (Kategorie „Import"/I1, PDF/CSV-Report).
 
-- [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten", noch offen): „wer kann *Funktion* in
-  *Buchungskreis X* (AND/OR/Bereich)" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…
-  (Matching-Seite ✓, Org-Varianten ✓; braucht nur noch die kombinierte Einzelfilter-nach-Org-Ansicht).
-  **Bewusst entschieden (2026-07-11):** über den bestehenden Org-Varianten-Mechanismus (dedizierter,
-  eigener `(:Run)` je Org-Kombination) lösen — **kein** Live-Post-hoc-Filter auf einem bereits
-  materialisierten Standard-Lauf. Die `MATCHES`-Kante ist rein boolesch (kein Org-Wert/keine
-  Authorization-Referenz gespeichert), ein Nachfiltern müsste dieselbe `$orgMode`/`$orgFilters`-Logik
-  aus `materialize_matches_one.cypher` separat als Live-Query nachbauen (analog, aber nicht identisch
-  zu `_SATISFIED_BY_CYPHER`) — wäre zwar ergebnisgleich, aber zusätzlicher Code-Pfad ohne echten
-  Vorteil gegenüber einem weiteren benannten Lauf (Titel/Beschreibung jetzt nachträglich änderbar,
-  s. Archiv).
-#### Interaktive Ergebnisse (Drill-down) + Graph/Tabelle
-Heute sind die Ergebnis-Listen statisch. Interaktiv machen — größtenteils mit vorhandenen Daten:
+#### 9.1 Interaktive Ergebnisse & Graph-UX  ← als Nächstes
+- [~] **Sortierbare Spalten** in allen Ergebnistabellen (generische `makeSortable()`): umgesetzt für
+  Ergebnis-Übersicht (Einzelfilter+SoD), Nutzerliste, Konsistenzcheck-Detail. **Offen:**
+  Findings-/Matches-Haupttabelle (`findingsTable`/`matchesTable`) und Konsistenzcheck-Katalog
+  (`ccGrid`). Gilt als **Standard** für jede neue Ergebnisliste.
+- [~] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`, „Graph"
+  noch deaktiviert): ein Graph **aller** Findings eines Laufs (Heatmap/Matrix, User × Regeln) statt des
+  fokussierten Einzelpfads — perf-optimiert über die geflachten Evidenz-Kanten
+  (`VIA_ROLE`/`VIA_PROFILE`) statt Root-Cause-Live-Abfrage. (Root-Cause-Ebene erledigt: Umschalter
+  Tabelle · Pfadgraph · Radial.)
+- [ ] **Farblegende in allen Graphansichten** — erklärt die Knotenbedeutung (User/Regel/Klausel/Query/
+  Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten Graphen.
+- [ ] **Vollbild-Bedienung der Graphen überarbeiten** — heutiger Vollbild-Knopf ist ungünstig; besseres
+  Muster (Toggle in der Ansichts-Leiste, ESC zum Verlassen).
+- [ ] **Zurück-Button im Drill-down** — beim Sprung von der Findings-Übersicht auf eine Regel/einen
+  Nutzer zurück zur Ausgangsliste (Filterzustand erhalten).
+- [ ] **Kritikalität prominent an Einzelfilter/SoD** — dieselbe farbige Badge-Logik wie bei den Findings
+  (Farbwahl beibehalten) auch in Katalog/Auswahl/Ergebniszeilen der Einzelfilter und SoD-Regeln; Stufen/
+  Farben aus den Kritikalitäts-Stammdaten (→ 9.4).
 
-Erledigt (Details im [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse-drill-down--graphtabelle)):
-klickbare Drill-downs (Findings-Filter, KPI-Kontext-Chips, Ergebnistyp-Pills), Root-Cause-Drill-down
-(Einzelfilter **und** SoD-Regeln), kaskadierende Sidebar-Filter, SoD-Kurzbezeichnung,
-**Root-Cause-Graph (Pfad + Radial, Cytoscape)** als Ansicht-Umschalter neben der Tabelle. **Nachgezogen
-(2026-07-11):** Regel-Zelle der Findings-Übersicht klickbar (analog User-Zelle, filtert per
-`jumpToRuleFilter()`); Root-Cause-Default auf **„nur Treffer"** gedreht (statt „alle"); **Bugfix**
-Pfadgraph/Radial ignorierten den „nur Treffer"-Umschalter bisher komplett (zeigten immer die vollen
-`authValues` in Knoten-Label + Tooltip statt der Wertreduktion aus `highlightAuthValues()`) — neue
-`rcHitFilteredAuthValues()` als Graph-Pendant behebt das.
+#### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung
+- [ ] **Gebrandetes Frontend mit Cytoscape.js** — ersetzt den temporären NeoDash-PoC (Phase 6). KPIs,
+  Graph-Darstellung der Konfliktpfade (Cytoscape statt NVL — NVL verworfen, Lizenz nur Aura/kommerziell),
+  Heatmap/Matrix, Drill-down; visualisiert die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`). Vorlage:
+  `dashboards/sod_poc.json`. Die Graph-UX-Punkte aus 9.1 (Legende, Vollbild) sind Teil davon.
+- [ ] **NeoDash danach vollständig entfernen** — Compose-Service `iam-neodash` (Port 5005), Erwähnungen
+  in `README.md`/`docs/`/Laufzeitdiagramm, `dashboards/sod_poc.json` archivieren/löschen, `AE-14`-Pin
+  reduzieren.
 
-- [~] **Umschalter Tabelle/Graph — echter Graph für SoD-Konfliktpfade.** **Auf Root-Cause-Ebene
-  erledigt:** die Root-Cause-Seite hat jetzt einen Ansicht-Umschalter **Tabelle · Pfadgraph ·
-  Radial** (Cytoscape.js, aus denselben `/root-cause`-Daten — voller Pfad User → Regel → Klausel →
-  Query → Objekt → Rolle/Profil inkl. technisch/verwaist/„via generiertem Profil"; Details im
-  Archiv). **Noch offen:** der **listenweite** Tabelle/Graph-Umschalter über der Findings-Liste
-  (`viewTogglePills`, „Graph" dort noch deaktiviert) — ein Graph **aller** Findings eines Laufs auf
-  einmal (Heatmap/Matrix-artig, viele User × Regeln) statt des fokussierten Einzel-Pfads; sowie die
-  perf-optimierte Variante über die vorab geflachten Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`, s.
-  „Evidenz-Perf") statt der Root-Cause-Live-Abfrage.
-- [~] **Design-Regel: sortierbare Spalten in Ergebnistabellen.** Klick auf eine Kopfzelle sortiert,
-  erneuter Klick kehrt die Richtung um (Pfeil-Indikator) — generische `makeSortable()`-Hilfsfunktion
-  im Frontend statt Einzellösung je Tabelle. **Umgesetzt:** Ergebnisse-Übersicht (Einzelfilter
-  **und** SoD-Regeln, dieselbe `summaryTable`-Komponente), Nutzerliste (`ulTable`), Konsistenzcheck-
-  Detail (`ccdDetailTable`, dort schon vorher vorhanden — eigene Implementierung wegen dynamischer
-  Spalten aus den Zeilen-Keys, nicht auf `makeSortable()` umgestellt). **Gilt als Standard für jede
-  neue tabellarische Ergebnisliste.** Noch offen: Findings-/Matches-Haupttabelle (`findingsTable`/
-  `matchesTable`) und der Konsistenzcheck-Katalog (`ccGrid`) sind bisher nicht sortierbar.
+#### 9.3 Org-Varianten & „Can-Do nach Org" — Ausbau, UX, Performance
+- [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten"): „wer kann *Funktion* in *Buchungskreis
+  X*" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…. **Entschieden (2026-07-11):** über den
+  bestehenden Org-Varianten-Mechanismus (eigener `(:Run)` je Kombination), **kein** Live-Post-hoc-Filter
+  (die `MATCHES`-Kante ist rein boolesch; Nachfiltern müsste die `$orgMode`/`$orgFilters`-Logik aus
+  `materialize_matches_one.cypher` als Live-Query nachbauen — kein echter Vorteil). Fehlt nur die
+  kombinierte Einzelfilter-nach-Org-Ansicht.
+- [ ] **Verschachtelte Org-Abfragen** — heute je Org-Feld genau **ein** Operator (`AND`/`OR`/`RANGE`)
+  über eine flache Werteliste (`materialize_matches_one.cypher`, `$orgFilters[feld].op/.values`).
+  Gewünscht: boolesche Verschachtelung wie **„(1000 & 2000) OR 3000"** je Feld. Braucht (a) einen
+  Ausdrucks-/Baum-Editor in der Varianten-UI und (b) eine rekursive Auswertung im Cypher statt des
+  flachen `op`.
+- [ ] **Feldübergreifende Semantik in der UI ausweisen** — *mehrere* Org-Felder (z. B. BUKRS **und**
+  Verkaufsorg) werden mit **UND** verknüpft (bestätigt: `all(obj IN objects …)` in
+  `materialize_matches_one.cypher`; die Wahl AND/OR/RANGE gilt nur **innerhalb** eines Feldes).
+  Hinweistext/Badge „alle Felder = UND" ergänzen.
+- [ ] **Beschreibungsfeld 2-zeilig + Vergrößern** — analog zum Risikotext-Feld (Textarea + Expand-Icon).
+- [ ] **Responsive Kriterien-Layout bei der Varianten-Erstellung** — eine Spalte bei einem Kriterium;
+  ab dem Hinzufügen: 2 nebeneinander, das 3. über volle Breite darunter, 4 als 2×2.
+- [ ] **Importformat für neue Varianten** — Org-Kombinationen als Datei ein-/auslesbar statt nur per
+  UI-Eingabe.
+- [ ] **Performance des Varianten-Aufbaus untersuchen** — Ursache: jede Variante ist ein **eigener, voll
+  materialisierter Lauf** (MATCHES über alle User × Queries je Variante). Ansätze: gemeinsame
+  Kandidaten-Vorfilterung über Varianten hinweg, Wiederverwendung der org-unabhängigen MATCHES-Basis,
+  Parallelität/Checkpoint-Throttling (analog Evidenz-Perf).
+- **Erledigt:** Variantenname/-beschreibung nachträglich editierbar (`PATCH` auf den `(:Run)`-Knoten).
+#### 9.4 Masterdata-Verwaltung (Admin)
+Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns, die
+Kritikalitäts-Anzeige (9.1) und den Reason-Code (9.6).
+- [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
+  und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
+  mitführen (später für Heatmap-Gewichtung).
+- [ ] **Reason-Code-Stammdaten (SoD)** — Reason Code als Prozess führen: `PtP_C` → Code `PtP`,
+  Beschreibung „Purchase to Pay". Im SoD-Filter steht die Kritikalität bereits vorn; der Reason-Code
+  wird durch den Prozessnamen ersetzt/angereichert.
+- [ ] **Modul-Stammdaten** — aktuelle SAP-Module aus den Filtern übernehmen, editier-/erweiterbar.
+- [ ] **Querytyp-Stammdaten** — aktuelle Querytypen übernehmen, editier-/erweiterbar.
+- [ ] **Dropdowns statt Freitext** — Kritikalität/Modul/Querytyp/Reason-Code im Query-/SoD-Management
+  aus den Stammdaten wählbar (soweit noch nicht umgesetzt).
+- [ ] **Neuen SoD-Filter anlegen** — der Overlay-Mechanismus erlaubt heute nur das *Bearbeiten*
+  bestehender Regeln (`sod_rules.custom.json`); das *Neuanlegen* einer SoD-Regel (Klausel-/CNF-Struktur)
+  über die UI fehlt.
+- [ ] **Authorizations/TCodes im Editor bearbeitbar** (v2) — bisher nur 1:1-Kopie beim Ableiten/Anzeige
+  im Aufbau-Tab, keine UI für die verschachtelten Objekt/Feld/Werte-Listen.
+- [ ] **USOBT-gestützter Query-Builder** (v2) — neue Queries per Auswahl Transaktion → Berechtigungsobjekt
+  statt Freitext; USOBT/USOBX als eigener, vom Dataset getrennter Graph-Layer (stabil je
+  Berechtigungskonzept, bei Bedarf gegen das aktuelle Set abgleichen/neu laden).
+- [ ] **Query → System-Typ-Zuordnung** (v2) — Stammdatenblatt, welche Query zu welchem Quellsystem-Typ
+  gehört (R/3, S/4HANA, künftig weitere) — Vorstufe system-übergreifender/-spezifischer Rulesets, ohne
+  das Datenmodell zu verzweigen.
+- [ ] **Filterset-/Konnektor-Import weitere Systeme** (v2) — perspektivisch S/4HANA, Azure AD/Entra,
+  Microsoft Dynamics, Salesforce (je System ein eigenes Ruleset, Datenmodell bleibt gleich).
 
-#### Anzeige, Vergleich, Export, Admin
-- [ ] **„Fancy" Aufbereitung — gebrandetes Frontend mit Cytoscape.js.** **Ersetzt den temporären NeoDash-PoC** (Phase 6, Archiv). KPIs, **Graph-Darstellung der Konfliktpfade** (Cytoscape.js statt Neo4j Visualization Library — NVL verworfen, Lizenz nur für Aura/kommerzielle Subscription, s. Phase 7 Graph-Pilot) — visualisiert genau die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`), Heatmap/Matrix, Drill-down. Die NeoDash-Karten-Cypher (`dashboards/sod_poc.json`) sind die Vorlage.
-  - [ ] **NeoDash danach vollständig entfernen** (sobald das Cytoscape.js-Frontend steht): Compose-Service `iam-neodash` (Port 5005) raus; Erwähnungen in `README.md`/`docs/` und im Laufzeit-Diagramm streichen; `dashboards/sod_poc.json` nach Portierung archivieren oder löschen; Pin in `AE-14` entsprechend reduzieren.
-- [ ] **System/Mandant-Vergleich:** „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem" → **Vergleichs-Abfragen** über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
-- [~] **Export native `.xlsx`.** CSV-Export der Findings ist erledigt (Archiv). Offen: natives Excel (z. B. `openpyxl`) und weitere Sichten (Top-Regeln, Matrix). Schließt den **Import-Evidenz-Report** und den Ergebnis-Export zusammen.
-- [~] **Admin-Bereich — Funktionen.** Heimat, Einzelfilter-Editor + Query-/SoD-Management-Seite
-  (Overlay-Mechanismus, Kurzbezeichnungen, Risiko/Controls-Tabs, Fehlerprotokoll) sind erledigt
-  — Details im [Archiv](ROADMAP-ARCHIV.md#admin-bereich). Offen/zurückgestellt:
-  - [ ] **Authorizations/TCodes im Editor bearbeitbar machen** (v2) — bisher nur 1:1-Kopie beim Ableiten/Anzeige im Aufbau-Tab, keine UI für die verschachtelten Objekt/Feld/Werte-Listen.
-  - [ ] **Strukturierter Threat-/Attack-Baum am Risiko-Feld** (v2, „nicht vergessen"): Heute ist `risk` (Query **und** SoD-Regel) ein **einzelnes Freitextfeld** im Overlay (`queries.custom.json`/`sod_rules.custom.json`, coalesce-Merge in `load_ruleset.cypher`) — ein Threat-Baum müsste dort als serialisierter Text abgelegt werden und ist weder traversierbar noch wiederverwendbar. Idee: den Risiko-Teil zu einem **strukturierten Threat-Baum** ausbauen (AND/OR-Verzweigungen, Knoten = Bedrohungsschritt/Voraussetzung, optional Wahrscheinlichkeit/Impact/Gegenmaßnahme je Knoten) — eigenes JSON-Schema statt Freitext, im selben Overlay-Mechanismus gespeichert (bleibt Vendor-Datei-schonend + git-tracked). **Doppelnutzen:** (a) die SoD-Verletzungslogik ist selbst schon ein AND/OR-Baum (Regel = AND über Klauseln, Klausel = OR über Queries, Query = AND über Objekte, Objekt = OR über erfüllende Rollen/Profile) — ein Threat-Baum-Renderer und die neue Root-Cause-Graph-/Baum-Darstellung (s. „Interaktive Ergebnisse") könnten **dieselbe Baum-Komponente** teilen; (b) perspektivisch verlinkbar/wiederverwendbar über mehrere Queries/Regeln. Vor dem Bau: Schema festlegen (an ein etabliertes Format anlehnen, z. B. Fault-/Attack-Tree), Editor-UX skizzieren.
-  - [ ] **USOBT-gestützter Query-Builder** (v2, "Profilgenerator-Logik"): neue Queries durch **kontextbasierte Auswahl von Transaktion → Berechtigungsobjekten** bauen statt freier Eingabe — USOBT/USOBX als eigener, vom Dataset getrennter Graph-Layer (ist je Berechtigungskonzept/Set stabil, aber bei Bedarf gegen das aktuelle Set **abzugleichen/neu zu laden**, wenn neue Queries gebaut werden).
-  - [ ] **Stammdaten-Blatt: Query → System-Typ-Zuordnung** (v2, „für die Zukunft"): welche Query zu welchem Quellsystem-Typ gehört (SAP R/3, SAP S/4HANA, künftig weitere) — Vorstufe für system-übergreifende/-spezifische Rulesets, ohne das Datenmodell zu verzweigen.
-  - [ ] **Filterset-/Konnektor-Import** für weitere Systeme — perspektivisch **SAP S/4HANA, Azure AD/Entra, Microsoft Dynamics, Salesforce** (je System ein eigenes Ruleset; Datenmodell bleibt gleich).
-- [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusste Entscheidung): die App läuft lokal bzw. wird als Container verteilt; Zugriff über die (lokale/Unternehmens-)Umgebung abgesichert. Eine Auth-Schicht (SSO/OIDC am Ingress) kommt erst, wenn die App **mehrbenutzerfähig zentral** betrieben wird — siehe Deployment-Notiz (Phase 10).
+#### 9.5 Threat Modeling (Reiter an Einzelfilter/SoD)
+- [ ] **Threat-Modeling-Reiter** an Einzelfilter und SoD-Regel — grafisch zeigen, wie eine Berechtigung
+  über einen Threat-Vector durch einen Threat-Actor ausgenutzt werden kann.
+  **Empfehlung Methodik (2026-07-12):** primär **graphbasierter Attack Tree**, weil (a) die
+  SoD-Verletzungslogik selbst schon ein AND/OR-Baum ist (Regel = AND über Klauseln, Klausel = OR über
+  Queries, Query = AND über Objekte, Objekt = OR über erfüllende Rollen/Profile) → **dieselbe
+  Baum-/Cytoscape-Komponente** wie Root-Cause/9.1 nutzbar; (b) traversierbar und wiederverwendbar über
+  mehrere Queries/Regeln, anders als Freitext. **STRIDE** zusätzlich als *Klassifikations-Overlay* je
+  Knoten (Bedrohungskategorie); **PASTA** als vollständiger 7-Stufen-Prozess ist für diesen fokussierten
+  Zweck zu schwergewichtig. Vor dem Bau: Schema festlegen (an Fault-/Attack-Tree anlehnen), Editor-UX
+  skizzieren, publizierte Neo4j-/GitHub-Attack-Tree-Ansätze sichten.
+- **Datenablage:** heute ist `risk` (Query **und** SoD) ein einzelnes Freitextfeld im Overlay
+  (coalesce-Merge in `load_ruleset.cypher`). Der Threat-Baum wird ein **eigenes JSON-Schema** (AND/OR,
+  Knoten = Bedrohungsschritt/Voraussetzung, optional Wahrscheinlichkeit/Impact/Gegenmaßnahme je Knoten)
+  im selben git-getrackten Overlay-Mechanismus — nicht in den Freitext gequetscht.
 
-**DoD (Phase 9):** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich, Anzeige, Export und Backup/Restore ohne JSON-Pflege bedienbar sind — lokal, ohne dass Mandantendaten die Umgebung verlassen.
+#### 9.6 Export, System-/Mandant-Vergleich, Interview-Ergebnisse
+- [ ] **System/Mandant-Vergleich** — „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem":
+  Vergleichs-Abfragen über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
+- [ ] **Interview-Ergebnisse einarbeiten** — pro Finding/Feld einen **Reason Code** (aus den Masterdata,
+  9.4) plus **Begründung** hinterlegen (z. B. „Replace/Debug bei drei Personen"). Persistiert und im
+  **Folgejahres-Dataset wieder anziehbar** (Wiedervorlage/Delta beim neuen Import) — Grundlage für den
+  Jahresvergleich. Autor/Datum mitführen; **keine Mandantendaten ins Repo** (Ablage in der lokalen DB,
+  nicht git-getrackt).
+- [~] **Nativer `.xlsx`-Export** — CSV der Findings ist erledigt. Offen: natives Excel (`openpyxl`) und
+  weitere Sichten (Top-Regeln, Matrix); bündelt Import-Evidenz-Report + Ergebnis-Export.
+
+#### 9.7 Betrieb
+- [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusst) — lokal/Container; Auth-Schicht
+  (SSO/OIDC am Ingress) erst bei zentralem Mehrbenutzerbetrieb (siehe Phase 10).
+
+#### 9.8 Neuer SAP-Extraktor (Can-Do + Did-Do + Konsistenzchecks)
+Angepasster Extraktor, der die Quelltabellen/-spalten **genau im hier benötigten Zuschnitt** zieht —
+inkl. der Spalten für alle Konsistenzchecks und (vorbereitend) Did-Do.
+- [ ] **Datenanforderungen erheben** — je (1) Can-Do, (2) Did-Do, (3) Konsistenzchecks die benötigten
+  Tabellen/Spalten zusammentragen.
+- [ ] **RTD-Kapitel** — Datenanforderungen dokumentieren (Nachvollziehbarkeit, Dokumentations-DoD).
+- [ ] **Extraktor überarbeiten/neu schreiben** — liegt unter `data/extractors` (darf gepusht werden).
+- [ ] **Config konsolidieren** — `config/Download Data CSI.xls` + `config/required_tables.json`
+  zusammenführen; je Tabelle die Felder (inkl. Did-Do) in die JSON aufnehmen. **Vorab:** `Download Data
+  CSI.xls` inhaltlich sichten (untracked, Herkunft unklar) und sicherstellen, dass **keine
+  Mandantendaten** enthalten sind, bevor etwas committet wird (Vertrauensgrenze).
+- **Abhängigkeit:** die **Did-Do-Spalten** hängen an Phase 8 (blockiert — kein STAD/ST03N-Auszug); die
+  **Can-Do-/Konsistenzcheck**-Anteile und die Config-Konsolidierung können **jetzt** starten.
+
+**DoD (Phase 9):** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich, Anzeige,
+Export und Backup/Restore ohne JSON-Pflege bedienbar sind — lokal, ohne dass Mandantendaten die Umgebung
+verlassen.
 
 ---
 
