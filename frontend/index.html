@@ -461,14 +461,30 @@
           <button type="button" class="pill" data-value="graph" disabled title="kommt sp&auml;ter (Cytoscape.js)">Graph</button>
         </div>
       </div>
-      <div id="filterActive"><span class="muted" id="filterActiveText"></span>
+      <div id="filterActive">
+        <button class="ghost" id="filterBackBtn" style="display:none;margin:0;width:auto;padding:4px 10px">&larr; zur&uuml;ck</button>
+        <span class="muted" id="filterActiveText"></span>
         <button class="ghost" id="filterActiveClear" style="margin:0;width:auto;padding:4px 10px">zur&uuml;cksetzen</button></div>
       <table id="findingsTable">
-        <thead><tr><th>User</th><th>Regel</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Typ</th><th>Root-Cause</th></tr></thead>
+        <thead><tr>
+          <th data-sort-key="user">User<span class="sort-ind"></span></th>
+          <th data-sort-key="rule">Regel<span class="sort-ind"></span></th>
+          <th data-sort-key="name">Bezeichnung<span class="sort-ind"></span></th>
+          <th data-sort-key="criticality">Kritikalit&auml;t<span class="sort-ind"></span></th>
+          <th data-sort-key="typ">Typ<span class="sort-ind"></span></th>
+          <th>Root-Cause</th>
+        </tr></thead>
         <tbody id="findingsBody"><tr><td colspan="6" class="muted">Lauf w&auml;hlen oder „Neuer Lauf"&hellip;</td></tr></tbody>
       </table>
       <table id="matchesTable" style="display:none">
-        <thead><tr><th>User</th><th>Name</th><th>Query</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Root-Cause</th></tr></thead>
+        <thead><tr>
+          <th data-sort-key="user">User<span class="sort-ind"></span></th>
+          <th data-sort-key="name">Name<span class="sort-ind"></span></th>
+          <th data-sort-key="query">Query<span class="sort-ind"></span></th>
+          <th data-sort-key="description">Bezeichnung<span class="sort-ind"></span></th>
+          <th data-sort-key="criticality">Kritikalit&auml;t<span class="sort-ind"></span></th>
+          <th>Root-Cause</th>
+        </tr></thead>
         <tbody id="matchesBody"></tbody>
       </table>
     </div>
@@ -2439,6 +2455,7 @@ async function showFindings(runId) {
   renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
   renderSleepDaysPills(); renderLockedPills(); renderLockReasonPills();
   hideFilterActive(); updateResultContext('', ''); renderCausingActors(null);
+  clearFilterHistory();
   refreshKpis({});
   // Parallel laden (nicht sequenziell) und ERST rendern, wenn beides da ist -- sonst ist
   // sodRuleNames beim allerersten Oeffnen eines Laufs noch leer und die Regel-Bezeichnung
@@ -2543,10 +2560,17 @@ function renderRuleSelect() {
 /* isEntry = Einstiegstabelle (kein Filter aktiv): letzte Spalte ist hier "Sleeping" statt
    "Root-Cause" (zu viele Zeilen fuer einen sinnvollen Root-Cause-Absprung, das lohnt sich erst
    sobald gefiltert ist) und die Ergebnistyp-Pillzeile ist ausgeblendet (s. toggleEntryUi()). */
+let currentFindings = [], currentFindingsEntry = true;
 function renderFindingsTable(findings, isEntry) {
+  currentFindings = findings; currentFindingsEntry = isEntry;
   $('matchesTable').style.display = 'none'; $('findingsTable').style.display = '';
   toggleEntryUi(isEntry);
   document.querySelector('#findingsTable thead th:last-child').textContent = isEntry ? 'Sleeping' : 'Root-Cause';
+  findingsSort.reset();
+  renderFindingsRows();
+}
+function renderFindingsRows() {
+  const findings = currentFindings, isEntry = currentFindingsEntry;
   const body = $('findingsBody');
   body.innerHTML = findings.length ? '' : '<tr><td colspan="6" class="muted">keine Findings</td></tr>';
   findings.forEach(f => {
@@ -2568,6 +2592,7 @@ function renderFindingsTable(findings, isEntry) {
       + lastCell;
     if (!isEntry) tr.querySelector('button').onclick = () => openRootCause(f.user, { rule: f.rule });
     tr.querySelector('[data-user]').onclick = () => {
+      pushFilterHistory();
       $('filterUser').value = f.user; $('filterQuery').value = '';
       ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = '';
       applyFilters();
@@ -2624,6 +2649,8 @@ function showFilterActive(text) { $('filterActiveText').textContent = text; $('f
 function hideFilterActive() { $('filterActive').classList.remove('show'); }
 
 const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
+const CRIT_RANK = { 'very-critical': 5, critical: 4, high: 3, medium: 2, low: 1 };
+function critRank(c) { return CRIT_RANK[(c || '').toLowerCase()] || 0; }
 
 let ruleCritValue = '', resultTypeValue = '', sleepingValue = '';
 let sleepDaysOverrideValue = '', lockedValue = '', lockReasonValue = 'alle';
@@ -2694,8 +2721,15 @@ document.querySelectorAll('#lockReasonPills .pill').forEach(b => b.addEventListe
   lockReasonValue = b.dataset.value; renderLockReasonPills(); applyFilters();
 }));
 
+let currentMatches = [];
 function renderMatchesTable(rows) {
+  currentMatches = rows;
   $('findingsTable').style.display = 'none'; $('matchesTable').style.display = '';
+  matchesSort.reset();
+  renderMatchesRows();
+}
+function renderMatchesRows() {
+  const rows = currentMatches;
   const body = $('matchesBody');
   body.innerHTML = rows.length ? '' : '<tr><td colspan="6" class="muted">keine Treffer</td></tr>';
   const qMeta = new Map(queriesCache.map(q => [q.id, q]));
@@ -2773,6 +2807,7 @@ $('filterResetBtn').onclick = () => {
   renderRuleSelect(); renderQuerySelect();
   renderFindingsTable(allFindingsForRun, true); setFindingsMeta(allFindingsForRun.length);
   hideFilterActive(); updateResultContext('', ''); renderCausingActors(null); refreshKpis({});
+  clearFilterHistory();
 };
 $('filterActiveClear').onclick = () => $('filterResetBtn').onclick();
 
@@ -3150,6 +3185,7 @@ const summarySort = makeSortable($('summaryTable'), () => summaryRows, {
 // Wie die "nach User filtern"-Zelle in der Findings-Tabelle: andere Filter zuruecksetzen, Ziel
 // setzen, dieselbe applyFilters()-Logik wie ueberall sonst im Ergebnis-Bereich nutzen.
 function jumpToQueryFilter(qid) {
+  pushFilterHistory();
   showResultsView();
   $('filterUser').value = ''; $('filterRule').value = '';
   ruleCritValue = ''; renderRuleCritPills(); sleepingValue = ''; renderSleepingPills();
@@ -3159,6 +3195,7 @@ function jumpToQueryFilter(qid) {
   applyFilters();
 }
 function jumpToRuleFilter(ruleId) {
+  pushFilterHistory();
   showResultsView();
   $('filterUser').value = ''; $('filterQuery').value = '';
   // Stehengebliebene Kritikalitaets-/Sleeping-/Sperr-Filter zuruecksetzen -- sonst koennte ein
@@ -3217,6 +3254,61 @@ const ulSort = makeSortable($('ulTable'), () => ulRows, {
   lastLogon: r => r.lastLogon || '',
   sleeping: r => r.sleeping ? 1 : 0,
 }, renderUserListRows);
+
+/* ── Sortierbare Findings-/Matches-Haupttabelle (generisch, s. makeSortable). Letzte Spalte
+   (Sleeping/Root-Cause-Button) bewusst nicht sortierbar. ─────────────────────────────────── */
+const findingsSort = makeSortable($('findingsTable'), () => currentFindings, {
+  user: f => f.user,
+  rule: f => f.rule,
+  name: f => sodRuleNames[f.rule] || '',
+  criticality: f => critRank(f.criticality),
+  typ: f => f.conflictType || '',
+}, renderFindingsRows);
+const matchesSort = makeSortable($('matchesTable'), () => currentMatches, {
+  user: m => m.user,
+  name: m => m.name || '',
+  query: m => m.query,
+  description: m => { const x = queriesCache.find(q => q.id === m.query) || {}; return x.shortDescription || x.description || ''; },
+  criticality: m => critRank((queriesCache.find(q => q.id === m.query) || {}).criticality),
+}, renderMatchesRows);
+
+/* ── Drill-down-Historie: Klick auf User/Regel/Query filtert die Liste; „← zurück" stellt die
+   Ausgangsliste (inkl. Uebersichts-Sicht als Ursprung) wieder her. Schnappschuss VOR jedem
+   Drill-down-Sprung. ─────────────────────────────────────────────────────────────────────── */
+let filterHistory = [];
+function setUserTypeValues(vals) {
+  const set = new Set(vals || []);
+  document.querySelectorAll('#filterUserTypePanel input').forEach(c => c.checked = set.has(c.value));
+  updateUserTypeBtn();
+}
+function snapshotFilterState() {
+  return {
+    fromSummary: $('summaryView').style.display !== 'none', summaryMode,
+    user: $('filterUser').value, rule: $('filterRule').value, query: $('filterQuery').value,
+    ruleCrit: ruleCritValue, resultType: resultTypeValue, sleeping: sleepingValue,
+    sleepDays: sleepDaysOverrideValue, locked: lockedValue, lockReason: lockReasonValue,
+    userTypes: userTypeValues(),
+  };
+}
+function pushFilterHistory() { filterHistory.push(snapshotFilterState()); updateBackBtn(); }
+function clearFilterHistory() { filterHistory = []; updateBackBtn(); }
+function updateBackBtn() { $('filterBackBtn').style.display = filterHistory.length ? '' : 'none'; }
+async function goBackFilter() {
+  const s = filterHistory.pop();
+  updateBackBtn();
+  if (!s) return;
+  if (s.fromSummary) { openSummaryView(s.summaryMode); return; }
+  $('filterUser').value = s.user; $('filterRule').value = s.rule; $('filterQuery').value = s.query;
+  ruleCritValue = s.ruleCrit; resultTypeValue = s.resultType; sleepingValue = s.sleeping;
+  sleepDaysOverrideValue = s.sleepDays; lockedValue = s.locked; lockReasonValue = s.lockReason;
+  setUserTypeValues(s.userTypes);
+  renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
+  renderSleepDaysPills(); renderLockedPills(); renderLockReasonPills();
+  renderRuleSelect();
+  showResultsView();
+  await applyFilters();
+}
+$('filterBackBtn').onclick = goBackFilter;
 async function openRoleUserList() {
   if (!rdRole || !activeRunId) return;
   ulReturnTo = 'role';

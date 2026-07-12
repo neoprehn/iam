@@ -156,9 +156,11 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
 
 #### 9.1 Interaktive Ergebnisse & Graph-UX  ← als Nächstes
 - [~] **Sortierbare Spalten** in allen Ergebnistabellen (generische `makeSortable()`): umgesetzt für
-  Ergebnis-Übersicht (Einzelfilter+SoD), Nutzerliste, Konsistenzcheck-Detail. **Offen:**
-  Findings-/Matches-Haupttabelle (`findingsTable`/`matchesTable`) und Konsistenzcheck-Katalog
-  (`ccGrid`). Gilt als **Standard** für jede neue Ergebnisliste.
+  Ergebnis-Übersicht (Einzelfilter+SoD), Nutzerliste, Konsistenzcheck-Detail **und jetzt die
+  Findings-/Matches-Haupttabelle** (`findingsTable`/`matchesTable`, je erste 5 Spalten;
+  Sleeping/Root-Cause-Button bewusst nicht sortierbar; Kritikalität über `critRank`). **Offen nur
+  noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie, separater,
+  kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
 - [~] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`, „Graph"
   noch deaktiviert): ein Graph **aller** Findings eines Laufs (Heatmap/Matrix, User × Regeln) statt des
   fokussierten Einzelpfads — perf-optimiert über die geflachten Evidenz-Kanten
@@ -168,8 +170,9 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten Graphen.
 - [ ] **Vollbild-Bedienung der Graphen überarbeiten** — heutiger Vollbild-Knopf ist ungünstig; besseres
   Muster (Toggle in der Ansichts-Leiste, ESC zum Verlassen).
-- [ ] **Zurück-Button im Drill-down** — beim Sprung von der Findings-Übersicht auf eine Regel/einen
-  Nutzer zurück zur Ausgangsliste (Filterzustand erhalten).
+- [x] **Zurück-Button im Drill-down** — „← zurück" in der Aktiv-Filter-Leiste stellt die Ausgangsliste
+  wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
+  Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
 - [ ] **Kritikalität prominent an Einzelfilter/SoD** — dieselbe farbige Badge-Logik wie bei den Findings
   (Farbwahl beibehalten) auch in Katalog/Auswahl/Ergebniszeilen der Einzelfilter und SoD-Regeln; Stufen/
   Farben aus den Kritikalitäts-Stammdaten (→ 9.4).
