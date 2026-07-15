@@ -2576,6 +2576,131 @@ def sod_rules_summary(runId: str):
         return {"totalUsers": total_users, "rows": rows}
 
 
+_USER_TYP_STATUS_CYPHER = (
+    "CASE WHEN 'Dialog' IN labels(u) THEN 'Dialog' WHEN 'System' IN labels(u) THEN 'System' "
+    "     WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Communication' "
+    "     WHEN 'Reference' IN labels(u) THEN 'Reference' ELSE '?' END AS typ, "
+    "CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status"
+)
+
+
+def _summary_export_rows(s, kind: str, run_id: str, detailed: bool):
+    """Liefert die Zeilen fuer den Ergebnisse-Uebersicht-Export (Einzelfilter/SoD) — dieselbe
+    Aggregation wie GET /queries/summary bzw. /sodrules/summary, optional (detailed=True, fuer
+    'ausfuehrliches Excel') je Zeile zusaetzlich die Liste der betroffenen Nutzer (Grundlage fuer
+    die Excel-Gruppierung/Auffaltung)."""
+    run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=run_id).single()
+    if not run:
+        raise HTTPException(404, f"Lauf '{run_id}' nicht gefunden")
+    ruleset = run["ruleset"]
+    group_by = "q" if kind == "query" else "rule"
+    match_clause = (
+        "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
+        if kind == "query" else
+        "MATCH (rule:SoDRule {ruleset:$ruleset}) WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() } "
+        "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId, ruleId:rule.id}) "
+    )
+    return_fields = (
+        "q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
+        "q.criticality AS criticality, coalesce(q.criticalityRank,0) AS criticalityRank, q.module AS module"
+        if kind == "query" else
+        "rule.id AS id, rule.description AS description, rule.shortDescription AS shortDescription, "
+        "rule.criticality AS criticality, coalesce(rule.criticalityRank,0) AS criticalityRank"
+    )
+    cypher = (
+        match_clause +
+        f"WITH {group_by}, u, " + _USER_TYP_STATUS_CYPHER + " "
+        f"WITH {group_by}, count(DISTINCT u) AS userCount"
+        + (", collect({id:u.id, name:coalesce(u.name,''), typ:typ, status:status}) AS users" if detailed else "")
+        + " "
+        f"RETURN {return_fields}, userCount" + (", users" if detailed else "") + " "
+        f"ORDER BY coalesce({group_by}.criticalityRank,0) DESC, userCount DESC"
+    )
+    return [dict(r) for r in s.run(cypher, ruleset=ruleset, runId=run_id)]
+
+
+def _summary_export_csv(rows: list[dict]) -> str:
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter=";")
+    w.writerow(["id", "name", "criticality", "userCount"])
+    for r in rows:
+        w.writerow([r["id"], r.get("shortDescription") or r.get("description") or "",
+                    r["criticality"], r["userCount"]])
+    return "﻿" + buf.getvalue()
+
+
+def _summary_export_xlsx(rows: list[dict], detailed: bool, sheet_title: str) -> bytes:
+    """Baut die Ergebnisse-Uebersicht als natives Excel. detailed=True gruppiert je Zeile die
+    Nutzerliste darunter ueber Excels Gliederungs-/Gruppierungsfunktion (eingeklappt, ueber das
+    '+'-Symbol am linken Rand auffaltbar) statt sie ungruppiert in die Tabelle zu quetschen."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    wb = Workbook()
+    ws = wb.active
+    ws.title = sheet_title
+    ws.append(["id", "name", "criticality", "userCount"])
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+    if detailed:
+        # summaryBelow=False: die Zeile der Query/Regel steht OBEN, die gruppierten Nutzerzeilen
+        # folgen darunter (Standard waere umgekehrt, wie bei einer Summenzeile unter Detailzeilen).
+        ws.sheet_properties.outlinePr.summaryBelow = False
+    for r in rows:
+        ws.append([r["id"], r.get("shortDescription") or r.get("description") or "",
+                   r["criticality"], r["userCount"]])
+        if detailed:
+            users = r.get("users") or []
+            if users:
+                start = ws.max_row + 1
+                ws.append(["", "id", "name", "typ", "status"])
+                for cell in ws[ws.max_row]:
+                    cell.font = Font(italic=True)
+                for u in users:
+                    ws.append(["", u.get("id"), u.get("name"), u.get("typ"), u.get("status")])
+                ws.row_dimensions.group(start, ws.max_row, outline_level=1, hidden=True)
+    widths = {"A": 16, "B": 44, "C": 14, "D": 12, "E": 10}
+    for col, width in widths.items():
+        ws.column_dimensions[col].width = width
+    out = io.BytesIO()
+    wb.save(out)
+    return out.getvalue()
+
+
+def _summary_export_response(s, kind: str, run_id: str, fmt: str, filename_base: str, sheet_title: str):
+    if fmt not in ("csv", "xlsx", "xlsx_detailed"):
+        raise HTTPException(400, f"Unbekanntes Format '{fmt}' (csv|xlsx|xlsx_detailed erwartet)")
+    detailed = fmt == "xlsx_detailed"
+    rows = _summary_export_rows(s, kind, run_id, detailed)
+    if fmt == "csv":
+        return Response(content=_summary_export_csv(rows), media_type="text/csv; charset=utf-8",
+                        headers={"Content-Disposition": f'attachment; filename="{filename_base}_{run_id}.csv"'})
+    try:
+        data = _summary_export_xlsx(rows, detailed, sheet_title)
+    except ImportError:
+        raise HTTPException(500, "openpyxl nicht installiert — Image neu bauen: docker compose build backend")
+    return Response(content=data,
+                    media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    headers={"Content-Disposition": f'attachment; filename="{filename_base}_{run_id}.xlsx"'})
+
+
+@app.get("/queries/summary/export")
+def export_queries_summary(runId: str, format: str = "csv"):
+    """Einzelfilter-Uebersicht (s. GET /queries/summary) als CSV/Excel/ausfuehrliches Excel
+    (format=csv|xlsx|xlsx_detailed) — ausfuehrlich faltet je Query die betroffenen Nutzer per
+    Excel-Gruppierung auf."""
+    with driver.session() as s:
+        return _summary_export_response(s, "query", runId, format, "einzelfilter_uebersicht", "Einzelfilter")
+
+
+@app.get("/sodrules/summary/export")
+def export_sod_rules_summary(runId: str, format: str = "csv"):
+    """SoD-Regel-Uebersicht (s. GET /sodrules/summary) als CSV/Excel/ausfuehrliches Excel
+    (format=csv|xlsx|xlsx_detailed) — ausfuehrlich faltet je Regel die betroffenen Nutzer per
+    Excel-Gruppierung auf."""
+    with driver.session() as s:
+        return _summary_export_response(s, "sod", runId, format, "sod_uebersicht", "SoD-Regeln")
+
+
 @app.get("/matches")
 def matches(runId: str, query: str | None = None, user: str | None = None,
             userType: list[str] = Query(default=[])):

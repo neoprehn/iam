@@ -1093,6 +1093,22 @@
   <div class="hint" id="rptHint" style="display:none"></div>
 </div></div>
 
+<!-- Dialog: Export der Ergebnisse-Uebersicht (Einzelfilter/SoD) -->
+<div class="overlay" id="dlg-summary-export"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3>Ergebnisse-&Uuml;bersicht exportieren</h3>
+  <div class="sub" id="sumExportSub">CSV, natives Excel oder ausf&uuml;hrliches Excel (Nutzer je Zeile per Gruppierung auffaltbar).</div>
+  <div style="margin-top:10px">
+    <div class="pillgroup" id="sumFormatPills">
+      <button type="button" class="pill active" data-value="csv">CSV</button>
+      <button type="button" class="pill" data-value="xlsx">Excel</button>
+      <button type="button" class="pill" data-value="xlsx_detailed">Ausf&uuml;hrliches Excel</button>
+    </div>
+  </div>
+  <div class="hint" id="sumFormatHint" style="margin-top:8px">Ausf&uuml;hrliches Excel: je Zeile die betroffenen Nutzer in einer aufklappbaren Gruppe darunter.</div>
+  <button class="ghost" type="button" id="sumExportDownloadBtn" style="margin-top:14px">&#128202; Herunterladen</button>
+  <div class="hint" id="sumExportHint" style="display:none"></div>
+</div></div>
+
 <!-- Dialog: Fehlerprotokoll -->
 <div class="overlay" id="dlg-errorlog"><div class="dialog">
   <span class="x" data-close>&times;</span><h3>Fehlerprotokoll</h3>
@@ -1148,8 +1164,9 @@ function currentResultView() {
   return 'findings';
 }
 function refreshExportButtonLabel() {
-  const isPdf = ['role', 'rootcause'].includes(currentResultView());
-  $('cmdExport').innerHTML = `<span class="ico">&#128202;</span>Export ${isPdf ? 'PDF' : 'CSV'}`;
+  const view = currentResultView();
+  const label = ['role', 'rootcause'].includes(view) ? 'PDF' : view === 'summary' ? '…' : 'CSV';
+  $('cmdExport').innerHTML = `<span class="ico">&#128202;</span>Export ${label}`;
 }
 function csvEscape(v) {
   const s = v === null || v === undefined ? '' : String(v);
@@ -1203,11 +1220,10 @@ $('cmdExport').onclick = () => {
     return;
   }
   if (view === 'summary') {
-    downloadCsv(
-      summaryRows.map(r => ({ id: r.id, name: r.shortDescription || r.description || '',
-        criticality: r.criticality, userCount: r.userCount })),
-      ['id', 'name', 'criticality', 'userCount'],
-      summaryMode === 'query' ? 'einzelfilter_uebersicht' : 'sod_uebersicht');
+    sumFormat = 'csv';
+    $('sumFormatPills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x.dataset.value === 'csv'));
+    $('sumExportHint').style.display = 'none';
+    openDlg('dlg-summary-export');
     return;
   }
   // Findings/Matches (Standardfall): folgt exakt derselben Verzweigung/denselben Parametern wie
@@ -1302,6 +1318,39 @@ $('rptDownloadBtn').onclick = async () => {
     $('rptHint').style.display = ''; $('rptHint').textContent = 'Fehler: ' + (e.detail || JSON.stringify(e));
   } finally {
     $('rptDownloadBtn').disabled = false; $('rptDownloadBtn').innerHTML = '&#128202; Herunterladen';
+  }
+};
+// Export der Ergebnisse-Uebersicht (Einzelfilter/SoD) -- CSV/Excel/ausfuehrliches Excel, s.
+// GET /queries/summary/export bzw. /sodrules/summary/export. summaryMode entscheidet den Endpunkt
+// (identisch zur Klick-Weiterleitung in renderSummaryRows).
+let sumFormat = 'csv';
+$('sumFormatPills').querySelectorAll('.pill').forEach(b => b.addEventListener('click', () => {
+  sumFormat = b.dataset.value;
+  $('sumFormatPills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
+}));
+$('sumExportDownloadBtn').onclick = async () => {
+  if (!activeRunId) return;
+  $('sumExportDownloadBtn').disabled = true;
+  $('sumExportDownloadBtn').innerHTML = '<span class="spin"></span> läuft…';
+  $('sumExportHint').style.display = 'none';
+  try {
+    const base = summaryMode === 'query' ? '/queries/summary/export' : '/sodrules/summary/export';
+    const url = base + '?runId=' + encodeURIComponent(activeRunId) + '&format=' + sumFormat;
+    const resp = await fetch(url);
+    if (!resp.ok) { const e = await resp.json(); throw e; }
+    const blob = await resp.blob();
+    const m = (resp.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/);
+    const ext = sumFormat === 'csv' ? 'csv' : 'xlsx';
+    const defaultName = `${summaryMode === 'query' ? 'einzelfilter_uebersicht' : 'sod_uebersicht'}_${activeRunId}.${ext}`;
+    const a = Object.assign(document.createElement('a'),
+      { href: URL.createObjectURL(blob), download: m ? m[1] : defaultName });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    closeDlg();
+  } catch (e) {
+    $('sumExportHint').style.display = ''; $('sumExportHint').textContent = 'Fehler: ' + (e.detail || JSON.stringify(e));
+  } finally {
+    $('sumExportDownloadBtn').disabled = false; $('sumExportDownloadBtn').innerHTML = '&#128202; Herunterladen';
   }
 };
 $('ccBackBtn').onclick = () => asst.active ? goToAsstStep(3) : showResultsView();
@@ -1819,9 +1868,16 @@ function _showResultsLayout() {
   $('colsRight').style.display = '';
   document.querySelector('main .cols').style.display = '';
 }
-function showResultsView() {
+// skipApply: true, wenn der Aufrufer direkt danach selbst noch Filterwerte aendert und
+// applyFilters() ohnehin gleich anschliessend einmalig ruft (jumpToQueryFilter/jumpToRuleFilter/
+// goBackFilter) -- sonst liefe hier schon ein erster applyFilters()-Durchlauf mit den ALTEN
+// Filterwerten los, parallel zum zweiten mit den neuen; beide sind async/unabhaengig
+// (kein Sequenzzaehler), sodass je nach Netzwerk-Timing die veraltete Antwort zuletzt ankommt und
+// die Ergebnisliste ueberschreibt ("springt weiter", zeigt nicht die frisch gefilterten Treffer).
+function showResultsView(skipApply) {
   _showResultsLayout();
-  if (activeRunId) applyFilters(); else $('kpis').style.display = '';
+  if (!activeRunId) { $('kpis').style.display = ''; return; }
+  if (!skipApply) applyFilters();
 }
 /* Root-Cause als eigene Seite (statt Dialog) — gleiches "wechselt im Hauptbereich, kein
    Overlay" + "← zurück"-Muster wie Konsistenzcheck-Katalog/-Ergebnis. rcReturnTo merkt sich,
@@ -3268,7 +3324,7 @@ const summarySort = makeSortable($('summaryTable'), () => summaryRows, {
 // setzen, dieselbe applyFilters()-Logik wie ueberall sonst im Ergebnis-Bereich nutzen.
 function jumpToQueryFilter(qid) {
   pushFilterHistory();
-  showResultsView();
+  showResultsView(true);
   $('filterUser').value = ''; $('filterRule').value = '';
   ruleCritValue = ''; renderRuleCritPills(); sleepingValue = ''; renderSleepingPills();
   lockedValue = ''; renderLockedPills();
@@ -3278,7 +3334,7 @@ function jumpToQueryFilter(qid) {
 }
 function jumpToRuleFilter(ruleId) {
   pushFilterHistory();
-  showResultsView();
+  showResultsView(true);
   $('filterUser').value = ''; $('filterQuery').value = '';
   // Stehengebliebene Kritikalitaets-/Sleeping-/Sperr-Filter zuruecksetzen -- sonst koennte ein
   // Klick auf eine Regel mit echten Treffern durch einen unpassenden Alt-Filter "0 Findings" zeigen.
@@ -3387,7 +3443,7 @@ async function goBackFilter() {
   renderRuleCritPills(); renderResultTypePills(); renderSleepingPills();
   renderSleepDaysPills(); renderLockedPills(); renderLockReasonPills();
   renderRuleSelect();
-  showResultsView();
+  showResultsView(true);
   await applyFilters();
 }
 $('filterBackBtn').onclick = goBackFilter;

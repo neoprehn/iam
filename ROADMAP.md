@@ -291,8 +291,29 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
   **Folgejahres-Dataset wieder anziehbar** (Wiedervorlage/Delta beim neuen Import) — Grundlage für den
   Jahresvergleich. Autor/Datum mitführen; **keine Mandantendaten ins Repo** (Ablage in der lokalen DB,
   nicht git-getrackt).
-- [~] **Nativer `.xlsx`-Export** — CSV der Findings ist erledigt. Offen: natives Excel (`openpyxl`) und
-  weitere Sichten (Top-Regeln, Matrix); bündelt Import-Evidenz-Report + Ergebnis-Export.
+- [x] **Nativer `.xlsx`-Export der Ergebnisse-Übersicht** (2026-07-15, vorgezogen auf Nutzerwunsch) —
+  CSV der Findings/Matches war bereits erledigt (s. o.); jetzt zusätzlich ein Format-Dialog beim
+  Export der Einzelfilter-/SoD-**Übersicht** (`GET /queries/summary/export`,
+  `/sodrules/summary/export`, `format=csv|xlsx|xlsx_detailed`): **CSV** (bisheriges Verhalten, jetzt
+  serverseitig statt clientseitig aus `summaryRows` gebaut), **Excel** (kompakte `.xlsx` via
+  `openpyxl`, neue Dependency) und **ausführliches Excel** — faltet je Zeile (Query/Regel) die
+  betroffenen Nutzer (ID/Name/Typ/Status) über Excels native Gliederungs-/Gruppierungsfunktion
+  darunter auf (`ws.row_dimensions.group(..., outline_level=1, hidden=True)`,
+  `outlinePr.summaryBelow=False` damit die Query-/Regelzeile über statt unter der Gruppe steht).
+  Verifiziert: generierte `.xlsx` mit `openpyxl.load_workbook()` zurückgelesen, Gruppierung/
+  `outlineLevel`/`hidden` je Zeile geprüft. **Offen (zurückgestellt):** weitere Sichten
+  (Top-Regeln, Matrix); ob der Import-Evidenz-Report (heute PDF/CSV) ebenfalls ein natives Excel
+  bekommt und beide Reports gebündelt werden, ist noch nicht entschieden.
+- **Nebenbei behobener Bug (2026-07-15):** Drill-down auf eine Regel/Query aus der Übersicht
+  (`jumpToRuleFilter`/`jumpToQueryFilter`) bzw. „← zurück" (`goBackFilter`) zeigte manchmal nicht
+  die gefilterte Liste, sondern sprang auf einen älteren Filterzustand zurück (z. B. bei „Replace/
+  Debug" mit 3 betroffenen Nutzern). Ursache: `showResultsView()` löste intern bereits
+  `applyFilters()` mit den **alten** Filterwerten aus, bevor die drei Funktionen die neuen Werte
+  setzten und `applyFilters()` ein zweites Mal aufriefen — zwei parallele, ungeschützte `async`-Läufe
+  ohne Sequenzzähler (anders als `refreshFindingsGraph()`/`fgLoadSeq`), von denen der zuletzt
+  ankommende (nicht notwendigerweise der zweite) die Tabelle füllte. Fix: `showResultsView(skipApply)`
+  mit Parameter, die drei Aufrufer unterdrücken den internen Auto-Apply und rufen `applyFilters()`
+  danach selbst genau einmal auf.
 
 #### 9.7 Betrieb
 - [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusst) — lokal/Container; Auth-Schicht
