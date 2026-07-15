@@ -3958,5 +3958,4415 @@
     "riskType": "Detection risk",
     "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
+  },
+  {
+    "query": "AAMCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMDPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMISA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMMDD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMPCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMRPD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMRVA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMSPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AAMTRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AASCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AASMCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AASSEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AASSEU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AASSGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "AASSGU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "ACSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CBACKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CBOMMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CBOMXA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CBOMXD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CBOMXH",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CBOMXM",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCAPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCENFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCENFD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCHARA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCHARD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCLMCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPRORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPRORC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPRORR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPSORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPSORC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPSORR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CREPMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CROUTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CSOPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CWRKCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DBUDGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DISPSD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DMASSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DMFRPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DNWMSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DNWMSC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DPRSAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DPRSPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DPSPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DPSPLD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DPSTAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWBSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWBSSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWFPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FACREA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPDPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPDPK",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPDUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIV2",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIVA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIVF",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIVM",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIVR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPPCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPPDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPPRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPPYA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPRDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPRPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARCMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARDPK",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARDUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAREPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARPAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARPCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARPDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARPRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARPYA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARRDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBANKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBAPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBASTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBOLEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBOLMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCAACA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCACPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCAMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCASHA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCHCKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCLOSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCLOSB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCSTMB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCURRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUTRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FDTPKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FELCDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFICLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFIDCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFIDPK",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFIMRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFIPDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFMCTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLDPK",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLMAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLMCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLMMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLPCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLPDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLRDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGRIRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FHBNKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FINTRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBOMCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FMPDBA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FOTCOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FPAPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FPTCAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FSLCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FSPGLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IBOMEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IBOMTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "ICSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IEQUIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IFULOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IMAPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IMEDOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IMEPOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "INOTIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IPMORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IPMORC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "ISENOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "ISEORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "ITASKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KATHIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KATMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCADA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCADE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCHIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCMFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCCPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCEPLD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCOEHA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCOELA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KIOCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KIOHIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KIOMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KIOMPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPARPE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPCADA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPCADE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPCCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPCHIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPCMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPCTPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPDCCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPDCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPDPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KPRORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LBSSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHMATA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINVCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPISTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPOCNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPRSUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LREPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRPOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRRQA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LWMMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MBAORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MBLINA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MCLOSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MCONDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MCONTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MGIALA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MGISCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MGROTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MGRPOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MGRPRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MGTRNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MINREA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MINREX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MINRMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MMABAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MMADOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MMMMSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MMRPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MMRPSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MMRPSD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MOUAGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MOUAGR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MOUAMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHICA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHICN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHIDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHIDN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHIDP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHIPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHIPN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPHIPX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPIREA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPRICA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPUOMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPUORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPUORN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPUORR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPURCR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPUREA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPURMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MPURWR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MQUOTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MQUOTD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MRFQSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MRFQSD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MRFQSR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MRLBSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MSEMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MSESHA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MSESHR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MSRCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MSTTOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVALUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENDB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENDN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENDU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENDX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MVENMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PCMCPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PCSTOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PDPPDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PETABA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PETBGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PETBLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PETMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PMDMDX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PMDPEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PORGEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PORGPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAAVC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAAVE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPACCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAPIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAPID",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPASVS",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPCONA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPRESX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPRUNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPSTSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPTSPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PRCAMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PRCAMD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PABAP1",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PABAP2",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PRICLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PSTRUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PSTRUD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTMDEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTMDIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTMXID",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTMXXD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTVMGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PVTROA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PWRKSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PYOCWA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PYPRNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PYSCFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PYTLSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "QCATAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "QINLTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "QWRKLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "S$SEU1",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "S$SEU2",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABAPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABAPB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABAPC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABTCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABVAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SADRSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SALLPD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SALOGX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SAONLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SARCHA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SARCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SAUDAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SAUOBA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBJOBA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBJOBD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBJOBN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBJOBR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBJOBX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCACHA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCALLC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCALLO",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCALLP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCATTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCDOCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCDOCX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCLNTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCOBLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCOBLD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCPICA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCTDTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDBASA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDCFAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDEBUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDEBUD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDELEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDEVLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SEXMIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SEXTCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SEXTCE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SFACAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SFREEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SFUMOE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SFUSPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SIDOCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SIDPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SIMG_A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SINSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SLAYOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SLAYRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SLCK_A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SLOCKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SLOCLD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SLSMWA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SMASSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SMESSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SMONIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNADMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRHRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRSDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRXXA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOFFIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOSFRD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOSFWA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOSSLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SPADMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SPFCGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SPROFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SPSE_A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SQUERA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SQUERD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SQUERU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SREOGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRFCAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRFCTD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRFCTE",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRSETA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSA38A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSCO_A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSCPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSCPLP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSCRPX_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSCUMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSDMOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSE16D",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSICMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSLOGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSM30D",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSM35A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSM35B",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSM35D",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSNCTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSNCUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSOSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSPARA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSPOOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSPOOD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSSOCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSTCDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSTCRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSU24A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSYCSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSYNCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSYSMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSYSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STABLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STABLX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STCODA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STCODZ",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STEMSD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STLCKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STREQA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STREQR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STTMSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STTSKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STTSKR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUADMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUNIXA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSERA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSERB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSERL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSERP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSERQ",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSERX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SUSRBL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SWRKFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBAORA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBDILA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONDD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONDU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCSTMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSTB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSTU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSTX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDEALA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDLVRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VINQUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VORBIR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPICKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPROMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VRVRCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSCAGA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSDMAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHIPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORDR",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XCUHIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XCUSAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XCUSMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XCUSTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XMASTX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XMATMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XMATXA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XMATXL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XMATXN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XMATXX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XVENAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XVENDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "XVENMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CDOINA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFITRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHAUNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "QUSGDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "QCERTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VITPRA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MDLVIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VOUTPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VEXPOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STABLA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSE16D_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSPOOA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDEVLA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABAPA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRFCFA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSYSTA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "KMICEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "CPRMCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VFTWLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FFMCAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FIMPLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SMASSA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSM35A_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0000",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0001",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0002",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0003",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0006",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0007",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0009",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0011",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0014",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0015",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0016",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0021",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0022",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0027",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0031",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0041",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0050",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0057",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0100",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0101",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0107",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0109",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0125",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0302",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0315",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0415",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0439",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0442",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0735",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATA_2006",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATA_2007",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATA_2011",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATA_2012",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATD_2012",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTDATA_2013",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0008",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0009",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0011",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0014",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0015",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0057",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0100",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0101",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0107",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0125",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0442",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0735",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SS16ND",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SS16ND_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STABNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STABNA_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDA_0008",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0016",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0021",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PPAMDD_0022",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PABAPD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOABTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOANAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOAONA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SODELA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOEXPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOFREA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SOLOCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SFUMOE_ALL",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SEXTCP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBJOBU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FSEPAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SAUDEA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSYCLA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLSKA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLRUA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLMIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FTRACA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRFIA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRMMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRCOA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SNRPMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FRESVA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "MCVMDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PBENIM",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PCATSA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PMGRDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "PTAPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SCALLX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SDATAM",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSICFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSLICA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SSSONA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SBUWPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSPCAA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "WISRTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DMASSX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DNWMSD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DNWMSU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWBSTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWBSTU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWBSSC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWBSSU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWFPLU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "DWFPLX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIMD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPIMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBANKC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBANKD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBANKU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBANKX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBOLEC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FBOLMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCAACC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCAACU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCACPC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCASHC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCASHU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSMX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLSDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAPSDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARSDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FAASDA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "IMASNA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LBSSTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LBSSTD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LBSSTU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINCLC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHAUNC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHAUND",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHAUNU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHMATC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHMATD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LHMATU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINVCC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINVCD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINVCU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPISTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPOCNC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPOCND",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPOCNU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPRSUC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPRSUD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LPRSUU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LREPLC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LREPLU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRORC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRORD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRORU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRRQC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRRQD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LTRRQU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LWMMDC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LWMMDD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LWMMDU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBAORC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBAORD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBAORU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBDILC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBDILD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VBDILU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONDC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONTD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCONTU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORAC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORAD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORAU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCORMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VCUSTD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDEALC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDEALD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDEALU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDLVRC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDLVRD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VDLVRU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VEXPOC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VEXPOD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VEXPOU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VINQUC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VINQUD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VINQUU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VITPRC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VITPRD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VITPRU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VOUTPC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VOUTPD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VOUTPU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPICKC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPICKD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPICKU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPROMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPROMD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VPROMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOTC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOTD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VQUOTU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VRVRCC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VRVRCD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VRVRCU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSCAGC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSCAGD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSCAGU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCOC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCOD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCOU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCSC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCSD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHCSU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHIPC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHIPD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSHIPU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORDC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORDD",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORDU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORMC",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "VSORMU",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "LINVCX",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FGLCCA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FARPPA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SABTCN",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCURRB",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SMONID",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "STRIMA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRFCFA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "SRFCTA",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "S4SE16A",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "S4SE16D",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "S4SE16E",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "S4SE16R",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FVENDA_BP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
+  },
+  {
+    "query": "FCUSTA_BP",
+    "riskType": null,
+    "riskLevel": null,
+    "riskStatus": null
   }
 ]

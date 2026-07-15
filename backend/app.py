@@ -168,9 +168,10 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     aus dem vorhandenen Vendor-Rohfeld gdprClassification (L/M/H/C/V) vorbefuellt; Rulesets ohne
     gepflegte gdprClassification (z. B. KPMG_R3, dort ueberall leer) bleiben unbefuellt.
 
-    Zusaetzliche Schicht ZWISCHEN Vendor und Overlay: query_risks.json (optional, je query-ID,
-    s. rules/SCHEMA.md) liefert riskType/riskLevel/riskStatus als Erstbefuellung -- analog zur
-    risks.json-Ebene bei SoD-Regeln (_merged_sodrules), nur wenn das Feld noch nicht gesetzt ist
+    Zusaetzliche Schicht ZWISCHEN Vendor und Overlay: risks.json (optional, s. rules/SCHEMA.md)
+    liefert riskType/riskLevel/riskStatus/risk als Erstbefuellung -- dieselbe Datei wie bei
+    SoD-Regeln (_merged_sodrules), hier ueber den 'query'-Schluessel gefiltert (SoD-Eintraege
+    tragen stattdessen 'alias' und werden hier ignoriert). Nur wenn das Feld noch nicht gesetzt ist
     (Overlay-Edit gewinnt immer)."""
     vendor_path, custom_path = _ruleset_paths(ruleset)
     merged = {q["query"]: dict(q) for q in _load_json_list(vendor_path)}
@@ -180,12 +181,17 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
             if lvl:
                 q["datenschutz"] = lvl
     rdir = ruleset_dir(ruleset)
-    for rk in (_load_ruleset_query_risks(rdir) if rdir else []):
+    for rk in (_load_ruleset_risks(rdir) if rdir else []):
         qid = rk.get("query")
-        if qid in merged:
-            for f in ("riskType", "riskLevel", "riskStatus"):
-                if merged[qid].get(f) is None:
-                    merged[qid][f] = rk.get(f)
+        if qid is None or qid not in merged:
+            continue
+        if merged[qid].get("risk") is None:
+            combined = _combine_risk_text(rk.get("risk"), rk.get("description"))
+            if combined is not None:
+                merged[qid]["risk"] = combined
+        for f in ("riskType", "riskLevel", "riskStatus"):
+            if merged[qid].get(f) is None:
+                merged[qid][f] = rk.get(f)
     custom_ids = set()
     for c in _load_json_list(custom_path):
         qid = c["query"]
@@ -198,22 +204,23 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     return merged, custom_ids
 
 
-def _load_ruleset_json_optional(rdir: str, filename: str) -> list[dict]:
-    """Optionale JSON-Datei im Ruleset-Ordner; [] wenn nicht vorhanden (nicht jedes Ruleset
-    pflegt jede optionale Datei, s. rules/SCHEMA.md)."""
-    path = RULES_DIR / rdir / filename
+def _load_ruleset_risks(rdir: str) -> list[dict]:
+    """Optionale risks.json (Risiko-Objekte je SoD-Regel-Alias ODER Query-ID, s. rules/SCHEMA.md) --
+    EIN gemeinsames File fuer beide (Nutzerentscheid 2026-07-15: keine getrennten Dateien noetig,
+    Unterscheidung ueber den vorhandenen Schluessel 'alias' bzw. 'query'); [] wenn nicht vorhanden."""
+    path = RULES_DIR / rdir / "risks.json"
     return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else []
 
 
-def _load_ruleset_risks(rdir: str) -> list[dict]:
-    """Optionale risks.json (Risiko-Objekte je SoD-Regel-Alias, s. rules/SCHEMA.md)."""
-    return _load_ruleset_json_optional(rdir, "risks.json")
-
-
-def _load_ruleset_query_risks(rdir: str) -> list[dict]:
-    """Optionale query_risks.json (Risiko-Objekte je Query-ID, analog zu risks.json bei SoD-Regeln,
-    s. rules/SCHEMA.md)."""
-    return _load_ruleset_json_optional(rdir, "query_risks.json")
+def _combine_risk_text(risk: str | None, description: str | None) -> str | None:
+    """Kombiniert den Kurztitel (risk) und die Langbeschreibung (description) aus risks.json zu
+    einem Freitext-Wert fuer das editierbare 'risk'-Feld (Nutzerentscheid: beides zusammenfuehren
+    statt eines von beiden zu verwerfen)."""
+    risk = (risk or "").strip()
+    description = (description or "").strip()
+    if risk and description:
+        return f"{risk}: {description}"
+    return risk or description or None
 
 
 def reload_ruleset(ruleset: str):
@@ -222,8 +229,7 @@ def reload_ruleset(ruleset: str):
     ensure_custom_sodrules_file(ruleset)
     with driver.session() as s:
         run_file(s, "ruleset/load_ruleset.cypher",
-                {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir),
-                 "queryRisks": _load_ruleset_query_risks(rdir)})
+                {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
 
 
 def jsonable(v):
@@ -465,8 +471,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
             ensure_custom_queries_file(ruleset)    # queries.custom.json muss existieren (apoc.load.json)
             ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
             run_file(s, "ruleset/load_ruleset.cypher",
-                    {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir),
-                     "queryRisks": _load_ruleset_query_risks(rdir)})
+                    {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
 
         elif phase == "materialize":
             _run_phase(s, job_id, phase="materialize", step_label=step_prefix + "materialize",
@@ -2292,8 +2297,10 @@ def _merged_sodrules(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     'eigen' heisst: neue Regel (kein Vendor-Gegenstueck) oder clauses/variables wurden
     ueberschrieben; reine Metadaten-Edits zaehlen nicht.
 
-    Zusaetzliche Schicht ZWISCHEN Vendor und Overlay: risks.json (CSI-nativ, optional, s.
-    rules/SCHEMA.md) liefert riskType/riskLevel/riskStatus je SoD-Regel-Alias als Erstbefuellung --
+    Zusaetzliche Schicht ZWISCHEN Vendor und Overlay: risks.json (optional, s. rules/SCHEMA.md,
+    seit 2026-07-15 gemeinsame Datei fuer SoD- UND Query-Risiken, hier ueber den 'alias'-Schluessel
+    gefiltert) liefert riskType/riskLevel/riskStatus sowie 'risk' (kombiniert aus den Feldern
+    risk+description der Datei, s. _combine_risk_text) je SoD-Regel-Alias als Erstbefuellung --
     nur wenn das Vendor-/Overlay-Feld noch nicht gesetzt ist (Overlay-Edit gewinnt immer). Das ist
     eine reine Datei-Merge-Ebene, unabhaengig vom analogen Cypher-Seed in load_ruleset.cypher (der
     fuellt dieselben Felder auf den Graph-Knoten fuer Konsumenten, die dort statt aus den Dateien
@@ -2303,10 +2310,15 @@ def _merged_sodrules(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     rdir = ruleset_dir(ruleset)
     for rk in (_load_ruleset_risks(rdir) if rdir else []):
         rid = rk.get("alias")
-        if rid in merged:
-            for f in ("riskType", "riskLevel", "riskStatus"):
-                if merged[rid].get(f) is None:
-                    merged[rid][f] = rk.get(f)
+        if rid is None or rid not in merged:
+            continue
+        if merged[rid].get("risk") is None:
+            combined = _combine_risk_text(rk.get("risk"), rk.get("description"))
+            if combined is not None:
+                merged[rid]["risk"] = combined
+        for f in ("riskType", "riskLevel", "riskStatus"):
+            if merged[rid].get(f) is None:
+                merged[rid][f] = rk.get(f)
     custom_ids = set()
     for c in _load_json_list(custom_path):
         rid = c["sodRule"]

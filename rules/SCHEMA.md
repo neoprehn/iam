@@ -16,8 +16,7 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 | `sod_rules.custom.json` | optional | Overlay: eigene Metadaten-Edits an SoD-Regeln (Query Management, Modus „SoD") |
 | `ruleset.json` | ja | Metadaten + `combinationSemantics` |
 | `legends.json` | ja | Wertelegenden (queryTypes, Klassifizierung, Reason-Codes …) |
-| `risks.json` | optional | nur wo vorhanden (CSI/CSI_BI/KPMG_R3): Risiko-Objekte (`riskType`/`riskLevel`/`riskStatus`), per `alias`↔`sodRule` verknüpft; Erstbefüllung der gleichnamigen SoD-Regel-Felder (2026-07-15, s. ROADMAP 9.4), Overlay-Edit gewinnt danach immer |
-| `query_risks.json` | optional | analog zu `risks.json`, aber für Queries: Risiko-Objekte (`riskType`/`riskLevel`/`riskStatus`), per `query`-ID verknüpft; Erstbefüllung der gleichnamigen Query-Felder (2026-07-15, s. ROADMAP 9.4), Overlay-Edit (`queries.custom.json`) gewinnt danach immer. Bei allen drei Rulesets aktuell nur als leeres Template angelegt (bis auf KPMG_R3s bereits über das Overlay direkt gesetzten `riskLevel`-Startwert) — inhaltliche Befüllung steht noch aus |
+| `risks.json` | optional | bei allen drei Rulesets vorhanden: Risiko-Objekte, **eine gemeinsame Datei für SoD- UND Query-Risiken** (Nutzerentscheid 2026-07-15 — keine getrennten Dateien). Jeder Eintrag trägt entweder `alias` (verknüpft mit `sodRule`) **oder** `query` (verknüpft mit `query`-ID), nie beides. Felder: `riskType`/`riskLevel`/`riskStatus` sowie `risk` (Kurztitel) sowie optional `description` (Langtext) — bei der Erstbefüllung werden `risk`+`description` zu **einem** Freitext-Wert kombiniert (`"<risk>: <description>"`, Nutzerentscheid: nichts verwerfen) und füllen das gleichnamige `risk`-Feld der Query/SoD-Regel; `riskType`/`riskLevel`/`riskStatus` je 1:1. Overlay-Edit (`queries.custom.json`/`sod_rules.custom.json`) gewinnt danach immer, kein erzwungener Reset bei Re-Import. Bei CSI/CSI_BI historisch 440 SoD-Einträge mit echtem, differenziertem `risk`/`description`-Inhalt (CSI-nativ); alle Query-Einträge sowie KPMG_R3s SoD-Einträge aktuell nur als leeres Template (`riskType`/`riskStatus`/`risk`/`description` = `null`) angelegt — inhaltliche Befüllung steht noch aus (s. ROADMAP 9.4). KPMG_R3s Query-Einträge tragen bereits einen `riskLevel`-Startwert aus der vorhandenen `criticality` |
 
 ## Kern-Felder (über ALLE Rulesets identisch — der Loader baut hierauf)
 
@@ -33,13 +32,14 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `authorizations[]`: `{ object, field, andLogic (bool), values (str[]), audit (bool) }`
 - `transactions[]`: `{ tcode, audit (bool), stad (bool) }`
 - `risk` (str, **optional**) · `controls` (str, **optional**) — Freitext: potenzielles Risiko bzw.
-  mitigierende Ma&szlig;nahmen, gepflegt &uuml;ber das Query Management (eigene Tabs); bisher in
-  keiner Vendor-Quelle vorhanden, daher zunaechst nur ueber das Overlay (s. u.) befuellt.
+  mitigierende Ma&szlig;nahmen, gepflegt &uuml;ber das Query Management (eigene Tabs). `risk`
+  zusätzlich aus `risks.json` initial befüllt (s. Dateitabelle oben), sofern noch nicht per Overlay
+  gesetzt; `controls` weiterhin ohne Vendor-/Seed-Quelle, nur über das Overlay befüllt.
 - `riskType`/`riskLevel`/`riskStatus` (str, **optional**, feste Wertelisten; `riskLevel` seit
   2026-07-15 auf dieselbe Konvention wie `criticality` umgestellt: `very-critical/critical/high/
   medium/low`) — eigene Dimension neben `risk`/`controls`: deckt ein Control das inhärente Risiko
-  ausreichend ab? Zusätzlich aus `query_risks.json` initial befüllt (s. Dateitabelle oben, analog
-  zu `risks.json` bei SoD-Regeln), Overlay-Edit gewinnt danach immer. Dropdown im „Risiko"-Tab.
+  ausreichend ab? Zusätzlich aus `risks.json` initial befüllt (s. Dateitabelle oben), Overlay-Edit
+  gewinnt danach immer. Dropdown im „Risiko"-Tab.
 
 **SoD-Regel** (`sod_rules.json[]`):
 - `sodRule` (str, ID) · `description` (Langbezeichnung, bei KPMG oft ein ganzer Satz inkl.
@@ -49,10 +49,11 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `criticality` (**normalisiert**) · `criticalityRank` — bei KPMG aus `reasonCode`-Suffix;
   **CSI fuehrt keine native SoD-Schwere** (reasonCode = Template) → `null`.
 - `risk` (str, **optional**) · `controls` (str, **optional**) — analog zu Query, gepflegt &uuml;ber
-  das Query Management (Modus „SoD", eigene Tabs); bisher in keiner Vendor-Quelle vorhanden.
+  das Query Management (Modus „SoD", eigene Tabs). `risk` analog zu Query zusätzlich initial aus
+  `risks.json` befüllt (bei CSI/CSI_BI 440 Einträge mit echtem, historisch gewachsenem Inhalt).
 - `riskType`/`riskLevel`/`riskStatus` (str, **optional**, feste Wertelisten) — analog zu Query,
-  bei CSI/CSI_BI zusätzlich initial aus `risks.json` befüllt (s. Dateitabelle oben), Overlay-Edit
-  gewinnt danach immer.
+  ebenfalls initial aus `risks.json` befüllt (s. Dateitabelle oben), Overlay-Edit gewinnt danach
+  immer.
 
 **Overlay (`sod_rules.custom.json`, optional, analog zu `queries.custom.json`):** Metadaten-Edits
 an bestehenden Vendor-Regeln (Kurzbezeichnung/Kritikalit&auml;t/Risiko/Controls) &uuml;ber das Query

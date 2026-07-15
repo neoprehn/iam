@@ -244,49 +244,50 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
     überschreibt nur das geänderte Feld, Query-Seite bleibt leer mangels Vendor-Quelle). Test-Overlay-
     Einträge danach wieder entfernt (`sod_rules.custom.json` zurück auf `[]`, Test-Lauf gelöscht).
 - [ ] **Risikokatalog inhaltlich befüllen** (2026-07-15, damit der Punkt oben nicht bei der reinen
-  Editierbarkeit stehen bleibt): die 440 CSI-SoD-Risiken tragen aktuell überall identische
-  Platzhalter (`Detection risk`/`Extreme`/`Not mitigated`, s. o.) — echte, differenzierte Werte
-  fehlen noch. **Seit der `query_risks.json`-Einführung weiter unten gilt dasselbe zusätzlich für
-  alle Query-Risiken in allen drei Rulesets** (aktuell durchweg leer, s. u.) — der Umfang dieses
-  Punkts ist entsprechend gewachsen. Nutzer will dafür Claude Chat zur Recherche/Formulierung
-  nutzen. **Wichtige Einschränkung
-  (Vertrauensgrenze gilt auch außerhalb dieses Tools):** `riskType`/`riskLevel` beschreiben die Art
-  des Risikos selbst (generisches Audit-/GRC-Fachwissen, unabhängig vom Mandanten) — dafür
-  unproblematisch. `riskStatus` (mitigiert/nicht) hängt dagegen von der **tatsächlichen
-  Kontrollumgebung dieses Mandanten** ab und darf nicht aus mandantenspezifischen Angaben in einem
-  Cloud-Chat hergeleitet werden — gehört eher zu „Interview-Ergebnisse einarbeiten" (9.6), nicht zu
-  einer generischen Recherche. Bei 440 Einträgen eher eine **Bewertungsrubrik** erarbeiten
-  (Kriterien je riskType/riskLevel) und selbst konsistent anwenden, statt einzeln pro Regel
-  nachzufragen ohne Kontext.
+  Editierbarkeit stehen bleibt): weiterhin offen für alle Query-Risiken in allen drei Rulesets
+  sowie für KPMG_R3s SoD-Risiken (aktuell durchweg leere Platzhalter, s. u.) — CSI/CSI_BIs 440
+  SoD-Risiken haben dagegen inzwischen echten, differenzierten Inhalt (s. u., war vorher totes
+  Datum). Nutzer will für den Rest dieselbe Recherche/Formulierung per Claude Chat nutzen.
+  **Wichtige Einschränkung (Vertrauensgrenze gilt auch außerhalb dieses Tools):** `riskType`/
+  `riskLevel` beschreiben die Art des Risikos selbst (generisches Audit-/GRC-Fachwissen, unabhängig
+  vom Mandanten) — dafür unproblematisch. `riskStatus` (mitigiert/nicht) hängt dagegen von der
+  **tatsächlichen Kontrollumgebung dieses Mandanten** ab und darf nicht aus mandantenspezifischen
+  Angaben in einem Cloud-Chat hergeleitet werden — gehört eher zu „Interview-Ergebnisse einarbeiten"
+  (9.6), nicht zu einer generischen Recherche. Bei den vielen Einträgen eher eine
+  **Bewertungsrubrik** erarbeiten (Kriterien je riskType/riskLevel) und selbst konsistent anwenden,
+  statt einzeln pro Regel nachzufragen ohne Kontext.
   - **KPMG_R3 nachgezogen** (2026-07-15, Nutzerfrage „warum hat KPMG_R3 kein risks.json"): der
     Seed-Mechanismus ist generisch (prüft nur, ob `rules/<Ruleset>/risks.json` existiert), nicht
     CSI-spezifisch verdrahtet — für KPMG_R3 (nur 22 SoD-Regeln, 604 Queries, deutlich kleiner als
-    CSI) jetzt ebenfalls angelegt: neue `rules/KPMG_R3/risks.json` (22 SoD-Regeln) + `riskLevel` in
-    `rules/KPMG_R3/queries.custom.json` ergänzt (604 Queries, bestehende `shortDescription`-Einträge
-    unangetastet gemergt, nicht überschrieben). **Anders als bei CSI kein Platzhalter**, sondern aus
-    der bei KPMG bereits vorhandenen `criticality` 1:1 übernommen (identische 5-Stufen-Skala, s.
-    Umbenennung unten) — nur als Startwert gedacht, `riskType`/`riskStatus` bewusst leer für die
-    manuelle Verfeinerung im Editor. Für Queries gab es zu diesem Zeitpunkt (anders als für
-    SoD-Regeln) noch keinen alias-basierten Seed-Mechanismus — dort direkt in die bestehende
-    Overlay-Datei geschrieben statt eine neue Datei-Konvention einzuführen (kein zweiter Anwendungs-
-    fall dafür in Sicht — **inzwischen durch `query_risks.json` weiter unten doch eingeführt**, als
-    der zweite Anwendungsfall auftrat). Verifiziert: 22/22 SoD-Regeln bzw. 604/604 Queries mit
-    `riskLevel`, bestehende `shortDescription`-Werte bei allen 600 vorher schon befüllten Queries
-    unverändert.
-  - **`query_risks.json` nachgezogen** (2026-07-15, Nutzerfrage „wird das auch für Query-Risiken in
-    risks.json gespeichert? Wenn ja, initial anlegen"): `risks.json` ist strukturell SoD-only
-    (alias↔sodRule) — für Queries gab es dafür keine Entsprechung, nur die drei leeren Felder direkt
-    im Overlay (s. o.). Auf Nutzerentscheid (AskUserQuestion) jetzt doch eine **neue, analoge Datei**
-    `rules/<Ruleset>/query_risks.json` je Ruleset eingeführt (verknüpft über `query`-ID statt
-    `alias`), mit demselben Coalesce-Mechanismus wie `risks.json` (Cypher-Block in
-    `load_ruleset.cypher` + Python-Merge-Ebene in `_merged_queries()`, `backend/app.py`) — Overlay-
-    Edit (`queries.custom.json`) gewinnt danach immer. Bei allen drei Rulesets als **leeres Template**
-    angelegt (CSI_Ruleset 733, CSI_BI 735, KPMG_R3 604 Einträge, `riskType`/`riskLevel`/`riskStatus`
-    = `null`) — bewusst noch ohne Inhalt, das ist die Vorbereitung für die inhaltliche Befüllung oben
-    (jetzt auch für Queries möglich, nicht nur SoD). KPMG_R3s bereits gesetzter `riskLevel`-Startwert
-    im Overlay bleibt unangetastet (Overlay gewinnt vor der neuen Datei). Mit Playwright verifiziert:
-    CSI/CSI_BI zeigen keine Risiko-Badges mehr (vorher gar nicht möglich mangels Feld), KPMG_R3s
-    bestehender Badge unverändert sichtbar, kein Datenverlust.
+    CSI) jetzt ebenfalls angelegt. `riskLevel` **direkt aus der bei KPMG bereits vorhandenen
+    `criticality` 1:1 übernommen** (identische 5-Stufen-Skala, s. Umbenennung unten) — nur als
+    Startwert gedacht, `riskType`/`riskStatus` bewusst leer für die manuelle Verfeinerung im Editor.
+    Verifiziert: 22/22 SoD-Regeln bzw. 604/604 Queries mit `riskLevel`, bestehende
+    `shortDescription`-Werte bei allen 600 vorher schon befüllten Queries unverändert. (Wo dieser
+    Startwert inzwischen abgelegt ist, hat sich seither geändert — s. nächster Punkt.)
+  - **`risks.json` zur gemeinsamen Datei für SoD- UND Query-Risiken vereinheitlicht** (2026-07-15,
+    Nutzerfrage „wird das auch für Query-Risiken in risks.json gespeichert? Wenn ja, initial
+    anlegen"): erster Ansatz war eine neue, separate `query_risks.json` je Ruleset (analog zu
+    `risks.json`, aber für Queries) — der Nutzer widersprach dem bewusst: **eine** Datei für beide,
+    Unterscheidung über den vorhandenen Schlüssel (`alias` bei SoD, `query` bei Queries), damit
+    Filterset-Overlay (`queries.custom.json`/`sod_rules.custom.json`) und Risiko-Stammdaten sauber
+    getrennt bleiben (Controls-Beschreibung soll später analog in eine eigene `controls.json`
+    wandern, noch nicht umgesetzt). Dabei fiel auf: die **bestehende** `risks.json` (CSI/CSI_BI,
+    440 SoD-Einträge) hatte neben `riskType`/`riskLevel`/`riskStatus` zwei bislang **nie geladene**
+    Freitextfelder (`risk` = Kurztitel, `description` = Langtext) mit echtem, je Regel
+    unterschiedlichem Inhalt (440 bzw. 246 distinkte Werte) — totes Vendor-Datum aus Auftrag 5.
+    Auf Nutzerentscheid werden beide Felder jetzt zu einem Freitext kombiniert (`"<risk>:
+    <description>"`) und füllen erstmals das editierbare `risk`-Feld der SoD-Regel — für 440
+    CSI-Regeln erscheint dadurch sofort eine echte Risikobeschreibung im Editor, ganz ohne
+    zusätzliche Recherche. Neu ergänzt: 733/735/604 leere Query-Platzhalter-Einträge
+    (CSI_Ruleset/CSI_BI/KPMG_R3), KPMG_R3s `riskLevel`-Startwert dabei aus `queries.custom.json`
+    HERAUS in die neue Struktur verschoben (dort blieb nur noch `{query, shortDescription}` stehen —
+    konsistent mit der Trennung Filterset/Risiko). Cypher-Coalesce (`load_ruleset.cypher`) und
+    Python-Merge (`_merged_queries()`/`_merged_sodrules()`, `backend/app.py`) beide entsprechend
+    angepasst; Overlay-Edit gewinnt weiterhin immer. Mit Playwright verifiziert: CSI-SoD-Editor
+    zeigt jetzt die kombinierte Risikobeschreibung im Freitextfeld, KPMG_R3s `riskLevel` unverändert
+    sichtbar (nur die Quelle hat gewechselt), CSI-Query-Editor weiterhin leer (kein Inhalt
+    vorhanden), keine Testartefakte zurückgeblieben.
 - [x] **Datenschutz-Feld + riskLevel-Umbenennung + Badge-Reposition** (2026-07-15, Folgeauftrag direkt
   im Anschluss an die Risiko-Metadaten oben): beim Sichten eines Einzelfilters fielen dem Nutzer drei
   Dinge auf.

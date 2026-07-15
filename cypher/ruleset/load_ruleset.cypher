@@ -51,18 +51,6 @@ MERGE (ar:AuthReq {key: query.key + '|' + au.object + '|' + au.field})
   SET ar.values = au.values, ar.andLogic = coalesce(au.andLogic, false)
 MERGE (query)-[:REQUIRES]->(ar);
 
-// --- Risiko-Stammdaten aus query_risks.json vorbefuellen (optional, analog zu risks.json bei
-// SoD-Regeln weiter unten) -------------------------------------------------------------------
-// query_risks.json existiert nur, wenn schon initial angelegt (s. rules/SCHEMA.md); $queryRisks
-// ist [] wenn nicht vorhanden. Verknuepfung ueber query == Query.id. coalesce mit query.riskX
-// ZUERST: ein bereits per Overlay (queries.custom.json) gesetzter Wert gewinnt immer -- die Datei
-// liefert nur den Erstbefuellungs-Wert, keinen erzwungenen Reset bei Re-Import.
-UNWIND $queryRisks AS qrk
-MATCH (query:Query {key: $ruleset + '|' + qrk.query})
-SET query.riskType = coalesce(query.riskType, qrk.riskType),
-    query.riskLevel = coalesce(query.riskLevel, qrk.riskLevel),
-    query.riskStatus = coalesce(query.riskStatus, qrk.riskStatus);
-
 // --- SoD-Regeln + Variablen -> Query ---
 // Zwei Durchlaeufe wie bei Queries oben: erst die Vendor-Datei (sod_rules.json), danach das
 // optionale Overlay (sod_rules.custom.json) — eigene Metadaten-Edits (Kurzbezeichnung/
@@ -91,15 +79,36 @@ MERGE (rule)-[:USES {var: var}]->(q);
 
 // --- Risiko-Stammdaten aus risks.json vorbefuellen (optional, s. rules/SCHEMA.md) -----------
 // risks.json existiert nur, wenn schon initial angelegt (aktuell bei allen drei Rulesets, aber
-// weiterhin optional); $risks ist [] wenn nicht vorhanden (backend/app.py). Verknuepfung ueber
-// alias == SoDRule.id. coalesce mit
-// rule.riskX ZUERST: ein bereits per Overlay (sod_rules.custom.json) gesetzter Wert gewinnt immer
-// -- risks.json liefert nur den Erstbefuellungs-Wert, keinen erzwungenen Reset bei Re-Import.
-UNWIND $risks AS rk
+// weiterhin optional); $risks ist [] wenn nicht vorhanden (backend/app.py). EINE gemeinsame Datei
+// fuer SoD- UND Query-Risiken (Nutzerentscheid 2026-07-15) -- Unterscheidung ueber den
+// vorhandenen Schluessel: SoD-Eintraege tragen 'alias', Query-Eintraege tragen 'query'.
+// 'risk' wird aus den Feldern risk (Kurztitel) + description (Langtext) der Datei kombiniert
+// (Nutzerentscheid: nichts verwerfen, beides zusammenfuehren). coalesce mit rule.riskX/rule.risk
+// ZUERST: ein bereits per Overlay (sod_rules.custom.json) gesetzter Wert gewinnt immer -- die
+// Datei liefert nur den Erstbefuellungs-Wert, keinen erzwungenen Reset bei Re-Import.
+UNWIND [rk IN $risks WHERE rk.alias IS NOT NULL] AS rk
 MATCH (rule:SoDRule {key: $ruleset + '|' + rk.alias})
 SET rule.riskType = coalesce(rule.riskType, rk.riskType),
     rule.riskLevel = coalesce(rule.riskLevel, rk.riskLevel),
-    rule.riskStatus = coalesce(rule.riskStatus, rk.riskStatus);
+    rule.riskStatus = coalesce(rule.riskStatus, rk.riskStatus),
+    rule.risk = coalesce(rule.risk,
+      CASE WHEN trim(coalesce(rk.risk,'')) <> '' AND trim(coalesce(rk.description,'')) <> ''
+             THEN rk.risk + ': ' + rk.description
+           WHEN trim(coalesce(rk.risk,'')) <> '' THEN rk.risk
+           WHEN trim(coalesce(rk.description,'')) <> '' THEN rk.description
+           ELSE null END);
+
+UNWIND [rk IN $risks WHERE rk.query IS NOT NULL] AS rk
+MATCH (query:Query {key: $ruleset + '|' + rk.query})
+SET query.riskType = coalesce(query.riskType, rk.riskType),
+    query.riskLevel = coalesce(query.riskLevel, rk.riskLevel),
+    query.riskStatus = coalesce(query.riskStatus, rk.riskStatus),
+    query.risk = coalesce(query.risk,
+      CASE WHEN trim(coalesce(rk.risk,'')) <> '' AND trim(coalesce(rk.description,'')) <> ''
+             THEN rk.risk + ': ' + rk.description
+           WHEN trim(coalesce(rk.risk,'')) <> '' THEN rk.risk
+           WHEN trim(coalesce(rk.description,'')) <> '' THEN rk.description
+           ELSE null END);
 
 // --- CNF-Klauseln: (:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query) ---
 // Ein User verletzt die Regel, wenn JEDE Klausel >=1 erfuellte (gematchte) Query enthaelt.

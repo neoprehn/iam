@@ -196,5 +196,3629 @@
     "riskType": null,
     "riskLevel": "very-critical",
     "riskStatus": null
+  },
+  {
+    "query": "1000_BC-SEC",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1001_BC-SEC",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1002_BC-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1003_BC-SEC",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1004_BC-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1005_BC-SEC",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1006_BC-SEC",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1007_BC-SEC",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1008_BC-SEC",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1009_BC-SEC",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1010_BC-SEC",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1011_BC-SEC",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1012_BC-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1013_BC-SEC",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1014_BC-SEC",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1015_BC-SEC",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1016_BC-SEC",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1017_BC-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1100_BC-DEV",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1101_BC-DEV",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1102_BC-DEV",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1103_BC-DEV",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1104_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1105_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1106_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1107_BC-DEV",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1108_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1109_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1110_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1111_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1112_BC-DEV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1113_BC-DEV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1114_BC-DEV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1115_BC-DEV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1200_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1201_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1202_BC-USR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1203_BC-USR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1204_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1205_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1206_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1207_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1208_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1209_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1210_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1211_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1212_BC-USR",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1213_BC-USR",
+    "riskType": null,
+    "riskLevel": "very-critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1214_BC-USR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1300_BC-CTS",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1301_BC-CTS",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1302_BC-CTS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1303_BC-CTS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1304_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1305_BC-CTS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1306_BC-CTS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1307_BC-CTS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1400_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1401_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1402_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1403_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1404_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1405_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1406_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1407_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1408_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1409_BC-SRV",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1410_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1411_BC-SRV",
+    "riskType": null,
+    "riskLevel": "low",
+    "riskStatus": null
+  },
+  {
+    "query": "1420_BC-SRV",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1421_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1422_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1423_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1424_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1425_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1426_BC-SRV",
+    "riskType": null,
+    "riskLevel": "low",
+    "riskStatus": null
+  },
+  {
+    "query": "1427_BC-SRV",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1428_BC-SRV",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1429_BC-SRV",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "1430_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1431_BC-SRV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "1432_BC-SRV",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "1433_BC-SRV",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2000_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2001_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2002_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2003_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2004_FI-GL",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2005_FI-GL",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2006_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2007_FI-GL",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2008_FI-GL",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2009_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2010_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2011_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2012_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2013_FI-GL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2014_FI-GL",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2100_FI-AR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2101_FI-AR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2102_FI-AR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2103_FI-AR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2104_FI-AR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2105_FI-AR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2106_FI-AR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2107_FI-AR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2108_FI-AR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2109_FI-AR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2110_FI-AR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2111_FI-AR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2200_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2201_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2202_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2203_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2204_FI-AP",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2205_FI-AP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2206_FI-AP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2207_FI-AP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2208_FI-AP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2209_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2210_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2211_FI-AP",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2300_FI-AA",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2301_FI-AA",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2302_FI-AA",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2303_FI-AA",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2304_FI-AA",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2305_FI-AA",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2306_FI-AA",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2307_FI-AA",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2308_FI-AA",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2309_FI-AA",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2310_FI-AA",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2311_FI-AA",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2312_FI-AA",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2400_FI-CM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2401_FI-CM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2402_FI-CM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2403_FI-CM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2404_FI-CM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2405_FI-CM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2406_FI-CM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2407_FI-CM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2500_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2501_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2502_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2503_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2504_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2505_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2506_TR-LO",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2507_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2508_TR-LO",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2509_TR-LO",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2510_TR-LO",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2511_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2512_TR-LO",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "2513_TR-LO",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2514_TR-LO",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2600_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2601_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2602_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2603_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2604_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2605_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2606_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2607_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2608_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2609_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2610_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2611_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "2612_TR-TM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "2613_TR-TM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3000_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3001_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3002_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3003_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3004_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3005_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3006_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3007_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3008_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3009_MM-PUR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3010_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3011_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3012_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3013_MM-PUR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3014_MM-PUR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3015_MM-PUR",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3016_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3017_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3018_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3019_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3020_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3021_MM-PUR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3100_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3101_MM-IM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3102_MM-IM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3103_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3104_MM-IM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3105_MM-IM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3106_MM-IM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3107_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3108_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3109_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3110_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3111_MM-IM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3112_MM-IM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3200_MM-IV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3201_MM-IV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3202_MM-IV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3203_MM-IV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3204_MM-IV",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "3300_MM-CBP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3301_MM-CBP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3302_MM-CBP",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "3400_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3401_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3402_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3403_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3404_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3405_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3406_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "3407_MM-MD",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "4000_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4001_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4002_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4003_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4004_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4005_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4006_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4007_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4008_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4009_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4010_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4011_SD-MD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4100_SD-SLS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "4101_SD-SLS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "4102_SD-SLS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "4103_SD-SLS",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "4104_SD-SLS",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "4105_SD-SLS",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "4106_SD-SLS",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4107_SD-SLS",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4108_SD-SLS",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4109_SD-SLS",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4200_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4201_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4202_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4203_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4204_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4205_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4206_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4207_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "4208_SD-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5000_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5001_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5002_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5003_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5004_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5005_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5006_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5007_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5008_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5009_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5010_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5011_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5012_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5013_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5014_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5015_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5016_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5017_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5018_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5019_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5020_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5021_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5022_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5023_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5024_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5025_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5026_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5027_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5028_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5029_CO-OM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "5030_CO-OM",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "5031_CO-OM",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "5032_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5033_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5034_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5035_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5036_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5037_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5038_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5039_CO-OM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5100_CO-PA",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5101_CO-PA",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5102_CO-PA",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5500_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5501_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5502_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5503_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5504_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5505_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5506_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5507_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5508_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5509_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5510_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5511_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5512_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5513_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "5514_PS-PM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6000_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6001_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6002_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6003_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6004_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6005_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6006_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6007_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6008_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6009_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6010_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6011_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6012_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6013_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6014_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6015_HR-P_TCODE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6016_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6017_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6018_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6019_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6020_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6021_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6022_HR-P_ORGIN",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6200_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6201_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6202_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6203_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6204-HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6205_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6206_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6207_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6208_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6209_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6210_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6211_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6212_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6213_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6214_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6215_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6216_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6217_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6218_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6219_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6220_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6221_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6222_HR-P_ORGINCON",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6400_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6401_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6402_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6403_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6404_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6405_HR-HR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6406_HR-HR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6407_HR-HR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6408_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6409_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6410_HR-HR",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "6411_HR-HR",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6600_HR-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6601_HR-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6602_HR-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6603_HR-SEC",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6604_HR-SEC",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6605_HR-SEC",
+    "riskType": null,
+    "riskLevel": "medium",
+    "riskStatus": null
+  },
+  {
+    "query": "6606_HR-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "6607_HR-SEC",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7000_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7001_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7002_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7003_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7004_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7005_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7006_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7007_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7008_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7009_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7010_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7011_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7012_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7013_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7014_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7015_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7016_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7017_RE-RE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7018_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7019_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7020_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7021_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7022_RE-RE",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7100_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7101_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7102_RE-BIL",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7103_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7104_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7105_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7106_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7107_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7108_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7109_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7110_RE-BIL",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7200_RE-NBK",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7201_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7202_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7203_RE-NBK",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7204_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7205_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7206_RE-NBK",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "7207_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7208_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7209_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7210_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7211_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "7212_RE-NBK",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8000_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8001_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8002_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8003_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8004_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8005_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8100_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8101_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8102_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8103_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8104_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8105_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8106_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8107_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8108_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8109_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8110_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8111_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8112_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8113_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8114_IS-U",
+    "riskType": null,
+    "riskLevel": "high",
+    "riskStatus": null
+  },
+  {
+    "query": "8200_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8201_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8202_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8203_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8204_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8205_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8206_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8300_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8301_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8302_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8303_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8304_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8305_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8306_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8307_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8308_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8400_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8401_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8402_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8403_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8404_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8405_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8500_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8501_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8502_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8503_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8504_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8505_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8506_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "8507_IS-U",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9000_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9001_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9002_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9003_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9004_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9005_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9006_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9007_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9008_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9009_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9010_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9011_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9012_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9013_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9014_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9015_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9016_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9017_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9018_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9019_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9020_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9021_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9022_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9023_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9024_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9025_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9026_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9027_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9028_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9029_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9030_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9031_FS-ICM",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9500_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9501_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9502_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9503_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9504_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9505_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9506_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9507_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9508_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9509_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9510_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9511_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9512_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9513_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9514_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9515_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9516_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9517_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9518_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9519_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9520_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9521_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9522_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9523_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9524_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9525_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9526_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9527_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9528_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9529_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9530_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9531_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9532_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9533_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9534_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9535_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9536_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9537_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9538_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9539_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9540_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9541_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9542_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9543_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9544_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9545_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9546_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9547_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9548_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9549_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9550_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9552_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9553_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9554_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9555_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9556_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9557_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9558_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9559_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9560_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9561_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9562_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9563_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9564_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9565_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9566_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9567_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9568_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9569_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9570_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9571_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9572_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9573_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9574_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9575_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9576_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9577_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9578_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9579_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9580_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9581_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9582_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9583_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9584_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9585_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9586_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9587_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9588_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9589_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9590_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9591_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9592_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "9951_FS-CD",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "A1000_BW-SEC",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "REFX-PERIODISCHES_BUCHEN:_VERTRÄGE",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
+  },
+  {
+    "query": "REFX-VERTRAGSBUCHUNGEN_STORNIEREN",
+    "riskType": null,
+    "riskLevel": "critical",
+    "riskStatus": null
   }
 ]
