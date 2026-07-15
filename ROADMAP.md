@@ -301,9 +301,34 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
   darunter auf (`ws.row_dimensions.group(..., outline_level=1, hidden=True)`,
   `outlinePr.summaryBelow=False` damit die Query-/Regelzeile über statt unter der Gruppe steht).
   Verifiziert: generierte `.xlsx` mit `openpyxl.load_workbook()` zurückgelesen, Gruppierung/
-  `outlineLevel`/`hidden` je Zeile geprüft. **Offen (zurückgestellt):** weitere Sichten
-  (Top-Regeln, Matrix); ob der Import-Evidenz-Report (heute PDF/CSV) ebenfalls ein natives Excel
-  bekommt und beide Reports gebündelt werden, ist noch nicht entschieden.
+  `outlineLevel`/`hidden` je Zeile geprüft.
+  - **Tabellenköpfe dezent eingefärbt** (Nutzerwunsch, direkt danach) — drei Farbtöne je
+    Verschachtelungstiefe (Hauptkopf `DCE6F1` Blau, Nutzer-Zwischenüberschrift `EDF2FB` heller Blau,
+    Rollen/Profil-Zwischenüberschrift `F2F2F2` Grau), volle ARGB-Angabe (`FF`-Alpha-Präfix) statt
+    openpyxl-Default `00`, um nicht von Excels Alpha-Kulanz bei Füllfarben abhängig zu sein.
+  - **Eine Ebene tiefer** (Nutzerwunsch: „Rolle (S_TCode) Rolle BOs"): je Nutzer eine zweite,
+    verschachtelte Gruppierungsebene mit der/den belegenden Rolle(n)/Profil(en) — bei SoD-Regeln
+    günstig über die bereits materialisierten `VIA_ROLE`/`VIA_PROFILE`-Evidenzkanten (AE-11, ~0,3s),
+    bei Einzelfiltern live berechnet (`_query_req_blocks`/`_enrich_query_users_with_roles`,
+    Bulk-Cypher je Berechtigungsobjekt/TCode-Prüfung über alle matchenden User einer Query zusammen
+    statt je User einzeln wie `/root-cause`) inkl. des jeweils abgedeckten Objekts/der TCode-Prüfung.
+    **Performance-Grenze gefunden und mit Nutzer abgestimmt (2026-07-15):** gegen einen echten Lauf
+    (38 Queries, ~12.000 User-Query-Treffer, 4 „Mega-Queries" mit 662–7924 Nutzern) brauchte die
+    ungedeckelte Live-Traversierung ~10 Minuten; App-seitige Parallelisierung (`ThreadPoolExecutor`,
+    6 Worker) brachte praktisch keine Verbesserung (9m21s) — die Kosten liegen in der
+    Graphtraversierung selbst (gleiche Größenordnung wie die Match-Materialisierung, s. 9.3
+    Performance-Thema), nicht im Anfrage-Overhead. Nutzer-Entscheidung: **Deckeln + Hinweis** statt
+    asynchronem Hintergrund-Job oder mehrminütigem synchronem Export — `_QUERY_ROLE_ENRICH_MAX_USERS
+    = 200`, oberhalb wird die Rollen-/Objekt-Aufschlüsselung übersprungen (eine Hinweiszeile statt
+    Daten, die flache Nutzerliste bleibt vollständig). Damit sank der Beispiel-Export von ~10 Minuten
+    auf ~17 Sekunden (SoD-Seite ohnehin ~0,3s). Root-Cause je einzelnem User bleibt interaktiv in
+    der App verfügbar für die übersprungenen Mega-Queries.
+  - Generierte Profile (PFCG-Artefakt einer Rolle) standardmäßig ausgeblendet, deckungsgleich mit
+    dem Root-Cause-Default `rcTechMode='hide'` — sonst taucht dieselbe Berechtigung doppelt auf.
+  - **Offen (zurückgestellt):** weitere Sichten (Top-Regeln, Matrix); ob der Import-Evidenz-Report
+    (heute PDF/CSV) ebenfalls ein natives Excel bekommt und beide Reports gebündelt werden, ist noch
+    nicht entschieden; Business-Objects (BOs)/Berechtigungsobjekt-Feldwerte selbst (nicht nur der
+    Objektname) sind noch nicht mit ausgegeben, falls das noch gewünscht wird.
 - **Nebenbei behobener Bug (2026-07-15):** Drill-down auf eine Regel/Query aus der Übersicht
   (`jumpToRuleFilter`/`jumpToQueryFilter`) bzw. „← zurück" (`goBackFilter`) zeigte manchmal nicht
   die gefilterte Liste, sondern sprang auf einen älteren Filterzustand zurück (z. B. bei „Replace/

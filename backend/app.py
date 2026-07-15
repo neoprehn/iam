@@ -2588,35 +2588,134 @@ def _summary_export_rows(s, kind: str, run_id: str, detailed: bool):
     """Liefert die Zeilen fuer den Ergebnisse-Uebersicht-Export (Einzelfilter/SoD) — dieselbe
     Aggregation wie GET /queries/summary bzw. /sodrules/summary, optional (detailed=True, fuer
     'ausfuehrliches Excel') je Zeile zusaetzlich die Liste der betroffenen Nutzer (Grundlage fuer
-    die Excel-Gruppierung/Auffaltung)."""
+    die Excel-Gruppierung/Auffaltung). Fuer kind='sod' haengt hier gleich die belegende Rolle/das
+    Profil je Nutzer mit dran (`users[].actors`) -- das ist am (:SoDConflict) bereits materialisiert
+    (VIA_ROLE/VIA_PROFILE aus der Evidenz, AE-11), kostet also keinen Zusatzaufruf. Fuer kind='query'
+    gibt es keine vergleichbare materialisierte Belegkante (MATCHES ist rein boolesch) -- das
+    uebernimmt der Aufrufer per _enrich_query_users_with_roles() in einem Bulk-Nachgang."""
     run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset", id=run_id).single()
     if not run:
         raise HTTPException(404, f"Lauf '{run_id}' nicht gefunden")
     ruleset = run["ruleset"]
-    group_by = "q" if kind == "query" else "rule"
-    match_clause = (
-        "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
-        if kind == "query" else
-        "MATCH (rule:SoDRule {ruleset:$ruleset}) WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() } "
-        "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId, ruleId:rule.id}) "
-    )
-    return_fields = (
-        "q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
-        "q.criticality AS criticality, coalesce(q.criticalityRank,0) AS criticalityRank, q.module AS module"
-        if kind == "query" else
-        "rule.id AS id, rule.description AS description, rule.shortDescription AS shortDescription, "
-        "rule.criticality AS criticality, coalesce(rule.criticalityRank,0) AS criticalityRank"
-    )
-    cypher = (
-        match_clause +
-        f"WITH {group_by}, u, " + _USER_TYP_STATUS_CYPHER + " "
-        f"WITH {group_by}, count(DISTINCT u) AS userCount"
-        + (", collect({id:u.id, name:coalesce(u.name,''), typ:typ, status:status}) AS users" if detailed else "")
-        + " "
-        f"RETURN {return_fields}, userCount" + (", users" if detailed else "") + " "
-        f"ORDER BY coalesce({group_by}.criticalityRank,0) DESC, userCount DESC"
-    )
+    if kind == "query":
+        cypher = (
+            "MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(q:Query {ruleset:$ruleset}) "
+            "WITH q, u, " + _USER_TYP_STATUS_CYPHER + " "
+            "WITH q, count(DISTINCT u) AS userCount"
+            + (", collect({id:u.id, name:coalesce(u.name,''), typ:typ, status:status}) AS users" if detailed else "")
+            + " "
+            "RETURN q.id AS id, q.description AS description, q.shortDescription AS shortDescription, "
+            "  q.criticality AS criticality, coalesce(q.criticalityRank,0) AS criticalityRank, "
+            "  q.module AS module, userCount" + (", users" if detailed else "") + " "
+            "ORDER BY coalesce(q.criticalityRank,0) DESC, userCount DESC"
+        )
+    else:
+        cypher = (
+            "MATCH (rule:SoDRule {ruleset:$ruleset}) WHERE EXISTS { (rule)-[:HAS_CLAUSE]->() } "
+            "MATCH (u:User)-[:VIOLATES]->(f:SoDConflict {ruleset:$ruleset, runId:$runId, ruleId:rule.id}) "
+            "WITH rule, u, f, " + _USER_TYP_STATUS_CYPHER + " "
+            "WITH rule, count(DISTINCT u) AS userCount"
+            + (", collect({id:u.id, name:coalesce(u.name,''), typ:typ, status:status, "
+               "actors: [(f)-[:VIA_ROLE]->(ra) | {actorId:ra.id, actorType:'Role', object:null}] "
+               "      + [(f)-[:VIA_PROFILE]->(pa) | {actorId:pa.id, actorType:'Profile', object:null}]}) AS users"
+               if detailed else "")
+            + " "
+            "RETURN rule.id AS id, rule.description AS description, "
+            "  rule.shortDescription AS shortDescription, rule.criticality AS criticality, "
+            "  coalesce(rule.criticalityRank,0) AS criticalityRank, userCount" + (", users" if detailed else "") + " "
+            "ORDER BY coalesce(rule.criticalityRank,0) DESC, userCount DESC"
+        )
     return [dict(r) for r in s.run(cypher, ruleset=ruleset, runId=run_id)]
+
+
+def _query_req_blocks(s, ruleset: str, query_id: str) -> list[dict]:
+    """Anforderungsbloecke einer Query (Berechtigungsobjekte + optionale TCode-Pruefung), OHNE den
+    Pro-User-Belegteil -- objektunabhaengig vom User, daher fuer alle User einer Query identisch.
+    Kernteil von _query_objects() (Root-Cause), hier abgespalten fuer den Bulk-Beleg-Abgleich
+    (_enrich_query_users_with_roles): ein Aufruf je Block statt je (User, Block)."""
+    qrec = s.run(
+        "MATCH (q:Query {id:$qid, ruleset:$ruleset}) "
+        "OPTIONAL MATCH (q)-[:REQUIRES]->(ar:AuthReq) "
+        "RETURN q.tcodes AS tcodes, q.disregardTcode AS disregardTcode, "
+        "  collect(CASE WHEN ar IS NULL THEN null ELSE "
+        "    {object:ar.object, field:ar.field, andLogic:ar.andLogic, values:ar.values} END) AS reqs",
+        qid=query_id, ruleset=ruleset).single()
+    if qrec is None:
+        return []
+    reqs = [r for r in qrec["reqs"] if r is not None]
+    objects = sorted({r["object"] for r in reqs})
+    blocks = [{"label": obj, "object": obj, "reqs": [r for r in reqs if r["object"] == obj]} for obj in objects]
+    tcodes = qrec["tcodes"] or []
+    if not qrec["disregardTcode"] and tcodes and "*" not in tcodes:
+        blocks.insert(0, {"label": "S_TCODE (TCode-Prüfung)", "object": "S_TCODE",
+                          "reqs": [{"field": "TCD", "andLogic": False, "values": tcodes}]})
+    return blocks
+
+
+_BULK_SATISFIED_BY_CYPHER = (
+    "UNWIND $userIds AS uid "
+    "MATCH (u:User {id:uid, dataset:$dataset}) "
+    "OPTIONAL MATCH (u)-[g:ASSIGNED_TO]->(roleActor:Role) "
+    "  WHERE (g.validFrom IS NULL OR g.validFrom<=$asOf) AND (g.validTo IS NULL OR $asOf<=g.validTo) "
+    "OPTIONAL MATCH (u)-[:HAS_PROFILE]->(profActor:Profile) "
+    "WITH u, [x IN collect(DISTINCT roleActor) WHERE x IS NOT NULL] "
+    "   + [x IN collect(DISTINCT profActor) WHERE x IS NOT NULL] AS actors "
+    "UNWIND actors AS actor "
+    "MATCH (actor)-[:CONTAINS|HAS_PROFILE*0..4]->(via)-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:$object}) "
+    "WHERE all(r IN $reqs WHERE "
+    "  r.field IN $orgFields "
+    "  OR ( apoc.any.property(a,'f_'+r.field) IS NOT NULL "
+    "       AND ( '*' IN apoc.any.property(a,'f_'+r.field) "
+    "             OR CASE WHEN r.andLogic "
+    "                  THEN all(v IN r.values WHERE v IN apoc.any.property(a,'f_'+r.field) "
+    "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
+    "                  ELSE any(v IN r.values WHERE v IN apoc.any.property(a,'f_'+r.field) "
+    "                         OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1])) "
+    "                END ) ) ) "
+    # Generierte Profile (PFCG-Artefakt einer Rolle) standardmaessig ausblenden -- deckt sich mit
+    # dem Root-Cause-Default rcTechMode='hide' (rcVisibleActor()), sonst taucht dieselbe Berechtigung
+    # doppelt auf (einmal ueber die Rolle, einmal ueber deren generiertes Profil).
+    "  AND NOT (labels(actor)[0] = 'Profile' AND "
+    "           (EXISTS { MATCH (:Role)-[:HAS_PROFILE]->(actor) } OR actor.id STARTS WITH 'T-')) "
+    "RETURN DISTINCT u.id AS userId, labels(actor)[0] AS actorType, actor.id AS actorId"
+)
+
+
+# Deckel fuer die Live-Rollen-/Objekt-Aufschluesselung je Einzelfilter (xlsx_detailed): die
+# Graphtraversierung (CONTAINS|HAS_PROFILE*0..4) je Berechtigungsobjekt ist so teuer wie die
+# Match-Materialisierung selbst (Performance-Thema ROADMAP 9.3) -- gemessen gegen einen echten Lauf
+# (38 Queries, ~12.000 User-Query-Treffer, davon 4 "Mega-Queries" mit 662-7924 Nutzern): ungedeckelt
+# ~10 Minuten Laufzeit, App-seitige Parallelisierung (ThreadPoolExecutor) brachte praktisch KEINE
+# Verbesserung (9m21s) -- die Kosten liegen also in der Graphtraversierung selbst, nicht im
+# Anfrage-Overhead. Nutzer-Entscheidung (2026-07-15): oberhalb des Deckels wird die Aufschluesselung
+# uebersprungen (Hinweis statt Daten) statt eines asynchronen Hintergrund-Jobs oder eines
+# mehrminuetigen synchronen Requests. Bei den 34 Queries unterhalb des Deckels (zusammen ~1.200
+# Nutzer) bleibt der Export im Sekundenbereich.
+_QUERY_ROLE_ENRICH_MAX_USERS = 200
+
+
+def _enrich_query_users_with_roles(s, ruleset: str, dataset: str, as_of, org_fields: list[str], rows: list[dict]):
+    """Reichert je Query-Zeile (bis zum Deckel _QUERY_ROLE_ENRICH_MAX_USERS) die 'users'-Liste um
+    die belegende(n) Rolle(n)/Profil(e) je Berechtigungsobjekt/TCode-Pruefung an -- EIN
+    Bulk-Cypher-Aufruf je Anforderungsblock ueber ALLE matchenden User dieser Query zusammen (nicht
+    je User einzeln wie /root-cause). Groessere Zeilen werden bewusst uebersprungen (s. Deckel-
+    Kommentar oben); _summary_export_xlsx zeigt dafuer einen Hinweis statt der Aufschluesselung."""
+    for row in rows:
+        users = row.get("users") or []
+        if not users:
+            continue
+        if len(users) > _QUERY_ROLE_ENRICH_MAX_USERS:
+            row["actorsSkipped"] = True
+            continue
+        user_ids = [u["id"] for u in users]
+        actors_by_user: dict[str, list[dict]] = {uid: [] for uid in user_ids}
+        for block in _query_req_blocks(s, ruleset, row["id"]):
+            for rec in s.run(_BULK_SATISFIED_BY_CYPHER, userIds=user_ids, dataset=dataset, asOf=as_of,
+                             object=block["object"], reqs=block["reqs"], orgFields=org_fields):
+                actors_by_user.setdefault(rec["userId"], []).append(
+                    {"actorId": rec["actorId"], "actorType": rec["actorType"], "object": block["label"]})
+        for u in users:
+            u["actors"] = actors_by_user.get(u["id"], [])
 
 
 def _summary_export_csv(rows: list[dict]) -> str:
@@ -2631,16 +2730,26 @@ def _summary_export_csv(rows: list[dict]) -> str:
 
 def _summary_export_xlsx(rows: list[dict], detailed: bool, sheet_title: str) -> bytes:
     """Baut die Ergebnisse-Uebersicht als natives Excel. detailed=True gruppiert je Zeile die
-    Nutzerliste darunter ueber Excels Gliederungs-/Gruppierungsfunktion (eingeklappt, ueber das
-    '+'-Symbol am linken Rand auffaltbar) statt sie ungruppiert in die Tabelle zu quetschen."""
+    Nutzerliste darunter ueber Excels Gliederungs-/Gruppierungsfunktion auf (eingeklappt, ueber das
+    '+'-Symbol am linken Rand auffaltbar); je Nutzer wiederum (falls vorhanden) eine zweite,
+    verschachtelte Gruppierungsebene mit der/den belegenden Rolle(n)/Profil(en) — bei Einzelfiltern
+    inkl. des Berechtigungsobjekts/der TCode-Pruefung, die sie abdecken (s. _query_req_blocks/
+    _enrich_query_users_with_roles bzw. VIA_ROLE/VIA_PROFILE bei SoD-Regeln)."""
     from openpyxl import Workbook
-    from openpyxl.styles import Font
+    from openpyxl.styles import Font, PatternFill
+    # openpyxl setzt bei einem reinen 6-stelligen Hex-String das Alpha-Byte defaultmaessig auf "00"
+    # statt "FF" -- volle ARGB-Angabe hier, damit die Farben nicht von Excels (kulanter) Alpha-
+    # Handhabung fuer Fuellfarben abhaengen.
+    header_fill = PatternFill("solid", fgColor="FFDCE6F1")       # Hauptkopfzeile -- dezentes Blau
+    user_header_fill = PatternFill("solid", fgColor="FFEDF2FB")  # Nutzer-Zwischenueberschrift -- heller
+    actor_header_fill = PatternFill("solid", fgColor="FFF2F2F2") # Rollen/Profil-Zwischenueberschrift -- Grau
     wb = Workbook()
     ws = wb.active
     ws.title = sheet_title
     ws.append(["id", "name", "criticality", "userCount"])
     for cell in ws[1]:
         cell.font = Font(bold=True)
+        cell.fill = header_fill
     if detailed:
         # summaryBelow=False: die Zeile der Query/Regel steht OBEN, die gruppierten Nutzerzeilen
         # folgen darunter (Standard waere umgekehrt, wie bei einer Summenzeile unter Detailzeilen).
@@ -2655,10 +2764,34 @@ def _summary_export_xlsx(rows: list[dict], detailed: bool, sheet_title: str) -> 
                 ws.append(["", "id", "name", "typ", "status"])
                 for cell in ws[ws.max_row]:
                     cell.font = Font(italic=True)
+                    cell.fill = user_header_fill
+                if r.get("actorsSkipped"):
+                    ws.append(["", f"Hinweis: {len(users)} Nutzer — Rollen-/Objekt-Aufschlüsselung "
+                                    f"übersprungen (> {_QUERY_ROLE_ENRICH_MAX_USERS} Treffer, zu "
+                                    f"aufwendig live zu berechnen). Siehe interaktiven Root-Cause je Nutzer."])
+                    for cell in ws[ws.max_row]:
+                        cell.font = Font(italic=True, color="808080")
+                actor_ranges = []
                 for u in users:
                     ws.append(["", u.get("id"), u.get("name"), u.get("typ"), u.get("status")])
+                    actors = u.get("actors") or []
+                    if actors:
+                        astart = ws.max_row + 1
+                        ws.append(["", "", "Rolle/Profil", "Typ", "Objekt"])
+                        for cell in ws[ws.max_row]:
+                            cell.font = Font(italic=True)
+                            cell.fill = actor_header_fill
+                        for a in actors:
+                            ws.append(["", "", a.get("actorId"), a.get("actorType"), a.get("object") or ""])
+                        actor_ranges.append((astart, ws.max_row))
+                # Erst die AEUSSERE Gruppe (Nutzerliste) setzen, DANACH je verschachtelte
+                # Rollen/Profil-Gruppe -- group() ueberschreibt den outlineLevel fuer den gesamten
+                # Bereich, in umgekehrter Reihenfolge wuerde die aeussere Gruppe die innere(n)
+                # wieder auf Level 1 zuruecksetzen (openpyxl kennt kein "mindestens Level X").
                 ws.row_dimensions.group(start, ws.max_row, outline_level=1, hidden=True)
-    widths = {"A": 16, "B": 44, "C": 14, "D": 12, "E": 10}
+                for astart, aend in actor_ranges:
+                    ws.row_dimensions.group(astart, aend, outline_level=2, hidden=True)
+    widths = {"A": 16, "B": 44, "C": 20, "D": 14, "E": 30}
     for col, width in widths.items():
         ws.column_dimensions[col].width = width
     out = io.BytesIO()
@@ -2671,6 +2804,12 @@ def _summary_export_response(s, kind: str, run_id: str, fmt: str, filename_base:
         raise HTTPException(400, f"Unbekanntes Format '{fmt}' (csv|xlsx|xlsx_detailed erwartet)")
     detailed = fmt == "xlsx_detailed"
     rows = _summary_export_rows(s, kind, run_id, detailed)
+    if detailed and kind == "query":
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, r.dataset AS dataset, "
+                    "r.asOf AS asOf", id=run_id).single()
+        org_fields = [rec["field"] for rec in s.run(
+            "MATCH (of:OrgField {dataset:$d}) RETURN of.field AS field", d=run["dataset"])]
+        _enrich_query_users_with_roles(s, run["ruleset"], run["dataset"], run["asOf"], org_fields, rows)
     if fmt == "csv":
         return Response(content=_summary_export_csv(rows), media_type="text/csv; charset=utf-8",
                         headers={"Content-Disposition": f'attachment; filename="{filename_base}_{run_id}.csv"'})
