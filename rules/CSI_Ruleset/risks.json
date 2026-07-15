@@ -5,7 +5,7 @@
     "description": "User is able to create a fictitious asset and execute a depreciation run on the fictitious asset",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -14,7 +14,7 @@
     "description": "User is able to create a fictitious asset and process an invoice on the fictitious asset",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -23,7 +23,7 @@
     "description": "User is able to create a fictitious asset and post a revaluation document on the fictitious asset",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -32,7 +32,7 @@
     "description": "Unauthorized or inappropriate changes to Asset MD can lead to incorrect or fraudulent Asset removals",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -41,7 +41,7 @@
     "description": "User is able to post or change wrong invoices and execute a depreciation run",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -50,7 +50,7 @@
     "description": "Depreciation & Revalution acitivites",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -59,7 +59,7 @@
     "description": "Asset Sales - Scrapping & Revaluation activities",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -68,7 +68,7 @@
     "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -77,7 +77,7 @@
     "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -86,7 +86,7 @@
     "description": "User is able to open an accounting period and post or change an A/P parked document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -95,7 +95,7 @@
     "description": "User is able to open an accounting period and post or change an A/P recurring document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -104,7 +104,7 @@
     "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -113,7 +113,7 @@
     "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -122,7 +122,7 @@
     "description": "User is able to open an accounting period and post or change an A/R parked document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -131,7 +131,7 @@
     "description": "User is able to open an accounting period and post an incoming payment in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -140,7 +140,7 @@
     "description": "User is able to open an accounting period and post or change an A/R recurring document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -149,7 +149,7 @@
     "description": "User is able to open an accounting period and make a mass reversal of posting documents in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -158,7 +158,7 @@
     "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -167,7 +167,7 @@
     "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -176,7 +176,7 @@
     "description": "User is able to open an accounting period and post or change an G/L parked document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -185,7 +185,7 @@
     "description": "User is able to open an accounting period and post or change an G/L recurring document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -194,7 +194,7 @@
     "description": "User is able to create and change a fictitious customers and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -203,7 +203,7 @@
     "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks.\nUser is able to make pay fictitious customer and post/hide wrong payment advice.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -212,7 +212,7 @@
     "description": "Unauthorized or wrong A/P postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -221,7 +221,7 @@
     "description": "Unauthorized or wrong A/P postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -230,7 +230,7 @@
     "description": "Unauthorized or wrong A/P payment runs may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -239,7 +239,7 @@
     "description": "Unauthorized or wrong outgoing payments may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -248,7 +248,7 @@
     "description": "Unauthorized or wrong A/R postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -257,7 +257,7 @@
     "description": "Unauthorized or wrong A/R postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -266,7 +266,7 @@
     "description": "Unauthorized or wrong incoming payments may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -275,7 +275,7 @@
     "description": "Unauthorized or wrong G/L postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -284,7 +284,7 @@
     "description": "Unauthorized or wrong G/L postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -293,7 +293,7 @@
     "description": "Unauthorized or wrong A/P postings of invoices may not be detected during the invoice verification process as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -302,7 +302,7 @@
     "description": "Unauthorized or wrong A/P postings may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -311,7 +311,7 @@
     "description": "Unauthorized or wrong A/P postings may not be detected as the user can create/change fictitious G/L accounts in a company code and post and clear an invcoice, credit memo, outgoing payment and incoming payment.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -320,7 +320,7 @@
     "description": "Unauthorized or wrong A/P payment runs may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -329,7 +329,7 @@
     "description": "Unauthorized or wrong outgoing payments may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -338,7 +338,7 @@
     "description": "Unauthorized or wrong A/R postings may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -347,7 +347,7 @@
     "description": "Unauthorized or wrong A/R postings may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -356,7 +356,7 @@
     "description": "Unauthorized or wrong A/R payment runs may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -365,7 +365,7 @@
     "description": "Unauthorized or wrong incoming payments may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -374,7 +374,7 @@
     "description": "Unauthorized or wrong G/L postings may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -383,7 +383,7 @@
     "description": "Unauthorized or wrong A/P payment runs may not be detected as the user can mass create and mass change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -392,7 +392,7 @@
     "description": "Unauthorized or wrong incoming payments may not be detected as the user can mass create and mass change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -401,7 +401,7 @@
     "description": "User is able to create and change a fictitious customer and post and clear a fraudulent credit note",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -410,7 +410,7 @@
     "description": "User is able to create and change a fictitious customers and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -419,7 +419,7 @@
     "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks.\n\nUser is able to make pay fictitious customer and post/hide wrong payment advice.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -428,7 +428,7 @@
     "description": "User is able to create or change a fictitious customers with wrong reconciliation account and make wrong posting with clearing in GL",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -437,7 +437,7 @@
     "description": "User is able to create and change a fictitious customer and post and clear a fraudulent credit note",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -446,7 +446,7 @@
     "description": "User is able to create and change a fictitious customers and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -455,7 +455,7 @@
     "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks.\n\nUser is able to make pay fictitious customer and post/hide wrong payment advice.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -464,7 +464,7 @@
     "description": "User is able to create or change a fictitious customers with wrong reconciliation account and make wrong posting with clearing in GL",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -473,7 +473,7 @@
     "description": "User is able to create fictitious vendor with wrong reconciliation account and make G/L postings with clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -482,7 +482,7 @@
     "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -491,7 +491,7 @@
     "description": "User is able to open an accounting period and post or change an A/P parked document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -500,7 +500,7 @@
     "description": "User is able to open an accounting period and post or change an A/P recurring document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -509,7 +509,7 @@
     "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -518,7 +518,7 @@
     "description": "User is able to open an accounting period and post or change an A/R document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -527,7 +527,7 @@
     "description": "User is able to open an accounting period and post or change an A/R parked document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -536,7 +536,7 @@
     "description": "User is able to open an accounting period and post an incoming payment in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -545,7 +545,7 @@
     "description": "User is able to open an accounting period and post or change an A/R recurring document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -554,7 +554,7 @@
     "description": "User is able to open an accounting period and make a mass reversal of posting documents in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -563,7 +563,7 @@
     "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -572,7 +572,7 @@
     "description": "User is able to open an accounting period and post or change an G/L document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -581,7 +581,7 @@
     "description": "User is able to open an accounting period and post or change an G/L parked document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -590,7 +590,7 @@
     "description": "User is able to open an accounting period and post or change an G/L recurring document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -599,7 +599,7 @@
     "description": "User is able to open an accounting period and post or change an A/P document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -608,7 +608,7 @@
     "description": "",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -617,7 +617,7 @@
     "description": "User is able to open an accounting period and post or change an AM document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -626,7 +626,7 @@
     "description": "Unauthorized or wrong AM postings may not be detected as the user can create and change fictitious G/L accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -635,7 +635,7 @@
     "description": "Unauthorized or wrong AM postings may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -644,7 +644,7 @@
     "description": "User is able to open an accounting period and post or change an AM document in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -653,7 +653,7 @@
     "description": "User is able to create and change a fictitious customer and post and clear a fraudulent credit note",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -662,7 +662,7 @@
     "description": "User is able to create a fictitious customer or to change an existing customer (unblock) and to broaden the credit limits for that customer. Then unwanted sales orders could be registered again for that customer.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -671,7 +671,7 @@
     "description": "User is able to create and change a fictitious customer and post a fraudulent invoice or credit memo on the fictitious customer",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -680,7 +680,7 @@
     "description": "User is able to create and change a fictitious customer and post wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -689,7 +689,7 @@
     "description": "User is able to create and change a fictitious customer and post and clear a fraudulent invoice or credit memo on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -698,7 +698,7 @@
     "description": "User is able to create and change a fictitious customer and post a parked invoice or credit memo on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -707,7 +707,7 @@
     "description": "User is able to create and change a fictitious customer and post fictitious payments",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -716,7 +716,7 @@
     "description": "User is able to create or change a fictitious customers with wrong reconciliation account and make wrong posting with clearing in GL",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -725,7 +725,7 @@
     "description": "User is able to create and change fictitious customers and maintain backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -734,7 +734,7 @@
     "description": "User is able to create and change fictitious customers and maintain backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -743,7 +743,7 @@
     "description": "User is able to create and change fictitious customers and create billing documents on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -752,7 +752,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent contracts on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -761,7 +761,7 @@
     "description": "User is able to create and change fictitious customers and create fraudulent deliveries on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -770,7 +770,7 @@
     "description": "User is able to create and change fictitious customers and release fraudulent sales orders for billing on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -779,7 +779,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent scheduling agreements on the fictitious customer accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -788,7 +788,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent sales orders on the fictitious customers",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -797,7 +797,7 @@
     "description": "User is able to create a fictitious customer or to change an existing customer (unblock) and to broaden the credit limits for that customer. Then unwanted sales orders could be registered again for that customer.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -806,7 +806,7 @@
     "description": "User is able to create and change a fictitious customer and post a fraudulent invoice or credit memo on the fictitious customer",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -815,7 +815,7 @@
     "description": "User is able to create and change a fictitious customer and post wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -824,7 +824,7 @@
     "description": "User is able to create and change a fictitious customer and post and clear a fraudulent invoice or credit memo on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -833,7 +833,7 @@
     "description": "User is able to create and change a fictitious customer and post fictitious payments",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -842,7 +842,7 @@
     "description": "User is able to create a fictitious customer or to change an existing customer (unblock) and to broaden the credit limits for that customer. Then unwanted sales orders could be registered again for that customer.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -851,7 +851,7 @@
     "description": "User is able to create and change a fictitious customer and post a fraudulent invoice or credit memo on the fictitious customer",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -860,7 +860,7 @@
     "description": "User is able to create and change a fictitious customer and post wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -869,7 +869,7 @@
     "description": "User is able to create and change a fictitious customer and post and clear a fraudulent invoice or credit memo on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -878,7 +878,7 @@
     "description": "User is able to create and change a fictitious customer and post fictitious payments",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -887,7 +887,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and create and change A/P recurring document",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -896,7 +896,7 @@
     "description": "User is able to create and change fraudulent recurring invoices and credit memos on vendor accounts and create and change wrong service entry sheets",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -905,7 +905,7 @@
     "description": "User is able to create and change fraudulent recurring invoices and credit memos on vendor accounts and create and change wrong service entry sheets",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -914,7 +914,7 @@
     "description": "User is able to release a fraudulent downpayment for an invoice by changing bank account number of an existing vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -923,7 +923,7 @@
     "description": "User is able to create a fictitous vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -932,7 +932,7 @@
     "description": "User is able to enter a fraudulent bank account number on an invoice the user is releasing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -941,7 +941,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -950,7 +950,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting and clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -959,7 +959,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -968,7 +968,7 @@
     "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -977,7 +977,7 @@
     "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -986,7 +986,7 @@
     "description": "User is able to enter a fraudulent bank account number in the vendor and release an invoice for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -995,7 +995,7 @@
     "description": "User is able to enter a fraudulent bank account number / change critical data in the vendor and initiate payment by check",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1004,7 +1004,7 @@
     "description": "User is able to create fictitious vendor with wrong reconciliation account and make G/L postings with clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1013,7 +1013,7 @@
     "description": "User is able to create or change a fictitious or unapproved vendor and post goods receipts on purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1022,7 +1022,7 @@
     "description": "User is able to create or change a fictitious or unapproved vendor and create purchase orders on this vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1031,7 +1031,7 @@
     "description": "User is able to release a fraudulent downpayment for an invoice by changing bank account number of an existing vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1040,7 +1040,7 @@
     "description": "User is able to create a fictitous vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1049,7 +1049,7 @@
     "description": "User is able to enter a fraudulent bank account number on an invoice the user is releasing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1058,7 +1058,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1067,7 +1067,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting and clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1076,7 +1076,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1085,7 +1085,7 @@
     "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1094,7 +1094,7 @@
     "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1103,7 +1103,7 @@
     "description": "User is able to enter a fraudulent bank account number in the vendor and release an invoice for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1112,7 +1112,7 @@
     "description": "User is able to enter a fraudulent bank account number in the vendor and initiate payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1121,7 +1121,7 @@
     "description": "User is able to create fictitious vendor with wrong reconciliation account and make G/L postings with clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1130,7 +1130,7 @@
     "description": "User is able to release a fraudulent downpayment for an invoice by changing bank account number of an existing vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1139,7 +1139,7 @@
     "description": "User is able to create a fictitous vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1148,7 +1148,7 @@
     "description": "User is able to enter a fraudulent bank account number on an invoice the user is releasing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1157,7 +1157,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1166,7 +1166,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting and clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1175,7 +1175,7 @@
     "description": "User is able create or change a fictitious vendor or enter a fraudulent bank account number on an invoice the user is posting",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1184,7 +1184,7 @@
     "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1193,7 +1193,7 @@
     "description": "User is able to release a fraudulent payment for an invoice by changing bank account number of the vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1202,7 +1202,7 @@
     "description": "User is able to enter a fraudulent bank account number in the vendor and release an invoice for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1211,7 +1211,7 @@
     "description": "User is able to enter a fraudulent bank account number / change critical data in the vendor and initiate payment by check",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1220,7 +1220,7 @@
     "description": "User is able to create or change a fictitious or unapproved vendor and post goods receipts on purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1229,7 +1229,7 @@
     "description": "User is able to post a vendor downpayment request and post payment advice in account receivable",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1238,7 +1238,7 @@
     "description": "User is able to post and clear a fraudulent customen credit memo and post a request for downpayment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1247,7 +1247,7 @@
     "description": "User is able to maintain payment in accounts payable and accounts receivable",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1256,7 +1256,7 @@
     "description": "User is able to subsequently post downpayment requets and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1265,7 +1265,7 @@
     "description": "User is able to create Vendor advanced payments without supporting postings or documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1274,7 +1274,7 @@
     "description": "User is able to create Vendor advanced payments without supporting postings or documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1283,7 +1283,7 @@
     "description": "User is able to subsequently post downpayment requets and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1292,7 +1292,7 @@
     "description": "User is able to subsequently post vendor invoices or credit memos and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1301,7 +1301,7 @@
     "description": "User is able to subsequently release vendor invoices or credit memos and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1310,7 +1310,7 @@
     "description": "Unauthorized or inappropriate creation of vendor invoices (directly in FI module) / changes to Invoice posting functionality resulting incorrect of unjustified payments of invoices (by check) and increases fraud vulnerability.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1319,7 +1319,7 @@
     "description": "User is able to subsequently post a vendor invoice or credit memo and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1328,7 +1328,7 @@
     "description": "User is able to post and clear vendor invoices or credit memos and create and change invoices and credit memos on customer accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1337,7 +1337,7 @@
     "description": "User is able to subsequently post and clear a vendor invoice or credit memo and create or change parked credit memos and customer invoices in A/R",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1346,7 +1346,7 @@
     "description": "Material errors or misstatements in the financial statement en management reporting due to incomplete recording of assets and liabilities,  increased fraud vulnerability or recording of transactions in the wrong accounting periods.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1355,7 +1355,7 @@
     "description": "Release a non bona-fide purchase order and initiate payment for the order by entering invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1364,7 +1364,7 @@
     "description": "User is able to issue a check and pay blocked invoices which the user has released (via workflow)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1373,7 +1373,7 @@
     "description": "User is able to subsequently release vendor invoices or credit memos and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1382,7 +1382,7 @@
     "description": "User can initiate a payment by creating fictitious credit memos / can pay a frudulent credit memo by issuing checks",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1391,7 +1391,7 @@
     "description": "User is able to subsequently post a customer invoice or credit memo and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1400,7 +1400,7 @@
     "description": "Material errors or misstatements in the financial statement en management reporting due to incomplete recording of assets and liabilities,  increased fraud vulnerability or recording of transactions in the wrong accounting periods.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1409,7 +1409,7 @@
     "description": "User is able to subsequently post a vendor invoice or credit memo and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1418,7 +1418,7 @@
     "description": "Initiate a payment by creating fictitious credit memos",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1427,7 +1427,7 @@
     "description": "User is able to post fraudulent customer invoices or credit memos and post nonexistent payments or reimbursements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1436,7 +1436,7 @@
     "description": "User is able to bypass sales process flow by creating a credit memo or invoice directly in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1445,7 +1445,7 @@
     "description": "User is able to post and clear a fraudulent vendor invoice and post a request for downpayment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1454,7 +1454,7 @@
     "description": "User is able to release invoices in MM and release an unwanted payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1463,7 +1463,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and release vendors invoices or credit memos directly in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1472,7 +1472,7 @@
     "description": "User is able to bypass the MM module and book invoices directly in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1481,7 +1481,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and create and change vendors invoices or credit memos",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1490,7 +1490,7 @@
     "description": "User is able to release invoices in MM and post an invoice directly in Finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1499,7 +1499,7 @@
     "description": "User is able to release a fraudulent payment for an invoice which the user has released",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1508,7 +1508,7 @@
     "description": "User is able to release a blocked invoice (with MR02) and pay that invoice by issuing check",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1517,7 +1517,7 @@
     "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1526,7 +1526,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and create and change vendors invoices or credit memos directly in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1535,7 +1535,7 @@
     "description": "User is able to post and clear fraudulent invoice and release the invoice for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1544,7 +1544,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and create and change and clear vendors invoices or credit memos directly in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1553,7 +1553,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and create and change and make payment of vendors invoices or credit memos",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1562,7 +1562,7 @@
     "description": "User is able to release a fraudulent payment and post a fraudulent recurring document",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1571,7 +1571,7 @@
     "description": "User is able to release a fraudulent payment and post a fraudulent recurring document",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1580,7 +1580,7 @@
     "description": "User is able to subsequently create and change G/L recurring document and create and change A/P recurring document",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1589,7 +1589,7 @@
     "description": "User is able to create fraudulent recurring invoices and credit memos on vendor accounts and enter wrong goods receipts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1598,7 +1598,7 @@
     "description": "User is able to create fictitious purchase orders and maintain G/L recurring entries",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1607,7 +1607,7 @@
     "description": "User is able to open an accounting period and post an outgoing payment in that previous period (circumvent month-end closing procedures)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1616,7 +1616,7 @@
     "description": "Unauthorized or wrong outgoing payments may not be detected as the user can open fictitious G/L accounts in a company code",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1625,7 +1625,7 @@
     "description": "User is able to release a fraudulent payment for a document and subsequently post G/L parked document",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1634,7 +1634,7 @@
     "description": "User is able to perform a fraudulent payment for an invoice which the user has released",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1643,7 +1643,7 @@
     "description": "User is able to create - change - cancel fictitious customer invoices - credit memos and subsquently post fictitious or wrong payment advices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1652,7 +1652,7 @@
     "description": "User is able to create - change - cancel fictitious customer parked invoices - credit memos and subsquently post fictitious or wrong payment advices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1661,7 +1661,7 @@
     "description": "User is able to create fraudulent credit memo and make unwanted A/R payment run",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1670,7 +1670,7 @@
     "description": "User is able to create fraudulent sales orders and make unwanted A/R payment run",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1679,7 +1679,7 @@
     "description": "User is able to release a fraudulent payment for an invoice which the user has posted",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1688,7 +1688,7 @@
     "description": "User is able to release a fraudulent payment for an invoice which the user has posted",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1697,7 +1697,7 @@
     "description": "Unauthorized or inappropriate creation of vendor invoices / changes to Invoice posting functionality resulting incorrect of unjustified payments of invoices (by check) and increases fraud vulnerability.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1706,7 +1706,7 @@
     "description": "User is able to release a fraudulent payment for an invoice which the user has posted",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1715,7 +1715,7 @@
     "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1724,7 +1724,7 @@
     "description": "User is able to release and clear a fraudulent payment for a document the user has posted or changed",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1733,7 +1733,7 @@
     "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1742,7 +1742,7 @@
     "description": "User is able to enter goods receipts and make payments for the related invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1751,7 +1751,7 @@
     "description": "User is able to create a fictitious or incorrect purchase order and release invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1760,7 +1760,7 @@
     "description": "User is able to create a fictitious or incorrect purchase order and release invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1769,7 +1769,7 @@
     "description": "User is able to release purchase orders and release invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1778,7 +1778,7 @@
     "description": "User is able to release a fraudulent payment for a document the user has posted or changed",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1787,7 +1787,7 @@
     "description": "User can enact payment for unauthorized purchased items",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1796,7 +1796,7 @@
     "description": "User is able to create fictitous info records and create purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1805,7 +1805,7 @@
     "description": "User is able to create or change a fictitious or unapproved vendor and post goods receipts on purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1814,7 +1814,7 @@
     "description": "User is able to create or change a fictitious or unapproved vendor and create purchase orders on this vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1823,7 +1823,7 @@
     "description": "User is able to create or change a fictitious or unapproved vendor and create purchase orders on this vendor",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1832,7 +1832,7 @@
     "description": "User is able to maintain backorder processing for sales order and create - change - process inventory counts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1841,7 +1841,7 @@
     "description": "User is able to create and change goods receipts and release invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1850,7 +1850,7 @@
     "description": "User is able to post incorrect goods issues and create inventory counts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1859,7 +1859,7 @@
     "description": "User is able to post incorrect goods issues and clear inventory differences",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1868,7 +1868,7 @@
     "description": "User is able to post incorrect goods issues and create inventory counts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1877,7 +1877,7 @@
     "description": "User is able to post incorrect goods issues and clear inventory differences",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1886,7 +1886,7 @@
     "description": "User is able to post incorrect goods receipts and create inventory counts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1895,7 +1895,7 @@
     "description": "User is able to post incorrect goods receipts and clear inventory differences",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1904,7 +1904,7 @@
     "description": "User is able to post incorrect goods receipts and create inventory counts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1913,7 +1913,7 @@
     "description": "User is able to post incorrect goods receipts and clear inventory differences",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1922,7 +1922,7 @@
     "description": "User is able to post incorrect goods receipts and clear inventory differences",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1931,7 +1931,7 @@
     "description": "User is able to change material documents on goods movements and create inventory counts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1940,7 +1940,7 @@
     "description": "User is able to changematerial documents on goods movements and clear inventory differences in inventory",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1949,7 +1949,7 @@
     "description": "User is able to enter incorrect inventory counts and clear differences.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1958,7 +1958,7 @@
     "description": "User is able to enter incorrect inventory counts and clear differences.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1967,7 +1967,7 @@
     "description": "User is able to create and change a fictitious or incorect purchase order and post goods receipts (other than on POs and production orders)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1976,7 +1976,7 @@
     "description": "User is able to create and change a fictitious or incorect purchase order and post receipts linked to a production order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1985,7 +1985,7 @@
     "description": "User is able to enter fictitious or incorect purchase orders and change material documents (goods receipts) linked to that fictitious P.O.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -1994,7 +1994,7 @@
     "description": "User is able to create a fictitious or incorect purchase order and release that purchase order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2003,7 +2003,7 @@
     "description": "User is able to create a purchase requisition and subsequently the corresponding purchase order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2012,7 +2012,7 @@
     "description": "User is able to create a purchase requisition and subsequently the corresponding purchase order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2021,7 +2021,7 @@
     "description": "Purch unauthorized items and enact payment for them",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2030,7 +2030,7 @@
     "description": "Purch unauth items and hide by not fully receiving order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2039,7 +2039,7 @@
     "description": "Purch unauth items and hide by not fully receiving order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2048,7 +2048,7 @@
     "description": "Purch unauth items and hide by not fully receiving order",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2057,7 +2057,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2066,7 +2066,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2075,7 +2075,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2084,7 +2084,7 @@
     "description": "User is able to create and change a fictitious employee and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2093,7 +2093,7 @@
     "description": "User is able to create and change a MD and maintain Payroll Results",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2102,7 +2102,7 @@
     "description": "User is able to create and change a fictitious employee and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2111,7 +2111,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Master Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2120,7 +2120,7 @@
     "description": "User is able to maintain his/her own personnel control record",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2129,7 +2129,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2138,7 +2138,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2147,7 +2147,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Payroll Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2156,7 +2156,7 @@
     "description": "User is able to create and change a fictitious employee and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2165,7 +2165,7 @@
     "description": "User is able to create and change a MD and maintain Payroll Results",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2174,7 +2174,7 @@
     "description": "User is able to create and change a fictitious employee and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2183,7 +2183,7 @@
     "description": "User is able to create and change a Employee MD and maintain HR Master Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2192,7 +2192,7 @@
     "description": "User is able to maintain his/her own personnel control record",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2201,7 +2201,7 @@
     "description": "User is able to maintain own record and maintain payroll postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2210,7 +2210,7 @@
     "description": "User is able to maintain own record and maintain payroll master data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2219,7 +2219,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2228,7 +2228,7 @@
     "description": "User is able to maintain own record and maintain payroll postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2237,7 +2237,7 @@
     "description": "User is able to maintain own record and to modify payroll runs",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2246,7 +2246,7 @@
     "description": "User is able to maintain own record and to modify payroll runs",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2255,7 +2255,7 @@
     "description": "User is able to maintain own record and maintain payroll master data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2264,7 +2264,7 @@
     "description": "User is able to maintain his/her own personnel control record",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2273,7 +2273,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2282,7 +2282,7 @@
     "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2291,7 +2291,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2300,7 +2300,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2309,7 +2309,7 @@
     "description": "Payroll schemas, Calculation rules, etc. are high impact general settings influencing the payroll cycle and should be limited to Key Users Only.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2318,7 +2318,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2327,7 +2327,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2336,7 +2336,7 @@
     "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2345,7 +2345,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2354,7 +2354,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2363,7 +2363,7 @@
     "description": "Payroll schemas, Calculation rules, etc. are high impact general settings influencing the payroll cycle and should be limited to Key Users Only.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2372,7 +2372,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2381,7 +2381,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2390,7 +2390,7 @@
     "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2399,7 +2399,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2408,7 +2408,7 @@
     "description": "Payroll schemas, Calculation rules, etc. are high impact general settings influencing the payroll cycle and should be limited to Key Users Only.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2417,7 +2417,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2426,7 +2426,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2435,7 +2435,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2444,7 +2444,7 @@
     "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2453,7 +2453,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2462,7 +2462,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2471,7 +2471,7 @@
     "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2480,7 +2480,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2489,7 +2489,7 @@
     "description": "-",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2498,7 +2498,7 @@
     "description": "User is able to create and change his/her own Time data  and maintain HR Payroll Postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2507,7 +2507,7 @@
     "description": "User is able to create and change his/her own Time data  and maintain HR Payroll Results",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2516,7 +2516,7 @@
     "description": "User is able to create and change his/her own Time data  and maintain HR Payroll Runs",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2525,7 +2525,7 @@
     "description": "User is able to create and change his/her own Time data  and maintain HR Master Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2534,7 +2534,7 @@
     "description": "User is able to create and change his/her own Time data  and maintain PCR",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2543,7 +2543,7 @@
     "description": "User is able to create and change Time data  and maintain HR Payroll Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2552,7 +2552,7 @@
     "description": "User is able to create and change Time data  and maintain HR Payroll Postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2561,7 +2561,7 @@
     "description": "User is able to create and change Time data  and delete HR Payroll Results",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2570,7 +2570,7 @@
     "description": "User is able to create and change Time data  and maintain HR Payroll Runs",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2579,7 +2579,7 @@
     "description": "User is able to create and change Time data  and maintain HR Master Data",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2588,7 +2588,7 @@
     "description": "User is able to create and change Time data  and maintain PCR's",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2597,7 +2597,7 @@
     "description": "",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2606,7 +2606,7 @@
     "description": "Unauthorized access to posting runs in HR can lead to incorrect and / or fraudulent posting, eventually jeopardizing the integrity of the General Ledger.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2615,7 +2615,7 @@
     "description": "Wrongly executing the payroll run can result in erroneous and/or fraudulent payments and accounting documents",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2624,7 +2624,7 @@
     "description": "User is able to create and change contracts and rebate agreements and post bank statements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2633,7 +2633,7 @@
     "description": "Cash out on unauthorized bank account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2642,7 +2642,7 @@
     "description": "User is able to create and change contracts and rebate agreement and post and clear G/L postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2651,7 +2651,7 @@
     "description": "User is able to create and change sales conditions and prices and subsequently maintain backorder for purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2660,7 +2660,7 @@
     "description": "User is able to create and change pricing conditions and subsequently maintain customers backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2669,7 +2669,7 @@
     "description": "User is able to create and change pricing conditions and subsequently bill customers with wrong conditions",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2678,7 +2678,7 @@
     "description": "User is able to create and change pricing conditions and subsequently release orders for billing with wrong conditions",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2687,7 +2687,7 @@
     "description": "User is able to create and change pricing conditions and subsequently create and change sales orders to customers with wrong conditions",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2696,7 +2696,7 @@
     "description": "User is able to create and change fictitious customers and maintain backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2705,7 +2705,7 @@
     "description": "User is able to create and change fictitious customers and maintain backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2714,7 +2714,7 @@
     "description": "User is able to create and change fictitious customers and create billing documents on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2723,7 +2723,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent contracts on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2732,7 +2732,7 @@
     "description": "User is able to create and change fictitious customers and create fraudulent deliveries on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2741,7 +2741,7 @@
     "description": "User is able to create and change fictitious customers and release fraudulent sales orders for billing on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2750,7 +2750,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent scheduling agreements on the fictitious customer accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2759,7 +2759,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent sales orders on the fictitious customers",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2768,7 +2768,7 @@
     "description": "User is able to create and change fictitious customers and maintain backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2777,7 +2777,7 @@
     "description": "User is able to create and change fictitious customers and maintain backorders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2786,7 +2786,7 @@
     "description": "User is able to create and change fictitious customers and create billing documents (invoice or credit memo) on the fictitious customer account.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2795,7 +2795,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent contracts on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2804,7 +2804,7 @@
     "description": "User is able to create and change fictitious customers and create fraudulent deliveries on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2813,7 +2813,7 @@
     "description": "User is able to create and change fictitious customers and release fraudulent sales orders for billing on the fictitious customer account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2822,7 +2822,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent scheduling agreements on the fictitious customer accounts",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2831,7 +2831,7 @@
     "description": "User is able to create and change fictitious customers and create or change fraudulent sales orders on the fictitious customers",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2840,7 +2840,7 @@
     "description": "User is able to create and change contracts and rebate agreement and enter A/P postings with clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2849,7 +2849,7 @@
     "description": "User is able to reset credit limit of a customer and subsequently create and change contract or rebates agreements",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2858,7 +2858,7 @@
     "description": "Increased fraud vulnerability, e.g. dummy transactions to window dress order portfolio, unauthorized price modifications and or non timely deliveries, causes damage to the Client Service Relationships",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2867,7 +2867,7 @@
     "description": "User is able to create and change fictitious contracts or rebates agreements and subsequently maintain backorders for purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2876,7 +2876,7 @@
     "description": "User is able to create and change fictitious contracts or rebates agreements and subsequently maintain backorders for sales orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2885,7 +2885,7 @@
     "description": "User is able to create and change fraudulent sales contracts or rebates agreements and create deliveries",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2894,7 +2894,7 @@
     "description": "User is able to create and change fraudulent sales contracts or rebates agreements and subsequently create wrong sales orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2903,7 +2903,7 @@
     "description": "User is able to create and change fictitious customer invoices and subsequently maintain backorders for purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2912,7 +2912,7 @@
     "description": "User is able to maintain back orders and subsequently create and change fictitious customer invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2921,7 +2921,7 @@
     "description": "User is able to create and change fraudulent sales deals and create and change a customer invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2930,7 +2930,7 @@
     "description": "User is able to create and change sales deals and subsequently release orders for billing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2939,7 +2939,7 @@
     "description": "User is able to create and change fictitious deliveries to ship to party and subsequently maintain backorder for purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2948,7 +2948,7 @@
     "description": "User is able to create or change deliveries to include additional goods and subsequently maintain back orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2957,7 +2957,7 @@
     "description": "User is able to create or change deliveries to include additional goods and create and change a fraudulent or incorrect invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2966,7 +2966,7 @@
     "description": "User is able to create or change deliveries to include additional goods and subsequently release orders for billing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2975,7 +2975,7 @@
     "description": "User is able to create and change fraudulent sales promotions and create and change a customer invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2984,7 +2984,7 @@
     "description": "User is able to create and change sales promotions and subsequently release orders for billing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -2993,7 +2993,7 @@
     "description": "User is able to create and change fictitious scheduling agreements and subsequently maintain backorders for purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3002,7 +3002,7 @@
     "description": "User is able to create and change fictitious scheduling agreements and subsequently maintain back orders for sales orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3011,7 +3011,7 @@
     "description": "User is able to create and change fictitious scheduling agreements and subsequently create and change deliveries",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3020,7 +3020,7 @@
     "description": "User is able to create and change fictitious scheduling agreements and subsequently create and change sales orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3029,7 +3029,7 @@
     "description": "User is able to create a fraudulent sales order or change a sales order and create and change a customer invoice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3038,7 +3038,7 @@
     "description": "User is able to create a fraudulent sales order or change a sales order and create and change deliveries to customer  - ship to party",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3047,7 +3047,7 @@
     "description": "Cash management and bank statement processing is a inherent fraud sensitive activity as it deals with cash money, also often staff involved have trusted relationships with banks .",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3056,7 +3056,7 @@
     "description": "User can create fictitious/incorrect delivery and enter payments against these, potentially misappropriating goods.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3065,7 +3065,7 @@
     "description": "User is able to perform activities in purchasing flow and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3074,7 +3074,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3083,7 +3083,7 @@
     "description": "User can create fictitious/incorrect delivery and enter payments against these, potentially misappropriating goods.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3092,7 +3092,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3101,7 +3101,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3110,7 +3110,7 @@
     "description": "User can create fictitious/incorrect billing docs and initiate payments on these",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3119,7 +3119,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3128,7 +3128,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3137,7 +3137,7 @@
     "description": "Unauthorized or inappropriate changes to Delivery document processing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3146,7 +3146,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3155,7 +3155,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3164,7 +3164,7 @@
     "description": "User can release orders for billing and enter payments against these.",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3173,7 +3173,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3182,7 +3182,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3191,7 +3191,7 @@
     "description": "Cash out on unauthorized bank account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3200,7 +3200,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3209,7 +3209,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3218,7 +3218,7 @@
     "description": "Cash out on unauthorized bank account",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3227,7 +3227,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3236,7 +3236,7 @@
     "description": "",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3245,7 +3245,7 @@
     "description": "",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3254,7 +3254,7 @@
     "description": "User is able to perform activities in purchasing flow and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3263,7 +3263,7 @@
     "description": "User is able to perform activities in purchasing flow and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3272,7 +3272,7 @@
     "description": "User is able to perform activities in purchasing flow and post fictitious or wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3281,7 +3281,7 @@
     "description": "User is able to perform activities in purchasing flow and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3290,7 +3290,7 @@
     "description": "User is able to perform activities in purchasing flow and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3299,7 +3299,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3308,7 +3308,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3317,7 +3317,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3326,7 +3326,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3335,7 +3335,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3344,7 +3344,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3353,7 +3353,7 @@
     "description": "User is able to enter billing documents and post fictitious or wrong payment advices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3362,7 +3362,7 @@
     "description": "User is able to bypass sales process flow by creating and clearing a credit memo or invoice directly in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3371,7 +3371,7 @@
     "description": "User is able to create fraudulent credit memo and make unwanted payments",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3380,7 +3380,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3389,7 +3389,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3398,7 +3398,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3407,7 +3407,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3416,7 +3416,7 @@
     "description": "User is able to perform activities in sales flows - delivery process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3425,7 +3425,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3434,7 +3434,7 @@
     "description": "User is able to perform activities in sales flows - billing process and post fictitious or wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3443,7 +3443,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3452,7 +3452,7 @@
     "description": "User is able to perform activities in sales flows - billing process and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3461,7 +3461,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3470,7 +3470,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3479,7 +3479,7 @@
     "description": "User is able to perform activities in sales flows and post fictitious or wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3488,7 +3488,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3497,7 +3497,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3506,7 +3506,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3515,7 +3515,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3524,7 +3524,7 @@
     "description": "User is able to create a fraudulent sales order or change a sales order and create and change a credit memo or invoice to the customer",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3533,7 +3533,7 @@
     "description": "User is able to perform activities in sales flows and post fictitious or wrong payment advice",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3542,7 +3542,7 @@
     "description": "User is able to create a fraudulent sales order or change a sales order and create and change and clear a credit memo or invoice to the customer",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3551,7 +3551,7 @@
     "description": "User is able to perform activities in sales flows and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3560,7 +3560,7 @@
     "description": "User is able to create and change wrong service entry sheet and release an invoice in Finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3569,7 +3569,7 @@
     "description": "User is able to perform activities in purchasing flow and pure financial flows",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3578,7 +3578,7 @@
     "description": "User is able to create fraudulent recurring invoices and credit memos on vendor account and create wrong purchase orders",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3587,7 +3587,7 @@
     "description": "User is able to create and change fraudulent recurring invoices and credit memos on vendor accounts and create and change wrong service entry sheets",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3596,7 +3596,7 @@
     "description": "User is able to post incorrect goods receipts and post incorrect invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3605,7 +3605,7 @@
     "description": "User is able to post incorrect goods receipts and release incorrect invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3614,7 +3614,7 @@
     "description": "User is able to post incorrect goods receipts and post incorrect invoices in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3623,7 +3623,7 @@
     "description": "User is able to post incorrect goods receipts and release incorrect invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3632,7 +3632,7 @@
     "description": "User is able to post incorrect goods receipts and post incorrect invoices (3-way match)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3641,7 +3641,7 @@
     "description": "User is able to post incorrect goods receipts and release incorrect invoices (3-way match)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3650,7 +3650,7 @@
     "description": "User is able to post incorrect goods receipts and post incorrect invoices in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3659,7 +3659,7 @@
     "description": "User is able to post incorrect goods receipts and release incorrect invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3668,7 +3668,7 @@
     "description": "User is able to post incorrect goods receipts and post incorrect invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3677,7 +3677,7 @@
     "description": "User is able to post incorrect goods receipts and release incorrect invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3686,7 +3686,7 @@
     "description": "User is able to post incorrect goods receipts and post incorrect invoices in finance",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3695,7 +3695,7 @@
     "description": "User is able to post incorrect goods receipt and post - parked document",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3704,7 +3704,7 @@
     "description": "User is able to post incorrect goods receipts and release incorrect invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3713,7 +3713,7 @@
     "description": "User is able to change material documents (goods receipts) and post fraudulent invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3722,7 +3722,7 @@
     "description": "User is able to change material documents (goods receipts) and release blocked invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3731,7 +3731,7 @@
     "description": "User is able to change material documents (goods receipts) and post fraudulent invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3740,7 +3740,7 @@
     "description": "User is able to change material documents (goods receipts) and release invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3749,7 +3749,7 @@
     "description": "User is able to create fictitious or incorrect purchase orders and create fraudulent invoices (3-way match)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3758,7 +3758,7 @@
     "description": "User is able to create fictitious or incorrect purchase orders and release fraudulent invoices (3-way match)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3767,7 +3767,7 @@
     "description": "User is able to enter fictitious or incorrect purchase orders and post fraudulent invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3776,7 +3776,7 @@
     "description": "User is able to enter fictitious or incorrect purchase orders and release invoices for payment",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3785,7 +3785,7 @@
     "description": "PO is released. The invoice is directly posted in FI, the 3-way match is bypassed",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3794,7 +3794,7 @@
     "description": "Sales Conditions and Prices AND Sales Orders AND Release Orders for Billing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3803,7 +3803,7 @@
     "description": "A/R Manual Postings AND A/R Incoming Payment Postings AND Customer M.D. (Centrally)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3812,7 +3812,7 @@
     "description": "Deliveries AND A/R Incoming Payment Postings AND Customer M.D. (Centrally)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3821,7 +3821,7 @@
     "description": "Sales Orders AND Deliveries AND A/R Incoming Payment Postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3830,7 +3830,7 @@
     "description": "Sales Orders AND Release Orders for Billing AND A/R Manual Postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3839,7 +3839,7 @@
     "description": "Sales Orders AND Release Orders for Billing AND Deliveries",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3848,7 +3848,7 @@
     "description": "A/P Proposal Run AND A/P Payment Run AND Vendor Master Data (Fin.)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3857,7 +3857,7 @@
     "description": "Purchase Orders AND MM Prices AND Vendor Master Data (Fin.)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3866,7 +3866,7 @@
     "description": "Invoice Verification AND Release Blocked Invoices AND A/P Proposal Run AND A/P Payment Run",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3875,7 +3875,7 @@
     "description": "A/P Manual Postings AND A/P Payment Run AND  Vendor M.D. (Centrally)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3884,7 +3884,7 @@
     "description": "Purch. Orders AND Goods Receipts for Purch. Orders AND Inv. Verification",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3893,7 +3893,7 @@
     "description": "Release Blocked Invoices AND A/P Payment Run AND  Vendor M.D. (Centrally)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3902,7 +3902,7 @@
     "description": "Vendor Downpayment Request AND A/P Outgoing Payment Postings AND A/P Postings with Clearing",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3911,7 +3911,7 @@
     "description": "Invoice Verification AND A/P Payment Run AND Vendor Master Data (Centrally)",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3920,7 +3920,7 @@
     "description": "Vendor M.D. (Centrally) AND Release Purchase Invoices via FB02 AND A/P Payment Run",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3929,7 +3929,7 @@
     "description": "Vendor M.D. (Centrally) AND Release Blocked Invoices via MRBR AND A/P Payment Run",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3938,7 +3938,7 @@
     "description": "A/P Proposal Run AND A/P Payment Run AND A/P Manual Postings",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3947,7 +3947,7 @@
     "description": "A/P Proposal Run AND A/P Payment Run AND Invoice Verification",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   },
   {
@@ -3956,7 +3956,7 @@
     "description": "Goods Receipts for Purchase Orders AND Invoice Verification AND Release Blocked Invoices",
     "comment": "",
     "riskType": "Detection risk",
-    "riskLevel": "Extreme",
+    "riskLevel": "very-critical",
     "riskStatus": "Not mitigated"
   }
 ]

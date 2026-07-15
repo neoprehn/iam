@@ -32,6 +32,16 @@ MERGE (query:Query {key: $ruleset + '|' + q.query})
       query.riskType = coalesce(q.riskType, query.riskType),
       query.riskLevel = coalesce(q.riskLevel, query.riskLevel),
       query.riskStatus = coalesce(q.riskStatus, query.riskStatus),
+      // "Datenschutz", normalisiert wie criticality (analog gewuenscht) -- aus dem Vendor-Rohfeld
+      // gdprClassification (L/M/H/C/V, s. legends.json) abgeleitet, sofern nicht per Overlay
+      // (queries.custom.json) explizit gesetzt. Funktioniert unveraendert in beiden Durchlaeufen
+      // (Vendor/Overlay), da q.gdprClassification im Overlay-Datensatz ohnehin fehlt (dann null
+      // -> CASE liefert null -> faellt auf den bereits gesetzten Graph-Wert zurueck).
+      query.datenschutz = coalesce(q.datenschutz,
+        CASE toUpper(coalesce(q.gdprClassification,''))
+          WHEN 'V' THEN 'very-critical' WHEN 'C' THEN 'critical' WHEN 'H' THEN 'high'
+          WHEN 'M' THEN 'medium' WHEN 'L' THEN 'low' ELSE null END,
+        query.datenschutz),
       query.tcodes = CASE WHEN q.transactions IS NULL THEN query.tcodes
                           ELSE [t IN q.transactions WHERE coalesce(t.tcode,'') <> '' | t.tcode] END
 WITH query, q

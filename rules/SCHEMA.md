@@ -16,7 +16,7 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 | `sod_rules.custom.json` | optional | Overlay: eigene Metadaten-Edits an SoD-Regeln (Query Management, Modus „SoD") |
 | `ruleset.json` | ja | Metadaten + `combinationSemantics` |
 | `legends.json` | ja | Wertelegenden (queryTypes, Klassifizierung, Reason-Codes …) |
-| `risks.json` | optional | nur wo vorhanden (CSI/CSI_BI): Risiko-Objekte (`riskType`/`riskLevel`/`riskStatus`), per `alias`↔`sodRule` verknüpft; Erstbefüllung der gleichnamigen SoD-Regel-Felder (2026-07-15, s. ROADMAP 9.4), Overlay-Edit gewinnt danach immer |
+| `risks.json` | optional | nur wo vorhanden (CSI/CSI_BI/KPMG_R3): Risiko-Objekte (`riskType`/`riskLevel`/`riskStatus`), per `alias`↔`sodRule` verknüpft; Erstbefüllung der gleichnamigen SoD-Regel-Felder (2026-07-15, s. ROADMAP 9.4), Overlay-Edit gewinnt danach immer |
 
 ## Kern-Felder (über ALLE Rulesets identisch — der Loader baut hierauf)
 
@@ -26,15 +26,19 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
   zurueck, solange das so ist) · `queryType` (Scope-Filter, **nicht** Operator)
 - `soxClassification` (roh) · `criticality` (**normalisiert**) · `criticalityRank` (int 5..1)
 - `module` (Prozessbereich, CSI-Vokabular; bei KPMG via CSI-TCode abgeleitet, teils leer)
-- `gdprClassification` · `disregardTcode` (bool) · `multipleRun` (bool)
+- `gdprClassification` (roh, L/M/H/C/V) · `datenschutz` (**normalisiert wie `criticality`**, aus
+  `gdprClassification` abgeleitet sofern nicht per Overlay gesetzt; bisher nur bei CSI/CSI_BI
+  gepflegt, bei KPMG_R3 durchgehend leer) · `disregardTcode` (bool) · `multipleRun` (bool)
 - `authorizations[]`: `{ object, field, andLogic (bool), values (str[]), audit (bool) }`
 - `transactions[]`: `{ tcode, audit (bool), stad (bool) }`
 - `risk` (str, **optional**) · `controls` (str, **optional**) — Freitext: potenzielles Risiko bzw.
   mitigierende Ma&szlig;nahmen, gepflegt &uuml;ber das Query Management (eigene Tabs); bisher in
   keiner Vendor-Quelle vorhanden, daher zunaechst nur ueber das Overlay (s. u.) befuellt.
-- `riskType`/`riskLevel`/`riskStatus` (str, **optional**, feste Wertelisten) — eigene Dimension
-  neben `risk`/`controls`: deckt ein Control das inhärente Risiko ausreichend ab? Nur über das
-  Overlay gepflegt (keine Vendor-Quelle für Queries); Dropdown im „Risiko"-Tab.
+- `riskType`/`riskLevel`/`riskStatus` (str, **optional**, feste Wertelisten; `riskLevel` seit
+  2026-07-15 auf dieselbe Konvention wie `criticality` umgestellt: `very-critical/critical/high/
+  medium/low`) — eigene Dimension neben `risk`/`controls`: deckt ein Control das inhärente Risiko
+  ausreichend ab? Nur über das Overlay gepflegt (keine Vendor-Quelle für Queries); Dropdown im
+  „Risiko"-Tab.
 
 **SoD-Regel** (`sod_rules.json[]`):
 - `sodRule` (str, ID) · `description` (Langbezeichnung, bei KPMG oft ein ganzer Satz inkl.

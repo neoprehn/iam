@@ -106,10 +106,12 @@
      ueber die Dropdowns in der Detailansicht. Farben per color-mix() aus den Theme-Variablen
      abgeleitet (dark/light passt sich automatisch an), feste Akzenttoene fuer die kategorialen
      Werte (riskType) ohne natuerliche Ampel-Bedeutung. */
-  .badge.risklevel-extreme { background:color-mix(in srgb, var(--crit) 20%, transparent); color:var(--crit); border-color:var(--crit); }
+  .badge.risklevel-verycritical { background:color-mix(in srgb, #ff5c5c 20%, transparent); color:#ff5c5c; border-color:#ff5c5c; }
+  .badge.risklevel-critical { background:color-mix(in srgb, #ff7a66 20%, transparent); color:#ff7a66; border-color:#ff7a66; }
   .badge.risklevel-high { background:color-mix(in srgb, #ffa552 20%, transparent); color:#ffa552; border-color:#ffa552; }
   .badge.risklevel-medium { background:color-mix(in srgb, #f5c451 20%, transparent); color:#f5c451; border-color:#f5c451; }
-  .badge.risklevel-low { background:color-mix(in srgb, var(--ok) 20%, transparent); color:var(--ok); border-color:var(--ok); }
+  .badge.risklevel-low { background:color-mix(in srgb, #7bd690 20%, transparent); color:#7bd690; border-color:#7bd690; }
+  .badge-sm { font-size:10px; padding:1px 6px; }
   .badge.risktype-detection { background:color-mix(in srgb, #2f9e97 20%, transparent); color:#2f9e97; border-color:#2f9e97; }
   .badge.risktype-inherent { background:color-mix(in srgb, #b98900 20%, transparent); color:#b98900; border-color:#b98900; }
   .badge.risktype-control { background:color-mix(in srgb, #8a5cf6 20%, transparent); color:#8a5cf6; border-color:#8a5cf6; }
@@ -118,6 +120,8 @@
   .badge.riskstatus-partlymitigated { background:color-mix(in srgb, #f5c451 20%, transparent); color:#f5c451; border-color:#f5c451; }
   .badge.riskstatus-mitigated { background:color-mix(in srgb, var(--ok) 20%, transparent); color:var(--ok); border-color:var(--ok); }
   .risk-badges { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+  .li-head { display:flex; align-items:baseline; justify-content:space-between; gap:6px; }
+  .risk-badges-top { display:flex; flex-wrap:wrap; gap:3px; justify-content:flex-end; flex-shrink:0; }
   .empty { color:var(--muted); padding:40px; text-align:center; }
   .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
     border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
@@ -235,6 +239,12 @@
                 <option value="very-critical">very critical</option><option value="critical">critical</option>
                 <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
+            <div><label for="amDatenschutz">Datenschutz</label>
+              <select id="amDatenschutz">
+                <option value="">&ndash;</option>
+                <option value="very-critical">very critical</option><option value="critical">critical</option>
+                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
+              </select></div>
             <div><label for="amModule">Modul</label><input id="amModule" /></div>
           </div>
           <label for="amQueryType">Query-Typ</label>
@@ -269,8 +279,8 @@
             <div><label for="amRiskLevel">Risikostufe</label>
               <select id="amRiskLevel">
                 <option value="">&ndash;</option>
-                <option value="Extreme">Extreme</option><option value="High">High</option>
-                <option value="Medium">Medium</option><option value="Low">Low</option>
+                <option value="very-critical">very critical</option><option value="critical">critical</option>
+                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="amRiskStatus">Status</label>
               <select id="amRiskStatus">
@@ -342,8 +352,8 @@
             <div><label for="srRiskLevel">Risikostufe</label>
               <select id="srRiskLevel">
                 <option value="">&ndash;</option>
-                <option value="Extreme">Extreme</option><option value="High">High</option>
-                <option value="Medium">Medium</option><option value="Low">Low</option>
+                <option value="very-critical">very critical</option><option value="critical">critical</option>
+                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="srRiskStatus">Status</label>
               <select id="srRiskStatus">
@@ -464,15 +474,18 @@ function matchesSearch(q, term) {
 // in der Detailsicht (tab-risiko/tab-srrisiko). Eigene Dimension von der Kritikalitaet: die
 // beurteilt, ob Controls das inherente Risiko ausreichend mitigieren -- Kritikalitaet selbst
 // materialisiert sich erst, wenn mindestens ein User tatsaechlich den Treffer hat.
-const RISK_LEVEL_CLASS = { Extreme: 'risklevel-extreme', High: 'risklevel-high', Medium: 'risklevel-medium', Low: 'risklevel-low' };
+const RISK_LEVEL_CLASS = { 'very-critical': 'risklevel-verycritical', critical: 'risklevel-critical', high: 'risklevel-high', medium: 'risklevel-medium', low: 'risklevel-low' };
+const RISK_LEVEL_LABEL = { 'very-critical': 'very critical', critical: 'critical', high: 'high', medium: 'medium', low: 'low' };
 const RISK_TYPE_CLASS = { 'Detection risk': 'risktype-detection', 'Inherent risk': 'risktype-inherent', 'Internal control risk': 'risktype-control' };
 const RISK_STATUS_CLASS = { 'Not assessed': 'riskstatus-notassessed', 'Not mitigated': 'riskstatus-notmitigated', 'Partly mitigated': 'riskstatus-partlymitigated', 'Mitigated': 'riskstatus-mitigated' };
-function riskBadgesHtml(item) {
+function riskBadgesHtml(item, compact) {
+  const cls = compact ? 'badge badge-sm' : 'badge';
   const parts = [];
-  if (item.riskLevel) parts.push(`<span class="badge ${RISK_LEVEL_CLASS[item.riskLevel] || ''}">${item.riskLevel}</span>`);
-  if (item.riskType) parts.push(`<span class="badge ${RISK_TYPE_CLASS[item.riskType] || ''}">${item.riskType}</span>`);
-  if (item.riskStatus) parts.push(`<span class="badge ${RISK_STATUS_CLASS[item.riskStatus] || ''}">${item.riskStatus}</span>`);
-  return parts.length ? `<div class="risk-badges">${parts.join('')}</div>` : '';
+  if (item.riskLevel) parts.push(`<span class="${cls} ${RISK_LEVEL_CLASS[item.riskLevel] || ''}">${RISK_LEVEL_LABEL[item.riskLevel] || item.riskLevel}</span>`);
+  if (item.riskType) parts.push(`<span class="${cls} ${RISK_TYPE_CLASS[item.riskType] || ''}">${item.riskType}</span>`);
+  if (item.riskStatus) parts.push(`<span class="${cls} ${RISK_STATUS_CLASS[item.riskStatus] || ''}">${item.riskStatus}</span>`);
+  if (!parts.length) return '';
+  return compact ? `<span class="risk-badges-top">${parts.join('')}</span>` : `<div class="risk-badges">${parts.join('')}</div>`;
 }
 function renderQueryList() {
   const term = $('amSearch').value.trim().toLowerCase();
@@ -485,7 +498,7 @@ function renderQueryList() {
     const li = document.createElement('li');
     li.className = q.id === selectedId ? 'active' : '';
     const name = q.shortDescription || q.description || '';
-    li.innerHTML = `<b>${q.id}</b>${q.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}<br><small>${name}</small>${riskBadgesHtml(q)}`;
+    li.innerHTML = `<div class="li-head"><span><b>${q.id}</b>${q.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}</span>${riskBadgesHtml(q, true)}</div><small>${name}</small>`;
     li.onclick = () => selectQuery(q.id);
     ul.appendChild(li);
   });
@@ -510,6 +523,7 @@ async function selectQuery(id) {
   $('amShortDescription').value = q.shortDescription || '';
   $('amDescription').value = q.description || '';
   $('amCriticality').value = q.criticality || '';
+  $('amDatenschutz').value = q.datenschutz || '';
   $('amModule').value = q.module || '';
   $('amQueryType').value = q.queryType || '';
   $('amDisregardTcode').checked = !!q.disregardTcode;
@@ -557,7 +571,7 @@ function renderSodList() {
     const li = document.createElement('li');
     li.className = r.id === selectedSodId ? 'active' : '';
     const name = r.shortDescription || r.description || '';
-    li.innerHTML = `<b>${r.id}</b>${r.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}<br><small>${name}</small>${riskBadgesHtml(r)}`;
+    li.innerHTML = `<div class="li-head"><span><b>${r.id}</b>${r.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}</span>${riskBadgesHtml(r, true)}</div><small>${name}</small>`;
     li.onclick = () => selectSodRule(r.id);
     ul.appendChild(li);
   });
@@ -653,7 +667,7 @@ function setDirty(v) {
 }
 ['amShortDescription', 'amDescription', 'amModule', 'amQueryType', 'amRisk', 'amControls']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
-['amCriticality', 'amRiskType', 'amRiskLevel', 'amRiskStatus']
+['amCriticality', 'amDatenschutz', 'amRiskType', 'amRiskLevel', 'amRiskStatus']
   .forEach(id => $(id).addEventListener('change', () => setDirty(true)));
 $('amDisregardTcode').addEventListener('change', () => setDirty(true));
 
@@ -662,6 +676,7 @@ function formFields() {
     shortDescription: $('amShortDescription').value.trim() || null,
     description: $('amDescription').value.trim() || null,
     criticality: $('amCriticality').value || null,
+    datenschutz: $('amDatenschutz').value || null,
     module: $('amModule').value.trim() || null,
     queryType: $('amQueryType').value.trim() || null,
     disregardTcode: $('amDisregardTcode').checked,

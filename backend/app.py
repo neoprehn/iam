@@ -150,15 +150,30 @@ def ensure_custom_queries_file(ruleset: str) -> Path:
     return custom_path
 
 
+# Rohcodes des Vendor-Felds gdprClassification (L/M/H/C/V, s. legends.json je Ruleset) ->
+# dieselbe Wertekonvention wie criticality -- "Datenschutz" soll laut Nutzerwunsch analog zu
+# Kritikalitaet eingestuft werden (gleiche 5 Stufen, gleiche Badge-Farben).
+_GDPR_CODE_TO_LEVEL = {"V": "very-critical", "C": "critical", "H": "high", "M": "medium", "L": "low"}
+
+
 def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     """Vendor-Queries + Overlay, Overlay-Felder gewinnen je id. Gibt (id -> effektive Query,
     Menge der STRUKTURELL eigenen ids) zurueck — 'eigen' heisst hier: komplett neue/abgeleitete
     Query (kein Vendor-Gegenstueck) ODER der Aufbau (authorizations/transactions) wurde
     ueberschrieben. Reine Metadaten-Ergaenzungen (Kurzbezeichnung, Risiko, Controls, ...) auf
     einer bestehenden Vendor-Query zaehlen NICHT als 'eigen' (s. Nutzerfeedback: das ist nur
-    eine Info-Ergaenzung, keine inhaltliche Aenderung der Query)."""
+    eine Info-Ergaenzung, keine inhaltliche Aenderung der Query).
+
+    'datenschutz' (normalisiert wie criticality) wird -- falls noch nicht per Overlay gesetzt --
+    aus dem vorhandenen Vendor-Rohfeld gdprClassification (L/M/H/C/V) vorbefuellt; Rulesets ohne
+    gepflegte gdprClassification (z. B. KPMG_R3, dort ueberall leer) bleiben unbefuellt."""
     vendor_path, custom_path = _ruleset_paths(ruleset)
     merged = {q["query"]: dict(q) for q in _load_json_list(vendor_path)}
+    for q in merged.values():
+        if q.get("datenschutz") is None:
+            lvl = _GDPR_CODE_TO_LEVEL.get((q.get("gdprClassification") or "").strip().upper())
+            if lvl:
+                q["datenschutz"] = lvl
     custom_ids = set()
     for c in _load_json_list(custom_path):
         qid = c["query"]
@@ -2121,6 +2136,7 @@ def admin_list_queries(ruleset: str):
              "module": q.get("module"), "queryType": q.get("queryType"),
              "disregardTcode": bool(q.get("disregardTcode", False)),
              "riskType": q.get("riskType"), "riskLevel": q.get("riskLevel"), "riskStatus": q.get("riskStatus"),
+             "datenschutz": q.get("datenschutz"),
              "custom": qid in custom_ids}
             for qid, q in sorted(merged.items())]
 
@@ -2156,6 +2172,7 @@ class QueryEditReq(BaseModel):
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
+    datenschutz: str | None = None
 
 
 @app.put("/admin/rulesets/{ruleset}/queries/{queryId}")
@@ -2192,6 +2209,7 @@ class QueryDeriveReq(BaseModel):
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
+    datenschutz: str | None = None
 
 
 @app.post("/admin/rulesets/{ruleset}/queries/derive")
@@ -2211,7 +2229,8 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     new_q["query"] = req.newId
     new_q["derivedFrom"] = req.fromId
     for field in ("description", "shortDescription", "criticality", "module", "queryType",
-                  "disregardTcode", "risk", "controls", "riskType", "riskLevel", "riskStatus"):
+                  "disregardTcode", "risk", "controls", "riskType", "riskLevel", "riskStatus",
+                  "datenschutz"):
         v = getattr(req, field)
         if v is not None:
             new_q[field] = v

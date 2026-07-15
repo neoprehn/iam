@@ -229,7 +229,8 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
   - **Umfang bewusst getrennt von Kritikalität** (Nutzer-Entscheidung): kein automatisches Ableiten von
     `criticality` aus `riskLevel`, um nicht pauschal alle CSI-Regeln als „Extreme" erscheinen zu
     lassen, bevor eine echte Bewertung stattgefunden hat.
-  - **Ruleset-Scope:** universelle, fest hinterlegte Wertelisten (`Extreme/High/Medium/Low`,
+  - **Ruleset-Scope:** universelle, fest hinterlegte Wertelisten (`riskLevel` seit 2026-07-15 auf die
+    Kritikalitäts-Namenskonvention umgestellt: `very-critical/critical/high/medium/low`, s. u.;
     `Detection risk/Inherent risk/Internal control risk`, `Not assessed/Not mitigated/Partly
     mitigated/Mitigated`) für **alle** Rulesets gleich (Nutzer-Entscheidung) — nicht aus
     `legends.json` gelesen (das hätte KPMG_R3 ausgeschlossen, dessen `legends.json` diese Schlüssel
@@ -260,13 +261,45 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
     CSI) jetzt ebenfalls angelegt: neue `rules/KPMG_R3/risks.json` (22 SoD-Regeln) + `riskLevel` in
     `rules/KPMG_R3/queries.custom.json` ergänzt (604 Queries, bestehende `shortDescription`-Einträge
     unangetastet gemergt, nicht überschrieben). **Anders als bei CSI kein Platzhalter**, sondern aus
-    der bei KPMG bereits vorhandenen `criticality` abgeleitet (`very-critical`/`critical`→`Extreme`,
-    `high`→`High`, `medium`→`Medium`, `low`→`Low`) — nur als Startwert gedacht, `riskType`/
-    `riskStatus` bewusst leer für die manuelle Verfeinerung im Editor. Für Queries gibt es (anders
+    der bei KPMG bereits vorhandenen `criticality` 1:1 übernommen (identische 5-Stufen-Skala, s.
+    Umbenennung unten) — nur als Startwert gedacht, `riskType`/`riskStatus` bewusst leer für die
+    manuelle Verfeinerung im Editor. Für Queries gibt es (anders
     als für SoD-Regeln) keinen alias-basierten Seed-Mechanismus — dort direkt in die bestehende
     Overlay-Datei geschrieben statt eine neue Datei-Konvention einzuführen (kein zweiter Anwendungs-
     fall dafür in Sicht). Verifiziert: 22/22 SoD-Regeln bzw. 604/604 Queries mit `riskLevel`,
     bestehende `shortDescription`-Werte bei allen 600 vorher schon befüllten Queries unverändert.
+- [x] **Datenschutz-Feld + riskLevel-Umbenennung + Badge-Reposition** (2026-07-15, Folgeauftrag direkt
+  im Anschluss an die Risiko-Metadaten oben): beim Sichten eines Einzelfilters fielen dem Nutzer drei
+  Dinge auf.
+  - **Neues Feld „Datenschutz"** in den Query-Stammdaten (zwischen Kritikalität und Modul,
+    `frontend/admin.html` `#amDatenschutz`), gleiche 5-stufige Skala wie Kritikalität. Vorbefüllt aus
+    dem bisher **toten** Vendor-Rohfeld `gdprClassification` (L/M/H/C/V, s. `legends.json`) — analog
+    zum `risks.json`-Fund oben war auch dieses Feld seit jeher in den Rohdaten vorhanden (CSI: 368×
+    `C`, 363× `L`; KPMG_R3: durchgehend leer), aber nirgends geladen. Normalisierung + Coalesce-Logik
+    an **beiden** bekannten Stellen verdrahtet (`_merged_queries()` in `backend/app.py` **und**
+    `cypher/ruleset/load_ruleset.cypher`) — dieselbe Lehre wie beim `risks.json`-Fund: nur die
+    Python-Merge-Ebene ist für den Editor zwingend nötig, die Cypher-Ebene hält den Graphen trotzdem
+    konsistent. Nur für Queries (SoD hat kein Modul-Feld und keine Vendor-Datenschutz-Quelle).
+  - **riskLevel konsequent umbenannt** (`Extreme/High/Medium/Low` → `very-critical/critical/high/
+    medium/low`, identisch zur Kritikalitäts-Konvention): Dropdown-Optionen (Query- **und**
+    SoD-Editor), CSS-Klassen (`.badge.risklevel-*`, jetzt mit den exakten `CRIT_COLOR`-Hex-Werten aus
+    `frontend/index.html` für echte Farbkonsistenz statt Theme-Variablen), JS-Mapping
+    (`RISK_LEVEL_CLASS`/`RISK_LEVEL_LABEL`) sowie **alle bereits gesetzten Daten** migriert:
+    `rules/CSI_Ruleset/risks.json` + `rules/CSI_BI/risks.json` (je 440 Einträge, alle `Extreme` →
+    `very-critical`), `rules/KPMG_R3/risks.json` (17 `Extreme`/5 `High` → `very-critical`/`high`) und
+    `rules/KPMG_R3/queries.custom.json` (604 Einträge — da die neue Skala jetzt 1:1 der Kritikalität
+    entspricht, keine Kollaps-Logik mehr nötig: `riskLevel` direkt aus der Vendor-`criticality` der
+    jeweiligen Query kopiert statt wie zuvor auf 4 Stufen verdichtet). Sorgfalt wie beim ursprünglichen
+    KPMG-Seed: die 600 echten `shortDescription`-Werte in `queries.custom.json` per Skript verifiziert
+    unverändert (byte-identisch vor/nach der Migration).
+  - **Risiko-Badge in der Listenzeile an die Kopfzeile verschoben** (oben rechts neben der ID, statt
+    darunter) und verkleinert (`.badge-sm`, neue `.li-head`-Flex-Zeile, `riskBadgesHtml(item, compact)`
+    mit kompaktem Modus) — betrifft Query- und SoD-Liste gleichermaßen.
+  - Mit Playwright gegen den laufenden Container verifiziert: Feldposition, umbenannte
+    Dropdown-Werte (Query+SoD), Badge-Layout/-Farbe per Screenshot, Speichern-Persistenz-Roundtrip
+    für Datenschutz (Testwert danach wieder aus dem Overlay entfernt). Migrierte API-Werte gegen die
+    erwarteten Zähler geprüft (z. B. CSI: 368 `critical`/363 `low`; KPMG_R3 `riskLevel` == `criticality`
+    für alle 604 Queries).
 - [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
   und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
   mitführen (später für Heatmap-Gewichtung).
