@@ -166,7 +166,12 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
 
     'datenschutz' (normalisiert wie criticality) wird -- falls noch nicht per Overlay gesetzt --
     aus dem vorhandenen Vendor-Rohfeld gdprClassification (L/M/H/C/V) vorbefuellt; Rulesets ohne
-    gepflegte gdprClassification (z. B. KPMG_R3, dort ueberall leer) bleiben unbefuellt."""
+    gepflegte gdprClassification (z. B. KPMG_R3, dort ueberall leer) bleiben unbefuellt.
+
+    Zusaetzliche Schicht ZWISCHEN Vendor und Overlay: query_risks.json (optional, je query-ID,
+    s. rules/SCHEMA.md) liefert riskType/riskLevel/riskStatus als Erstbefuellung -- analog zur
+    risks.json-Ebene bei SoD-Regeln (_merged_sodrules), nur wenn das Feld noch nicht gesetzt ist
+    (Overlay-Edit gewinnt immer)."""
     vendor_path, custom_path = _ruleset_paths(ruleset)
     merged = {q["query"]: dict(q) for q in _load_json_list(vendor_path)}
     for q in merged.values():
@@ -174,6 +179,13 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
             lvl = _GDPR_CODE_TO_LEVEL.get((q.get("gdprClassification") or "").strip().upper())
             if lvl:
                 q["datenschutz"] = lvl
+    rdir = ruleset_dir(ruleset)
+    for rk in (_load_ruleset_query_risks(rdir) if rdir else []):
+        qid = rk.get("query")
+        if qid in merged:
+            for f in ("riskType", "riskLevel", "riskStatus"):
+                if merged[qid].get(f) is None:
+                    merged[qid][f] = rk.get(f)
     custom_ids = set()
     for c in _load_json_list(custom_path):
         qid = c["query"]
@@ -186,11 +198,22 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     return merged, custom_ids
 
 
-def _load_ruleset_risks(rdir: str) -> list[dict]:
-    """Optionale risks.json (CSI-nativ: Risiko-Objekte je SoD-Regel-Alias, s. rules/SCHEMA.md) --
-    nicht jedes Ruleset hat eine (KPMG_R3 z. B. nicht); [] wenn nicht vorhanden."""
-    path = RULES_DIR / rdir / "risks.json"
+def _load_ruleset_json_optional(rdir: str, filename: str) -> list[dict]:
+    """Optionale JSON-Datei im Ruleset-Ordner; [] wenn nicht vorhanden (nicht jedes Ruleset
+    pflegt jede optionale Datei, s. rules/SCHEMA.md)."""
+    path = RULES_DIR / rdir / filename
     return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else []
+
+
+def _load_ruleset_risks(rdir: str) -> list[dict]:
+    """Optionale risks.json (Risiko-Objekte je SoD-Regel-Alias, s. rules/SCHEMA.md)."""
+    return _load_ruleset_json_optional(rdir, "risks.json")
+
+
+def _load_ruleset_query_risks(rdir: str) -> list[dict]:
+    """Optionale query_risks.json (Risiko-Objekte je Query-ID, analog zu risks.json bei SoD-Regeln,
+    s. rules/SCHEMA.md)."""
+    return _load_ruleset_json_optional(rdir, "query_risks.json")
 
 
 def reload_ruleset(ruleset: str):
@@ -199,7 +222,8 @@ def reload_ruleset(ruleset: str):
     ensure_custom_sodrules_file(ruleset)
     with driver.session() as s:
         run_file(s, "ruleset/load_ruleset.cypher",
-                {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
+                {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir),
+                 "queryRisks": _load_ruleset_query_risks(rdir)})
 
 
 def jsonable(v):
@@ -441,7 +465,8 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
             ensure_custom_queries_file(ruleset)    # queries.custom.json muss existieren (apoc.load.json)
             ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
             run_file(s, "ruleset/load_ruleset.cypher",
-                    {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
+                    {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir),
+                     "queryRisks": _load_ruleset_query_risks(rdir)})
 
         elif phase == "materialize":
             _run_phase(s, job_id, phase="materialize", step_label=step_prefix + "materialize",

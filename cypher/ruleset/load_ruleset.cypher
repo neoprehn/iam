@@ -51,6 +51,18 @@ MERGE (ar:AuthReq {key: query.key + '|' + au.object + '|' + au.field})
   SET ar.values = au.values, ar.andLogic = coalesce(au.andLogic, false)
 MERGE (query)-[:REQUIRES]->(ar);
 
+// --- Risiko-Stammdaten aus query_risks.json vorbefuellen (optional, analog zu risks.json bei
+// SoD-Regeln weiter unten) -------------------------------------------------------------------
+// query_risks.json existiert nur, wenn schon initial angelegt (s. rules/SCHEMA.md); $queryRisks
+// ist [] wenn nicht vorhanden. Verknuepfung ueber query == Query.id. coalesce mit query.riskX
+// ZUERST: ein bereits per Overlay (queries.custom.json) gesetzter Wert gewinnt immer -- die Datei
+// liefert nur den Erstbefuellungs-Wert, keinen erzwungenen Reset bei Re-Import.
+UNWIND $queryRisks AS qrk
+MATCH (query:Query {key: $ruleset + '|' + qrk.query})
+SET query.riskType = coalesce(query.riskType, qrk.riskType),
+    query.riskLevel = coalesce(query.riskLevel, qrk.riskLevel),
+    query.riskStatus = coalesce(query.riskStatus, qrk.riskStatus);
+
 // --- SoD-Regeln + Variablen -> Query ---
 // Zwei Durchlaeufe wie bei Queries oben: erst die Vendor-Datei (sod_rules.json), danach das
 // optionale Overlay (sod_rules.custom.json) — eigene Metadaten-Edits (Kurzbezeichnung/
@@ -77,9 +89,10 @@ UNWIND keys(coalesce(s.variables, {})) AS var
 MATCH (q:Query {key: $ruleset + '|' + s.variables[var]})
 MERGE (rule)-[:USES {var: var}]->(q);
 
-// --- Risiko-Stammdaten aus risks.json vorbefuellen (CSI-nativ, optional) -------------------
-// risks.json existiert nur bei manchen Rulesets (CSI/CSI_BI, s. rules/SCHEMA.md); $risks ist []
-// wenn nicht vorhanden (backend/app.py). Verknuepfung ueber alias == SoDRule.id. coalesce mit
+// --- Risiko-Stammdaten aus risks.json vorbefuellen (optional, s. rules/SCHEMA.md) -----------
+// risks.json existiert nur, wenn schon initial angelegt (aktuell bei allen drei Rulesets, aber
+// weiterhin optional); $risks ist [] wenn nicht vorhanden (backend/app.py). Verknuepfung ueber
+// alias == SoDRule.id. coalesce mit
 // rule.riskX ZUERST: ein bereits per Overlay (sod_rules.custom.json) gesetzter Wert gewinnt immer
 // -- risks.json liefert nur den Erstbefuellungs-Wert, keinen erzwungenen Reset bei Re-Import.
 UNWIND $risks AS rk
