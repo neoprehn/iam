@@ -220,6 +220,44 @@
   .fg-track { position:relative; height:16px; background:var(--line); border-radius:4px; opacity:.35; }
   .fg-bar { position:absolute; left:0; top:0; height:100%; border-radius:0 4px 4px 0; }
   .fg-count { text-align:right; font-variant-numeric:tabular-nums; font-size:12px; }
+  /* Baum (Ebene 1/2/3: Regel-Query -> User -> Rolle/Profil), Akkordeon-Verhalten (immer nur ein
+     Geschwisterzweig je Ebene offen). Ebene 1 uebernimmt bewusst dieselbe Balkenoptik wie das
+     bestehende Balkendiagramm (Farbe/Laenge/Sortierung), nur zusaetzlich mit Chevron aufklappbar. */
+  #findingsTree { display:flex; flex-direction:column; gap:2px; }
+  .ft-row1 { display:grid; grid-template-columns:16px 200px 1fr 52px auto auto; align-items:center;
+    gap:10px; padding:4px 6px; border-radius:6px; cursor:pointer; }
+  .ft-row1:hover, .ft-row1:focus { background:rgba(76,139,245,.08); outline:none; }
+  .ft-chevron { display:inline-block; width:14px; text-align:center; color:var(--muted);
+    transition:transform .15s; flex-shrink:0; }
+  .ft-chevron.open { transform:rotate(90deg); }
+  .ft-table-link { font-size:11px; color:var(--muted); text-decoration:underline; cursor:pointer;
+    white-space:nowrap; }
+  .ft-table-link:hover { color:var(--accent); }
+  .ft-l2-wrap { margin:2px 0 6px 32px; padding-left:12px; border-left:2px solid var(--line); }
+  .ft-l2-filter { width:220px; margin:4px 0 6px; padding:4px 8px; font-size:12px; }
+  .ft-l2-row { display:flex; align-items:center; gap:8px; padding:3px 6px; border-radius:6px;
+    cursor:pointer; font-size:12px; }
+  .ft-l2-row:hover, .ft-l2-row:focus { background:rgba(76,139,245,.08); outline:none; }
+  .ft-l2-row .ft-chevron { width:12px; font-size:11px; }
+  .ft-l3-wrap { margin:2px 0 6px 26px; padding-left:12px; border-left:2px solid var(--line); }
+  .ft-chip { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:12px;
+    font-size:11px; margin:2px 6px 2px 0; }
+  .ft-chip-user { background:color-mix(in srgb, var(--ok) 15%, transparent); color:var(--ok); }
+  .ft-chip-role { background:color-mix(in srgb, var(--accent) 15%, transparent); color:var(--accent);
+    cursor:pointer; }
+  .ft-chip-role:hover { filter:brightness(1.15); }
+  .ft-chip-profile { background:color-mix(in srgb, #8a5cf6 15%, transparent); color:#8a5cf6; }
+  .ft-muted-row { font-size:12px; color:var(--muted); padding:3px 6px; }
+  .ft-fullview-link { font-size:11px; color:var(--accent); text-decoration:underline; cursor:pointer;
+    margin-left:8px; }
+  #ftfvZoom { position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:5;
+    writing-mode:vertical-lr; direction:rtl; -webkit-appearance:slider-vertical; appearance:slider-vertical;
+    width:22px; height:190px; cursor:pointer; accent-color:var(--accent); }
+  #ftfvGraphWrap:fullscreen { background:var(--bg); padding:16px; }
+  #ftfvGraphWrap:fullscreen .ft-fv-graph-box { height:calc(100vh - 32px); }
+  .ft-fv-graph-box { height:50vh; min-height:340px; position:relative; }
+  .ft-legend-chip { display:inline-flex; align-items:center; gap:6px; }
+  .ft-legend-swatch { display:inline-block; width:11px; height:11px; border-radius:3px; }
   /* Vertikaler Zoom-Slider am rechten Graph-Rand (schnelles Rein-/Rauszoomen) */
   #rcZoom { position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:5;
     writing-mode:vertical-lr; direction:rtl; -webkit-appearance:slider-vertical; appearance:slider-vertical;
@@ -466,7 +504,8 @@
         </div>
         <div class="pillgroup" id="viewTogglePills" style="margin-left:auto">
           <button type="button" class="pill active" data-value="table">Tabelle</button>
-          <button type="button" class="pill" data-value="graph" title="Regeln/Queries als Balkendiagramm nach betroffenen Usern &mdash; unabh&auml;ngig von Tabellenfiltern">Graph</button>
+          <button type="button" class="pill" data-value="graph" title="Regeln/Queries als Balkendiagramm nach betroffenen Usern &mdash; unabh&auml;ngig von Tabellenfiltern">Balken</button>
+          <button type="button" class="pill" data-value="tree" title="Aufklappbarer Baum: Regel/Query &rarr; betroffene User &rarr; belegende Rolle(n)/Profil(e) &mdash; unabh&auml;ngig von Tabellenfiltern">Baum</button>
         </div>
       </div>
       <div id="filterActive">
@@ -501,6 +540,13 @@
           <button class="ghost" id="findingsGraphSummaryLink" style="width:auto;padding:3px 10px;font-size:12px">Als Tabelle (Ergebnisse-&Uuml;bersicht)</button>
         </div>
         <div id="findingsGraph" style="margin-top:8px"></div>
+      </div>
+      <div id="findingsTreeWrap" style="display:none">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div class="sub" id="findingsTreeSub"></div>
+          <button class="ghost" id="findingsTreeSummaryLink" style="width:auto;padding:3px 10px;font-size:12px">Als Tabelle (Ergebnisse-&Uuml;bersicht)</button>
+        </div>
+        <div id="findingsTree" style="margin-top:8px"></div>
       </div>
     </div>
     <div id="rootCauseView" style="display:none">
@@ -1115,6 +1161,30 @@
   <div class="sub">Fehlgeschlagene Jobs (Import/Lauf/Backup/Restore/Bereinigen) &mdash; persistent,
     &uuml;berlebt einen Container-Neustart. Neueste zuerst.</div>
   <ul class="runs" id="errorLogList"></ul>
+</div></div>
+
+<!-- Dialog: User-Stammsatz (Overlay aus dem Baum-Akkordeon, Ebene 2) -->
+<div class="overlay" id="dlg-user-detail"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3 id="udTitle">User</h3>
+  <div id="udContent"><div class="muted">lädt&hellip;</div></div>
+</div></div>
+
+<!-- Dialog: Rollen-Stammsatz (Overlay aus dem Baum-Akkordeon, Ebene 3) -->
+<div class="overlay" id="dlg-role-detail"><div class="dialog">
+  <span class="x" data-close>&times;</span><h3 id="rdmTitle">Rolle</h3>
+  <div id="rdmContent"><div class="muted">lädt&hellip;</div></div>
+</div></div>
+
+<!-- Dialog: Vollansicht (Cytoscape-Graph fuer den aktuell aufgeklappten Baum-Pfad) -->
+<div class="overlay" id="dlg-tree-fullview"><div class="dialog" style="width:min(900px,94vw)">
+  <span class="x" data-close>&times;</span><h3>Vollansicht</h3>
+  <div class="sub" id="ftfvSub">Regel/Query &rarr; User &rarr; belegende Rolle(n)/Profil(e) &mdash; nur der aktuell aufgeklappte Pfad.</div>
+  <div id="ftfvGraphWrap" class="ft-fv-graph-box">
+    <div id="ftfvGraph" style="width:100%;height:100%"></div>
+    <input type="range" id="ftfvZoom" min="0" max="100" value="50" title="Zoom">
+    <button type="button" class="ghost rc-graph-fsbtn" id="ftfvFullscreenBtn">&#9974; Vollbild</button>
+  </div>
+  <div id="ftfvLegend" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:14px"></div>
 </div></div>
 
 <script src="vendor/cytoscape/cytoscape.min.js"></script>
@@ -2637,6 +2707,7 @@ function renderFindingsTable(findings, isEntry) {
   toggleEntryUi(isEntry);
   document.querySelector('#findingsTable thead th:last-child').textContent = isEntry ? 'Sleeping' : 'Root-Cause';
   if (findingsViewMode === 'graph') { $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none'; refreshFindingsGraph(); return; }
+  if (findingsViewMode === 'tree') { $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none'; refreshFindingsTree(); return; }
   $('matchesTable').style.display = 'none'; $('findingsTable').style.display = '';
   findingsSort.reset();
   renderFindingsRows();
@@ -2697,9 +2768,13 @@ function setFindingsViewMode(mode) {
   findingsViewMode = mode;
   document.querySelectorAll('#viewTogglePills .pill').forEach(x => x.classList.toggle('active', x.dataset.value === mode));
   $('findingsGraphWrap').style.display = mode === 'graph' ? '' : 'none';
+  $('findingsTreeWrap').style.display = mode === 'tree' ? '' : 'none';
   if (mode === 'graph') {
     $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none';
     refreshFindingsGraph();
+  } else if (mode === 'tree') {
+    $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none';
+    refreshFindingsTree();
   } else if (activeRunId) applyFilters();   // rendert wieder die passende Tabelle (findings/matches)
 }
 
@@ -2812,6 +2887,7 @@ let currentMatches = [];
 function renderMatchesTable(rows) {
   currentMatches = rows;
   if (findingsViewMode === 'graph') { $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none'; refreshFindingsGraph(); return; }
+  if (findingsViewMode === 'tree') { $('findingsTable').style.display = 'none'; $('matchesTable').style.display = 'none'; refreshFindingsTree(); return; }
   $('findingsTable').style.display = 'none'; $('matchesTable').style.display = '';
   matchesSort.reset();
   renderMatchesRows();
@@ -2882,6 +2958,358 @@ function renderFindingsGraph() {
   });
 }
 $('findingsGraphSummaryLink').onclick = () => openSummaryView(fgMode);
+
+/* ── Baum (Ebene 1 Regel/Query -> Ebene 2 User -> Ebene 3 Rolle/Profil) — Akkordeon, pro Ebene
+   immer nur ein Geschwisterzweig offen. Ebene 1 nutzt dieselben /queries|sodrules/summary-Daten
+   und dieselbe Balkenoptik wie das Balkendiagramm oben, nur zusaetzlich aufklappbar. Ebene 2/3
+   werden NICHT vorab geladen (erst bei Bedarf je Klick), damit ein Aufklappen aller ~40 Regeln
+   nicht versehentlich tausende Nutzer/Root-Cause-Aufrufe ausloest. ────────────────────────── */
+let ftRows = [], ftMode = 'sod', ftTotalUsers = 0, ftLoadSeq = 0;
+let ftOpenRule = null, ftOpenUser = null, ftUserFilterText = '';
+let ftUsersCache = null;   // Ebene-2-Zeilen des gerade offenen Regel/Query-Zweigs
+let ftUsersLoadSeq = 0, ftActorsLoadSeq = 0;
+
+async function refreshFindingsTree() {
+  if (findingsViewMode !== 'tree' || !activeRunId) return;
+  const mode = currentFindingsGraphMode();
+  const seq = ++ftLoadSeq;
+  $('findingsTreeSub').textContent = 'lädt…';
+  try {
+    const url = (mode === 'query' ? '/queries/summary' : '/sodrules/summary') + '?runId=' + encodeURIComponent(activeRunId);
+    const res = await api(url);
+    if (seq !== ftLoadSeq) return;
+    ftRows = res.rows.slice().sort((a, b) => b.userCount - a.userCount);
+    ftMode = mode; ftTotalUsers = res.totalUsers;
+    ftOpenRule = null; ftOpenUser = null; ftUsersCache = null; ftUserFilterText = '';
+    renderFindingsTree();
+  } catch (err) {
+    if (seq !== ftLoadSeq) return;
+    $('findingsTreeSub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
+    $('findingsTree').innerHTML = '';
+  }
+}
+
+function ftRowHtml(r) {
+  const pct = Math.round(100 * r.userCount / Math.max(1, ...ftRows.map(x => x.userCount)));
+  const color = CRIT_COLOR[r.criticality] || 'var(--muted)';
+  const name = r.shortDescription || r.description || '';
+  const isOpen = ftOpenRule === r.id;
+  return `<div class="ft-item">`
+    + `<div class="ft-row1" tabindex="0" title="${esc(r.id)}${name ? ' — ' + esc(name) : ''}">`
+    + `<span class="ft-chevron${isOpen ? ' open' : ''}">&#9656;</span>`
+    + `<div class="fg-label"><b>${esc(r.id)}</b> <span class="muted">${esc(name)}</span></div>`
+    + `<div class="fg-track"><div class="fg-bar" style="width:${pct}%;background:${color}"></div></div>`
+    + `<div class="fg-count">${r.userCount}</div>${critTag(r.criticality)}`
+    + `<span class="ft-table-link">&rarr; Tabelle</span>`
+    + `</div>`
+    + `<div class="ft-l2-wrap" style="display:${isOpen ? '' : 'none'}"></div>`
+    + `</div>`;
+}
+function renderFindingsTree() {
+  $('findingsTreeSub').textContent = ftRows.length
+    ? `${ftRows.length} ${ftMode === 'query' ? 'Einzelberechtigung(en)' : 'SoD-Regel(n)'} mit Treffern in diesem Lauf · ${ftTotalUsers} betroffene User gesamt (unabhängig von Tabellenfiltern)`
+    : 'Keine Treffer in diesem Lauf.';
+  $('findingsTree').innerHTML = ftRows.map(ftRowHtml).join('');
+  const items = $('findingsTree').querySelectorAll('.ft-item');
+  items.forEach((item, i) => {
+    const row = item.querySelector('.ft-row1');
+    row.addEventListener('click', () => toggleTreeRule(i));
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); } });
+    item.querySelector('.ft-table-link').addEventListener('click', e => {
+      e.stopPropagation();
+      setFindingsViewMode('table');
+      ftMode === 'query' ? jumpToQueryFilter(ftRows[i].id) : jumpToRuleFilter(ftRows[i].id);
+    });
+  });
+  if (ftOpenRule != null) {
+    const idx = ftRows.findIndex(r => r.id === ftOpenRule);
+    if (idx >= 0) renderTreeLevel2(items[idx].querySelector('.ft-l2-wrap'));
+  }
+}
+async function toggleTreeRule(idx) {
+  const r = ftRows[idx];
+  if (ftOpenRule === r.id) { ftOpenRule = null; ftOpenUser = null; ftUsersCache = null; renderFindingsTree(); return; }
+  ftOpenRule = r.id; ftOpenUser = null; ftUsersCache = null; ftUserFilterText = '';
+  renderFindingsTree();
+  await loadTreeUsers(r.id);
+}
+function ftCurrentL2Wrap() {
+  if (ftOpenRule == null) return null;
+  const idx = ftRows.findIndex(r => r.id === ftOpenRule);
+  if (idx < 0) return null;
+  const items = $('findingsTree').querySelectorAll('.ft-item');
+  return items[idx] ? items[idx].querySelector('.ft-l2-wrap') : null;
+}
+async function loadTreeUsers(id) {
+  const seq = ++ftUsersLoadSeq;
+  const wrap = ftCurrentL2Wrap();
+  if (wrap) wrap.innerHTML = '<div class="ft-muted-row">lädt…</div>';
+  try {
+    let rows;
+    if (ftMode === 'query') {
+      const raw = await api('/matches?runId=' + encodeURIComponent(activeRunId) + '&query=' + encodeURIComponent(id));
+      rows = raw.map(m => ({ user: m.user, name: m.name, typ: m.typ, status: m.status }));
+    } else {
+      const raw = await api('/findings?runId=' + encodeURIComponent(activeRunId) + '&rule=' + encodeURIComponent(id) + '&limit=100000');
+      rows = raw.map(f => ({ user: f.user, name: '', typ: '', status: '', roles: f.roles, profiles: f.profiles }));
+    }
+    if (seq !== ftUsersLoadSeq) return;
+    ftUsersCache = rows;
+    const w = ftCurrentL2Wrap();
+    if (w) renderTreeLevel2(w);
+  } catch (err) {
+    if (seq !== ftUsersLoadSeq) return;
+    const w = ftCurrentL2Wrap();
+    if (w) w.innerHTML = '<div class="ft-muted-row">Fehler: ' + esc(err.detail || JSON.stringify(err)) + '</div>';
+  }
+}
+function renderTreeLevel2(wrap) {
+  if (!wrap) return;
+  if (!ftUsersCache) { wrap.innerHTML = '<div class="ft-muted-row">lädt…</div>'; return; }
+  const filterLc = ftUserFilterText.trim().toLowerCase();
+  const filtered = filterLc
+    ? ftUsersCache.filter(u => u.user.toLowerCase().includes(filterLc) || (u.name || '').toLowerCase().includes(filterLc))
+    : ftUsersCache;
+  const showFilter = ftUsersCache.length > 30;
+  wrap.innerHTML = (showFilter
+      ? `<input type="text" class="ft-l2-filter" placeholder="User filtern… (${ftUsersCache.length} gesamt)" value="${esc(ftUserFilterText)}">`
+      : `<div class="ft-muted-row">${ftUsersCache.length} User</div>`)
+    + (filtered.length ? filtered.map(u => {
+        const isOpenU = ftOpenUser === u.user;
+        return `<div class="ft-item2">`
+          + `<div class="ft-l2-row" tabindex="0">`
+          + `<span class="ft-chevron${isOpenU ? ' open' : ''}">&#9656;</span>`
+          + `<span class="ft-chip ft-chip-user" data-user-detail="${esc(u.user)}">${esc(u.user)}${u.name ? ' · ' + esc(u.name) : ''}</span>`
+          + `</div>`
+          + `<div class="ft-l3-wrap" style="display:${isOpenU ? '' : 'none'}"></div>`
+          + `</div>`;
+      }).join('') : '<div class="ft-muted-row">keine Treffer für diesen Filter</div>');
+  const filterInput = wrap.querySelector('.ft-l2-filter');
+  if (filterInput) {
+    filterInput.addEventListener('input', () => {
+      ftUserFilterText = filterInput.value;
+      const pos = filterInput.selectionStart;
+      renderTreeLevel2(wrap);
+      const ni = wrap.querySelector('.ft-l2-filter');
+      if (ni) { ni.focus(); ni.setSelectionRange(pos, pos); }
+    });
+  }
+  const items2 = wrap.querySelectorAll('.ft-item2');
+  items2.forEach((item, i) => {
+    const row = item.querySelector('.ft-l2-row');
+    row.addEventListener('click', () => toggleTreeUser(filtered[i]));
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); } });
+    item.querySelector('[data-user-detail]').addEventListener('click', e => {
+      e.stopPropagation();
+      openUserDetailOverlay(e.currentTarget.dataset.userDetail);
+    });
+  });
+  if (ftOpenUser != null) {
+    const idx = filtered.findIndex(u => u.user === ftOpenUser);
+    if (idx >= 0) renderTreeLevel3(items2[idx].querySelector('.ft-l3-wrap'), filtered[idx]);
+  }
+}
+async function toggleTreeUser(userRow) {
+  const wrap = ftCurrentL2Wrap();
+  if (ftOpenUser === userRow.user) { ftOpenUser = null; renderTreeLevel2(wrap); return; }
+  ftOpenUser = userRow.user;
+  renderTreeLevel2(wrap);
+}
+// Ebene 3 (Rolle/Profil je User, die zum Treffer fuehrten). Bei SoD kostenlos aus den in Ebene 2
+// bereits mitgelieferten roles/profiles-Arrays (materialisierte VIA_ROLE/VIA_PROFILE-Evidenz,
+// AE-11) -- kein Request. Bei Einzelfilter gibt es keine vergleichbare materialisierte Kante
+// (MATCHES ist rein boolesch), daher live per /root-cause (dieselbe Pro-User-Berechnung, die die
+// interaktive Root-Cause-Seite pro Klick nutzt -- bereits als schnell genug erprobt). Generierte
+// (technische) Profile werden wie im Root-Cause-Default (rcTechMode='hide') ausgeblendet.
+function ftActorChipsHtml(actors) {
+  if (!actors.length) return '<div class="ft-muted-row">keine erfüllende Rolle/Profil gefunden</div>';
+  return actors.map(a => a.actorType === 'Role'
+    ? `<span class="ft-chip ft-chip-role" data-role="${esc(a.actorId)}">Rolle: ${esc(a.actorId)}</span>`
+    : `<span class="ft-chip ft-chip-profile">Profil: ${esc(a.actorId)} <span class="muted">(direkt zugewiesen)</span></span>`
+  ).join('') + `<span class="ft-fullview-link" id="ftFullviewLink">&#128269; Vollansicht</span>`;
+}
+function ftAttachActorHandlers(wrap, userId) {
+  wrap.querySelectorAll('[data-role]').forEach(chip => {
+    chip.addEventListener('click', () => openRoleDetailOverlay(chip.dataset.role, userId));
+  });
+  const link = wrap.querySelector('#ftFullviewLink');
+  if (link) link.addEventListener('click', () => openTreeFullview());
+}
+// Zustand des zuletzt gerenderten Ebene-3-Pfads -- Grundlage der "Vollansicht" (Cytoscape),
+// die bewusst NUR diesen einen Pfad zeigt (Regel/Query + 1 User + dessen Rollen/Profile), nicht
+// alle User einer Regel/Query gleichzeitig (bei bis zu ~8.000 Usern unlesbar, s. ROADMAP 9.1).
+let ftfvState = null;
+async function renderTreeLevel3(wrap, userRow) {
+  if (!wrap) return;
+  const topRow = ftRows.find(r => r.id === ftOpenRule) || {};
+  const topLabel = (ftMode === 'sod' ? 'Regel ' : 'Query ') + ftOpenRule
+    + (topRow.shortDescription || topRow.description ? '\n' + (topRow.shortDescription || topRow.description) : '');
+  if (ftMode === 'sod') {
+    const actors = [
+      ...(userRow.roles || []).map(id => ({ actorType: 'Role', actorId: id })),
+      ...(userRow.profiles || []).map(id => ({ actorType: 'Profile', actorId: id })),
+    ];
+    if (!actors.length) {
+      wrap.innerHTML = '<div class="ft-muted-row">keine Rollen-/Profil-Evidenz (Lauf ohne Evidenz-Berechnung?)</div>';
+      ftfvState = null;
+      return;
+    }
+    wrap.innerHTML = ftActorChipsHtml(actors);
+    ftAttachActorHandlers(wrap, userRow.user);
+    ftfvState = { topLabel, topClass: 'rc-rule', userId: userRow.user, actors };
+    return;
+  }
+  const seq = ++ftActorsLoadSeq;
+  wrap.innerHTML = '<div class="ft-muted-row">lädt…</div>';
+  try {
+    const data = await api('/root-cause?runId=' + encodeURIComponent(activeRunId)
+      + '&user=' + encodeURIComponent(userRow.user) + '&query=' + encodeURIComponent(ftOpenRule));
+    if (seq !== ftActorsLoadSeq) return;
+    const seen = new Set(); const actors = [];
+    (data.blocks || []).forEach(b => (b.objects || []).forEach(o => (o.satisfiedBy || []).forEach(a => {
+      if (a.technical) return;
+      const key = a.actorType + '|' + a.actorId;
+      if (seen.has(key)) return;
+      seen.add(key); actors.push(a);
+    })));
+    wrap.innerHTML = ftActorChipsHtml(actors);
+    ftAttachActorHandlers(wrap, userRow.user);
+    ftfvState = actors.length ? { topLabel, topClass: 'rc-query', userId: userRow.user, actors } : null;
+  } catch (err) {
+    if (seq !== ftActorsLoadSeq) return;
+    wrap.innerHTML = '<div class="ft-muted-row">Fehler: ' + esc(err.detail || JSON.stringify(err)) + '</div>';
+    ftfvState = null;
+  }
+}
+// Overlays (User-/Rollen-Stammsatz) -- bewusst eigene, kompakte Dialoge statt der vollen
+// roleDetailView-Seite: die wuerde beim Oeffnen den Baum-Akkordeon-Zustand darunter verstecken.
+async function openUserDetailOverlay(userId) {
+  $('udTitle').textContent = userId;
+  $('udContent').innerHTML = '<div class="muted">lädt&hellip;</div>';
+  openDlg('dlg-user-detail');
+  try {
+    const d = await api('/users/' + encodeURIComponent(userId) + '/detail?runId=' + encodeURIComponent(activeRunId));
+    $('udContent').innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
+      + rdRow('Name', esc(d.name) || '–')
+      + rdRow('Typ', esc(d.userType))
+      + rdRow('Benutzergruppe', esc(d.userGroup) || '–')
+      + rdRow('Status', d.locked ? 'gesperrt' + (d.lockReasons.length ? ' (' + d.lockReasons.map(esc).join(', ') + ')' : '') : 'aktiv')
+      + rdRow('Letzter Login', rdFmtDate(d.lastLogon))
+      + rdRow('Sleeping', d.sleeping ? 'ja' : (d.lastLogonKnown === false ? 'unbekannt (kein Logon-Datum)' : 'nein'))
+      + rdRow('Gültig ab/bis', `${rdFmtDate(d.validFrom)} &ndash; ${rdFmtDate(d.validTo)}`)
+      + rdRow('Passwort zuletzt geändert', rdFmtDate(d.pwdChgDate))
+      + rdRow('Passwort gesetzt', rdFmtDate(d.pwdSetDate))
+      + rdRow('Initialkennwort (nie geändert)', d.pwdInitial === '1' ? 'ja' : d.pwdInitial === '2' ? 'vermutlich (unsicher)' : 'nein')
+      + '</table>';
+  } catch (err) {
+    $('udContent').innerHTML = '<div class="muted">Fehler: ' + esc(err.detail || JSON.stringify(err)) + '</div>';
+  }
+}
+async function openRoleDetailOverlay(roleId, userId) {
+  $('rdmTitle').textContent = roleId;
+  $('rdmContent').innerHTML = '<div class="muted">lädt&hellip;</div>';
+  openDlg('dlg-role-detail');
+  try {
+    const u = userId ? '&user=' + encodeURIComponent(userId) : '';
+    const d = await api('/roles/' + encodeURIComponent(roleId) + '?runId=' + encodeURIComponent(activeRunId) + u);
+    const subtype = d.composite ? 'Sammelrolle' : d.derived ? 'abgeleitete Rolle' : 'Einzelrolle';
+    $('rdmContent').innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
+      + rdRow('Beschreibung', esc(d.text) || '–')
+      + rdRow('Subtyp', subtype)
+      + rdRow('Generiertes Profil', d.profiles && d.profiles.length ? d.profiles.map(esc).join(', ') : '–')
+      + rdRow('Zugewiesene User', d.userCount)
+      + (d.forUser ? rdRow('Gültigkeit dieser Zuweisung', `${rdFmtDate(d.userValidFrom)} &ndash; ${rdFmtDate(d.userValidTo)}`) : '')
+      + '</table>';
+  } catch (err) {
+    $('rdmContent').innerHTML = '<div class="muted">Fehler: ' + esc(err.detail || JSON.stringify(err)) + '</div>';
+  }
+}
+// Vollansicht: Cytoscape-Graph fuer GENAU den aktuell aufgeklappten Pfad (Regel/Query + 1 User +
+// dessen Rollen/Profile) -- bewusst NICHT alle User einer Regel/Query gleichzeitig (bei bis zu
+// ~8.000 Usern unlesbar, exakt der Grund, warum das Balkendiagramm/der Baum ueberhaupt kein
+// Knoten-je-User-Graph sind). Wenige Dutzend Knoten, technisch identisch zur bestehenden
+// Root-Cause-Seite. Stil (rcCyStyle), Zoom-Slider- und Vollbild-Muster 1:1 von dort uebernommen.
+const FTFV_ZMIN = 0.05, FTFV_ZMAX = 3;
+let ftfvCy = null, _ftfvZoomSync = false;
+function ftfvZoomToSlider() {
+  if (!ftfvCy) return;
+  _ftfvZoomSync = true;
+  const z = Math.max(FTFV_ZMIN, Math.min(FTFV_ZMAX, ftfvCy.zoom()));
+  $('ftfvZoom').value = 100 * Math.log(z / FTFV_ZMIN) / Math.log(FTFV_ZMAX / FTFV_ZMIN);
+  _ftfvZoomSync = false;
+}
+$('ftfvZoom').addEventListener('input', () => {
+  if (!ftfvCy || _ftfvZoomSync) return;
+  const v = +$('ftfvZoom').value;
+  const z = FTFV_ZMIN * Math.pow(FTFV_ZMAX / FTFV_ZMIN, v / 100);
+  ftfvCy.zoom({ level: z, renderedPosition: { x: ftfvCy.width() / 2, y: ftfvCy.height() / 2 } });
+});
+$('ftfvFullscreenBtn').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else $('ftfvGraphWrap').requestFullscreen && $('ftfvGraphWrap').requestFullscreen();
+});
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement === $('ftfvGraphWrap') || !document.fullscreenElement) {
+    if (ftfvCy) requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!ftfvCy) return; ftfvCy.resize(); ftfvCy.fit(undefined, 30); ftfvZoomToSlider();
+    }));
+  }
+});
+const FT_LEGEND = [
+  { cls: 'rc-user', label: 'User' },
+  { cls: 'rc-rule', label: 'SoD-Regel' },
+  { cls: 'rc-query', label: 'Einzelfilter (Query)' },
+  { cls: 'rc-role', label: 'Rolle' },
+  { cls: 'rc-profile', label: 'Profil (direkt zugewiesen)' },
+];
+function ftRenderLegend() {
+  const css = getComputedStyle(document.documentElement);
+  const colorOf = cls => ({
+    'rc-user': css.getPropertyValue('--ok'), 'rc-rule': css.getPropertyValue('--crit'),
+    'rc-query': '#2f9e97', 'rc-role': css.getPropertyValue('--accent'), 'rc-profile': '#8a5cf6',
+  })[cls];
+  $('ftfvLegend').innerHTML = FT_LEGEND.map(l =>
+    `<span class="ft-legend-chip"><span class="ft-legend-swatch" style="background:${colorOf(l.cls)}"></span>${esc(l.label)}</span>`
+  ).join('');
+}
+function openTreeFullview() {
+  if (!ftfvState) return;
+  openDlg('dlg-tree-fullview');
+  const { topLabel, topClass, userId, actors } = ftfvState;
+  const els = [
+    { data: { id: 'top', label: topLabel }, classes: topClass },
+    { data: { id: 'user', label: 'User\n' + userId }, classes: 'rc-user' },
+    { data: { id: 'e_user_top', source: 'user', target: 'top', elabel: topClass === 'rc-rule' ? 'verletzt' : 'matcht' } },
+  ];
+  actors.forEach((a, i) => {
+    const nid = 'actor' + i;
+    els.push({ data: { id: nid, label: (a.actorType === 'Role' ? 'Rolle: ' : 'Profil: ') + a.actorId,
+                        roleId: a.actorType === 'Role' ? a.actorId : undefined },
+               classes: a.actorType === 'Role' ? 'rc-role' : 'rc-profile' });
+    els.push({ data: { id: 'e_top_' + nid, source: 'top', target: nid, elabel: '' } });
+  });
+  if (ftfvCy) { ftfvCy.destroy(); ftfvCy = null; }
+  ftfvCy = cytoscape({
+    container: $('ftfvGraph'), elements: els, style: rcCyStyle(),
+    layout: { name: 'breadthfirst', directed: true, roots: '#user', spacingFactor: 1.2, padding: 20, animate: false },
+    wheelSensitivity: 0.25, minZoom: FTFV_ZMIN, maxZoom: FTFV_ZMAX,
+  });
+  ftfvCy.on('tap', 'node', e => {
+    const n = e.target;
+    // Erst die Vollansicht selbst schliessen -- das App-weite .overlay-Muster geht von immer nur
+    // EINEM offenen Dialog aus (gleicher z-index; closeDlg() schliesst ohnehin alle auf einmal).
+    // Zwei gestapelte .overlay.open uebereinander wuerden sich gegenseitig Klicks blockieren.
+    if (n.id() === 'user') { closeDlg(); if (ftfvCy) { ftfvCy.destroy(); ftfvCy = null; } openUserDetailOverlay(userId); return; }
+    const rid = n.data('roleId');
+    if (rid) { closeDlg(); if (ftfvCy) { ftfvCy.destroy(); ftfvCy = null; } openRoleDetailOverlay(rid, userId); }
+  });
+  ftfvCy.on('zoom', ftfvZoomToSlider);
+  ftRenderLegend();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (!ftfvCy) return; ftfvCy.resize(); ftfvCy.fit(undefined, 30); ftfvZoomToSlider();
+  }));
+}
+$('findingsTreeSummaryLink').onclick = () => openSummaryView(ftMode);
 
 async function applyFilters() {
   if (!activeRunId) return;

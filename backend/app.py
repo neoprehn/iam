@@ -1158,6 +1158,37 @@ def user_detail(userId: str, runId: str):
         return dict(rec)
 
 
+@app.get("/users/{userId}/detail")
+def user_detail_full(userId: str, runId: str):
+    """User-Stammsatz (USR02-Rohfelder + Sleeping) fuer das Overlay im Baum-Akkordeon (Ebene 2) --
+    bewusst getrennt vom Kurzprofil GET /users/{userId} (das speist die Kontext-Chips anderswo mit
+    einem anderen, schlankeren Rueckgabeformat). Keine Rollen-/Profile-Liste hier -- die zeigt der
+    Baum in Ebene 3 direkt daneben, das waere Redundanz."""
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.dataset AS dataset", id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        ds = run["dataset"]
+        as_of = _dataset_asof(s, ds)
+        sleep_days = profiles()["sleeping"]["sleepDays"]
+        rec = s.run(
+            "MATCH (u:User {id:$uid, dataset:$ds}) "
+            "RETURN u.id AS id, coalesce(u.name,'') AS name, "
+            "  CASE WHEN 'Dialog' IN labels(u) THEN 'Dialog' WHEN 'System' IN labels(u) THEN 'System' "
+            "       WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Communication' "
+            "       WHEN 'Reference' IN labels(u) THEN 'Reference' ELSE '?' END AS userType, "
+            "  coalesce(u.userGroup,'') AS userGroup, "
+            "  ('Locked' IN labels(u)) AS locked, coalesce(u.lockReasons,[]) AS lockReasons, "
+            "  u.validFrom AS validFrom, u.validTo AS validTo, u.lastLogon AS lastLogon, "
+            "  (u.lastLogon IS NOT NULL) AS lastLogonKnown, "
+            "  (u.lastLogon IS NOT NULL AND u.lastLogon < ($asOf - duration({days:$sleepDays}))) AS sleeping, "
+            "  u.pwdInitial AS pwdInitial, u.pwdChgDate AS pwdChgDate, u.pwdSetDate AS pwdSetDate",
+            uid=userId, ds=ds, asOf=as_of, sleepDays=sleep_days).single()
+        if not rec:
+            raise HTTPException(404, f"User '{userId}' nicht gefunden")
+        return jsonable(dict(rec))
+
+
 @app.get("/roles/{roleId}")
 def role_detail(roleId: str, runId: str, user: str | None = None):
     """Rollen-Detailseite: Stammdaten + TCodes (Menue + effektive S_TCODE) + Berechtigungsobjekte.

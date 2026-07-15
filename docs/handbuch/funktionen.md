@@ -148,12 +148,20 @@ materialisierten Wert (funktioniert nur, wenn TRDAT im Extrakt vorhanden ist). B
 erscheint zusätzlich der **Sperrgrund** (`alle` / `Fehlanmeldungen` / `Admin (lokal)` /
 `Admin (global)`, aus dem UFLAG-Bitfeld) — wirkt nur für Läufe, die gesperrte User nicht bereits
 beim Materialisieren ausgeschlossen haben (Nutzertyp-Profil ohne „nicht gesperrt", s. o.), sonst
-fehlen deren Findings von vornherein. Rechtsbündig in derselben Zeile: der **Tabelle/
-Graph-Umschalter** (Graph ist als Vorgriff auf das künftige Cytoscape.js-Frontend angelegt,
-für SoD-Konfliktpfade aktuell noch deaktiviert — „kommt später"; für die Konsistenzchecks A1–A3
-bereits scharf, s. Kapitel Konsistenzchecks). „Einzelfilter" zeigt die **Matches-Tabelle** („wer matcht
-welche Query") auch **ohne** vorher eine konkrete Einzelberechtigung in der Sidebar zu wählen —
-dann für alle Queries, sonst nur für die gewählte.
+fehlen deren Findings von vornherein. Rechtsbündig in derselben Zeile: der **Tabelle/Balken/Baum-
+Umschalter** — unabhängig von den Sidebar-Filtern, folgt nur `Ergebnistyp` (SoD/Einzelfilter):
+- **Balken**: eine Zeile je SoD-Regel bzw. Einzelfilter, Balkenlänge = betroffene Nutzerzahl,
+  Farbe = Kritikalität. Klick springt in die gefilterte Tabellenansicht.
+- **Baum**: dieselben Zeilen, aber auf-/zuklappbar (Akkordeon, pro Ebene immer nur ein
+  Geschwisterzweig offen) — Klick faltet die betroffenen User auf, Klick auf einen User faltet
+  die belegende(n) Rolle(n)/das direkt zugewiesene Profil auf. Klick auf einen User- bzw.
+  Rollen-Chip öffnet ein Overlay mit dessen Stammdaten. Zusätzlich eine **Vollansicht** (Cytoscape-
+  Graph für genau den aufgeklappten Pfad, mit Farblegende und Zoom-Slider/Vollbild wie die
+  Root-Cause-Seite).
+
+„Einzelfilter" zeigt die **Matches-Tabelle** („wer matcht welche Query") auch **ohne** vorher eine
+konkrete Einzelberechtigung in der Sidebar zu wählen — dann für alle Queries, sonst nur für die
+gewählte.
 
 **Einstiegstabelle.** Ist **kein** Filter aktiv (frisch geladener Lauf bzw. „Zurücksetzen"), zeigt
 die letzte Spalte **Sleeping** statt **Root-Cause** und die Ergebnistyp-Pillzeile ist ausgeblendet

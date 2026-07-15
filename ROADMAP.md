@@ -165,7 +165,7 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   startet den Zyklus immer wieder bei „auf". Gilt automatisch für alle vier sortierbaren Tabellen.
   **Offen nur noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie,
   separater, kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
-- [~] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`) —
+- [x] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`) —
   funktional und end-to-end verifiziert (2026-07-12), **UX laut Nutzer-Feedback noch nicht
   optimal** — welche Aspekte konkret (Layout/Farbwahl/Interaktion/Informationsdichte) ist noch
   offen zu klären, bevor der Punkt als abgeschlossen gilt. Bewusst **nicht** als Heatmap/User×
@@ -195,12 +195,44 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   Bedingung wie in `applyFilters()` (`if (q || resultTypeValue === 'query')`). Mit Playwright gegen
   den laufenden Container in beide Richtungen verifiziert (Query über Sidebar ausgewählt → Graph
   zeigt jetzt 43 Einzelfilter-Balken statt 3 SoD-Balken; zurückgesetzt → wieder SoD-Balken).
+- [x] **„Baum"-Ansicht als dritte Option neben Tabelle/Balken** (2026-07-15, löst das „langweilig"-
+  Feedback zum Balkendiagramm über eine Alternative statt eines Redesigns — Nutzer hatte noch keine
+  konkrete Balken-Alternative, wollte stattdessen einen auf-/zuklappbaren Baum): Regel/Query → User →
+  belegende Rolle(n)/Profil(e), Akkordeon (pro Ebene immer nur ein Geschwisterzweig offen). Ebene 1
+  übernimmt 1:1 die bewährte Balkenoptik (Länge/Farbe/Sortierung). Ebene 2 (User) kostet **keinen
+  neuen Endpunkt**: SoD über `GET /findings?rule=Y&limit=100000` (statt des bisherigen globalen
+  `&limit=500`, liefert je Zeile bereits `roles`/`profiles`-Arrays aus der materialisierten
+  VIA_ROLE/VIA_PROFILE-Evidenz, AE-11 — Ebene 3 braucht dort **keinen** Request mehr), Einzelfilter
+  über das bereits ungedeckelte `GET /matches?query=Y`; Client-seitiges Suchfeld ab 30 Usern (bis zu
+  ~8.000 möglich). Ebene 3 bei Einzelfilter live über `GET /root-cause` (dieselbe Pro-User-Berechnung
+  wie die interaktive Root-Cause-Seite), dedupliziert auf Rolle/Profil, generierte Profile
+  ausgeblendet (Default `rcTechMode='hide'`). Direkt zugewiesenes Profil wird als eigener,
+  nicht-klickbarer Chip-Typ gezeigt (kein Profil-Detail existiert app-weit, bewusste Scope-Grenze).
+  Klick auf User/Rolle öffnet ein **kompaktes Overlay** (nicht die volle `roleDetailView`-Seite, die
+  würde den Akkordeon-Zustand darunter verstecken) mit Stammdaten — neuer, schlanker Endpunkt
+  `GET /users/{id}/detail` fürs User-Overlay (USR02-Rohfelder: Typ/Gruppe/Gültigkeit/Login/Sleeping/
+  Passwort-Historie), Rollen-Overlay nutzt den bestehenden `GET /roles/{id}?user=`. Zusätzlich eine
+  **"Vollansicht"** (Cytoscape) für genau den aktuell aufgeklappten Pfad (Regel/Query + 1 User +
+  dessen Rollen/Profile, nie alle User gleichzeitig — bei ~8.000 Usern unlesbar, derselbe Grund wie
+  beim Balkendiagramm) mit **Farblegende** (User/Regel/Query/Rolle/Profil) und dem bewährten
+  Zoom-Slider-/Vollbild-Muster der Root-Cause-Seite 1:1 übernommen. **Nebenbei gefundener Bug:**
+  verschachtelte `.overlay`-Dialoge (User-/Rollen-Overlay aus der Vollansicht heraus geöffnet)
+  blockierten sich gegenseitig (gleicher z-index, App-Muster geht von immer nur einem offenen Dialog
+  aus) — Fix: Vollansicht schließt sich selbst, bevor das verschachtelte Overlay öffnet. Mit
+  Playwright end-to-end verifiziert (Akkordeon-Verschachtelung beide Ebenen, SoD- und
+  Einzelfilter-Modus, beide Overlays, Vollansicht-Graph inkl. Knoten-Klick/Zoom/Legende, Regression
+  auf „Balken"/„Tabelle").
+
+  ROADMAP-Punkt „Farblegende in allen Graphansichten" (s. u.) damit für den **listenweiten** Graphen
+  erledigt; Pfad-/Radial-Ansicht der Root-Cause-Seite bleiben wie unten offen.
 - [x] **Zurück-Button im Drill-down** — „← zurück" in der Aktiv-Filter-Leiste stellt die Ausgangsliste
   wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
   Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
 
 > **Farblegende + Vollbild-Bedienung der Graphen** sind nach **9.2** verschoben (2026-07-12) — beides
 > hängt am Cytoscape-Frontend, keine sinnvolle Zwischenlösung auf der heutigen Root-Cause-Graphseite.
+> Für den listenweiten Baum-Graph (s. o.) inzwischen erledigt (2026-07-15); **Pfad-/Radial-Root-Cause
+> bleiben offen** (Farblegende + überarbeitete Vollbild-Bedienung dort weiterhin Teil von 9.2).
 > **Kritikalität prominent an Einzelfilter/SoD** ist nach **9.4** verschoben (2026-07-12) — Farben/
 > Stufen kommen aus den dortigen Kritikalitäts-Stammdaten, vorher wäre die Badge-Logik hartkodiert.
 
@@ -211,9 +243,10 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   `dashboards/sod_poc.json`. **Heatmap/Matrix bereits erledigt** (s. 9.1, regel-/query-zentriertes
   Balkendiagramm statt User×Regel-Matrix) — hier nur noch der eigentliche Cytoscape-Konfliktpfad-Teil
   offen.
-- [ ] **Farblegende in allen Graphansichten** (aus 9.1) — erklärt die Knotenbedeutung (User/Regel/
+- [~] **Farblegende in allen Graphansichten** (aus 9.1) — erklärt die Knotenbedeutung (User/Regel/
   Klausel/Query/Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten
-  Graphen.
+  Graphen. **Listenweiter Graph (Baum-Vollansicht) erledigt** (2026-07-15, s. 9.1). **Offen:** Pfad-
+  und Radial-Ansicht der Root-Cause-Seite.
 - [ ] **Vollbild-Bedienung der Graphen überarbeiten** (aus 9.1) — heutiger Vollbild-Knopf ist
   ungünstig; besseres Muster (Toggle in der Ansichts-Leiste, ESC zum Verlassen).
 - [ ] **NeoDash danach vollständig entfernen** — Compose-Service `iam-neodash` (Port 5005), Erwähnungen
