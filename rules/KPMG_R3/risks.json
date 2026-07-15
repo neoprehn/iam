@@ -1,0 +1,200 @@
+[
+  {
+    "risk": "Benutzerverwaltung (anlegen oder ändern) und Berechtigungszuweisung",
+    "alias": "BCX_0001",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Systemänderbarkeit/Mandantenpflege und Anwendungentwicklung durchführen",
+    "alias": "BCX_0002",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Systemänderbarkeit und Mandantenpflege und Customizing durchführen",
+    "alias": "BCX_0003",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Transport initiieren über Umwege",
+    "alias": "BCX_0004",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Sachkontenstamm anlegen und Sachkonten buchen",
+    "alias": "FIX_0001",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "High",
+    "riskStatus": null
+  },
+  {
+    "risk": "Buchungsperioden öffnen und Sachkonten buchen",
+    "alias": "FIX_0002",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kundenstamm anlegen/ändern (V/X-Sicht) und Debitorenstamm anlegen/ändern (F/X-Sicht)",
+    "alias": "OCX_0001",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Debitorenstamm anlegen (F/X-Sicht)/ändern und Kundenauftrag anlegen/ändern (V-Sicht)",
+    "alias": "OCX_0002",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "High",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kundenauftrag anlegen/ändern und Warenausgang/Auslieferung buchen",
+    "alias": "OCX_0003",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kundenauftrag anlegen/ändern und Kreditmanagement pflegen",
+    "alias": "OCX_0004",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Debitorenstammdaten anlegen/ändern und Bonusabsprachen anlegen",
+    "alias": "OCX_0005",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "High",
+    "riskStatus": null
+  },
+  {
+    "risk": "Debitorenstamm anlegen/ändern und Bonusabsprache/Bonusabrechnung anlegen",
+    "alias": "OCX_0006",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Lieferantenstamm anlegen/ändern (M/X-Sicht) und Kreditorenstamm anlegen/ändern (F/X-Sicht)",
+    "alias": "PPX_0001",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "BANF anlegen und Bestellung auslösen",
+    "alias": "PPX_0002",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "High",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kreditorenstamm anlegen/ändern und Bestellung aulösen/ändern",
+    "alias": "PPX_0003",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "High",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kreditorenstamm anlegen/ändern und Rechnungen erfassen",
+    "alias": "PPX_0004",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Bestellung auslösen/ändern und Rechnung erfassen",
+    "alias": "PPX_0005",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Rechnung erfassen und Zahllauf (Kreditor) starten",
+    "alias": "PPX_0006",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Bestellung auslösen/ändern und Wareneingang zur Bestellung buchen",
+    "alias": "PPX_0007",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kreditorenstamm anlegen/ändern und Bestellung auslösen/ändern und Wareneingang zur Bestellung buchen",
+    "alias": "PPX_0008",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kreditorenstamm anlegen/ändern und Bestellung auslösen/ändern und Wareneingang zur Bestellung buchenn und Rechnung prüfen",
+    "alias": "PPX_0009",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  },
+  {
+    "risk": "Kreditorenstamm anlegen/ändern und Zahllauf starten",
+    "alias": "PPX_0010",
+    "description": "",
+    "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern.",
+    "riskType": null,
+    "riskLevel": "Extreme",
+    "riskStatus": null
+  }
+]

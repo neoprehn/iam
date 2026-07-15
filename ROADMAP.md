@@ -254,6 +254,19 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
   einer generischen Recherche. Bei 440 Einträgen eher eine **Bewertungsrubrik** erarbeiten
   (Kriterien je riskType/riskLevel) und selbst konsistent anwenden, statt einzeln pro Regel
   nachzufragen ohne Kontext.
+  - **KPMG_R3 nachgezogen** (2026-07-15, Nutzerfrage „warum hat KPMG_R3 kein risks.json"): der
+    Seed-Mechanismus ist generisch (prüft nur, ob `rules/<Ruleset>/risks.json` existiert), nicht
+    CSI-spezifisch verdrahtet — für KPMG_R3 (nur 22 SoD-Regeln, 604 Queries, deutlich kleiner als
+    CSI) jetzt ebenfalls angelegt: neue `rules/KPMG_R3/risks.json` (22 SoD-Regeln) + `riskLevel` in
+    `rules/KPMG_R3/queries.custom.json` ergänzt (604 Queries, bestehende `shortDescription`-Einträge
+    unangetastet gemergt, nicht überschrieben). **Anders als bei CSI kein Platzhalter**, sondern aus
+    der bei KPMG bereits vorhandenen `criticality` abgeleitet (`very-critical`/`critical`→`Extreme`,
+    `high`→`High`, `medium`→`Medium`, `low`→`Low`) — nur als Startwert gedacht, `riskType`/
+    `riskStatus` bewusst leer für die manuelle Verfeinerung im Editor. Für Queries gibt es (anders
+    als für SoD-Regeln) keinen alias-basierten Seed-Mechanismus — dort direkt in die bestehende
+    Overlay-Datei geschrieben statt eine neue Datei-Konvention einzuführen (kein zweiter Anwendungs-
+    fall dafür in Sicht). Verifiziert: 22/22 SoD-Regeln bzw. 604/604 Queries mit `riskLevel`,
+    bestehende `shortDescription`-Werte bei allen 600 vorher schon befüllten Queries unverändert.
 - [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
   und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
   mitführen (später für Heatmap-Gewichtung).

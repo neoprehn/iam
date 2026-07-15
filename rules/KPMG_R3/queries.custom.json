@@ -1,2402 +1,3018 @@
 [
   {
     "query": "1000_BC-SEC",
-    "shortDescription": "BC-SEC - Replace in Debugging"
+    "shortDescription": "BC-SEC - Replace in Debugging",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1001_BC-SEC",
-    "shortDescription": "BC-SEC - Änderungsbelege löschen"
+    "shortDescription": "BC-SEC - Änderungsbelege löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1002_BC-SEC",
-    "shortDescription": "BC-SEC - Änderungsbelegobjekte pflegen"
+    "shortDescription": "BC-SEC - Änderungsbelegobjekte pflegen",
+    "riskLevel": "High"
   },
   {
     "query": "1003_BC-SEC",
-    "shortDescription": "BC-SEC - Nummernstand ändern"
+    "shortDescription": "BC-SEC - Nummernstand ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1004_BC-SEC",
-    "shortDescription": "BC-SEC - Nummernkreise anlegen/ändern/löschen"
+    "shortDescription": "BC-SEC - Nummernkreise anlegen/ändern/löschen",
+    "riskLevel": "High"
   },
   {
     "query": "1005_BC-SEC",
-    "shortDescription": "BC-SEC - CO-Bewegungsdaten löschen"
+    "shortDescription": "BC-SEC - CO-Bewegungsdaten löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1006_BC-SEC",
-    "shortDescription": "BC-SEC - ABAP/4 Reporting"
+    "shortDescription": "BC-SEC - ABAP/4 Reporting",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1007_BC-SEC",
-    "shortDescription": "BC-SEC - ABAP/4 Reporting (ALL)"
+    "shortDescription": "BC-SEC - ABAP/4 Reporting (ALL)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1008_BC-SEC",
-    "shortDescription": "BC-SEC - Funktionsbaustein ausführen"
+    "shortDescription": "BC-SEC - Funktionsbaustein ausführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1009_BC-SEC",
-    "shortDescription": "BC-SEC - Betriebssystemkommandos ausführen"
+    "shortDescription": "BC-SEC - Betriebssystemkommandos ausführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1010_BC-SEC",
-    "shortDescription": "BC-SEC - Security Audit Log Administration"
+    "shortDescription": "BC-SEC - Security Audit Log Administration",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1011_BC-SEC",
-    "shortDescription": "BC-SEC - Security Audit Log Protokolle löschen"
+    "shortDescription": "BC-SEC - Security Audit Log Protokolle löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1012_BC-SEC",
-    "shortDescription": "BC-SEC - Tabellenanzeige"
+    "shortDescription": "BC-SEC - Tabellenanzeige",
+    "riskLevel": "High"
   },
   {
     "query": "1013_BC-SEC",
-    "shortDescription": "BC-SEC - Tabellenanzeige (SC)"
+    "shortDescription": "BC-SEC - Tabellenanzeige (SC)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1014_BC-SEC",
-    "shortDescription": "BC-SEC - Quick View pflegen"
+    "shortDescription": "BC-SEC - Quick View pflegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "1015_BC-SEC",
-    "shortDescription": "BC-SEC - Quick View anzeigen"
+    "shortDescription": "BC-SEC - Quick View anzeigen",
+    "riskLevel": "Medium"
   },
   {
     "query": "1016_BC-SEC",
-    "shortDescription": "BC-SEC - Downloadmöglichkeit"
+    "shortDescription": "BC-SEC - Downloadmöglichkeit",
+    "riskLevel": "Medium"
   },
   {
     "query": "1017_BC-SEC",
-    "shortDescription": "BC-SEC - Download/Upload von Daten"
+    "shortDescription": "BC-SEC - Download/Upload von Daten",
+    "riskLevel": "High"
   },
   {
     "query": "1100_BC-DEV",
-    "shortDescription": "BC-DEV - Data Dictionary"
+    "shortDescription": "BC-DEV - Data Dictionary",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1101_BC-DEV",
-    "shortDescription": "BC-DEV - Objekte auf Datenbank anlegen/löschen"
+    "shortDescription": "BC-DEV - Objekte auf Datenbank anlegen/löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1102_BC-DEV",
-    "shortDescription": "BC-DEV - ABAP/4 Entwicklung"
+    "shortDescription": "BC-DEV - ABAP/4 Entwicklung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1103_BC-DEV",
-    "shortDescription": "BC-DEV - Funktionsbaustein Entwicklung"
+    "shortDescription": "BC-DEV - Funktionsbaustein Entwicklung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1104_BC-DEV",
-    "shortDescription": "BC-DEV - Repository Infosystem"
+    "shortDescription": "BC-DEV - Repository Infosystem",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1105_BC-DEV",
-    "shortDescription": "BC-DEV - Computer Aided Test Tool"
+    "shortDescription": "BC-DEV - Computer Aided Test Tool",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1106_BC-DEV",
-    "shortDescription": "BC-DEV - Query Pflege"
+    "shortDescription": "BC-DEV - Query Pflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1107_BC-DEV",
-    "shortDescription": "BC-DEV - Tabellenpflege uneingeschränkt"
+    "shortDescription": "BC-DEV - Tabellenpflege uneingeschränkt",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1108_BC-DEV",
-    "shortDescription": "BC-DEV - Tabellenpflege mandantenübergreifender Tabellen"
+    "shortDescription": "BC-DEV - Tabellenpflege mandantenübergreifender Tabellen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1109_BC-DEV",
-    "shortDescription": "BC-DEV - Tabellenpflege für Basistabellen"
+    "shortDescription": "BC-DEV - Tabellenpflege für Basistabellen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1110_BC-DEV",
-    "shortDescription": "BC-DEV - Tabellenpflege (beliebige Berechtigungsgruppe)"
+    "shortDescription": "BC-DEV - Tabellenpflege (beliebige Berechtigungsgruppe)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1111_BC-DEV",
-    "shortDescription": "BC-DEV - Systemänderbarkeit ändern"
+    "shortDescription": "BC-DEV - Systemänderbarkeit ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1112_BC-DEV",
-    "shortDescription": "BC-DEV - Mandantenpflege (T000)"
+    "shortDescription": "BC-DEV - Mandantenpflege (T000)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1113_BC-DEV",
-    "shortDescription": "BC-DEV - Mandantenkopie Lokal"
+    "shortDescription": "BC-DEV - Mandantenkopie Lokal",
+    "riskLevel": "High"
   },
   {
     "query": "1114_BC-DEV",
-    "shortDescription": "BC-DEV - Mandantenkopie Transport"
+    "shortDescription": "BC-DEV - Mandantenkopie Transport",
+    "riskLevel": "High"
   },
   {
     "query": "1115_BC-DEV",
-    "shortDescription": "BC-DEV - Datenimport bei Mandantenkopie"
+    "shortDescription": "BC-DEV - Datenimport bei Mandantenkopie",
+    "riskLevel": "High"
   },
   {
     "query": "1200_BC-USR",
-    "shortDescription": "BC-USR - Benutzer anlegen"
+    "shortDescription": "BC-USR - Benutzer anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1201_BC-USR",
-    "shortDescription": "BC-USR - Benutzer ändern"
+    "shortDescription": "BC-USR - Benutzer ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1202_BC-USR",
-    "shortDescription": "BC-USR - Benutzer sperren oder entsperren"
+    "shortDescription": "BC-USR - Benutzer sperren oder entsperren",
+    "riskLevel": "High"
   },
   {
     "query": "1203_BC-USR",
-    "shortDescription": "BC-USR - Benutzer löschen"
+    "shortDescription": "BC-USR - Benutzer löschen",
+    "riskLevel": "High"
   },
   {
     "query": "1204_BC-USR",
-    "shortDescription": "BC-USR - Berechtigungszuweisung (SU01 - Rollen)"
+    "shortDescription": "BC-USR - Berechtigungszuweisung (SU01 - Rollen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1205_BC-USR",
-    "shortDescription": "BC-USR - Berechtigungszuweisung (SU01- Profile)"
+    "shortDescription": "BC-USR - Berechtigungszuweisung (SU01- Profile)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1206_BC-USR",
-    "shortDescription": "BC-USR - Berechtigungszuweisung (PFCG)"
+    "shortDescription": "BC-USR - Berechtigungszuweisung (PFCG)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1207_BC-USR",
-    "shortDescription": "BC-USR - Profilgenerator Rollen anlegen"
+    "shortDescription": "BC-USR - Profilgenerator Rollen anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1208_BC-USR",
-    "shortDescription": "BC-USR - Profilgenerator Rollen ändern, generieren"
+    "shortDescription": "BC-USR - Profilgenerator Rollen ändern, generieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1209_BC-USR",
-    "shortDescription": "BC-USR - Profile anlegen, ändern, generieren"
+    "shortDescription": "BC-USR - Profile anlegen, ändern, generieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1210_BC-USR",
-    "shortDescription": "BC-USR - Berechtigung anlegen, ändern, generieren"
+    "shortDescription": "BC-USR - Berechtigung anlegen, ändern, generieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1211_BC-USR",
-    "shortDescription": "BC-USR - Berechtigungsobjekte pflegen"
+    "shortDescription": "BC-USR - Berechtigungsobjekte pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1212_BC-USR",
-    "shortDescription": "BC-USR - Berechtigungsobjekte global deaktivieren"
+    "shortDescription": "BC-USR - Berechtigungsobjekte global deaktivieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1213_BC-USR",
-    "shortDescription": "BC-USR - Berechtigungsobjekte Anpassung Prüfwerte"
+    "shortDescription": "BC-USR - Berechtigungsobjekte Anpassung Prüfwerte",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1214_BC-USR",
-    "shortDescription": "BC-USR - Transaktionen sperren/entsperren"
+    "shortDescription": "BC-USR - Transaktionen sperren/entsperren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1300_BC-CTS",
-    "shortDescription": "BC-CTS - Transportmanagement Administration"
+    "shortDescription": "BC-CTS - Transportmanagement Administration",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1301_BC-CTS",
-    "shortDescription": "BC-CTS - Transportmanagement TPA-Import"
+    "shortDescription": "BC-CTS - Transportmanagement TPA-Import",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1302_BC-CTS",
-    "shortDescription": "BC-CTS - Transportmanagement (TPA an Importque weiterleiten)"
+    "shortDescription": "BC-CTS - Transportmanagement (TPA an Importque weiterleiten)",
+    "riskLevel": "High"
   },
   {
     "query": "1303_BC-CTS",
-    "shortDescription": "BC-CTS - Transportmanagement (TPA aus Importque löschen)"
+    "shortDescription": "BC-CTS - Transportmanagement (TPA aus Importque löschen)",
+    "riskLevel": "High"
   },
   {
     "query": "1304_BC-SRV",
-    "shortDescription": "BC-SRV - Transport Organizer (Initialisierung)"
+    "shortDescription": "BC-SRV - Transport Organizer (Initialisierung)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1305_BC-CTS",
-    "shortDescription": "BC-CTS - Transport Organizer (ausführen von TP Kommandos)"
+    "shortDescription": "BC-CTS - Transport Organizer (ausführen von TP Kommandos)",
+    "riskLevel": "High"
   },
   {
     "query": "1306_BC-CTS",
-    "shortDescription": "BC-CTS - Transport Organizer (Freigeben von TPA)"
+    "shortDescription": "BC-CTS - Transport Organizer (Freigeben von TPA)",
+    "riskLevel": "High"
   },
   {
     "query": "1307_BC-CTS",
-    "shortDescription": "BC-CTS - Transport Organizer (inaktive TPA aktivieren oder löschen)"
+    "shortDescription": "BC-CTS - Transport Organizer (inaktive TPA aktivieren oder löschen)",
+    "riskLevel": "High"
   },
   {
     "query": "1400_BC-SRV",
-    "shortDescription": "BC-SRV - Pflege Profilparameter"
+    "shortDescription": "BC-SRV - Pflege Profilparameter",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1401_BC-SRV",
-    "shortDescription": "BC-SRV - Pflege RFC-Verbindungen"
+    "shortDescription": "BC-SRV - Pflege RFC-Verbindungen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1402_BC-SRV",
-    "shortDescription": "BC-SRV - Pflege SAP-Instanzen"
+    "shortDescription": "BC-SRV - Pflege SAP-Instanzen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1403_BC-SRV",
-    "shortDescription": "BC-SRV - Pflege Betriebssystemkommandos"
+    "shortDescription": "BC-SRV - Pflege Betriebssystemkommandos",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1404_BC-SRV",
-    "shortDescription": "BC-SRV - Pflege Betriebsarten"
+    "shortDescription": "BC-SRV - Pflege Betriebsarten",
+    "riskLevel": "High"
   },
   {
     "query": "1405_BC-SRV",
-    "shortDescription": "BC-SRV - Verbuchungsadministration"
+    "shortDescription": "BC-SRV - Verbuchungsadministration",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1406_BC-SRV",
-    "shortDescription": "BC-SRV - Prozessadministration"
+    "shortDescription": "BC-SRV - Prozessadministration",
+    "riskLevel": "High"
   },
   {
     "query": "1407_BC-SRV",
-    "shortDescription": "BC-SRV - Transaktionsverwaltung"
+    "shortDescription": "BC-SRV - Transaktionsverwaltung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1408_BC-SRV",
-    "shortDescription": "BC-SRV - Sperreinträge löschen"
+    "shortDescription": "BC-SRV - Sperreinträge löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1409_BC-SRV",
-    "shortDescription": "BC-SRV - Anzeige SAP Directories"
+    "shortDescription": "BC-SRV - Anzeige SAP Directories",
+    "riskLevel": "Medium"
   },
   {
     "query": "1410_BC-SRV",
-    "shortDescription": "BC-SRV - Security Log (auswerten)"
+    "shortDescription": "BC-SRV - Security Log (auswerten)",
+    "riskLevel": "High"
   },
   {
     "query": "1411_BC-SRV",
-    "shortDescription": "BC-SRV - Profilparameter Historie anzeigen"
+    "shortDescription": "BC-SRV - Profilparameter Historie anzeigen",
+    "riskLevel": "Low"
   },
   {
     "query": "1420_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Verarbeitung"
+    "shortDescription": "BC-SRV - Batch Input Verarbeitung",
+    "riskLevel": "Medium"
   },
   {
     "query": "1421_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Verarbeitung (alle Mappennamen)"
+    "shortDescription": "BC-SRV - Batch Input Verarbeitung (alle Mappennamen)",
+    "riskLevel": "High"
   },
   {
     "query": "1422_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Verarbeitung (Batch)"
+    "shortDescription": "BC-SRV - Batch Input Verarbeitung (Batch)",
+    "riskLevel": "High"
   },
   {
     "query": "1423_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Mappen (freigeben)"
+    "shortDescription": "BC-SRV - Batch Input Mappen (freigeben)",
+    "riskLevel": "High"
   },
   {
     "query": "1424_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Mappen (löschen)"
+    "shortDescription": "BC-SRV - Batch Input Mappen (löschen)",
+    "riskLevel": "High"
   },
   {
     "query": "1425_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Mappen (alle löschen)"
+    "shortDescription": "BC-SRV - Batch Input Mappen (alle löschen)",
+    "riskLevel": "High"
   },
   {
     "query": "1426_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Mappen (analysieren)"
+    "shortDescription": "BC-SRV - Batch Input Mappen (analysieren)",
+    "riskLevel": "Low"
   },
   {
     "query": "1427_BC-SRV",
-    "shortDescription": "BC-SRV - Batch Input Mappen (sperren, entsperren)"
+    "shortDescription": "BC-SRV - Batch Input Mappen (sperren, entsperren)",
+    "riskLevel": "Medium"
   },
   {
     "query": "1428_BC-SRV",
-    "shortDescription": "BC-SRV - Job im Hintergrund einplanen"
+    "shortDescription": "BC-SRV - Job im Hintergrund einplanen",
+    "riskLevel": "Medium"
   },
   {
     "query": "1429_BC-SRV",
-    "shortDescription": "BC-SRV - Jobadministration"
+    "shortDescription": "BC-SRV - Jobadministration",
+    "riskLevel": "High"
   },
   {
     "query": "1430_BC-SRV",
-    "shortDescription": "BC-SRV - Jobadministration mandantenübergreifend"
+    "shortDescription": "BC-SRV - Jobadministration mandantenübergreifend",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1431_BC-SRV",
-    "shortDescription": "BC-SRV - Job unter fremden Namen einplanen"
+    "shortDescription": "BC-SRV - Job unter fremden Namen einplanen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "1432_BC-SRV",
-    "shortDescription": "BC-SRV - Spooladministration (benutzerübergreifend)"
+    "shortDescription": "BC-SRV - Spooladministration (benutzerübergreifend)",
+    "riskLevel": "Medium"
   },
   {
     "query": "1433_BC-SRV",
-    "shortDescription": "BC-SRV - Spooladministration (Mandantenübergreifend)"
+    "shortDescription": "BC-SRV - Spooladministration (Mandantenübergreifend)",
+    "riskLevel": "Medium"
   },
   {
     "query": "2000_FI-GL",
-    "shortDescription": "FI-GL - Sachkontenstammdaten im Kontenplan anlegen, ändern"
+    "shortDescription": "FI-GL - Sachkontenstammdaten im Kontenplan anlegen, ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2001_FI-GL",
-    "shortDescription": "FI-GL - Sachkontenstamm im Buchungskreis anlegen"
+    "shortDescription": "FI-GL - Sachkontenstamm im Buchungskreis anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2002_FI-GL",
-    "shortDescription": "FI-GL - Sachkontenstamm im Buchungskreis ändern"
+    "shortDescription": "FI-GL - Sachkontenstamm im Buchungskreis ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2003_FI-GL",
-    "shortDescription": "FI-GL - Sachkonten in der Bilanzstruktur pflegen"
+    "shortDescription": "FI-GL - Sachkonten in der Bilanzstruktur pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2004_FI-GL",
-    "shortDescription": "FI-GL - Sachk. Buchen"
+    "shortDescription": "FI-GL - Sachk. Buchen",
+    "riskLevel": "High"
   },
   {
     "query": "2005_FI-GL",
-    "shortDescription": "FI-GL - Sachkonten Kassenbuchung"
+    "shortDescription": "FI-GL - Sachkonten Kassenbuchung",
+    "riskLevel": "Medium"
   },
   {
     "query": "2006_FI-GL",
-    "shortDescription": "FI-GL - Zinslauf"
+    "shortDescription": "FI-GL - Zinslauf",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2007_FI-GL",
-    "shortDescription": "FI-GL - Sachkonten Zahlungseingang erfassen"
+    "shortDescription": "FI-GL - Sachkonten Zahlungseingang erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2008_FI-GL",
-    "shortDescription": "FI-GL - Sachkonten Zahlungsausgang erfassen"
+    "shortDescription": "FI-GL - Sachkonten Zahlungsausgang erfassen",
+    "riskLevel": "High"
   },
   {
     "query": "2009_FI-GL",
-    "shortDescription": "FI-GL - Zinssatzpflege"
+    "shortDescription": "FI-GL - Zinssatzpflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2010_FI-GL",
-    "shortDescription": "FI-GL - Buchungsperioden öffnen und schließen"
+    "shortDescription": "FI-GL - Buchungsperioden öffnen und schließen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2011_FI-GL",
-    "shortDescription": "FI-GL - Wechselkurse pflegen"
+    "shortDescription": "FI-GL - Wechselkurse pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2012_FI-GL",
-    "shortDescription": "FI-GL - Stammdatenänderungsregeln ändern"
+    "shortDescription": "FI-GL - Stammdatenänderungsregeln ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2013_FI-GL",
-    "shortDescription": "FI-GL - Massenstornierung von Belegen"
+    "shortDescription": "FI-GL - Massenstornierung von Belegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2014_FI-GL",
-    "shortDescription": "FI-GL - Sachkonten Bilanz auswerten/download"
+    "shortDescription": "FI-GL - Sachkonten Bilanz auswerten/download",
+    "riskLevel": "High"
   },
   {
     "query": "2100_FI-AR",
-    "shortDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht)"
+    "shortDescription": "FI-AR - Debitorenstammdaten anlegen (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2101_FI-AR",
-    "shortDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht)"
+    "shortDescription": "FI-AR - Debitorenstammdaten ändern (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2102_FI-AR",
-    "shortDescription": "FI-AR - Debitorenstamm löschen/deaktivieren (F-Sicht)"
+    "shortDescription": "FI-AR - Debitorenstamm löschen/deaktivieren (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2103_FI-AR",
-    "shortDescription": "FI-AR - Debitoren Buchen (verschiedene Transaktionen)"
+    "shortDescription": "FI-AR - Debitoren Buchen (verschiedene Transaktionen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2104_FI-AR",
-    "shortDescription": "FI-AR - Debebitoren Rechnung erfassen"
+    "shortDescription": "FI-AR - Debebitoren Rechnung erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2105_FI-AR",
-    "shortDescription": "FI-AR - Debitoren Gutschrift erfassen"
+    "shortDescription": "FI-AR - Debitoren Gutschrift erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2106_FI-AR",
-    "shortDescription": "FI-AR - Debitoren Zahlungseingang erfassen"
+    "shortDescription": "FI-AR - Debitoren Zahlungseingang erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2107_FI-AR",
-    "shortDescription": "FI-AR - Deb. Zahlungsavis anlegen"
+    "shortDescription": "FI-AR - Deb. Zahlungsavis anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2108_FI-AR",
-    "shortDescription": "FI-AR - Debitoren Zahlungsavis ändern"
+    "shortDescription": "FI-AR - Debitoren Zahlungsavis ändern",
+    "riskLevel": "Medium"
   },
   {
     "query": "2109_FI-AR",
-    "shortDescription": "FI-AR - Debitor Ausgleichen"
+    "shortDescription": "FI-AR - Debitor Ausgleichen",
+    "riskLevel": "High"
   },
   {
     "query": "2110_FI-AR",
-    "shortDescription": "FI-AR - Debitor Rücknahme Ausgleichsbeleg"
+    "shortDescription": "FI-AR - Debitor Rücknahme Ausgleichsbeleg",
+    "riskLevel": "High"
   },
   {
     "query": "2111_FI-AR",
-    "shortDescription": "FI-AR - Debitoren Kreditmanagement ändern"
+    "shortDescription": "FI-AR - Debitoren Kreditmanagement ändern",
+    "riskLevel": "High"
   },
   {
     "query": "2200_FI-AP",
-    "shortDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht)"
+    "shortDescription": "FI-AP - Kreditorenstamm anlegen (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2201_FI-AP",
-    "shortDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht)"
+    "shortDescription": "FI-AP - Kreditorenstamm ändern (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2202_FI-AP",
-    "shortDescription": "FI-AP - Kreditorenstamm löschen (F-Sicht)"
+    "shortDescription": "FI-AP - Kreditorenstamm löschen (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2203_FI-AP",
-    "shortDescription": "FI-AP - Kreditorenstamm löschen/deativieren (F-Sicht)"
+    "shortDescription": "FI-AP - Kreditorenstamm löschen/deativieren (F-Sicht)",
+    "riskLevel": "High"
   },
   {
     "query": "2204_FI-AP",
-    "shortDescription": "FI-AP - Kred. Buchen (verschiedene Transaktionen)"
+    "shortDescription": "FI-AP - Kred. Buchen (verschiedene Transaktionen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2205_FI-AP",
-    "shortDescription": "FI-AP - Kreditoren Rechnung erfassen"
+    "shortDescription": "FI-AP - Kreditoren Rechnung erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2206_FI-AP",
-    "shortDescription": "FI-AP - Kreditoren Gutschrift erfassen"
+    "shortDescription": "FI-AP - Kreditoren Gutschrift erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2207_FI-AP",
-    "shortDescription": "FI-AP - Kreditoren Zahlungsanforderung erfassen"
+    "shortDescription": "FI-AP - Kreditoren Zahlungsanforderung erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2208_FI-AP",
-    "shortDescription": "FI-AP - Kreditoren Anzahlung erfassen"
+    "shortDescription": "FI-AP - Kreditoren Anzahlung erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2209_FI-AP",
-    "shortDescription": "FI-AP - Kreditor Zahlungsausgang erfassen"
+    "shortDescription": "FI-AP - Kreditor Zahlungsausgang erfassen",
+    "riskLevel": "High"
   },
   {
     "query": "2210_FI-AP",
-    "shortDescription": "FI-AP - Kreditoren Ausgleich erfassen"
+    "shortDescription": "FI-AP - Kreditoren Ausgleich erfassen",
+    "riskLevel": "High"
   },
   {
     "query": "2211_FI-AP",
-    "shortDescription": "FI-AP - Kreditor Rücknahme Ausgleichsbeleg"
+    "shortDescription": "FI-AP - Kreditor Rücknahme Ausgleichsbeleg",
+    "riskLevel": "High"
   },
   {
     "query": "2300_FI-AA",
-    "shortDescription": "FI-AA - Anlagenstamm anlegen"
+    "shortDescription": "FI-AA - Anlagenstamm anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "2301_FI-AA",
-    "shortDescription": "FI-AA - Anlagenstamm ändern"
+    "shortDescription": "FI-AA - Anlagenstamm ändern",
+    "riskLevel": "High"
   },
   {
     "query": "2302_FI-AA",
-    "shortDescription": "FI-AA - Anlagenstamm sperren"
+    "shortDescription": "FI-AA - Anlagenstamm sperren",
+    "riskLevel": "High"
   },
   {
     "query": "2303_FI-AA",
-    "shortDescription": "FI-AA - Anlagenstamm löschen"
+    "shortDescription": "FI-AA - Anlagenstamm löschen",
+    "riskLevel": "High"
   },
   {
     "query": "2304_FI-AA",
-    "shortDescription": "FI-AA - Anlagen Zugang durch Kauf"
+    "shortDescription": "FI-AA - Anlagen Zugang durch Kauf",
+    "riskLevel": "Medium"
   },
   {
     "query": "2305_FI-AA",
-    "shortDescription": "FI-AA - Anlagen Zugang aus Eigenfertigung"
+    "shortDescription": "FI-AA - Anlagen Zugang aus Eigenfertigung",
+    "riskLevel": "Medium"
   },
   {
     "query": "2306_FI-AA",
-    "shortDescription": "FI-AA - Anlagenabgang duch Verkauf (mit Debitor)"
+    "shortDescription": "FI-AA - Anlagenabgang duch Verkauf (mit Debitor)",
+    "riskLevel": "Medium"
   },
   {
     "query": "2307_FI-AA",
-    "shortDescription": "FI-AA - Anlagenabgang duch Verkauf (ohne Debitor)"
+    "shortDescription": "FI-AA - Anlagenabgang duch Verkauf (ohne Debitor)",
+    "riskLevel": "High"
   },
   {
     "query": "2308_FI-AA",
-    "shortDescription": "FI-AA - Anlagenabgang durch Verschrottung"
+    "shortDescription": "FI-AA - Anlagenabgang durch Verschrottung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2309_FI-AA",
-    "shortDescription": "FI-AA - Manuelle Abschreibung buchen"
+    "shortDescription": "FI-AA - Manuelle Abschreibung buchen",
+    "riskLevel": "High"
   },
   {
     "query": "2310_FI-AA",
-    "shortDescription": "FI-AA - Maschinelle Abschreibung buchen"
+    "shortDescription": "FI-AA - Maschinelle Abschreibung buchen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2311_FI-AA",
-    "shortDescription": "FI-AA - Maschinelle Bestandsbuchung (periodisch)"
+    "shortDescription": "FI-AA - Maschinelle Bestandsbuchung (periodisch)",
+    "riskLevel": "Medium"
   },
   {
     "query": "2312_FI-AA",
-    "shortDescription": "FI-AA - Jahresabschluss zurücknehmen"
+    "shortDescription": "FI-AA - Jahresabschluss zurücknehmen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2400_FI-CM",
-    "shortDescription": "FI-CM - elektronischen Kontoauszug einlesen"
+    "shortDescription": "FI-CM - elektronischen Kontoauszug einlesen",
+    "riskLevel": "High"
   },
   {
     "query": "2401_FI-CM",
-    "shortDescription": "FI-CM - elektronischen Kontoauszug nachbearbeiten"
+    "shortDescription": "FI-CM - elektronischen Kontoauszug nachbearbeiten",
+    "riskLevel": "High"
   },
   {
     "query": "2402_FI-CM",
-    "shortDescription": "FI-CM - Kontoauszug manuell erfassen"
+    "shortDescription": "FI-CM - Kontoauszug manuell erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2403_FI-CM",
-    "shortDescription": "FI-CM - Zahllauf allgemein"
+    "shortDescription": "FI-CM - Zahllauf allgemein",
+    "riskLevel": "High"
   },
   {
     "query": "2404_FI-CM",
-    "shortDescription": "FI-CM - Zahllauf (Debitor)"
+    "shortDescription": "FI-CM - Zahllauf (Debitor)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2405_FI-CM",
-    "shortDescription": "FI-CM - Zahllauf (Kreditor)"
+    "shortDescription": "FI-CM - Zahllauf (Kreditor)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2406_FI-CM",
-    "shortDescription": "FI-CM - Zahllauf (Vorschlagsliste)"
+    "shortDescription": "FI-CM - Zahllauf (Vorschlagsliste)",
+    "riskLevel": "High"
   },
   {
     "query": "2407_FI-CM",
-    "shortDescription": "FI-CM - Zahllauf für Zahlungsanordnungen (Sachkonten)"
+    "shortDescription": "FI-CM - Zahllauf für Zahlungsanordnungen (Sachkonten)",
+    "riskLevel": "High"
   },
   {
     "query": "2500_TR-LO",
-    "shortDescription": "TR-LO - Vertrag (Hypothek) anlegen"
+    "shortDescription": "TR-LO - Vertrag (Hypothek) anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2501_TR-LO",
-    "shortDescription": "TR-LO - Vertrag (Schuldschein) anlegen"
+    "shortDescription": "TR-LO - Vertrag (Schuldschein) anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2502_TR-LO",
-    "shortDescription": "TR-LO - Vertrag (Policendarlehen) anlegen"
+    "shortDescription": "TR-LO - Vertrag (Policendarlehen) anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2503_TR-LO",
-    "shortDescription": "TR-LO - Vertrag (allgemeines Darlehen) anlegen"
+    "shortDescription": "TR-LO - Vertrag (allgemeines Darlehen) anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2504_TR-LO",
-    "shortDescription": "TR-LO - Vertrag ändern"
+    "shortDescription": "TR-LO - Vertrag ändern",
+    "riskLevel": "Medium"
   },
   {
     "query": "2505_TR-LO",
-    "shortDescription": "TR-LO - Vertragskonditionen ändern nach Buchung"
+    "shortDescription": "TR-LO - Vertragskonditionen ändern nach Buchung",
+    "riskLevel": "Medium"
   },
   {
     "query": "2506_TR-LO",
-    "shortDescription": "TR-LO - Vertrag auszahlen"
+    "shortDescription": "TR-LO - Vertrag auszahlen",
+    "riskLevel": "High"
   },
   {
     "query": "2507_TR-LO",
-    "shortDescription": "TR-LO - Vertrag Einzelvorgang stornieren"
+    "shortDescription": "TR-LO - Vertrag Einzelvorgang stornieren",
+    "riskLevel": "Medium"
   },
   {
     "query": "2508_TR-LO",
-    "shortDescription": "TR-LO - Vertrag prolongieren Einzelumsetzung"
+    "shortDescription": "TR-LO - Vertrag prolongieren Einzelumsetzung",
+    "riskLevel": "High"
   },
   {
     "query": "2509_TR-LO",
-    "shortDescription": "TR-LO - Prolongationstableau anlegen"
+    "shortDescription": "TR-LO - Prolongationstableau anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "2510_TR-LO",
-    "shortDescription": "TR-LO - Prolongations Tableau ändern"
+    "shortDescription": "TR-LO - Prolongations Tableau ändern",
+    "riskLevel": "High"
   },
   {
     "query": "2511_TR-LO",
-    "shortDescription": "TR-LO - Einzeldarlehen buchen"
+    "shortDescription": "TR-LO - Einzeldarlehen buchen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2512_TR-LO",
-    "shortDescription": "TR-LO - Einzelsätze buchen"
+    "shortDescription": "TR-LO - Einzelsätze buchen",
+    "riskLevel": "Medium"
   },
   {
     "query": "2513_TR-LO",
-    "shortDescription": "TR-LO - Massen Plansätze buchen"
+    "shortDescription": "TR-LO - Massen Plansätze buchen",
+    "riskLevel": "High"
   },
   {
     "query": "2514_TR-LO",
-    "shortDescription": "TR-LO - Belege stornieren"
+    "shortDescription": "TR-LO - Belege stornieren",
+    "riskLevel": "High"
   },
   {
     "query": "2600_TR-TM",
-    "shortDescription": "TR-TM - Festgeld anlegen"
+    "shortDescription": "TR-TM - Festgeld anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "2601_TR-TM",
-    "shortDescription": "TR-TM - Festgeld  ändern"
+    "shortDescription": "TR-TM - Festgeld  ändern",
+    "riskLevel": "High"
   },
   {
     "query": "2602_TR-TM",
-    "shortDescription": "TR-TM - Festgeld prolongieren"
+    "shortDescription": "TR-TM - Festgeld prolongieren",
+    "riskLevel": "High"
   },
   {
     "query": "2603_TR-TM",
-    "shortDescription": "TR-TM - Festgeld abrechnen"
+    "shortDescription": "TR-TM - Festgeld abrechnen",
+    "riskLevel": "High"
   },
   {
     "query": "2604_TR-TM",
-    "shortDescription": "TR-TM - Devisengeschäfte anlegen"
+    "shortDescription": "TR-TM - Devisengeschäfte anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "2605_TR-TM",
-    "shortDescription": "TR-TM - Devisengeschäfte ändern"
+    "shortDescription": "TR-TM - Devisengeschäfte ändern",
+    "riskLevel": "High"
   },
   {
     "query": "2606_TR-TM",
-    "shortDescription": "TR-TM - Devisengeschäft SWAP"
+    "shortDescription": "TR-TM - Devisengeschäft SWAP",
+    "riskLevel": "High"
   },
   {
     "query": "2607_TR-TM",
-    "shortDescription": "TR-TM - Devisengeschäft Prolongation"
+    "shortDescription": "TR-TM - Devisengeschäft Prolongation",
+    "riskLevel": "High"
   },
   {
     "query": "2608_TR-TM",
-    "shortDescription": "TR-TM - Devisengeschäft abrechnen"
+    "shortDescription": "TR-TM - Devisengeschäft abrechnen",
+    "riskLevel": "High"
   },
   {
     "query": "2609_TR-TM",
-    "shortDescription": "TR-TM - Devisengeschäft Vorgang stornieren"
+    "shortDescription": "TR-TM - Devisengeschäft Vorgang stornieren",
+    "riskLevel": "High"
   },
   {
     "query": "2610_TR-TM",
-    "shortDescription": "TR-TM - Buchung durchführen"
+    "shortDescription": "TR-TM - Buchung durchführen",
+    "riskLevel": "High"
   },
   {
     "query": "2611_TR-TM",
-    "shortDescription": "TR-TM - Buchungsbelege stornieren"
+    "shortDescription": "TR-TM - Buchungsbelege stornieren",
+    "riskLevel": "High"
   },
   {
     "query": "2612_TR-TM",
-    "shortDescription": "TR-TM - Stichtagsbewertung durchführen"
+    "shortDescription": "TR-TM - Stichtagsbewertung durchführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "2613_TR-TM",
-    "shortDescription": "TR-TM - Stichtagsbewertung stornieren"
+    "shortDescription": "TR-TM - Stichtagsbewertung stornieren",
+    "riskLevel": "High"
   },
   {
     "query": "3000_MM-PUR",
-    "shortDescription": "MM-PUR - Lieferantenstamm anlegen (Einkaufssicht)"
+    "shortDescription": "MM-PUR - Lieferantenstamm anlegen (Einkaufssicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3001_MM-PUR",
-    "shortDescription": "MM-PUR - Lieferantenstamm ändern (Einkaufssicht)"
+    "shortDescription": "MM-PUR - Lieferantenstamm ändern (Einkaufssicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3002_MM-PUR",
-    "shortDescription": "MM-PUR - Lieferantenstamm sperren oder entsperren"
+    "shortDescription": "MM-PUR - Lieferantenstamm sperren oder entsperren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3003_MM-PUR",
-    "shortDescription": "MM-PUR - Einkaufsinfosatz anlegen/hinzufügen"
+    "shortDescription": "MM-PUR - Einkaufsinfosatz anlegen/hinzufügen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3004_MM-PUR",
-    "shortDescription": "MM-PUR - Einkaufsinfosatz ändern"
+    "shortDescription": "MM-PUR - Einkaufsinfosatz ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3005_MM-PUR",
-    "shortDescription": "MM-PUR - Konditionen anlegen (Sonstige)"
+    "shortDescription": "MM-PUR - Konditionen anlegen (Sonstige)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3006_MM-PUR",
-    "shortDescription": "MM-PUR - Konditionen ändern (Sonstige)"
+    "shortDescription": "MM-PUR - Konditionen ändern (Sonstige)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3007_MM-PUR",
-    "shortDescription": "MM-PUR - Konditionen pflegen (Preise)"
+    "shortDescription": "MM-PUR - Konditionen pflegen (Preise)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3008_MM-PUR",
-    "shortDescription": "MM-PUR - Konditionen pflegen (Zu- und Abschläge)"
+    "shortDescription": "MM-PUR - Konditionen pflegen (Zu- und Abschläge)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3009_MM-PUR",
-    "shortDescription": "MM-PUR - Konditionen pflegen (Lieferant)"
+    "shortDescription": "MM-PUR - Konditionen pflegen (Lieferant)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3010_MM-PUR",
-    "shortDescription": "MM-PUR - BANF anlegen oder hinzufügen"
+    "shortDescription": "MM-PUR - BANF anlegen oder hinzufügen",
+    "riskLevel": "High"
   },
   {
     "query": "3011_MM-PUR",
-    "shortDescription": "MM-PUR - BANF ändern"
+    "shortDescription": "MM-PUR - BANF ändern",
+    "riskLevel": "High"
   },
   {
     "query": "3012_MM-PUR",
-    "shortDescription": "MM-PUR - BANF freigeben"
+    "shortDescription": "MM-PUR - BANF freigeben",
+    "riskLevel": "High"
   },
   {
     "query": "3013_MM-PUR",
-    "shortDescription": "MM-PUR - Anfrage anlegen"
+    "shortDescription": "MM-PUR - Anfrage anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "3014_MM-PUR",
-    "shortDescription": "MM-PUR - Anfrage ändern"
+    "shortDescription": "MM-PUR - Anfrage ändern",
+    "riskLevel": "Medium"
   },
   {
     "query": "3015_MM-PUR",
-    "shortDescription": "MM-PUR - Angebot pflegen/erfassen"
+    "shortDescription": "MM-PUR - Angebot pflegen/erfassen",
+    "riskLevel": "Medium"
   },
   {
     "query": "3016_MM-PUR",
-    "shortDescription": "MM-PUR - Bestellung anlegen"
+    "shortDescription": "MM-PUR - Bestellung anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "3017_MM-PUR",
-    "shortDescription": "MM-PUR - Bestellung ändern"
+    "shortDescription": "MM-PUR - Bestellung ändern",
+    "riskLevel": "High"
   },
   {
     "query": "3018_MM-PUR",
-    "shortDescription": "MM-PUR - Bestellung freigeben"
+    "shortDescription": "MM-PUR - Bestellung freigeben",
+    "riskLevel": "High"
   },
   {
     "query": "3019_MM-PUR",
-    "shortDescription": "MM-PUR - Rahmenvertrag oder Kontrakt anlegen"
+    "shortDescription": "MM-PUR - Rahmenvertrag oder Kontrakt anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "3020_MM-PUR",
-    "shortDescription": "MM-PUR - Rahmenvertrag oder Kontrakt ändern"
+    "shortDescription": "MM-PUR - Rahmenvertrag oder Kontrakt ändern",
+    "riskLevel": "High"
   },
   {
     "query": "3021_MM-PUR",
-    "shortDescription": "MM-PUR - Kontrakt freigeben"
+    "shortDescription": "MM-PUR - Kontrakt freigeben",
+    "riskLevel": "High"
   },
   {
     "query": "3100_MM-IM",
-    "shortDescription": "MM-IM - Wareneingang zur Bestellung (Bewegungsart BWART 101)"
+    "shortDescription": "MM-IM - Wareneingang zur Bestellung (Bewegungsart BWART 101)",
+    "riskLevel": "Medium"
   },
   {
     "query": "3101_MM-IM",
-    "shortDescription": "MM-IM - Wareneingang ohne Bestellung (Bewegungsart BWART 501)"
+    "shortDescription": "MM-IM - Wareneingang ohne Bestellung (Bewegungsart BWART 501)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3102_MM-IM",
-    "shortDescription": "MM-IM - Wareneingang Bestandserhöhung (Bewegungsarten BWART 561/563/565)"
+    "shortDescription": "MM-IM - Wareneingang Bestandserhöhung (Bewegungsarten BWART 561/563/565)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3103_MM-IM",
-    "shortDescription": "MM-IM - Umbuchung (BWART *)"
+    "shortDescription": "MM-IM - Umbuchung (BWART *)",
+    "riskLevel": "Medium"
   },
   {
     "query": "3104_MM-IM",
-    "shortDescription": "MM-IM - Warenausgang zum Auftrag (BWART 231/261)"
+    "shortDescription": "MM-IM - Warenausgang zum Auftrag (BWART 231/261)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3105_MM-IM",
-    "shortDescription": "MM-IM - Warenausgang Kostenstelle/Projekt (BWART 201/221)"
+    "shortDescription": "MM-IM - Warenausgang Kostenstelle/Projekt (BWART 201/221)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3106_MM-IM",
-    "shortDescription": "MM-IM - Warenausgang zur Verschrottung (BWART 551)"
+    "shortDescription": "MM-IM - Warenausgang zur Verschrottung (BWART 551)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3107_MM-IM",
-    "shortDescription": "MM-IM - Kommissionieren (BWART *)"
+    "shortDescription": "MM-IM - Kommissionieren (BWART *)",
+    "riskLevel": "Medium"
   },
   {
     "query": "3108_MM-IM",
-    "shortDescription": "MM-IM - Inventurbeleg anlegen"
+    "shortDescription": "MM-IM - Inventurbeleg anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "3109_MM-IM",
-    "shortDescription": "MM-IM - Inventurbeleg ändern"
+    "shortDescription": "MM-IM - Inventurbeleg ändern",
+    "riskLevel": "Medium"
   },
   {
     "query": "3110_MM-IM",
-    "shortDescription": "MM-IM - Inventurzählung"
+    "shortDescription": "MM-IM - Inventurzählung",
+    "riskLevel": "Medium"
   },
   {
     "query": "3111_MM-IM",
-    "shortDescription": "MM-IM - Inventurzählung ändern"
+    "shortDescription": "MM-IM - Inventurzählung ändern",
+    "riskLevel": "Medium"
   },
   {
     "query": "3112_MM-IM",
-    "shortDescription": "MM-IM - Inventurdifferenzen buchen"
+    "shortDescription": "MM-IM - Inventurdifferenzen buchen",
+    "riskLevel": "High"
   },
   {
     "query": "3200_MM-IV",
-    "shortDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht)"
+    "shortDescription": "MM-IV - Eingangsrechnung erfassen (MM-Sicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3201_MM-IV",
-    "shortDescription": "MM-IV - Rechnung erfassen (FI-Sicht)"
+    "shortDescription": "MM-IV - Rechnung erfassen (FI-Sicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3202_MM-IV",
-    "shortDescription": "MM-IV - Gesperrte Rechnung freigeben"
+    "shortDescription": "MM-IV - Gesperrte Rechnung freigeben",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3203_MM-IV",
-    "shortDescription": "MM-IV - Preisänderung Material"
+    "shortDescription": "MM-IV - Preisänderung Material",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3204_MM-IV",
-    "shortDescription": "MM-IV - We/Re Kontenpflege"
+    "shortDescription": "MM-IV - We/Re Kontenpflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "3300_MM-CBP",
-    "shortDescription": "MM-CBP - MRP-Einzelplanung - einstufig"
+    "shortDescription": "MM-CBP - MRP-Einzelplanung - einstufig",
+    "riskLevel": "Medium"
   },
   {
     "query": "3301_MM-CBP",
-    "shortDescription": "MM-CBP - Hinzufügen Planauftrag"
+    "shortDescription": "MM-CBP - Hinzufügen Planauftrag",
+    "riskLevel": "Medium"
   },
   {
     "query": "3302_MM-CBP",
-    "shortDescription": "MM-CBP - Hinzufügen Vorplanung"
+    "shortDescription": "MM-CBP - Hinzufügen Vorplanung",
+    "riskLevel": "Medium"
   },
   {
     "query": "3400_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm anlegen"
+    "shortDescription": "MM-MD - Materialstamm anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "3401_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm ändern"
+    "shortDescription": "MM-MD - Materialstamm ändern",
+    "riskLevel": "High"
   },
   {
     "query": "3402_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm löschen"
+    "shortDescription": "MM-MD - Materialstamm löschen",
+    "riskLevel": "High"
   },
   {
     "query": "3403_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm Profil anlegen"
+    "shortDescription": "MM-MD - Materialstamm Profil anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "3404_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm/Profil ändern"
+    "shortDescription": "MM-MD - Materialstamm/Profil ändern",
+    "riskLevel": "High"
   },
   {
     "query": "3405_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm/Profil löschen"
+    "shortDescription": "MM-MD - Materialstamm/Profil löschen",
+    "riskLevel": "High"
   },
   {
     "query": "3406_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm/Charge anlegen"
+    "shortDescription": "MM-MD - Materialstamm/Charge anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "3407_MM-MD",
-    "shortDescription": "MM-MD - Materialstamm/Charge ändern"
+    "shortDescription": "MM-MD - Materialstamm/Charge ändern",
+    "riskLevel": "High"
   },
   {
     "query": "4000_SD-MD",
-    "shortDescription": "SD-MD - Kundenstamm anlegen (V-Sicht)"
+    "shortDescription": "SD-MD - Kundenstamm anlegen (V-Sicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4001_SD-MD",
-    "shortDescription": "SD-MD - Kundenstamm ändern (V-Sicht)"
+    "shortDescription": "SD-MD - Kundenstamm ändern (V-Sicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4002_SD-MD",
-    "shortDescription": "SD-MD - Kundenstamm sperren oder entsperren"
+    "shortDescription": "SD-MD - Kundenstamm sperren oder entsperren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4003_SD-MD",
-    "shortDescription": "SD-MD - Kundenstamm löschen (V-Sicht)"
+    "shortDescription": "SD-MD - Kundenstamm löschen (V-Sicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4004_SD-MD",
-    "shortDescription": "SD-MD - Konditionen anlegen"
+    "shortDescription": "SD-MD - Konditionen anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4005_SD-MD",
-    "shortDescription": "SD-MD - Kondition ändern"
+    "shortDescription": "SD-MD - Kondition ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4006_SD-MD",
-    "shortDescription": "SD-MD - Konditionenpflege anlegen"
+    "shortDescription": "SD-MD - Konditionenpflege anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4007_SD-MD",
-    "shortDescription": "SD-MD - Konditionenpflege ändern"
+    "shortDescription": "SD-MD - Konditionenpflege ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4008_SD-MD",
-    "shortDescription": "SD-MD - Kreditmanagement Stammdaten pflegen"
+    "shortDescription": "SD-MD - Kreditmanagement Stammdaten pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4009_SD-MD",
-    "shortDescription": "SD-MD - Bonusabsprachen anlegen"
+    "shortDescription": "SD-MD - Bonusabsprachen anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4010_SD-MD",
-    "shortDescription": "SD-MD - Bonusabsprache ändern"
+    "shortDescription": "SD-MD - Bonusabsprache ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4011_SD-MD",
-    "shortDescription": "SD-MD - Tabelle für Absagen pflegen"
+    "shortDescription": "SD-MD - Tabelle für Absagen pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4100_SD-SLS",
-    "shortDescription": "SD-SLS - Anfrage anlegen"
+    "shortDescription": "SD-SLS - Anfrage anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "4101_SD-SLS",
-    "shortDescription": "SD-SLS - Angebot anlegen"
+    "shortDescription": "SD-SLS - Angebot anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "4102_SD-SLS",
-    "shortDescription": "SD-SLS - Auftrag anlegen"
+    "shortDescription": "SD-SLS - Auftrag anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "4103_SD-SLS",
-    "shortDescription": "SD-SLS - Auftrag ändern"
+    "shortDescription": "SD-SLS - Auftrag ändern",
+    "riskLevel": "High"
   },
   {
     "query": "4104_SD-SLS",
-    "shortDescription": "SD-SLS - Kontrakte anlegen"
+    "shortDescription": "SD-SLS - Kontrakte anlegen",
+    "riskLevel": "Medium"
   },
   {
     "query": "4105_SD-SLS",
-    "shortDescription": "SD-SLS - Kontrakte ändern"
+    "shortDescription": "SD-SLS - Kontrakte ändern",
+    "riskLevel": "Medium"
   },
   {
     "query": "4106_SD-SLS",
-    "shortDescription": "SD-SLS - Auslieferung zum Kundenauftrag anlegen"
+    "shortDescription": "SD-SLS - Auslieferung zum Kundenauftrag anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4107_SD-SLS",
-    "shortDescription": "SD-SLS - Auslieferung pflegen oder Warenausgang buchen"
+    "shortDescription": "SD-SLS - Auslieferung pflegen oder Warenausgang buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4108_SD-SLS",
-    "shortDescription": "SD-SLS - Liste Warenausgang Auslieferung"
+    "shortDescription": "SD-SLS - Liste Warenausgang Auslieferung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4109_SD-SLS",
-    "shortDescription": "SD-SLS - Vertriebsbelege sperren/ entsperren"
+    "shortDescription": "SD-SLS - Vertriebsbelege sperren/ entsperren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4200_SD-BIL",
-    "shortDescription": "SD-BIL - Faktura anlegen"
+    "shortDescription": "SD-BIL - Faktura anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4201_SD-BIL",
-    "shortDescription": "SD-BIL - Faktura ändern"
+    "shortDescription": "SD-BIL - Faktura ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4202_SD-BIL",
-    "shortDescription": "SD-BIL - Fakturierung stornieren"
+    "shortDescription": "SD-BIL - Fakturierung stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4203_SD-BIL",
-    "shortDescription": "SD-BIL - Aufträge zur Faktura freigeben"
+    "shortDescription": "SD-BIL - Aufträge zur Faktura freigeben",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4204_SD-BIL",
-    "shortDescription": "SD-BIL - Fakturavorrat bearbeiten"
+    "shortDescription": "SD-BIL - Fakturavorrat bearbeiten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4205_SD-BIL",
-    "shortDescription": "SD-BIL - Bonusabrechnung (VB"
+    "shortDescription": "SD-BIL - Bonusabrechnung (VB",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4206_SD-BIL",
-    "shortDescription": "SD-BIL - Rechnungsliste pflegen"
+    "shortDescription": "SD-BIL - Rechnungsliste pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4207_SD-BIL",
-    "shortDescription": "SD-BIL - Rechnungsliste pflegen"
+    "shortDescription": "SD-BIL - Rechnungsliste pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "4208_SD-BIL",
-    "shortDescription": "SD-BIL - Rechnungslistenvorrat"
+    "shortDescription": "SD-BIL - Rechnungslistenvorrat",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5000_CO-OM",
-    "shortDescription": "CO-OM - Kostenarten anlegen"
+    "shortDescription": "CO-OM - Kostenarten anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5001_CO-OM",
-    "shortDescription": "CO-OM - Kostenarten ändern"
+    "shortDescription": "CO-OM - Kostenarten ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5002_CO-OM",
-    "shortDescription": "CO-OM - Kostenstellen anlegen"
+    "shortDescription": "CO-OM - Kostenstellen anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5003_CO-OM",
-    "shortDescription": "CO-OM - Kostenstellen ändern"
+    "shortDescription": "CO-OM - Kostenstellen ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5004_CO-OM",
-    "shortDescription": "CO-OM - Kostenstellen löschen"
+    "shortDescription": "CO-OM - Kostenstellen löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5005_CO-OM",
-    "shortDescription": "CO-OM - Standardhierarche pflegen"
+    "shortDescription": "CO-OM - Standardhierarche pflegen",
+    "riskLevel": "High"
   },
   {
     "query": "5006_CO-OM",
-    "shortDescription": "CO-OM - Periodensperre setzen"
+    "shortDescription": "CO-OM - Periodensperre setzen",
+    "riskLevel": "High"
   },
   {
     "query": "5007_CO-OM",
-    "shortDescription": "CO-OM - Kalkulationsschema pflegen"
+    "shortDescription": "CO-OM - Kalkulationsschema pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5008_CO-OM",
-    "shortDescription": "CO-OM - Planungs Versionen pflegen"
+    "shortDescription": "CO-OM - Planungs Versionen pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5009_CO-OM",
-    "shortDescription": "CO-OM - Indirekte Leistungsverrechnung definieren"
+    "shortDescription": "CO-OM - Indirekte Leistungsverrechnung definieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5010_CO-OM",
-    "shortDescription": "CO-OM - Leistungsart anlegen"
+    "shortDescription": "CO-OM - Leistungsart anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5011_CO-OM",
-    "shortDescription": "CO-OM - Leistungsart ändern"
+    "shortDescription": "CO-OM - Leistungsart ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5012_CO-OM",
-    "shortDescription": "CO-OM - Leistungsarten löschen"
+    "shortDescription": "CO-OM - Leistungsarten löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5013_CO-OM",
-    "shortDescription": "CO-OM - Leistungsartengruppen anlegen"
+    "shortDescription": "CO-OM - Leistungsartengruppen anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5014_CO-OM",
-    "shortDescription": "CO-OM - Leistungsartengruppen ändern"
+    "shortDescription": "CO-OM - Leistungsartengruppen ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5015_CO-OM",
-    "shortDescription": "CO-OM - Kostenarten oder Leistungsaufnahmen planen"
+    "shortDescription": "CO-OM - Kostenarten oder Leistungsaufnahmen planen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5016_CO-OM",
-    "shortDescription": "CO-OM - Leistungserbringung oder Tarife planen"
+    "shortDescription": "CO-OM - Leistungserbringung oder Tarife planen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5017_CO-OM",
-    "shortDescription": "CO-OM - Statistische Kennzahlen planen"
+    "shortDescription": "CO-OM - Statistische Kennzahlen planen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5018_CO-OM",
-    "shortDescription": "CO-OM - Innenauftrag anlegen"
+    "shortDescription": "CO-OM - Innenauftrag anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "5019_CO-OM",
-    "shortDescription": "CO-OM - Innenauftrag ändern"
+    "shortDescription": "CO-OM - Innenauftrag ändern",
+    "riskLevel": "High"
   },
   {
     "query": "5020_CO-OM",
-    "shortDescription": "CO-OM - Gesamtplanung (Kostenplanwerte) ändern"
+    "shortDescription": "CO-OM - Gesamtplanung (Kostenplanwerte) ändern",
+    "riskLevel": "High"
   },
   {
     "query": "5021_CO-OM",
-    "shortDescription": "CO-OM - Kostenstellenetats planen"
+    "shortDescription": "CO-OM - Kostenstellenetats planen",
+    "riskLevel": "High"
   },
   {
     "query": "5022_CO-OM",
-    "shortDescription": "CO-OM - Tarifermittlung durchführen"
+    "shortDescription": "CO-OM - Tarifermittlung durchführen",
+    "riskLevel": "High"
   },
   {
     "query": "5023_CO-OM",
-    "shortDescription": "CO-OM - Manuelle Umbuchung Kosten"
+    "shortDescription": "CO-OM - Manuelle Umbuchung Kosten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5024_CO-OM",
-    "shortDescription": "CO-OM - Manuelle Umbuchung Erlöse"
+    "shortDescription": "CO-OM - Manuelle Umbuchung Erlöse",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5025_CO-OM",
-    "shortDescription": "CO-OM - Umbuchung Einzelposten"
+    "shortDescription": "CO-OM - Umbuchung Einzelposten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5026_CO-OM",
-    "shortDescription": "CO-OM - Leistungsverrechnung"
+    "shortDescription": "CO-OM - Leistungsverrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5027_CO-OM",
-    "shortDescription": "CO-OM - Umbuchung Leistungsverrechnung"
+    "shortDescription": "CO-OM - Umbuchung Leistungsverrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5028_CO-OM",
-    "shortDescription": "CO-OM - Manuelle Kostenverrechnung"
+    "shortDescription": "CO-OM - Manuelle Kostenverrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5029_CO-OM",
-    "shortDescription": "CO-OM - Schedule Manager"
+    "shortDescription": "CO-OM - Schedule Manager",
+    "riskLevel": "Medium"
   },
   {
     "query": "5030_CO-OM",
-    "shortDescription": "CO-OM - Abstimmledger Abstimmung mit FiBu"
+    "shortDescription": "CO-OM - Abstimmledger Abstimmung mit FiBu",
+    "riskLevel": "Medium"
   },
   {
     "query": "5031_CO-OM",
-    "shortDescription": "CO-OM - Abstimmledger nachbuchen"
+    "shortDescription": "CO-OM - Abstimmledger nachbuchen",
+    "riskLevel": "High"
   },
   {
     "query": "5032_CO-OM",
-    "shortDescription": "CO-OM - Kostenstellen Periodische Umbuchung"
+    "shortDescription": "CO-OM - Kostenstellen Periodische Umbuchung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5033_CO-OM",
-    "shortDescription": "CO-OM - Indirekte Leistungsverrechnung durchführen"
+    "shortDescription": "CO-OM - Indirekte Leistungsverrechnung durchführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5034_CO-OM",
-    "shortDescription": "CO-OM - Kostenstellen Obligovortrag"
+    "shortDescription": "CO-OM - Kostenstellen Obligovortrag",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5035_CO-OM",
-    "shortDescription": "CO-OM - Innenaufträge Nachbewertung Isttarife"
+    "shortDescription": "CO-OM - Innenaufträge Nachbewertung Isttarife",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5036_CO-OM",
-    "shortDescription": "CO-OM - Innenaufträge Zuschläge pflegen"
+    "shortDescription": "CO-OM - Innenaufträge Zuschläge pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5037_CO-OM",
-    "shortDescription": "CO-OM - Innenaufträge Budgetübertrag"
+    "shortDescription": "CO-OM - Innenaufträge Budgetübertrag",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5038_CO-OM",
-    "shortDescription": "CO-OM - Innenaufträge Obligovortrag"
+    "shortDescription": "CO-OM - Innenaufträge Obligovortrag",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5039_CO-OM",
-    "shortDescription": "CO-OM - Periodensperre pflegen"
+    "shortDescription": "CO-OM - Periodensperre pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5100_CO-PA",
-    "shortDescription": "CO-PA - Merkmalswerte ändern"
+    "shortDescription": "CO-PA - Merkmalswerte ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5101_CO-PA",
-    "shortDescription": "CO-PA - Konditionssätze anlegen"
+    "shortDescription": "CO-PA - Konditionssätze anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5102_CO-PA",
-    "shortDescription": "CO-PA - Ableitungsregeln pflegen"
+    "shortDescription": "CO-PA - Ableitungsregeln pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5500_PS-PM",
-    "shortDescription": "PS-PM - Standard PSP anlegen"
+    "shortDescription": "PS-PM - Standard PSP anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5501_PS-PM",
-    "shortDescription": "PS-PM - Standard PSP ändern"
+    "shortDescription": "PS-PM - Standard PSP ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5502_PS-PM",
-    "shortDescription": "PS-PM - Standardnetz anlegen"
+    "shortDescription": "PS-PM - Standardnetz anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5503_PS-PM",
-    "shortDescription": "PS-PM - Standardnetz ändern"
+    "shortDescription": "PS-PM - Standardnetz ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5504_PS-PM",
-    "shortDescription": "PS-PM - Projekt PSP/Element anlegen"
+    "shortDescription": "PS-PM - Projekt PSP/Element anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5505_PS-PM",
-    "shortDescription": "PS-PM - Projekt PSP/Element ändern"
+    "shortDescription": "PS-PM - Projekt PSP/Element ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5506_PS-PM",
-    "shortDescription": "PS-PM - Projekt Netzplan anlegen"
+    "shortDescription": "PS-PM - Projekt Netzplan anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5507_PS-PM",
-    "shortDescription": "PS-PM - Projekt Netzplan ändern"
+    "shortDescription": "PS-PM - Projekt Netzplan ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5508_PS-PM",
-    "shortDescription": "PS-PM - Projekt Budget pflegen"
+    "shortDescription": "PS-PM - Projekt Budget pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5509_PS-PM",
-    "shortDescription": "PS-PM - Projekt Kostenplanung pflegen"
+    "shortDescription": "PS-PM - Projekt Kostenplanung pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5510_PS-PM",
-    "shortDescription": "PS-PM - Projekt Erlösplanung pflegen"
+    "shortDescription": "PS-PM - Projekt Erlösplanung pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5511_PS-PM",
-    "shortDescription": "PS-PM - Projektabrechnung"
+    "shortDescription": "PS-PM - Projektabrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5512_PS-PM",
-    "shortDescription": "PS-PM - Projekt Rückmeldungen"
+    "shortDescription": "PS-PM - Projekt Rückmeldungen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5513_PS-PM",
-    "shortDescription": "PS-PM - Projekt Rückmeldungen Rücknahme"
+    "shortDescription": "PS-PM - Projekt Rückmeldungen Rücknahme",
+    "riskLevel": "Extreme"
   },
   {
     "query": "5514_PS-PM",
-    "shortDescription": "PS-PM - Projekt Massenänderung"
+    "shortDescription": "PS-PM - Projekt Massenänderung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6000_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (Alle Infotypen) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (Alle Infotypen) P_ORGIN",
+    "riskLevel": "High"
   },
   {
     "query": "6001_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (0002 Daten zur Person) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (0002 Daten zur Person) P_ORGIN",
+    "riskLevel": "High"
   },
   {
     "query": "6002_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (0008 Basisbezüge) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (0008 Basisbezüge) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6003_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (0009 Bankverbindung) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (0009 Bankverbindung) P_ORGIN",
+    "riskLevel": "High"
   },
   {
     "query": "6004_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (0014 Wiederkehrende Bezüge und Abzüge) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (0014 Wiederkehrende Bezüge und Abzüge) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6005_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (0015 Ergänzende Zahlung) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (0015 Ergänzende Zahlung) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6006_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm pflegen (2010 Entgeltbelege) P_ORGIN"
+    "shortDescription": "HR Personalstamm pflegen (2010 Entgeltbelege) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6007_HR-P_ORGIN",
-    "shortDescription": "HR Personaldaten löschen P_ORGIN"
+    "shortDescription": "HR Personaldaten löschen P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6008_HR-P_ORGIN",
-    "shortDescription": "HR Personaldaten löschen (Bewerber) P_ORGIN"
+    "shortDescription": "HR Personaldaten löschen (Bewerber) P_ORGIN",
+    "riskLevel": "Medium"
   },
   {
     "query": "6009_HR-P_ORGIN",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benutzers (0008 Basisbezüge) P_ORGIN"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benutzers (0008 Basisbezüge) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6010_HR-P_ORGIN",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0014 wiederkehrende Bezüge und Abzüge) P_ORGIN"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0014 wiederkehrende Bezüge und Abzüge) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6011_HR-P_ORGIN",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0015 ergänzende Zahlung) P_ORGIN"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0015 ergänzende Zahlung) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6012_HR-P_ORGIN",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (2010 Entgeltbelege) P_ORGIN"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (2010 Entgeltbelege) P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6013_HR-P_ORGIN",
-    "shortDescription": "HR Zeitdaten pflegen P_ORGIN"
+    "shortDescription": "HR Zeitdaten pflegen P_ORGIN",
+    "riskLevel": "High"
   },
   {
     "query": "6014_HR-P_ORGIN",
-    "shortDescription": "HR Abrechnungsverwaltungssatz löschen P_ORGIN"
+    "shortDescription": "HR Abrechnungsverwaltungssatz löschen P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6015_HR-P_TCODE",
-    "shortDescription": "HR Abrechnungslauf starten (TCODE) P_TCODE"
+    "shortDescription": "HR Abrechnungslauf starten (TCODE) P_TCODE",
+    "riskLevel": "High"
   },
   {
     "query": "6016_HR-P_ORGIN",
-    "shortDescription": "HR Abrechnungsergebnisse löschen P_ORGIN"
+    "shortDescription": "HR Abrechnungsergebnisse löschen P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6017_HR-P_ORGIN",
-    "shortDescription": "HR Buchungslauf für FI erzeugen P_ORGIN"
+    "shortDescription": "HR Buchungslauf für FI erzeugen P_ORGIN",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6018_HR-P_ORGIN",
-    "shortDescription": "HR Abrechnungsbezogene Reports ausführen P_ORGIN"
+    "shortDescription": "HR Abrechnungsbezogene Reports ausführen P_ORGIN",
+    "riskLevel": "High"
   },
   {
     "query": "6019_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm Anzeige (Alle Infotypen) P_ORGIN"
+    "shortDescription": "HR Personalstamm Anzeige (Alle Infotypen) P_ORGIN",
+    "riskLevel": "Medium"
   },
   {
     "query": "6020_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm Anzeige (Stammdaten Infotypen) P_ORGIN"
+    "shortDescription": "HR Personalstamm Anzeige (Stammdaten Infotypen) P_ORGIN",
+    "riskLevel": "Medium"
   },
   {
     "query": "6021_HR-P_ORGIN",
-    "shortDescription": "HR Personalstamm Anzeige (Abrechnungs Infotypen) P_ORGIN"
+    "shortDescription": "HR Personalstamm Anzeige (Abrechnungs Infotypen) P_ORGIN",
+    "riskLevel": "Medium"
   },
   {
     "query": "6022_HR-P_ORGIN",
-    "shortDescription": "HR Entgeltnachweise anzeigen P_ORGIN"
+    "shortDescription": "HR Entgeltnachweise anzeigen P_ORGIN",
+    "riskLevel": "High"
   },
   {
     "query": "6200_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (Alle Infotypen) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (Alle Infotypen) P_ORGINCON",
+    "riskLevel": "High"
   },
   {
     "query": "6201_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (0002 Daten zur Person) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (0002 Daten zur Person) P_ORGINCON",
+    "riskLevel": "High"
   },
   {
     "query": "6202_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (0008 Basisbezüge) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (0008 Basisbezüge) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6203_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (0009 Bankverbindung) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (0009 Bankverbindung) P_ORGINCON",
+    "riskLevel": "High"
   },
   {
     "query": "6204-HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (0014 Wiederkehrende Bezüge und Abzüge) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (0014 Wiederkehrende Bezüge und Abzüge) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6205_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (0015 Ergänzende Zahlung) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (0015 Ergänzende Zahlung) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6206_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm pflegen (2010 Entgeltbelege) P_ORGINCON"
+    "shortDescription": "HR Personalstamm pflegen (2010 Entgeltbelege) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6207_HR-P_ORGINCON",
-    "shortDescription": "HR Personaldaten löschen P_ORGINCON"
+    "shortDescription": "HR Personaldaten löschen P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6208_HR-P_ORGINCON",
-    "shortDescription": "HR Personaldaten löschen (Bewerber) P_ORGINCON"
+    "shortDescription": "HR Personaldaten löschen (Bewerber) P_ORGINCON",
+    "riskLevel": "Medium"
   },
   {
     "query": "6209_HR-P_ORGINCON",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benutzers (0008 Basisbezüge) P_ORGINCON"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benutzers (0008 Basisbezüge) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6210_HR-P_ORGINCON",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0014 wiederkehrende Bezüge und Abzüge) P_ORGINCON"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0014 wiederkehrende Bezüge und Abzüge) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6211_HR-P_ORGINCON",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0015 ergänzende Zahlung) P_ORGINCON"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (0015 ergänzende Zahlung) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6212_HR-P_ORGINCON",
-    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (2010 Entgeltbelege) P_ORGINCON"
+    "shortDescription": "HR Pflege HR-Stammdaten des Benuters (2010 Entgeltbelege) P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6213_HR-P_ORGINCON",
-    "shortDescription": "HR Zeitdaten pflegen P_ORGINCON"
+    "shortDescription": "HR Zeitdaten pflegen P_ORGINCON",
+    "riskLevel": "High"
   },
   {
     "query": "6214_HR-P_ORGINCON",
-    "shortDescription": "HR Abrechnungsverwaltungssatz löschen P_ORGINCON"
+    "shortDescription": "HR Abrechnungsverwaltungssatz löschen P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6215_HR-P_ORGINCON",
-    "shortDescription": "HR Abrechnungslauf starten (TCODE) P_TCODECON"
+    "shortDescription": "HR Abrechnungslauf starten (TCODE) P_TCODECON",
+    "riskLevel": "High"
   },
   {
     "query": "6216_HR-P_ORGINCON",
-    "shortDescription": "HR Abrechnungsergebnisse löschen P_ORGINCON"
+    "shortDescription": "HR Abrechnungsergebnisse löschen P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6217_HR-P_ORGINCON",
-    "shortDescription": "HR Buchungslauf für FI erzeugen P_ORGINCON"
+    "shortDescription": "HR Buchungslauf für FI erzeugen P_ORGINCON",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6218_HR-P_ORGINCON",
-    "shortDescription": "HR Abrechnungsbezogene Reports ausführen P_ORGINCON"
+    "shortDescription": "HR Abrechnungsbezogene Reports ausführen P_ORGINCON",
+    "riskLevel": "High"
   },
   {
     "query": "6219_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm Anzeige (Alle Infotypen) P_ORGINCON"
+    "shortDescription": "HR Personalstamm Anzeige (Alle Infotypen) P_ORGINCON",
+    "riskLevel": "Medium"
   },
   {
     "query": "6220_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm Anzeige (Stammdaten Infotypen) P_ORGINCON"
+    "shortDescription": "HR Personalstamm Anzeige (Stammdaten Infotypen) P_ORGINCON",
+    "riskLevel": "Medium"
   },
   {
     "query": "6221_HR-P_ORGINCON",
-    "shortDescription": "HR Personalstamm Anzeige (Abrechnungs Infotypen) P_ORGINCON"
+    "shortDescription": "HR Personalstamm Anzeige (Abrechnungs Infotypen) P_ORGINCON",
+    "riskLevel": "Medium"
   },
   {
     "query": "6222_HR-P_ORGINCON",
-    "shortDescription": "HR Entgeltnachweise anzeigen P_ORGINCON"
+    "shortDescription": "HR Entgeltnachweise anzeigen P_ORGINCON",
+    "riskLevel": "High"
   },
   {
     "query": "6400_HR-HR",
-    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten Benutzers (0008 Basisbezüge)"
+    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten Benutzers (0008 Basisbezüge)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6401_HR-HR",
-    "shortDescription": "HR Ausschluss Pflege HR-Stammddaten des Benutzers (0014 wiederkehrende Bezüge oder Abzüge)"
+    "shortDescription": "HR Ausschluss Pflege HR-Stammddaten des Benutzers (0014 wiederkehrende Bezüge oder Abzüge)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6402_HR-HR",
-    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten des Benutzers (0015 ergänzende Zahlung)"
+    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten des Benutzers (0015 ergänzende Zahlung)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6403_HR-HR",
-    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten des Benutzers (2010 Entgeltbelege)"
+    "shortDescription": "HR Ausschluss Pflege HR-Stammdaten des Benutzers (2010 Entgeltbelege)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6404_HR-HR",
-    "shortDescription": "HR Abrechnungsverwaltungssatz pflegen"
+    "shortDescription": "HR Abrechnungsverwaltungssatz pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6405_HR-HR",
-    "shortDescription": "HR Abrechnungsschemen pflegen"
+    "shortDescription": "HR Abrechnungsschemen pflegen",
+    "riskLevel": "High"
   },
   {
     "query": "6406_HR-HR",
-    "shortDescription": "HR Personalrechenregeln pflegen"
+    "shortDescription": "HR Personalrechenregeln pflegen",
+    "riskLevel": "High"
   },
   {
     "query": "6407_HR-HR",
-    "shortDescription": "HR Funktionen und Operationen pflegen"
+    "shortDescription": "HR Funktionen und Operationen pflegen",
+    "riskLevel": "High"
   },
   {
     "query": "6408_HR-HR",
-    "shortDescription": "HR Ändern von Lohnarten"
+    "shortDescription": "HR Ändern von Lohnarten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6409_HR-HR",
-    "shortDescription": "HR Buchungslauf für FI stornieren/löschen"
+    "shortDescription": "HR Buchungslauf für FI stornieren/löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6410_HR-HR",
-    "shortDescription": "HR Buchung der Zahlungen"
+    "shortDescription": "HR Buchung der Zahlungen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "6411_HR-HR",
-    "shortDescription": "HR Zahlungsträger erstellen"
+    "shortDescription": "HR Zahlungsträger erstellen",
+    "riskLevel": "High"
   },
   {
     "query": "6600_HR-SEC",
-    "shortDescription": "HR Personaldaten Tabellenanzeige (alle Tabellen)"
+    "shortDescription": "HR Personaldaten Tabellenanzeige (alle Tabellen)",
+    "riskLevel": "High"
   },
   {
     "query": "6601_HR-SEC",
-    "shortDescription": "HR Personaldaten Tabellenanzeige (Berechtigungsgruppe PA)"
+    "shortDescription": "HR Personaldaten Tabellenanzeige (Berechtigungsgruppe PA)",
+    "riskLevel": "High"
   },
   {
     "query": "6602_HR-SEC",
-    "shortDescription": "HR Personaldaten Tabellenanzeige (Berechtigungsgruppe PC*)"
+    "shortDescription": "HR Personaldaten Tabellenanzeige (Berechtigungsgruppe PC*)",
+    "riskLevel": "High"
   },
   {
     "query": "6604_HR-SEC",
-    "shortDescription": "HR Datenschutz - Zugriff auf Spool Dateien (Ausgabesteuerung)"
+    "shortDescription": "HR Datenschutz - Zugriff auf Spool Dateien (Ausgabesteuerung)",
+    "riskLevel": "Medium"
   },
   {
     "query": "6605_HR-SEC",
-    "shortDescription": "HR Datenschutz - Zugriff auf Spool Dateien (Inhalt)"
+    "shortDescription": "HR Datenschutz - Zugriff auf Spool Dateien (Inhalt)",
+    "riskLevel": "Medium"
   },
   {
     "query": "6606_HR-SEC",
-    "shortDescription": "HR Datenschutz - SAP Queries"
+    "shortDescription": "HR Datenschutz - SAP Queries",
+    "riskLevel": "High"
   },
   {
     "query": "6607_HR-SEC",
-    "shortDescription": "HR Datenschutz - Ad-Hoc-Queries"
+    "shortDescription": "HR Datenschutz - Ad-Hoc-Queries",
+    "riskLevel": "High"
   },
   {
     "query": "7000_RE-RE",
-    "shortDescription": "RE-RE - Wirtschaftseinheit anlegen"
+    "shortDescription": "RE-RE - Wirtschaftseinheit anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7001_RE-RE",
-    "shortDescription": "RE-RE - Wirtschaftseinheit ändern"
+    "shortDescription": "RE-RE - Wirtschaftseinheit ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7002_RE-RE",
-    "shortDescription": "RE-RE - Wirtschaftseinheit anzeigen"
+    "shortDescription": "RE-RE - Wirtschaftseinheit anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7003_RE-RE",
-    "shortDescription": "RE-RE - Grundstück ändern"
+    "shortDescription": "RE-RE - Grundstück ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7004_RE-RE",
-    "shortDescription": "RE-RE - Grundstück ändern"
+    "shortDescription": "RE-RE - Grundstück ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7005_RE-RE",
-    "shortDescription": "RE-RE - Grundstück anzeigen"
+    "shortDescription": "RE-RE - Grundstück anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7006_RE-RE",
-    "shortDescription": "RE-RE - Gebäude anlegen"
+    "shortDescription": "RE-RE - Gebäude anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7007_RE-RE",
-    "shortDescription": "RE-RE - Gebäude ändern"
+    "shortDescription": "RE-RE - Gebäude ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7008_RE-RE",
-    "shortDescription": "RE-RE - Gebäude anzeigen"
+    "shortDescription": "RE-RE - Gebäude anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7009_RE-RE",
-    "shortDescription": "RE-RE - Mieteinheit anlegen"
+    "shortDescription": "RE-RE - Mieteinheit anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7010_RE-RE",
-    "shortDescription": "RE-RE - Mieteinheit ändern"
+    "shortDescription": "RE-RE - Mieteinheit ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7011_RE-RE",
-    "shortDescription": "RE-RE - Mieteinheit anzeigen"
+    "shortDescription": "RE-RE - Mieteinheit anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7012_RE-RE",
-    "shortDescription": "RE-RE - Räume pflegen"
+    "shortDescription": "RE-RE - Räume pflegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7013_RE-RE",
-    "shortDescription": "RE-RE - Räume anzeigen"
+    "shortDescription": "RE-RE - Räume anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7014_RE-RE",
-    "shortDescription": "RE-RE - Grundbuch anlegen"
+    "shortDescription": "RE-RE - Grundbuch anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7015_RE-RE",
-    "shortDescription": "RE-RE - Grundbuch ändern"
+    "shortDescription": "RE-RE - Grundbuch ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7016_RE-RE",
-    "shortDescription": "RE-RE - Grundbuch anzeigen"
+    "shortDescription": "RE-RE - Grundbuch anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7017_RE-RE",
-    "shortDescription": "RE-RE - Mieter anlegen"
+    "shortDescription": "RE-RE - Mieter anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7018_RE-RE",
-    "shortDescription": "RE-RE - Mieter ändern"
+    "shortDescription": "RE-RE - Mieter ändern",
+    "riskLevel": "High"
   },
   {
     "query": "7019_RE-RE",
-    "shortDescription": "RE-RE - Mieter anzeigen"
+    "shortDescription": "RE-RE - Mieter anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7020_RE-RE",
-    "shortDescription": "RE-RE - Eigentümer anlegen"
+    "shortDescription": "RE-RE - Eigentümer anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "7021_RE-RE",
-    "shortDescription": "RE-RE - Eigentümer ändern"
+    "shortDescription": "RE-RE - Eigentümer ändern",
+    "riskLevel": "High"
   },
   {
     "query": "7100_RE-BIL",
-    "shortDescription": "RE-BIL - Mietvertrag anlegen"
+    "shortDescription": "RE-BIL - Mietvertrag anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7101_RE-BIL",
-    "shortDescription": "RE-BIL - Mietvertrag ändern (verschiedene Transaktionen)"
+    "shortDescription": "RE-BIL - Mietvertrag ändern (verschiedene Transaktionen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7102_RE-BIL",
-    "shortDescription": "RE-BIL - Mietvertrag anzeigen"
+    "shortDescription": "RE-BIL - Mietvertrag anzeigen",
+    "riskLevel": "High"
   },
   {
     "query": "7103_RE-BIL",
-    "shortDescription": "RE-BIL - Mietvertrag aktivieren (verschiedene Transaktionen)"
+    "shortDescription": "RE-BIL - Mietvertrag aktivieren (verschiedene Transaktionen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7104_RE-BIL",
-    "shortDescription": "RE-BIL - Mietvertrag kündigen"
+    "shortDescription": "RE-BIL - Mietvertrag kündigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7105_RE-BIL",
-    "shortDescription": "RE-BIL - Sollstellung Mietvertrag"
+    "shortDescription": "RE-BIL - Sollstellung Mietvertrag",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7106_RE-BIL",
-    "shortDescription": "RE-BIL - Sollstellung Leerstand"
+    "shortDescription": "RE-BIL - Sollstellung Leerstand",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7107_RE-BIL",
-    "shortDescription": "RE-BIL - Sollstellung Abgrenzung"
+    "shortDescription": "RE-BIL - Sollstellung Abgrenzung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7108_RE-BIL",
-    "shortDescription": "RE-BIL - Buchen (allgemeiner Immobilienvertrag)"
+    "shortDescription": "RE-BIL - Buchen (allgemeiner Immobilienvertrag)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7109_RE-BIL",
-    "shortDescription": "RE-BIL - Stornieren (allgemeiner Immobilienvertrag)"
+    "shortDescription": "RE-BIL - Stornieren (allgemeiner Immobilienvertrag)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7110_RE-BIL",
-    "shortDescription": "RE-BIL - Mietanpassung (verschiedene Transaktionen)"
+    "shortDescription": "RE-BIL - Mietanpassung (verschiedene Transaktionen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7200_RE-NBK",
-    "shortDescription": "RE-NBK - Betriebskosten simulieren"
+    "shortDescription": "RE-NBK - Betriebskosten simulieren",
+    "riskLevel": "High"
   },
   {
     "query": "7201_RE-NBK",
-    "shortDescription": "RE-NBK - Betriebskosten durchführen"
+    "shortDescription": "RE-NBK - Betriebskosten durchführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7202_RE-NBK",
-    "shortDescription": "RE-NBK - Betriebskosten stornieren"
+    "shortDescription": "RE-NBK - Betriebskosten stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7203_RE-NBK",
-    "shortDescription": "RE-NBK - Heizkosten simulieren"
+    "shortDescription": "RE-NBK - Heizkosten simulieren",
+    "riskLevel": "High"
   },
   {
     "query": "7204_RE-NBK",
-    "shortDescription": "RE-NBK - Heizkosten durchführen"
+    "shortDescription": "RE-NBK - Heizkosten durchführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7205_RE-NBK",
-    "shortDescription": "RE-NBK - Heizkosten stornieren"
+    "shortDescription": "RE-NBK - Heizkosten stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7206_RE-NBK",
-    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten simulieren"
+    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten simulieren",
+    "riskLevel": "High"
   },
   {
     "query": "7207_RE-NBK",
-    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten durchführen"
+    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten durchführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7208_RE-NBK",
-    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten stornieren"
+    "shortDescription": "RE-NBK - Heiz- oder Beriebskosten stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7209_RE-NBK",
-    "shortDescription": "RE-NBK - Vorauszahlungen berechnen"
+    "shortDescription": "RE-NBK - Vorauszahlungen berechnen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7210_RE-NBK",
-    "shortDescription": "RE-NBK - Vorauszahlungen Anpassungen aktivieren"
+    "shortDescription": "RE-NBK - Vorauszahlungen Anpassungen aktivieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7211_RE-NBK",
-    "shortDescription": "RE-NBK - Vorauszahlungen Pauschale aktivieren"
+    "shortDescription": "RE-NBK - Vorauszahlungen Pauschale aktivieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "7212_RE-NBK",
-    "shortDescription": "RE-NBK - Nebenkostenabrechung ändern"
+    "shortDescription": "RE-NBK - Nebenkostenabrechung ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8000_IS-U",
-    "shortDescription": "IS-U - Geschäftspartner anlegen"
+    "shortDescription": "IS-U - Geschäftspartner anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8001_IS-U",
-    "shortDescription": "IS-U - Geschäftspartner ändern"
+    "shortDescription": "IS-U - Geschäftspartner ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8002_IS-U",
-    "shortDescription": "IS-U - Vertragskonto anlegen"
+    "shortDescription": "IS-U - Vertragskonto anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8003_IS-U",
-    "shortDescription": "IS-U - Vertragskonto ändern"
+    "shortDescription": "IS-U - Vertragskonto ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8004_IS-U",
-    "shortDescription": "IS-U - Vertrag anlegen"
+    "shortDescription": "IS-U - Vertrag anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8005_IS-U",
-    "shortDescription": "IS-U - Vertrag ändern"
+    "shortDescription": "IS-U - Vertrag ändern",
+    "riskLevel": "High"
   },
   {
     "query": "8100_IS-U",
-    "shortDescription": "IS-U - Anschlussobjekt anlegen"
+    "shortDescription": "IS-U - Anschlussobjekt anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8101_IS-U",
-    "shortDescription": "IS-U - Anschlussobjekt ändern"
+    "shortDescription": "IS-U - Anschlussobjekt ändern",
+    "riskLevel": "High"
   },
   {
     "query": "8102_IS-U",
-    "shortDescription": "IS-U - Verbrauchsstelle anlegen"
+    "shortDescription": "IS-U - Verbrauchsstelle anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8103_IS-U",
-    "shortDescription": "IS-U - Verbrauchsstelle ändern"
+    "shortDescription": "IS-U - Verbrauchsstelle ändern",
+    "riskLevel": "High"
   },
   {
     "query": "8104_IS-U",
-    "shortDescription": "IS-U - Anlage anlegen"
+    "shortDescription": "IS-U - Anlage anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8105_IS-U",
-    "shortDescription": "IS-U - Anlage ändern"
+    "shortDescription": "IS-U - Anlage ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8106_IS-U",
-    "shortDescription": "IS-U - Zählpunkt anlegen"
+    "shortDescription": "IS-U - Zählpunkt anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8107_IS-U",
-    "shortDescription": "IS-U - Zählpunkt ändern"
+    "shortDescription": "IS-U - Zählpunkt ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8108_IS-U",
-    "shortDescription": "IS-U - Geräteplatz anlegen"
+    "shortDescription": "IS-U - Geräteplatz anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8109_IS-U",
-    "shortDescription": "IS-U - Geräteplatz ändern"
+    "shortDescription": "IS-U - Geräteplatz ändern",
+    "riskLevel": "High"
   },
   {
     "query": "8110_IS-U",
-    "shortDescription": "IS-U - Gerät anlegen"
+    "shortDescription": "IS-U - Gerät anlegen",
+    "riskLevel": "High"
   },
   {
     "query": "8111_IS-U",
-    "shortDescription": "IS-U - Gerät ändern"
+    "shortDescription": "IS-U - Gerät ändern",
+    "riskLevel": "High"
   },
   {
     "query": "8112_IS-U",
-    "shortDescription": "IS-U - Gerät Einbau"
+    "shortDescription": "IS-U - Gerät Einbau",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8113_IS-U",
-    "shortDescription": "IS-U - Gerät Ausbau"
+    "shortDescription": "IS-U - Gerät Ausbau",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8114_IS-U",
-    "shortDescription": "IS-U - Gerät Wechsel"
+    "shortDescription": "IS-U - Gerät Wechsel",
+    "riskLevel": "High"
   },
   {
     "query": "8200_IS-U",
-    "shortDescription": "IS-U - Aufragserstellung ausführen"
+    "shortDescription": "IS-U - Aufragserstellung ausführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8201_IS-U",
-    "shortDescription": "IS-U - Massenauftragserstellung ausführen"
+    "shortDescription": "IS-U - Massenauftragserstellung ausführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8202_IS-U",
-    "shortDescription": "IS-U - Schnellerfassung Ablesungsergebnis"
+    "shortDescription": "IS-U - Schnellerfassung Ablesungsergebnis",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8203_IS-U",
-    "shortDescription": "IS-U - Schnellerfassung Ablesungsergebnis mit Korrektur"
+    "shortDescription": "IS-U - Schnellerfassung Ablesungsergebnis mit Korrektur",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8204_IS-U",
-    "shortDescription": "IS-U - Korrektur unplausibler Ablesungsergebnisse"
+    "shortDescription": "IS-U - Korrektur unplausibler Ablesungsergebnisse",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8205_IS-U",
-    "shortDescription": "IS-U - Einzelerfassung Ablesnungsergebnisse"
+    "shortDescription": "IS-U - Einzelerfassung Ablesnungsergebnisse",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8206_IS-U",
-    "shortDescription": "IS-U - Korrektur plausibler Ablesungsergebnisse"
+    "shortDescription": "IS-U - Korrektur plausibler Ablesungsergebnisse",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8300_IS-U",
-    "shortDescription": "IS-U - Abrechnung Tarife anlegen"
+    "shortDescription": "IS-U - Abrechnung Tarife anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8301_IS-U",
-    "shortDescription": "IS-U - Abrechnung Tarife ändern"
+    "shortDescription": "IS-U - Abrechnung Tarife ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8302_IS-U",
-    "shortDescription": "IS-U - Abrechnung Preise anlegen"
+    "shortDescription": "IS-U - Abrechnung Preise anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8303_IS-U",
-    "shortDescription": "IS-U - Abrechnung Preise ändern"
+    "shortDescription": "IS-U - Abrechnung Preise ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8304_IS-U",
-    "shortDescription": "IS-U - Abrechnung Einzelabrechnung"
+    "shortDescription": "IS-U - Abrechnung Einzelabrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8305_IS-U",
-    "shortDescription": "IS-U - Anlegen manuelle Nachberechnung"
+    "shortDescription": "IS-U - Anlegen manuelle Nachberechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8306_IS-U",
-    "shortDescription": "IS-U - Ändern manuelle Nachberechnung"
+    "shortDescription": "IS-U - Ändern manuelle Nachberechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8307_IS-U",
-    "shortDescription": "IS-U - Erstellen Einzelrechnung"
+    "shortDescription": "IS-U - Erstellen Einzelrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8308_IS-U",
-    "shortDescription": "IS-U - Abschlagsplan anlegen"
+    "shortDescription": "IS-U - Abschlagsplan anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8400_IS-U",
-    "shortDescription": "IS-U - Faktura Einzelabrechnung"
+    "shortDescription": "IS-U - Faktura Einzelabrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8401_IS-U",
-    "shortDescription": "IS-U - Faktura Abschlagsplan anlegen"
+    "shortDescription": "IS-U - Faktura Abschlagsplan anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8402_IS-U",
-    "shortDescription": "IS-U - Faktura Abschlagsplan ändern"
+    "shortDescription": "IS-U - Faktura Abschlagsplan ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8403_IS-U",
-    "shortDescription": "IS-U - Fakturierungsbeleg erstellen"
+    "shortDescription": "IS-U - Fakturierungsbeleg erstellen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8404_IS-U",
-    "shortDescription": "IS-U - Sammelrechnung erstellen"
+    "shortDescription": "IS-U - Sammelrechnung erstellen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8405_IS-U",
-    "shortDescription": "IS-U - Storno von Druck-/Abrechnungsbelege"
+    "shortDescription": "IS-U - Storno von Druck-/Abrechnungsbelege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8500_IS-U",
-    "shortDescription": "IS-U - Zahlungsschema anlegen"
+    "shortDescription": "IS-U - Zahlungsschema anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8501_IS-U",
-    "shortDescription": "IS-U - Zahlungsschema ändern"
+    "shortDescription": "IS-U - Zahlungsschema ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8502_IS-U",
-    "shortDescription": "IS-U - Ausgleich zurücknehmen"
+    "shortDescription": "IS-U - Ausgleich zurücknehmen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8503_IS-U",
-    "shortDescription": "IS-U - Rückzahlungsanforderung stornieren"
+    "shortDescription": "IS-U - Rückzahlungsanforderung stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8504_IS-U",
-    "shortDescription": "IS-U - Zahlung buchen"
+    "shortDescription": "IS-U - Zahlung buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8505_IS-U",
-    "shortDescription": "IS-U - Ratenplan anlegen"
+    "shortDescription": "IS-U - Ratenplan anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8506_IS-U",
-    "shortDescription": "IS-U - Ratenplan ändern"
+    "shortDescription": "IS-U - Ratenplan ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "8507_IS-U",
-    "shortDescription": "IS-U - Zahlungslauf /Lastschriftenlauf"
+    "shortDescription": "IS-U - Zahlungslauf /Lastschriftenlauf",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9000_FS-ICM",
-    "shortDescription": "FS-ICM - ICM Hauptmenü Zugriff"
+    "shortDescription": "FS-ICM - ICM Hauptmenü Zugriff",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9001_FS-ICM",
-    "shortDescription": "FS-ICM - ICM Managers Desktop Zugriff"
+    "shortDescription": "FS-ICM - ICM Managers Desktop Zugriff",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9002_FS-ICM",
-    "shortDescription": "FS-ICM - Periodenregeln Generierung"
+    "shortDescription": "FS-ICM - Periodenregeln Generierung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9003_FS-ICM",
-    "shortDescription": "FS-ICM - CACS Berichte ausführen"
+    "shortDescription": "FS-ICM - CACS Berichte ausführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9004_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsvertragspartner Anzeige"
+    "shortDescription": "FS-ICM - Provisionsvertragspartner Anzeige",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9005_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsvertragspartner Pflege"
+    "shortDescription": "FS-ICM - Provisionsvertragspartner Pflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9006_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsvertragsdaten Anzeige"
+    "shortDescription": "FS-ICM - Provisionsvertragsdaten Anzeige",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9007_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsvertragsdaten Pflege"
+    "shortDescription": "FS-ICM - Provisionsvertragsdaten Pflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9008_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsfalldaten Pflege"
+    "shortDescription": "FS-ICM - Provisionsfalldaten Pflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9009_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsfall Buchen"
+    "shortDescription": "FS-ICM - Provisionsfall Buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9010_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsbelegdaten Anzeige"
+    "shortDescription": "FS-ICM - Provisionsbelegdaten Anzeige",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9011_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsbelegdaten Pflege"
+    "shortDescription": "FS-ICM - Provisionsbelegdaten Pflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9012_FS-ICM",
-    "shortDescription": "FS-ICM - Organisationsstruktur Anzeige"
+    "shortDescription": "FS-ICM - Organisationsstruktur Anzeige",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9013_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsvertragsdaten Anlage"
+    "shortDescription": "FS-ICM - Provisionsvertragsdaten Anlage",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9014_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsfall Storno und Reaktivierung"
+    "shortDescription": "FS-ICM - Provisionsfall Storno und Reaktivierung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9015_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsbeleg buchen"
+    "shortDescription": "FS-ICM - Provisionsbeleg buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9016_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionsbeleg stornieren"
+    "shortDescription": "FS-ICM - Provisionsbeleg stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9017_FS-ICM",
-    "shortDescription": "FS-ICM - Organisationsstruktur Pflege"
+    "shortDescription": "FS-ICM - Organisationsstruktur Pflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9018_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Massenrücknahme"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Massenrücknahme",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9019_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Massennachverbuchung"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Massennachverbuchung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9020_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Abschluss Pauschalen und Garantien"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abschluss Pauschalen und Garantien",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9021_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnung"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9022_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnungslauf Übersicht"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnungslauf Übersicht",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9023_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Storno Abschluss"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Storno Abschluss",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9024_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Zahlsperren aufheben"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Zahlsperren aufheben",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9025_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Rücknahme Abrechnung"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Rücknahme Abrechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9026_FS-ICM",
-    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnungspläne löschen"
+    "shortDescription": "FS-ICM - Periodischer Prozess - Abrechnungspläne löschen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9027_FS-ICM",
-    "shortDescription": "FS-ICM - Protokollanzeige"
+    "shortDescription": "FS-ICM - Protokollanzeige",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9028_FS-ICM",
-    "shortDescription": "FS-ICM - Transport Standardkonditionen"
+    "shortDescription": "FS-ICM - Transport Standardkonditionen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9029_FS-ICM",
-    "shortDescription": "FS-ICM - Transport versionsgeführter Daten"
+    "shortDescription": "FS-ICM - Transport versionsgeführter Daten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9030_FS-ICM",
-    "shortDescription": "FS-ICM - Fremddatenübernahme"
+    "shortDescription": "FS-ICM - Fremddatenübernahme",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9031_FS-ICM",
-    "shortDescription": "FS-ICM - Provisionssachbearbeiter berechtigen"
+    "shortDescription": "FS-ICM - Provisionssachbearbeiter berechtigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9500_FS-CD",
-    "shortDescription": "FS-CD - Versicherungsobjekte Anzeige"
+    "shortDescription": "FS-CD - Versicherungsobjekte Anzeige",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9501_FS-CD",
-    "shortDescription": "FS-CD - Starte Clarification Controller"
+    "shortDescription": "FS-CD - Starte Clarification Controller",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9502_FS-CD",
-    "shortDescription": "FS-CD - Posten Ausbuchen"
+    "shortDescription": "FS-CD - Posten Ausbuchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9503_FS-CD",
-    "shortDescription": "FS-CD - Zahlungsstapel bearbeiten"
+    "shortDescription": "FS-CD - Zahlungsstapel bearbeiten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9504_FS-CD",
-    "shortDescription": "FS-CD - Klärungsbearbeitung über CALL TRANS"
+    "shortDescription": "FS-CD - Klärungsbearbeitung über CALL TRANS",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9505_FS-CD",
-    "shortDescription": "FS-CD - Kontenpflege"
+    "shortDescription": "FS-CD - Kontenpflege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9506_FS-CD",
-    "shortDescription": "FS-CD - Ausgleich zurücknehmen"
+    "shortDescription": "FS-CD - Ausgleich zurücknehmen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9507_FS-CD",
-    "shortDescription": "FS-CD - Beleg stornieren"
+    "shortDescription": "FS-CD - Beleg stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9508_FS-CD",
-    "shortDescription": "FS-CD - Massenstorno"
+    "shortDescription": "FS-CD - Massenstorno",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9509_FS-CD",
-    "shortDescription": "FS-CD - Rückläufer"
+    "shortDescription": "FS-CD - Rückläufer",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9510_FS-CD",
-    "shortDescription": "FS-CD - Massenstorno von Belegen"
+    "shortDescription": "FS-CD - Massenstorno von Belegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9511_FS-CD",
-    "shortDescription": "FS-CD - Scheckstapel bearbeiten"
+    "shortDescription": "FS-CD - Scheckstapel bearbeiten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9512_FS-CD",
-    "shortDescription": "FS-CD - Kreditkartenstapel bearbeiten"
+    "shortDescription": "FS-CD - Kreditkartenstapel bearbeiten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9513_FS-CD",
-    "shortDescription": "FS-CD - Transferieren"
+    "shortDescription": "FS-CD - Transferieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9514_FS-CD",
-    "shortDescription": "FS-CD - Zahlungsauftragsstapel bearbeiten"
+    "shortDescription": "FS-CD - Zahlungsauftragsstapel bearbeiten",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9515_FS-CD",
-    "shortDescription": "FS-CD - Stapel manuelle Ausgangsschecks"
+    "shortDescription": "FS-CD - Stapel manuelle Ausgangsschecks",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9516_FS-CD",
-    "shortDescription": "FS-CD - Zahlungsfestlegung anlegen"
+    "shortDescription": "FS-CD - Zahlungsfestlegung anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9517_FS-CD",
-    "shortDescription": "FS-CD - Zahlungsfestlegung ändern"
+    "shortDescription": "FS-CD - Zahlungsfestlegung ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9518_FS-CD",
-    "shortDescription": "FS-CD - Zahlungsfestlegung anzeigen"
+    "shortDescription": "FS-CD - Zahlungsfestlegung anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9519_FS-CD",
-    "shortDescription": "FS-CD - Zahlungsfestlegung stornieren"
+    "shortDescription": "FS-CD - Zahlungsfestlegung stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9520_FS-CD",
-    "shortDescription": "FS-CD - Postenvormerkung stornieren"
+    "shortDescription": "FS-CD - Postenvormerkung stornieren",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9521_FS-CD",
-    "shortDescription": "FS-CD - Zahlung buchen"
+    "shortDescription": "FS-CD - Zahlung buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9522_FS-CD",
-    "shortDescription": "FS-CD - Kassenbuch"
+    "shortDescription": "FS-CD - Kassenbuch",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9523_FS-CD",
-    "shortDescription": "FS-CD - Klärungsbearbeitung: Zahlungsstapel"
+    "shortDescription": "FS-CD - Klärungsbearbeitung: Zahlungsstapel",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9524_FS-CD",
-    "shortDescription": "FS-CD - Klärungsbearbeitung: Rückläufer"
+    "shortDescription": "FS-CD - Klärungsbearbeitung: Rückläufer",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9525_FS-CD",
-    "shortDescription": "FS-CD - Klärungsbearbeitung: Guthaben"
+    "shortDescription": "FS-CD - Klärungsbearbeitung: Guthaben",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9526_FS-CD",
-    "shortDescription": "FS-CD - Beleg buchen"
+    "shortDescription": "FS-CD - Beleg buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9527_FS-CD",
-    "shortDescription": "FS-CD - Ändern Beleg"
+    "shortDescription": "FS-CD - Ändern Beleg",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9528_FS-CD",
-    "shortDescription": "FS-CD - Massenänderung Belege"
+    "shortDescription": "FS-CD - Massenänderung Belege",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9529_FS-CD",
-    "shortDescription": "FS-CD - Anzeigen Beleg"
+    "shortDescription": "FS-CD - Anzeigen Beleg",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9530_FS-CD",
-    "shortDescription": "FS-CD - FI-CA: Einzelbearbeitung Verzinsung"
+    "shortDescription": "FS-CD - FI-CA: Einzelbearbeitung Verzinsung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9531_FS-CD",
-    "shortDescription": "FS-CD - Zinslauf"
+    "shortDescription": "FS-CD - Zinslauf",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9532_FS-CD",
-    "shortDescription": "FS-CD - Kontenstand anzeigen"
+    "shortDescription": "FS-CD - Kontenstand anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9533_FS-CD",
-    "shortDescription": "FS-CD - Anzeigen der Rückläuferhistorie"
+    "shortDescription": "FS-CD - Anzeigen der Rückläuferhistorie",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9534_FS-CD",
-    "shortDescription": "FS-CD - Vertragspartner anlegen"
+    "shortDescription": "FS-CD - Vertragspartner anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9535_FS-CD",
-    "shortDescription": "FS-CD - Vertragspartner ändern"
+    "shortDescription": "FS-CD - Vertragspartner ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9536_FS-CD",
-    "shortDescription": "FS-CD - Vertragspartner anzeigen"
+    "shortDescription": "FS-CD - Vertragspartner anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9537_FS-CD",
-    "shortDescription": "FS-CD - PCARD: Abrechnung durchführen"
+    "shortDescription": "FS-CD - PCARD: Abrechnung durchführen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9538_FS-CD",
-    "shortDescription": "FS-CD - Ratenplan anlegen"
+    "shortDescription": "FS-CD - Ratenplan anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9539_FS-CD",
-    "shortDescription": "FS-CD - Ratenplan ändern"
+    "shortDescription": "FS-CD - Ratenplan ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9540_FS-CD",
-    "shortDescription": "FS-CD - Umgliederungen buchen"
+    "shortDescription": "FS-CD - Umgliederungen buchen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9541_FS-CD",
-    "shortDescription": "FS-CD - Guthabenbearbeitung"
+    "shortDescription": "FS-CD - Guthabenbearbeitung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9542_FS-CD",
-    "shortDescription": "FS-CD - Fremdwährungsbewertung"
+    "shortDescription": "FS-CD - Fremdwährungsbewertung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9543_FS-CD",
-    "shortDescription": "FS-CD - Protokollsätze Fremdwährungsbewertun"
+    "shortDescription": "FS-CD - Protokollsätze Fremdwährungsbewertun",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9544_FS-CD",
-    "shortDescription": "FS-CD - Eventgesteuerte Umkehrbuchung"
+    "shortDescription": "FS-CD - Eventgesteuerte Umkehrbuchung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9545_FS-CD",
-    "shortDescription": "FS-CD - Zahlungslauf / Lastschriftlauf"
+    "shortDescription": "FS-CD - Zahlungslauf / Lastschriftlauf",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9546_FS-CD",
-    "shortDescription": "FS-CD - Maklermeldung erfassen"
+    "shortDescription": "FS-CD - Maklermeldung erfassen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9547_FS-CD",
-    "shortDescription": "FS-CD - Makler´s Desktop"
+    "shortDescription": "FS-CD - Makler´s Desktop",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9548_FS-CD",
-    "shortDescription": "FS-CD - Maklermeldung klären"
+    "shortDescription": "FS-CD - Maklermeldung klären",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9549_FS-CD",
-    "shortDescription": "FS-CD - Maklermeldungshistorie anzeigen"
+    "shortDescription": "FS-CD - Maklermeldungshistorie anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9550_FS-CD",
-    "shortDescription": "FS-CD - Storno Maklermeldung"
+    "shortDescription": "FS-CD - Storno Maklermeldung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9552_FS-CD",
-    "shortDescription": "FS-CD - Maklermeldungübernahme"
+    "shortDescription": "FS-CD - Maklermeldungübernahme",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9553_FS-CD",
-    "shortDescription": "FS-CD - Mahnstatus Historie"
+    "shortDescription": "FS-CD - Mahnstatus Historie",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9554_FS-CD",
-    "shortDescription": "FS-CD - Automatische Nachbearbeitung Maklermeldung"
+    "shortDescription": "FS-CD - Automatische Nachbearbeitung Maklermeldung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9555_FS-CD",
-    "shortDescription": "FS-CD - Fall anlegen (Expertenmodus)"
+    "shortDescription": "FS-CD - Fall anlegen (Expertenmodus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9556_FS-CD",
-    "shortDescription": "FS-CD - Fall ändern (Expertenmodus)"
+    "shortDescription": "FS-CD - Fall ändern (Expertenmodus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9557_FS-CD",
-    "shortDescription": "FS-CD - Fall anzeigen (Expertenmodus)"
+    "shortDescription": "FS-CD - Fall anzeigen (Expertenmodus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9558_FS-CD",
-    "shortDescription": "FS-CD - Sammelrechnung: Anlegen"
+    "shortDescription": "FS-CD - Sammelrechnung: Anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9559_FS-CD",
-    "shortDescription": "FS-CD - Sammelrechnung: Ändern"
+    "shortDescription": "FS-CD - Sammelrechnung: Ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9560_FS-CD",
-    "shortDescription": "FS-CD - Sammelrechnung: Anzeigen"
+    "shortDescription": "FS-CD - Sammelrechnung: Anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9561_FS-CD",
-    "shortDescription": "FS-CD - Sammlregress: Anlegen"
+    "shortDescription": "FS-CD - Sammlregress: Anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9562_FS-CD",
-    "shortDescription": "FS-CD - Sammlregress: Ändern"
+    "shortDescription": "FS-CD - Sammlregress: Ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9563_FS-CD",
-    "shortDescription": "FS-CD - Sammlregress: Anzeigen"
+    "shortDescription": "FS-CD - Sammlregress: Anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9564_FS-CD",
-    "shortDescription": "FS-CD - Fallbündel:  Anlegen"
+    "shortDescription": "FS-CD - Fallbündel:  Anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9565_FS-CD",
-    "shortDescription": "FS-CD - Fallbündel:  Ändern"
+    "shortDescription": "FS-CD - Fallbündel:  Ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9566_FS-CD",
-    "shortDescription": "FS-CD - Fallbündel:  Anzeigen"
+    "shortDescription": "FS-CD - Fallbündel:  Anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9567_FS-CD",
-    "shortDescription": "FS-CD - Fallsuche"
+    "shortDescription": "FS-CD - Fallsuche",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9568_FS-CD",
-    "shortDescription": "FS-CD - Einzelerfassung Rechnung"
+    "shortDescription": "FS-CD - Einzelerfassung Rechnung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9569_FS-CD",
-    "shortDescription": "FS-CD - Schaden anlegen (Erfassungsmodus)"
+    "shortDescription": "FS-CD - Schaden anlegen (Erfassungsmodus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9570_FS-CD",
-    "shortDescription": "FS-CD - Schaden ändern (Erfassungsmodus)"
+    "shortDescription": "FS-CD - Schaden ändern (Erfassungsmodus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9571_FS-CD",
-    "shortDescription": "FS-CD - Schaden anzeigen (Erfassungsmodus)"
+    "shortDescription": "FS-CD - Schaden anzeigen (Erfassungsmodus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9572_FS-CD",
-    "shortDescription": "FS-CD - Anzeige der Zahlungsberechtigungen"
+    "shortDescription": "FS-CD - Anzeige der Zahlungsberechtigungen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9573_FS-CD",
-    "shortDescription": "FS-CD - Schnellschaden anlegen"
+    "shortDescription": "FS-CD - Schnellschaden anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9574_FS-CD",
-    "shortDescription": "FS-CD - Schnellschaden ändern"
+    "shortDescription": "FS-CD - Schnellschaden ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9575_FS-CD",
-    "shortDescription": "FS-CD - Schnellschaden anzeigen"
+    "shortDescription": "FS-CD - Schnellschaden anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9576_FS-CD",
-    "shortDescription": "FS-CD - Provenue anlegen (Übersicht-Modus)"
+    "shortDescription": "FS-CD - Provenue anlegen (Übersicht-Modus)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9577_FS-CD",
-    "shortDescription": "FS-CD - Leistungskatalog Suche"
+    "shortDescription": "FS-CD - Leistungskatalog Suche",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9578_FS-CD",
-    "shortDescription": "FS-CD - Katalogposition anlegen"
+    "shortDescription": "FS-CD - Katalogposition anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9579_FS-CD",
-    "shortDescription": "FS-CD - Katalogposition ändern"
+    "shortDescription": "FS-CD - Katalogposition ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9580_FS-CD",
-    "shortDescription": "FS-CD - Katalogposition anzeigen"
+    "shortDescription": "FS-CD - Katalogposition anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9581_FS-CD",
-    "shortDescription": "FS-CD - Fallstatus anzeigen (Kundensicht)"
+    "shortDescription": "FS-CD - Fallstatus anzeigen (Kundensicht)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9582_FS-CD",
-    "shortDescription": "FS-CD - Versicherungsobjekt ändern"
+    "shortDescription": "FS-CD - Versicherungsobjekt ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9583_FS-CD",
-    "shortDescription": "FS-CD - Versicherungsobjekt anlegen"
+    "shortDescription": "FS-CD - Versicherungsobjekt anlegen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9584_FS-CD",
-    "shortDescription": "FS-CD - Versicherungsobjekt anzeigen"
+    "shortDescription": "FS-CD - Versicherungsobjekt anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9585_FS-CD",
-    "shortDescription": "FS-CD - Guthabenaufteilung (mehrere Zahlungen)"
+    "shortDescription": "FS-CD - Guthabenaufteilung (mehrere Zahlungen)",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9586_FS-CD",
-    "shortDescription": "FS-CD - Buchen von Mitversicherungsanteilen"
+    "shortDescription": "FS-CD - Buchen von Mitversicherungsanteilen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9587_FS-CD",
-    "shortDescription": "FS-CD - Mitversicherungshistorie"
+    "shortDescription": "FS-CD - Mitversicherungshistorie",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9588_FS-CD",
-    "shortDescription": "FS-CD - Verwaltung saldenverzinster Verträge"
+    "shortDescription": "FS-CD - Verwaltung saldenverzinster Verträge",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9589_FS-CD",
-    "shortDescription": "FS-CD - Mahnstand Vertrag anzeigen"
+    "shortDescription": "FS-CD - Mahnstand Vertrag anzeigen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9590_FS-CD",
-    "shortDescription": "FS-CD - Mahnstand Vertrag ändern"
+    "shortDescription": "FS-CD - Mahnstand Vertrag ändern",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9591_FS-CD",
-    "shortDescription": "FS-CD - Parallelisierte Sollstellung"
+    "shortDescription": "FS-CD - Parallelisierte Sollstellung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9592_FS-CD",
-    "shortDescription": "FS-CD - Sollstellung Versicherung"
+    "shortDescription": "FS-CD - Sollstellung Versicherung",
+    "riskLevel": "Extreme"
   },
   {
     "query": "9951_FS-CD",
-    "shortDescription": "FS-CD - Maklermeldung erzeugen"
+    "shortDescription": "FS-CD - Maklermeldung erzeugen",
+    "riskLevel": "Extreme"
   },
   {
     "query": "A1000_BW-SEC",
-    "shortDescription": "BW Workbench: Administration"
+    "shortDescription": "BW Workbench: Administration",
+    "riskLevel": "Extreme"
+  },
+  {
+    "query": "6603_HR-SEC",
+    "riskLevel": "Medium"
+  },
+  {
+    "query": "7022_RE-RE",
+    "riskLevel": "High"
+  },
+  {
+    "query": "REFX-PERIODISCHES_BUCHEN:_VERTRÄGE",
+    "riskLevel": "Extreme"
+  },
+  {
+    "query": "REFX-VERTRAGSBUCHUNGEN_STORNIEREN",
+    "riskLevel": "Extreme"
   }
 ]
