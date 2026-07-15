@@ -288,6 +288,23 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
     zeigt jetzt die kombinierte Risikobeschreibung im Freitextfeld, KPMG_R3s `riskLevel` unverändert
     sichtbar (nur die Quelle hat gewechselt), CSI-Query-Editor weiterhin leer (kein Inhalt
     vorhanden), keine Testartefakte zurückgeblieben.
+  - **Speicherziel korrigiert — Risiko-Felder gehen jetzt auch beim Editieren nach `risks.json`**
+    (2026-07-15, sofort im Anschluss, Nutzer testete direkt und fragte „warum wird der Wert immer
+    noch in die custom geschrieben und nicht in risk?"): der Punkt oben hatte nur die
+    **Erstbefüllung** (Lesen) korrigiert — `admin_update_query()`/`admin_update_sodrule()`
+    schrieben beim Speichern weiterhin **alle** Formularfelder inkl. `riskType`/`riskLevel`/
+    `riskStatus`/`risk` in `queries.custom.json`/`sod_rules.custom.json` (Ursache: der Editor sendet
+    bei jedem „Speichern" grundsätzlich den kompletten Formularstand, nicht nur das geänderte Feld —
+    das gilt unverändert für alle Filterset-Felder, war aber für die vier Risiko-Felder nicht
+    gewünscht). Fix: neue Funktion `_save_ruleset_risk()` (`backend/app.py`) schreibt genau diese
+    vier Felder direkt in `risks.json` (Eintrag über `query`/`alias` gefunden oder neu angelegt);
+    `admin_update_query()`/`admin_update_sodrule()`/`admin_derive_query()` trennen jetzt Filterset-
+    von Risiko-Feldern, bevor sie schreiben — Filterset weiterhin ins Overlay, Risiko immer nach
+    `risks.json`. Nebeneffekt: ein leerer Test-PUT (`{}`) legt jetzt in **keiner** der beiden Dateien
+    mehr einen Stub-Eintrag an (vorher ein wiederkehrendes Testartefakt-Ärgernis). Mit Playwright
+    verifiziert: Risiko-Freitext-Edit über die UI landet ausschließlich in `risks.json`, ein
+    zeitgleicher Filterset-Edit (z. B. Modul) weiterhin ausschließlich im Overlay, keine
+    Überschneidung mehr.
 - [x] **Datenschutz-Feld + riskLevel-Umbenennung + Badge-Reposition** (2026-07-15, Folgeauftrag direkt
   im Anschluss an die Risiko-Metadaten oben): beim Sichten eines Einzelfilters fielen dem Nutzer drei
   Dinge auf.

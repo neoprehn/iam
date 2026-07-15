@@ -223,6 +223,34 @@ def _combine_risk_text(risk: str | None, description: str | None) -> str | None:
     return risk or description or None
 
 
+# Die vier "Risiko"-Felder: werden NIE ins Filterset-Overlay (queries.custom.json/
+# sod_rules.custom.json) geschrieben, sondern direkt in risks.json (Nutzerentscheid 2026-07-15:
+# Filterset und Risiko sollen getrennte Dateien bleiben, auch beim Speichern -- nicht nur bei der
+# Erstbefuellung).
+_RISK_FIELDS = ("riskType", "riskLevel", "riskStatus", "risk")
+
+
+def _save_ruleset_risk(ruleset: str, id_field: str, id_value: str, risk_fields: dict) -> None:
+    """Schreibt riskType/riskLevel/riskStatus/risk direkt in risks.json (Eintrag ueber id_field
+    'query' oder 'alias' gefunden/angelegt) -- 'risk' ersetzt dabei einen evtl. vorhandenen
+    Kurztitel+Langtext-Kombi-Wert vollstaendig durch den neuen Freitext (description wird
+    geleert, sonst wuerde die naechste Anzeige den alten Text wieder mit reinmischen, s.
+    _combine_risk_text)."""
+    if not risk_fields:
+        return
+    rdir = ruleset_dir(ruleset)
+    path = RULES_DIR / rdir / "risks.json"
+    risks = _load_ruleset_risks(rdir)
+    entry = next((r for r in risks if r.get(id_field) == id_value), None)
+    if entry is None:
+        entry = {id_field: id_value}
+        risks.append(entry)
+    entry.update(risk_fields)
+    if "risk" in risk_fields:
+        entry["description"] = None
+    path.write_text(json.dumps(risks, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def reload_ruleset(ruleset: str):
     rdir = ruleset_dir(ruleset)
     ensure_custom_queries_file(ruleset)    # beide Overlay-Dateien muessen existieren (apoc.load.json)
@@ -2207,20 +2235,27 @@ class QueryEditReq(BaseModel):
 
 @app.put("/admin/rulesets/{ruleset}/queries/{queryId}")
 def admin_update_query(ruleset: str, queryId: str, req: QueryEditReq):
-    """Bearbeitet Metadaten einer Query als Overlay-Eintrag (queries.custom.json) — Vendor-Datei
-    bleibt unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt)."""
+    """Bearbeitet Metadaten einer Query. Filterset-Felder (Kurzbezeichnung/Kritikalitaet/Modul/...)
+    landen als Overlay-Eintrag in queries.custom.json, die vier Risiko-Felder (riskType/riskLevel/
+    riskStatus/risk) dagegen direkt in risks.json (Nutzerentscheid 2026-07-15: getrennte Dateien,
+    auch beim Speichern -- nicht nur bei der Erstbefuellung, s. _save_ruleset_risk). Vendor-Dateien
+    bleiben unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt)."""
     merged, _ = _merged_queries(ruleset)
     if queryId not in merged:
         raise HTTPException(404, f"Query '{queryId}' nicht gefunden")
-    custom_path = ensure_custom_queries_file(ruleset)
-    custom = _load_json_list(custom_path)
-    entry = next((c for c in custom if c["query"] == queryId), None)
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
-    if entry:
-        entry.update(fields)
-    else:
-        custom.append({"query": queryId, **fields})
-    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
+    filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS}
+    if filterset_fields:
+        custom_path = ensure_custom_queries_file(ruleset)
+        custom = _load_json_list(custom_path)
+        entry = next((c for c in custom if c["query"] == queryId), None)
+        if entry:
+            entry.update(filterset_fields)
+        else:
+            custom.append({"query": queryId, **filterset_fields})
+        custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    _save_ruleset_risk(ruleset, "query", queryId, risk_fields)
     reload_ruleset(ruleset)
     return {"query": queryId, "saved": fields}
 
@@ -2245,8 +2280,10 @@ class QueryDeriveReq(BaseModel):
 @app.post("/admin/rulesets/{ruleset}/queries/derive")
 def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     """Legt eine neue Query als Kopie einer bestehenden an (authorizations/transactions 1:1
-    uebernommen; nur Metadaten hier optional ueberschrieben) — landet im Overlay, die
-    Quell-Query bleibt unberuehrt. Ladet das Ruleset danach sofort neu."""
+    uebernommen; nur Metadaten hier optional ueberschrieben) — Filterset-Felder landen im Overlay
+    (queries.custom.json), die vier Risiko-Felder als neuer Eintrag in risks.json (Startwert = die
+    Werte der Quell-Query, analog zu den uebrigen Feldern, s. _save_ruleset_risk). Quell-Query
+    bleibt unberuehrt. Ladet das Ruleset danach sofort neu."""
     if not _SAFE_NAME.match(req.newId):
         raise HTTPException(400, "ungueltige Query-ID (erlaubt: Buchstaben/Ziffern/._-)")
     merged, _ = _merged_queries(ruleset)
@@ -2255,19 +2292,24 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     src = merged.get(req.fromId)
     if not src:
         raise HTTPException(404, f"Quell-Query '{req.fromId}' nicht gefunden")
-    new_q = dict(src)
+    new_q = {k: v for k, v in src.items() if k not in _RISK_FIELDS}
     new_q["query"] = req.newId
     new_q["derivedFrom"] = req.fromId
+    risk_fields = {k: src[k] for k in _RISK_FIELDS if src.get(k) is not None}
     for field in ("description", "shortDescription", "criticality", "module", "queryType",
-                  "disregardTcode", "risk", "controls", "riskType", "riskLevel", "riskStatus",
-                  "datenschutz"):
+                  "disregardTcode", "controls", "datenschutz"):
         v = getattr(req, field)
         if v is not None:
             new_q[field] = v
+    for field in _RISK_FIELDS:
+        v = getattr(req, field)
+        if v is not None:
+            risk_fields[field] = v
     custom_path = ensure_custom_queries_file(ruleset)
     custom = _load_json_list(custom_path)
     custom.append(new_q)
     custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    _save_ruleset_risk(ruleset, "query", req.newId, risk_fields)
     reload_ruleset(ruleset)
     return {"query": req.newId, "derivedFrom": req.fromId}
 
@@ -2379,20 +2421,26 @@ class SodRuleEditReq(BaseModel):
 
 @app.put("/admin/rulesets/{ruleset}/sodrules/{ruleId}")
 def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
-    """Bearbeitet Metadaten einer SoD-Regel als Overlay-Eintrag (sod_rules.custom.json) — Vendor-
-    Datei bleibt unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt)."""
+    """Bearbeitet Metadaten einer SoD-Regel. Filterset-Felder (Kurzbezeichnung/Kritikalitaet/...)
+    landen als Overlay-Eintrag in sod_rules.custom.json, die vier Risiko-Felder (riskType/
+    riskLevel/riskStatus/risk) dagegen direkt in risks.json (analog zu admin_update_query, s.
+    _save_ruleset_risk). Vendor-Datei bleibt unberuehrt. Ladet das Ruleset danach sofort neu."""
     merged, _ = _merged_sodrules(ruleset)
     if ruleId not in merged:
         raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
-    custom_path = ensure_custom_sodrules_file(ruleset)
-    custom = _load_json_list(custom_path)
-    entry = next((c for c in custom if c["sodRule"] == ruleId), None)
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
-    if entry:
-        entry.update(fields)
-    else:
-        custom.append({"sodRule": ruleId, **fields})
-    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
+    filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS}
+    if filterset_fields:
+        custom_path = ensure_custom_sodrules_file(ruleset)
+        custom = _load_json_list(custom_path)
+        entry = next((c for c in custom if c["sodRule"] == ruleId), None)
+        if entry:
+            entry.update(filterset_fields)
+        else:
+            custom.append({"sodRule": ruleId, **filterset_fields})
+        custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    _save_ruleset_risk(ruleset, "alias", ruleId, risk_fields)
     reload_ruleset(ruleset)
     return {"sodRule": ruleId, "saved": fields}
 
