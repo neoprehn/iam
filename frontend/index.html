@@ -2731,7 +2731,14 @@ function critRank(c) { return CRIT_RANK[(c || '').toLowerCase()] || 0; }
 
 let findingsViewMode = 'table';           // 'table' | 'graph'
 let fgRows = [], fgMode = 'sod', fgTotalUsers = 0, fgLoadSeq = 0;
-function currentFindingsGraphMode() { return resultTypeValue === 'query' ? 'query' : 'sod'; }
+// Muss exakt dieselbe Bedingung wie applyFilters() verwenden ("if (q || resultTypeValue ===
+// 'query')") -- sonst zeigt der Graph den SoD-Regel-Balken auch dann, wenn der User ueber das
+// Sidebar-Dropdown "Einzelberechtigung" ($filterQuery) bereits in der Matches-Ansicht ist, ohne
+// je den (nur bei nicht-leerer Ergebnisliste eingeblendeten) resultTypePills-Umschalter benutzt zu
+// haben -- bisheriger Bug: currentFindingsGraphMode() pruefte nur resultTypeValue.
+function currentFindingsGraphMode() {
+  return ($('filterQuery').value || resultTypeValue === 'query') ? 'query' : 'sod';
+}
 let ruleCritValue = '', resultTypeValue = '', sleepingValue = '';
 let sleepDaysOverrideValue = '', lockedValue = '', lockReasonValue = 'alle';
 function renderRuleCritPills() {

@@ -183,6 +183,18 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   neuen Zurück-Buttons darüber). „Als Tabelle"-Link führt zur bestehenden Ergebnisse-Übersicht
   (Tabellen-Fallback laut Dataviz-Skill-Anforderung). Mit Playwright gegen den laufenden Container
   end-to-end verifiziert (Sortierung, Farben, Drill-down, Modus-Wechsel, keine Konsolenfehler).
+  **UX-Feedback konkretisiert (2026-07-15):** Balken „sehen langweilig aus" — noch keine konkrete
+  Alternative vom Nutzer benannt, bleibt offen zu erarbeiten (nicht Farbe, grundsätzlich die
+  Balkenform). **Bug gefunden+gefixt:** `currentFindingsGraphMode()` prüfte nur `resultTypeValue`
+  (SoD/Einzelfilter-Pill) — dieser Pill ist aber nur eingeblendet, sobald `isEntry=false`
+  (`toggleEntryUi()`), was nur `renderFindingsTable()` setzt, **nicht** `renderMatchesTable()`. Wer
+  stattdessen über das (immer sichtbare) Sidebar-Dropdown „Einzelberechtigung" (`filterQuery`) eine
+  Query auswählt, landet zwar korrekt in der Matches-Ansicht, aber `resultTypeValue` bleibt `''` —
+  der Graph zeigte dann weiterhin die **SoD**-Regeln statt der erwarteten Einzelfilter-Übersicht.
+  Fix: `currentFindingsGraphMode()` prüft jetzt zusätzlich `$('filterQuery').value`, exakt dieselbe
+  Bedingung wie in `applyFilters()` (`if (q || resultTypeValue === 'query')`). Mit Playwright gegen
+  den laufenden Container in beide Richtungen verifiziert (Query über Sidebar ausgewählt → Graph
+  zeigt jetzt 43 Einzelfilter-Balken statt 3 SoD-Balken; zurückgesetzt → wieder SoD-Balken).
 - [x] **Zurück-Button im Drill-down** — „← zurück" in der Aktiv-Filter-Leiste stellt die Ausgangsliste
   wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
   Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
