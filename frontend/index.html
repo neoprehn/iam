@@ -1475,7 +1475,36 @@ async function loadConsistencyCatalog(area) {
 function prioTagClass(prio) {
   return prio === 'Hoch' ? 'critical' : prio === 'Mittel' ? 'medium' : prio === 'Analytik' ? 'info' : 'low';
 }
+const CC_PRIO_RANK = { 'Hoch': 3, 'Mittel': 2, 'Analytik': 1, 'Niedrig': 0 };
+function ccPrioRank(p) { return CC_PRIO_RANK[p] ?? 0; }
 function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+// Je Konsistenzcheck-Box (Mini-Tabelle) eigenstaendig sortierbar -- die generische makeSortable()
+// (findingsTable/matchesTable/summaryTable/ulTable) setzt EINE feste Tabelle mit persistentem
+// <thead> voraus; ccGrid baut dagegen bei jedem renderConsistencyTable()-Aufruf mehrere Boxen neu
+// aus dem DOM auf (Kategorie-Filter etc.), daher ein eigener, kleiner Sortier-Mechanismus je Box
+// statt Wiederverwendung des generischen Helpers. Gleicher 3-Klick-Zyklus (auf/ab/Ursprung) wie
+// ueberall sonst, ueber dieselbe genericCompare()-Vergleichsfunktion.
+function ccAttachBoxSort(table, rows, renderRowsFn) {
+  const keyFns = { id: c => c.id, title: c => c.title, prio: c => ccPrioRank(c.prio),
+                   count: c => ccdLastCounts[c.id] ?? -1 };
+  const original = rows.slice();
+  const state = { key: null, dir: 0 };
+  table.querySelectorAll('thead th[data-sort-key]').forEach(th => {
+    const ind = document.createElement('span'); ind.className = 'sort-ind'; th.appendChild(ind);
+    th.addEventListener('click', () => {
+      const key = th.dataset.sortKey;
+      state.dir = state.key === key ? (state.dir === 1 ? -1 : state.dir === -1 ? 0 : 1) : 1;
+      state.key = state.dir === 0 ? null : key;
+      if (state.dir === 0) { rows.length = 0; rows.push(...original); }
+      else { const keyFn = keyFns[key]; rows.sort((a, b) => state.dir * genericCompare(keyFn(a), keyFn(b))); }
+      renderRowsFn();
+      table.querySelectorAll('thead th[data-sort-key]').forEach(t => {
+        const i = t.querySelector('.sort-ind');
+        if (i) i.textContent = t.dataset.sortKey === state.key ? (state.dir === 1 ? '▲' : '▼') : '';
+      });
+    });
+  });
+}
 function renderConsistencyTable() {
   const grid = $('ccGrid');
   const order = ccGroupOrder();
@@ -1492,27 +1521,35 @@ function renderConsistencyTable() {
     // Rollen-Boxen auf einheitliche Hoehe bringen (ca. 7 Zeilen) statt je Gruppengroesse (7/5/4/2)
     // unterschiedlich hoch im 2x2-Raster zu stehen -- kuerzere Gruppen zeigen dann Leerraum/
     // Scroll-Reserve, laengere scrollen innerhalb der Box statt die Box zu strecken.
-    const tableHtml = `<table><thead><tr><th>ID</th><th>Pr&uuml;fung</th><th>Prio</th><th>Ergebnisse</th></tr></thead><tbody></tbody></table>`;
+    const tableHtml = `<table><thead><tr>`
+      + `<th data-sort-key="id">ID</th><th data-sort-key="title">Pr&uuml;fung</th>`
+      + `<th data-sort-key="prio">Prio</th><th data-sort-key="count">Ergebnisse</th>`
+      + `</tr></thead><tbody></tbody></table>`;
     box.innerHTML = ccArea === 'role'
       ? `<h3>${escapeHtml(ccGroupLabel(g))}</h3><div style="max-height:430px; overflow-y:auto">${tableHtml}</div>`
       : `<h3>${escapeHtml(ccGroupLabel(g))}</h3>${tableHtml}`;
     const tb = box.querySelector('tbody');
-    rows.forEach(c => {
-      const tr = document.createElement('tr');
-      // Titel fett + Begruendung darunter klein -- soll auch fachlich nicht Kundigen verstaendlich sein,
-      // nicht nur der Kurztitel. "Ergebnisse" zeigt die Trefferzahl, sobald die Check-Logik existiert
-      // (s. ROADMAP Phase 7) -- bis dahin Platzhalter, da noch nichts ausgefuehrt wird.
-      const lastCount = ccdLastCounts[c.id];
-      const ergebnisCell = lastCount !== undefined ? `<b>${lastCount}</b> Treffer`
-        : c.implemented ? '&ndash;' : 'noch nicht ausgef&uuml;hrt';
-      tr.innerHTML = `<td>${c.id}</td>`
-        + `<td class="click"><b>${escapeHtml(c.title)}</b>`
-        + `<div class="muted" style="font-size:11px;margin-top:2px">${escapeHtml(c.description)}</div></td>`
-        + `<td><span class="tag ${prioTagClass(c.prio)}">${c.prio}</span></td>`
-        + `<td class="muted">${ergebnisCell}</td>`;
-      tr.querySelector('.click').addEventListener('click', () => openConsistencyDetail(c));
-      tb.appendChild(tr);
-    });
+    function renderBoxRows() {
+      tb.innerHTML = '';
+      rows.forEach(c => {
+        const tr = document.createElement('tr');
+        // Titel fett + Begruendung darunter klein -- soll auch fachlich nicht Kundigen verstaendlich sein,
+        // nicht nur der Kurztitel. "Ergebnisse" zeigt die Trefferzahl, sobald die Check-Logik existiert
+        // (s. ROADMAP Phase 7) -- bis dahin Platzhalter, da noch nichts ausgefuehrt wird.
+        const lastCount = ccdLastCounts[c.id];
+        const ergebnisCell = lastCount !== undefined ? `<b>${lastCount}</b> Treffer`
+          : c.implemented ? '&ndash;' : 'noch nicht ausgef&uuml;hrt';
+        tr.innerHTML = `<td>${c.id}</td>`
+          + `<td class="click"><b>${escapeHtml(c.title)}</b>`
+          + `<div class="muted" style="font-size:11px;margin-top:2px">${escapeHtml(c.description)}</div></td>`
+          + `<td><span class="tag ${prioTagClass(c.prio)}">${c.prio}</span></td>`
+          + `<td class="muted">${ergebnisCell}</td>`;
+        tr.querySelector('.click').addEventListener('click', () => openConsistencyDetail(c));
+        tb.appendChild(tr);
+      });
+    }
+    renderBoxRows();
+    ccAttachBoxSort(box.querySelector('table'), rows, renderBoxRows);
     grid.appendChild(box);
   });
   if (!grid.children.length) grid.innerHTML = '<div class="muted">keine Treffer</div>';

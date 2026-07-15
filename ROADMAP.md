@@ -142,6 +142,7 @@ Die folgenden offenen Ausbauten wurden am **2026-07-12** mit den handschriftlich
 `ideen.md` zusammengeführt und in thematische Arbeitspakete **9.1–9.8** gegliedert.
 **Reihenfolge (Nutzer-Steuerung):** zunächst **9.1 + 9.2** (Interaktive Ergebnisse / Graph-Frontend),
 danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen sich an.
+**9.1 ist seit 2026-07-15 abgeschlossen** (s. „Kürzlich erledigt" + Archiv) — **9.2 ist jetzt dran.**
 
 #### Kürzlich erledigt (Kontext, Details im Archiv)
 - **Geführte Auswertung** — Assistent-Stepper, Katalog-Auswahl, zwei Auswertungsarten, persistente
@@ -153,90 +154,12 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
 - **Interaktive Drill-downs** — Findings-/Regel-/KPI-Klick, Root-Cause inkl. Pfad-/Radialgraph
   (Cytoscape). [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse-drill-down--graphtabelle).
 - **Import-Evidenz** — s. Block oben (Kategorie „Import"/I1, PDF/CSV-Report).
+- **9.1 Interaktive Ergebnisse & Graph-UX (komplett)** — sortierbare Spalten überall inkl.
+  Konsistenzcheck-Katalog, Zurück-Button im Drill-down, Balkendiagramm + neue aufklappbare
+  Baum-Ansicht (Regel/Query → User → Rolle/Profil) samt Cytoscape-Vollansicht+Farblegende.
+  [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse--graph-ux-91).
 
-#### 9.1 Interaktive Ergebnisse & Graph-UX  ← als Nächstes
-- [~] **Sortierbare Spalten** in allen Ergebnistabellen (generische `makeSortable()`): umgesetzt für
-  Ergebnis-Übersicht (Einzelfilter+SoD), Nutzerliste, Konsistenzcheck-Detail **und die
-  Findings-/Matches-Haupttabelle** (`findingsTable`/`matchesTable`, je erste 5 Spalten;
-  Sleeping/Root-Cause-Button bewusst nicht sortierbar; Kritikalität über `critRank`). **Standard-
-  Klickzyklus je Spalte** (2026-07-12, generisch in `makeSortable()`): 1. Klick auf/steigend,
-  2. Klick ab/fallend, **3. Klick zurück zur Ursprungsreihenfolge** (Pfeil verschwindet,
-  `originalOrder`-Schnappschuss beim jeweiligen `reset()` je Tabelle) — Klick auf eine andere Spalte
-  startet den Zyklus immer wieder bei „auf". Gilt automatisch für alle vier sortierbaren Tabellen.
-  **Offen nur noch:** Konsistenzcheck-Katalog (`ccGrid`) — gruppierte Mini-Tabellen je Kategorie,
-  separater, kleinerer Umbau. Gilt als **Standard** für jede neue Ergebnisliste.
-- [x] **Listenweiter Tabelle/Graph-Umschalter** über der Findings-Liste (`viewTogglePills`) —
-  funktional und end-to-end verifiziert (2026-07-12), **UX laut Nutzer-Feedback noch nicht
-  optimal** — welche Aspekte konkret (Layout/Farbwahl/Interaktion/Informationsdichte) ist noch
-  offen zu klären, bevor der Punkt als abgeschlossen gilt. Bewusst **nicht** als Heatmap/User×
-  Regeln-Matrix oder Cytoscape-
-  Node-Graph umgesetzt: bei ~4.200 betroffenen Akteuren vs. wenigen Dutzend Regeln wäre ein Knoten
-  je User unlesbar und eine literale Matrix ein DOM-Performance-Problem (Entscheidung nach
-  Dataviz-Skill-Konsultation + Nutzerauswahl). Stattdessen ein **regel-/query-zentriertes
-  Balkendiagramm** (`#findingsGraph`, `.fg-row`): eine Zeile je SoD-Regel bzw. Einzelfilter,
-  Balkenlänge = betroffene Nutzerzahl (absteigend sortiert), Farbe = bestehende
-  `CRIT_COLOR`-Statusfarbe (keine neue Palette). Datenquelle sind die schon vorhandenen
-  `/sodrules/summary`/`/queries/summary`-Endpunkte (dieselben wie die „Ergebnisse-Übersicht") —
-  **keine neue Backend-Aggregation**; folgt damit `resultTypeValue` (SoD vs. Einzelfilter) und
-  bleibt bewusst unabhängig von den Sidebar-Filtern (Untertitel weist explizit darauf hin).
-  Klick auf einen Balken nutzt die bestehenden `jumpToRuleFilter`/`jumpToQueryFilter` (inkl. des
-  neuen Zurück-Buttons darüber). „Als Tabelle"-Link führt zur bestehenden Ergebnisse-Übersicht
-  (Tabellen-Fallback laut Dataviz-Skill-Anforderung). Mit Playwright gegen den laufenden Container
-  end-to-end verifiziert (Sortierung, Farben, Drill-down, Modus-Wechsel, keine Konsolenfehler).
-  **UX-Feedback konkretisiert (2026-07-15):** Balken „sehen langweilig aus" — noch keine konkrete
-  Alternative vom Nutzer benannt, bleibt offen zu erarbeiten (nicht Farbe, grundsätzlich die
-  Balkenform). **Bug gefunden+gefixt:** `currentFindingsGraphMode()` prüfte nur `resultTypeValue`
-  (SoD/Einzelfilter-Pill) — dieser Pill ist aber nur eingeblendet, sobald `isEntry=false`
-  (`toggleEntryUi()`), was nur `renderFindingsTable()` setzt, **nicht** `renderMatchesTable()`. Wer
-  stattdessen über das (immer sichtbare) Sidebar-Dropdown „Einzelberechtigung" (`filterQuery`) eine
-  Query auswählt, landet zwar korrekt in der Matches-Ansicht, aber `resultTypeValue` bleibt `''` —
-  der Graph zeigte dann weiterhin die **SoD**-Regeln statt der erwarteten Einzelfilter-Übersicht.
-  Fix: `currentFindingsGraphMode()` prüft jetzt zusätzlich `$('filterQuery').value`, exakt dieselbe
-  Bedingung wie in `applyFilters()` (`if (q || resultTypeValue === 'query')`). Mit Playwright gegen
-  den laufenden Container in beide Richtungen verifiziert (Query über Sidebar ausgewählt → Graph
-  zeigt jetzt 43 Einzelfilter-Balken statt 3 SoD-Balken; zurückgesetzt → wieder SoD-Balken).
-- [x] **„Baum"-Ansicht als dritte Option neben Tabelle/Balken** (2026-07-15, löst das „langweilig"-
-  Feedback zum Balkendiagramm über eine Alternative statt eines Redesigns — Nutzer hatte noch keine
-  konkrete Balken-Alternative, wollte stattdessen einen auf-/zuklappbaren Baum): Regel/Query → User →
-  belegende Rolle(n)/Profil(e), Akkordeon (pro Ebene immer nur ein Geschwisterzweig offen). Ebene 1
-  übernimmt 1:1 die bewährte Balkenoptik (Länge/Farbe/Sortierung). Ebene 2 (User) kostet **keinen
-  neuen Endpunkt**: SoD über `GET /findings?rule=Y&limit=100000` (statt des bisherigen globalen
-  `&limit=500`, liefert je Zeile bereits `roles`/`profiles`-Arrays aus der materialisierten
-  VIA_ROLE/VIA_PROFILE-Evidenz, AE-11 — Ebene 3 braucht dort **keinen** Request mehr), Einzelfilter
-  über das bereits ungedeckelte `GET /matches?query=Y`; Client-seitiges Suchfeld ab 30 Usern (bis zu
-  ~8.000 möglich). Ebene 3 bei Einzelfilter live über `GET /root-cause` (dieselbe Pro-User-Berechnung
-  wie die interaktive Root-Cause-Seite), dedupliziert auf Rolle/Profil, generierte Profile
-  ausgeblendet (Default `rcTechMode='hide'`). Direkt zugewiesenes Profil wird als eigener,
-  nicht-klickbarer Chip-Typ gezeigt (kein Profil-Detail existiert app-weit, bewusste Scope-Grenze).
-  Klick auf User/Rolle öffnet ein **kompaktes Overlay** (nicht die volle `roleDetailView`-Seite, die
-  würde den Akkordeon-Zustand darunter verstecken) mit Stammdaten — neuer, schlanker Endpunkt
-  `GET /users/{id}/detail` fürs User-Overlay (USR02-Rohfelder: Typ/Gruppe/Gültigkeit/Login/Sleeping/
-  Passwort-Historie), Rollen-Overlay nutzt den bestehenden `GET /roles/{id}?user=`. Zusätzlich eine
-  **"Vollansicht"** (Cytoscape) für genau den aktuell aufgeklappten Pfad (Regel/Query + 1 User +
-  dessen Rollen/Profile, nie alle User gleichzeitig — bei ~8.000 Usern unlesbar, derselbe Grund wie
-  beim Balkendiagramm) mit **Farblegende** (User/Regel/Query/Rolle/Profil) und dem bewährten
-  Zoom-Slider-/Vollbild-Muster der Root-Cause-Seite 1:1 übernommen. **Nebenbei gefundener Bug:**
-  verschachtelte `.overlay`-Dialoge (User-/Rollen-Overlay aus der Vollansicht heraus geöffnet)
-  blockierten sich gegenseitig (gleicher z-index, App-Muster geht von immer nur einem offenen Dialog
-  aus) — Fix: Vollansicht schließt sich selbst, bevor das verschachtelte Overlay öffnet. Mit
-  Playwright end-to-end verifiziert (Akkordeon-Verschachtelung beide Ebenen, SoD- und
-  Einzelfilter-Modus, beide Overlays, Vollansicht-Graph inkl. Knoten-Klick/Zoom/Legende, Regression
-  auf „Balken"/„Tabelle").
-
-  ROADMAP-Punkt „Farblegende in allen Graphansichten" (s. u.) damit für den **listenweiten** Graphen
-  erledigt; Pfad-/Radial-Ansicht der Root-Cause-Seite bleiben wie unten offen.
-- [x] **Zurück-Button im Drill-down** — „← zurück" in der Aktiv-Filter-Leiste stellt die Ausgangsliste
-  wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
-  Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
-
-> **Farblegende + Vollbild-Bedienung der Graphen** sind nach **9.2** verschoben (2026-07-12) — beides
-> hängt am Cytoscape-Frontend, keine sinnvolle Zwischenlösung auf der heutigen Root-Cause-Graphseite.
-> Für den listenweiten Baum-Graph (s. o.) inzwischen erledigt (2026-07-15); **Pfad-/Radial-Root-Cause
-> bleiben offen** (Farblegende + überarbeitete Vollbild-Bedienung dort weiterhin Teil von 9.2).
-> **Kritikalität prominent an Einzelfilter/SoD** ist nach **9.4** verschoben (2026-07-12) — Farben/
-> Stufen kommen aus den dortigen Kritikalitäts-Stammdaten, vorher wäre die Badge-Logik hartkodiert.
-
-#### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung
+#### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung  ← als Nächstes
 - [ ] **Gebrandetes Frontend mit Cytoscape.js** — ersetzt den temporären NeoDash-PoC (Phase 6). KPIs,
   Graph-Darstellung der Konfliktpfade (Cytoscape statt NVL — NVL verworfen, Lizenz nur Aura/kommerziell),
   Drill-down; visualisiert die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`). Vorlage:
@@ -319,6 +242,18 @@ Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
   - Mit Playwright gegen den laufenden Container verifiziert (Seed-Werte in Liste+Dropdown, Edit
     überschreibt nur das geänderte Feld, Query-Seite bleibt leer mangels Vendor-Quelle). Test-Overlay-
     Einträge danach wieder entfernt (`sod_rules.custom.json` zurück auf `[]`, Test-Lauf gelöscht).
+- [ ] **Risikokatalog inhaltlich befüllen** (2026-07-15, damit der Punkt oben nicht bei der reinen
+  Editierbarkeit stehen bleibt): die 440 CSI-Risiken tragen aktuell überall identische Platzhalter
+  (`Detection risk`/`Extreme`/`Not mitigated`, s. o.) — echte, differenzierte Werte fehlen noch.
+  Nutzer will dafür Claude Chat zur Recherche/Formulierung nutzen. **Wichtige Einschränkung
+  (Vertrauensgrenze gilt auch außerhalb dieses Tools):** `riskType`/`riskLevel` beschreiben die Art
+  des Risikos selbst (generisches Audit-/GRC-Fachwissen, unabhängig vom Mandanten) — dafür
+  unproblematisch. `riskStatus` (mitigiert/nicht) hängt dagegen von der **tatsächlichen
+  Kontrollumgebung dieses Mandanten** ab und darf nicht aus mandantenspezifischen Angaben in einem
+  Cloud-Chat hergeleitet werden — gehört eher zu „Interview-Ergebnisse einarbeiten" (9.6), nicht zu
+  einer generischen Recherche. Bei 440 Einträgen eher eine **Bewertungsrubrik** erarbeiten
+  (Kriterien je riskType/riskLevel) und selbst konsistent anwenden, statt einzeln pro Regel
+  nachzufragen ohne Kontext.
 - [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
   und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
   mitführen (später für Heatmap-Gewichtung).
