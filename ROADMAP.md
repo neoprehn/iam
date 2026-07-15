@@ -285,6 +285,40 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
 #### 9.4 Masterdata-Verwaltung (Admin)
 Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns, die
 Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
+- [x] **Risiko-Metadaten (riskType/riskLevel/riskStatus) im Query-/SoD-Editor** (2026-07-15, aus einem
+  Nutzerfund heraus vorgezogen): Beim Sichten von `rules/CSI_Ruleset/risks.json` fiel auf, dass diese
+  Datei zwar dokumentiert (`rules/SCHEMA.md`: „CSI-nativ: Risiko-Objekte, je SoD-Regel verknüpft") und
+  über `sod_rules.json.risks[]`/`alias` mit den SoD-Regeln verknüpft ist (440 von 455 CSI-SoD-Regeln
+  haben einen Treffer), aber **nirgends geladen/verwendet** wurde — `criticality`/`criticalityRank`
+  bleiben bei CSI deshalb bewusst `null` (keine native SoD-Schwere, s. `rules/SCHEMA.md`), aber die
+  Risiko-Einschätzung selbst (eine **andere** Dimension: deckt ein Control das inhärente Risiko
+  ausreichend? — Kritikalität materialisiert sich erst, wenn mindestens ein User den Treffer hat) lag
+  ungenutzt in der JSON. Alle 440 Einträge hatten zudem identische Werte
+  (`Detection risk`/`Extreme`/`Not mitigated`) — ein nie befülltes Vendor-Template, kein echtes
+  Assessment; genau dafür sind die neuen Dropdowns gedacht.
+  - **Datenfluss:** `risks.json` (optional, nur CSI/CSI_BI) wird beim Ruleset-Laden zusätzlich als
+    Erstbefüllung auf die `SoDRule`-Graphknoten geschrieben (`cypher/ruleset/load_ruleset.cypher`,
+    `coalesce` — Overlay-Edit gewinnt immer) **und** parallel als Datei-Merge-Ebene in
+    `_merged_sodrules()` (`backend/app.py`) — der Query-/SoD-Editor liest Metadaten nämlich direkt aus
+    den JSON-Dateien (Vendor + `sod_rules.custom.json`-Overlay), nie aus dem Graphen; ohne die zweite
+    Ebene wäre die Seed-Befüllung im Editor unsichtbar geblieben (beim ersten Testlauf genau so
+    aufgefallen: Graph korrekt befüllt, Editor zeigte trotzdem nichts).
+  - **Umfang bewusst getrennt von Kritikalität** (Nutzer-Entscheidung): kein automatisches Ableiten von
+    `criticality` aus `riskLevel`, um nicht pauschal alle CSI-Regeln als „Extreme" erscheinen zu
+    lassen, bevor eine echte Bewertung stattgefunden hat.
+  - **Ruleset-Scope:** universelle, fest hinterlegte Wertelisten (`Extreme/High/Medium/Low`,
+    `Detection risk/Inherent risk/Internal control risk`, `Not assessed/Not mitigated/Partly
+    mitigated/Mitigated`) für **alle** Rulesets gleich (Nutzer-Entscheidung) — nicht aus
+    `legends.json` gelesen (das hätte KPMG_R3 ausgeschlossen, dessen `legends.json` diese Schlüssel
+    nicht führt).
+  - **UI:** Dropdown je Feld im „Risiko"-Tab (Query- **und** SoD-Editor, `frontend/admin.html`,
+    IDs `amRiskType`/`amRiskLevel`/`amRiskStatus` bzw. `srRiskType`/…), Speichern über denselben
+    Overlay-Mechanismus wie Kritikalität/Risiko/Controls. Anzeigemodus: farbige, rund umrandete
+    Badges (`.badge.risklevel-*`/`.risktype-*`/`.riskstatus-*`, `color-mix()` aus den
+    Theme-Variablen) in der Query-/SoD-Listen-Zeile.
+  - Mit Playwright gegen den laufenden Container verifiziert (Seed-Werte in Liste+Dropdown, Edit
+    überschreibt nur das geänderte Feld, Query-Seite bleibt leer mangels Vendor-Quelle). Test-Overlay-
+    Einträge danach wieder entfernt (`sod_rules.custom.json` zurück auf `[]`, Test-Lauf gelöscht).
 - [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
   und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
   mitführen (später für Heatmap-Gewichtung).

@@ -171,12 +171,20 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     return merged, custom_ids
 
 
+def _load_ruleset_risks(rdir: str) -> list[dict]:
+    """Optionale risks.json (CSI-nativ: Risiko-Objekte je SoD-Regel-Alias, s. rules/SCHEMA.md) --
+    nicht jedes Ruleset hat eine (KPMG_R3 z. B. nicht); [] wenn nicht vorhanden."""
+    path = RULES_DIR / rdir / "risks.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else []
+
+
 def reload_ruleset(ruleset: str):
     rdir = ruleset_dir(ruleset)
     ensure_custom_queries_file(ruleset)    # beide Overlay-Dateien muessen existieren (apoc.load.json)
     ensure_custom_sodrules_file(ruleset)
     with driver.session() as s:
-        run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
+        run_file(s, "ruleset/load_ruleset.cypher",
+                {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
 
 
 def jsonable(v):
@@ -417,7 +425,8 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
             jobs[job_id]["step"] = step_prefix + "ruleset"
             ensure_custom_queries_file(ruleset)    # queries.custom.json muss existieren (apoc.load.json)
             ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
-            run_file(s, "ruleset/load_ruleset.cypher", {"dir": rdir, "ruleset": ruleset})
+            run_file(s, "ruleset/load_ruleset.cypher",
+                    {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
 
         elif phase == "materialize":
             _run_phase(s, job_id, phase="materialize", step_label=step_prefix + "materialize",
@@ -2110,7 +2119,9 @@ def admin_list_queries(ruleset: str):
              "shortDescription": q.get("shortDescription", ""), "criticality": q.get("criticality"),
              "criticalityRank": q.get("criticalityRank", 0),
              "module": q.get("module"), "queryType": q.get("queryType"),
-             "disregardTcode": bool(q.get("disregardTcode", False)), "custom": qid in custom_ids}
+             "disregardTcode": bool(q.get("disregardTcode", False)),
+             "riskType": q.get("riskType"), "riskLevel": q.get("riskLevel"), "riskStatus": q.get("riskStatus"),
+             "custom": qid in custom_ids}
             for qid, q in sorted(merged.items())]
 
 
@@ -2142,6 +2153,9 @@ class QueryEditReq(BaseModel):
     disregardTcode: bool | None = None
     risk: str | None = None
     controls: str | None = None
+    riskType: str | None = None
+    riskLevel: str | None = None
+    riskStatus: str | None = None
 
 
 @app.put("/admin/rulesets/{ruleset}/queries/{queryId}")
@@ -2175,6 +2189,9 @@ class QueryDeriveReq(BaseModel):
     disregardTcode: bool | None = None
     risk: str | None = None
     controls: str | None = None
+    riskType: str | None = None
+    riskLevel: str | None = None
+    riskStatus: str | None = None
 
 
 @app.post("/admin/rulesets/{ruleset}/queries/derive")
@@ -2194,7 +2211,7 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     new_q["query"] = req.newId
     new_q["derivedFrom"] = req.fromId
     for field in ("description", "shortDescription", "criticality", "module", "queryType",
-                  "disregardTcode", "risk", "controls"):
+                  "disregardTcode", "risk", "controls", "riskType", "riskLevel", "riskStatus"):
         v = getattr(req, field)
         if v is not None:
             new_q[field] = v
@@ -2229,9 +2246,23 @@ def ensure_custom_sodrules_file(ruleset: str) -> Path:
 def _merged_sodrules(ruleset: str) -> tuple[dict[str, dict], set[str]]:
     """Vendor-SoD-Regeln + Overlay, Overlay-Felder gewinnen je id — analog zu _merged_queries.
     'eigen' heisst: neue Regel (kein Vendor-Gegenstueck) oder clauses/variables wurden
-    ueberschrieben; reine Metadaten-Edits zaehlen nicht."""
+    ueberschrieben; reine Metadaten-Edits zaehlen nicht.
+
+    Zusaetzliche Schicht ZWISCHEN Vendor und Overlay: risks.json (CSI-nativ, optional, s.
+    rules/SCHEMA.md) liefert riskType/riskLevel/riskStatus je SoD-Regel-Alias als Erstbefuellung --
+    nur wenn das Vendor-/Overlay-Feld noch nicht gesetzt ist (Overlay-Edit gewinnt immer). Das ist
+    eine reine Datei-Merge-Ebene, unabhaengig vom analogen Cypher-Seed in load_ruleset.cypher (der
+    fuellt dieselben Felder auf den Graph-Knoten fuer Konsumenten, die dort statt aus den Dateien
+    lesen -- z. B. eine kuenftige Ergebnis-Anzeige)."""
     vendor_path, custom_path = _sodrule_paths(ruleset)
     merged = {r["sodRule"]: dict(r) for r in _load_json_list(vendor_path)}
+    rdir = ruleset_dir(ruleset)
+    for rk in (_load_ruleset_risks(rdir) if rdir else []):
+        rid = rk.get("alias")
+        if rid in merged:
+            for f in ("riskType", "riskLevel", "riskStatus"):
+                if merged[rid].get(f) is None:
+                    merged[rid][f] = rk.get(f)
     custom_ids = set()
     for c in _load_json_list(custom_path):
         rid = c["sodRule"]
@@ -2255,7 +2286,9 @@ def admin_list_sodrules(ruleset: str):
     return [{"id": rid, "description": r.get("description", ""),
              "shortDescription": r.get("shortDescription", ""), "criticality": r.get("criticality"),
              "criticalityRank": r.get("criticalityRank", 0), "clauses": r.get("clauses", []),
-             "reasonCode": r.get("reasonCode"), "custom": rid in custom_ids}
+             "reasonCode": r.get("reasonCode"),
+             "riskType": r.get("riskType"), "riskLevel": r.get("riskLevel"), "riskStatus": r.get("riskStatus"),
+             "custom": rid in custom_ids}
             for rid, r in sorted(merged.items())]
 
 
@@ -2283,6 +2316,9 @@ class SodRuleEditReq(BaseModel):
     criticality: str | None = None
     risk: str | None = None
     controls: str | None = None
+    riskType: str | None = None
+    riskLevel: str | None = None
+    riskStatus: str | None = None
 
 
 @app.put("/admin/rulesets/{ruleset}/sodrules/{ruleId}")

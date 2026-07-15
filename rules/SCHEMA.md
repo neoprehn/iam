@@ -16,7 +16,7 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 | `sod_rules.custom.json` | optional | Overlay: eigene Metadaten-Edits an SoD-Regeln (Query Management, Modus „SoD") |
 | `ruleset.json` | ja | Metadaten + `combinationSemantics` |
 | `legends.json` | ja | Wertelegenden (queryTypes, Klassifizierung, Reason-Codes …) |
-| `risks.json` | optional | nur wo vorhanden (CSI): Risiko-Objekte |
+| `risks.json` | optional | nur wo vorhanden (CSI/CSI_BI): Risiko-Objekte (`riskType`/`riskLevel`/`riskStatus`), per `alias`↔`sodRule` verknüpft; Erstbefüllung der gleichnamigen SoD-Regel-Felder (2026-07-15, s. ROADMAP 9.4), Overlay-Edit gewinnt danach immer |
 
 ## Kern-Felder (über ALLE Rulesets identisch — der Loader baut hierauf)
 
@@ -32,6 +32,9 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `risk` (str, **optional**) · `controls` (str, **optional**) — Freitext: potenzielles Risiko bzw.
   mitigierende Ma&szlig;nahmen, gepflegt &uuml;ber das Query Management (eigene Tabs); bisher in
   keiner Vendor-Quelle vorhanden, daher zunaechst nur ueber das Overlay (s. u.) befuellt.
+- `riskType`/`riskLevel`/`riskStatus` (str, **optional**, feste Wertelisten) — eigene Dimension
+  neben `risk`/`controls`: deckt ein Control das inhärente Risiko ausreichend ab? Nur über das
+  Overlay gepflegt (keine Vendor-Quelle für Queries); Dropdown im „Risiko"-Tab.
 
 **SoD-Regel** (`sod_rules.json[]`):
 - `sodRule` (str, ID) · `description` (Langbezeichnung, bei KPMG oft ein ganzer Satz inkl.
@@ -42,6 +45,9 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
   **CSI fuehrt keine native SoD-Schwere** (reasonCode = Template) → `null`.
 - `risk` (str, **optional**) · `controls` (str, **optional**) — analog zu Query, gepflegt &uuml;ber
   das Query Management (Modus „SoD", eigene Tabs); bisher in keiner Vendor-Quelle vorhanden.
+- `riskType`/`riskLevel`/`riskStatus` (str, **optional**, feste Wertelisten) — analog zu Query,
+  bei CSI/CSI_BI zusätzlich initial aus `risks.json` befüllt (s. Dateitabelle oben), Overlay-Edit
+  gewinnt danach immer.
 
 **Overlay (`sod_rules.custom.json`, optional, analog zu `queries.custom.json`):** Metadaten-Edits
 an bestehenden Vendor-Regeln (Kurzbezeichnung/Kritikalit&auml;t/Risiko/Controls) &uuml;ber das Query

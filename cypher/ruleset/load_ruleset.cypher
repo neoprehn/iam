@@ -29,6 +29,9 @@ MERGE (query:Query {key: $ruleset + '|' + q.query})
       query.disregardTcode = coalesce(q.disregardTcode, query.disregardTcode, false),
       query.risk = coalesce(q.risk, query.risk),
       query.controls = coalesce(q.controls, query.controls),
+      query.riskType = coalesce(q.riskType, query.riskType),
+      query.riskLevel = coalesce(q.riskLevel, query.riskLevel),
+      query.riskStatus = coalesce(q.riskStatus, query.riskStatus),
       query.tcodes = CASE WHEN q.transactions IS NULL THEN query.tcodes
                           ELSE [t IN q.transactions WHERE coalesce(t.tcode,'') <> '' | t.tcode] END
 WITH query, q
@@ -55,11 +58,25 @@ MERGE (rule:SoDRule {key: $ruleset + '|' + s.sodRule})
       rule.description = coalesce(s.description, rule.description),
       rule.shortDescription = coalesce(s.shortDescription, rule.shortDescription),
       rule.risk = coalesce(s.risk, rule.risk),
-      rule.controls = coalesce(s.controls, rule.controls)
+      rule.controls = coalesce(s.controls, rule.controls),
+      rule.riskType = coalesce(s.riskType, rule.riskType),
+      rule.riskLevel = coalesce(s.riskLevel, rule.riskLevel),
+      rule.riskStatus = coalesce(s.riskStatus, rule.riskStatus)
 WITH rule, s
 UNWIND keys(coalesce(s.variables, {})) AS var
 MATCH (q:Query {key: $ruleset + '|' + s.variables[var]})
 MERGE (rule)-[:USES {var: var}]->(q);
+
+// --- Risiko-Stammdaten aus risks.json vorbefuellen (CSI-nativ, optional) -------------------
+// risks.json existiert nur bei manchen Rulesets (CSI/CSI_BI, s. rules/SCHEMA.md); $risks ist []
+// wenn nicht vorhanden (backend/app.py). Verknuepfung ueber alias == SoDRule.id. coalesce mit
+// rule.riskX ZUERST: ein bereits per Overlay (sod_rules.custom.json) gesetzter Wert gewinnt immer
+// -- risks.json liefert nur den Erstbefuellungs-Wert, keinen erzwungenen Reset bei Re-Import.
+UNWIND $risks AS rk
+MATCH (rule:SoDRule {key: $ruleset + '|' + rk.alias})
+SET rule.riskType = coalesce(rule.riskType, rk.riskType),
+    rule.riskLevel = coalesce(rule.riskLevel, rk.riskLevel),
+    rule.riskStatus = coalesce(rule.riskStatus, rk.riskStatus);
 
 // --- CNF-Klauseln: (:SoDRule)-[:HAS_CLAUSE]->(:Clause)-[:NEEDS]->(:Query) ---
 // Ein User verletzt die Regel, wenn JEDE Klausel >=1 erfuellte (gematchte) Query enthaelt.

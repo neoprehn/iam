@@ -21,6 +21,8 @@ Auth↔TCode UND, `type` = Scope-Filter) gilt identisch und steht in `ruleset.js
 
 ## Unterschiede zu KPMG_R3
 
-- **Echte Risk-Objekte** (`risks.json`) mit Level/Typ/Status, je SoD-Regel verknüpft.
+- **Echte Risk-Objekte** (`risks.json`) mit Level/Typ/Status, je SoD-Regel verknüpft — seit
+  2026-07-15 als Erstbefüllung von `riskType`/`riskLevel`/`riskStatus` im SoD-Editor geladen
+  (s. `rules/SCHEMA.md`, ROADMAP 9.4); vorher unbenutzt in der Datei liegend.
 - **`disregardTcode`** explizit je Query: ist es `true`, zählt nur der Auth-Teil (TCode-Teil ignoriert).
 - **`queryType`** mit vollständiger Legende (CSI nativ; KPMGs Export hatte hier „Undefined").
