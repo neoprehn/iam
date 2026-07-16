@@ -2147,7 +2147,11 @@ function rcCyStyle() {
         'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.85,
         'label': 'data(elabel)', 'font-size': 9, 'color': muted, 'text-background-color': panel,
         'text-background-opacity': 0.9, 'text-background-padding': 2 } },
-    { selector: '.rc-via', style: { 'line-color': crit, 'target-arrow-color': crit, 'line-style': 'dashed', 'width': 2 } },
+    { selector: '.rc-via', style: { 'line-color': crit, 'target-arrow-color': crit, 'source-arrow-color': crit, 'line-style': 'dashed', 'width': 2 } },
+    // Rolle/Profil "enthaelt" (CONTAINS) das Objekt/S_TCode -- Pfeilspitze deshalb am Objekt-Ende
+    // (source = Objekt, aber source-arrow statt target-arrow), Baum-Layout bleibt unveraendert,
+    // da source/target fuer die breadthfirst-Kindbeziehung gleich bleiben (s. rcBuildGraph).
+    { selector: '.rc-contains', style: { 'target-arrow-shape': 'none', 'source-arrow-shape': 'triangle' } },
     { selector: '.rcfade', style: { 'opacity': 0.15 } },
   ];
 }
@@ -2215,7 +2219,12 @@ function rcBuildGraph(data, mode) {
     }
     actors.forEach(a => {
       const key = a.actorType + '|' + a.actorId;
-      if (actorCache && actorCache.has(key)) { E(on, actorCache.get(key), a.via ? 'rc-via' : '', 'ODER'); return; }
+      // Kante bleibt fuer den Baum-Layout-Zweck Objekt->Akteur (source/target unveraendert,
+      // sonst verliert das breadthfirst-Layout die Kind-Beziehung), Pfeilspitze/Label lesen sich
+      // aber als "Rolle/Profil CONTAINS Objekt" (Nutzer-Fund: "ODER" war pro Einzelkante irrefuehrend,
+      // die eigentliche Semantik ist die Kantenart CONTAINS aus AE-04 -- englisch, analog zu
+      // ASSIGNED_TO/HAS_AUTH) -- daher 'rc-contains' fuer den optisch umgedrehten Pfeil.
+      if (actorCache && actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS'); return; }
       const an = gid('a'); const cls = ['rc-' + (a.actorType === 'Role' ? 'role' : 'profile')];
       if (a.technical) cls.push('rc-technical');
       if (a.orphaned) cls.push('rc-orphaned');
@@ -2225,7 +2234,7 @@ function rcBuildGraph(data, mode) {
         cls.join(' '), ring.actor, rcActorDetail(a, reqValuesByField),
         (a.actorType === 'Role' && rcReturnTo !== 'consistency') ? { roleId: a.actorId } : null);
       if (actorCache) actorCache.set(key, an);
-      E(on, an, a.via ? 'rc-via' : '', 'ODER');
+      E(on, an, 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS');
     });
   }
   const topIsRule = !!data.ruleId;
