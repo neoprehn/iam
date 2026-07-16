@@ -2236,7 +2236,7 @@ function rcBuildGraph(data, mode) {
     ? `<b>Regel ${data.ruleId}</b>${sodRuleNames[data.ruleId] ? `<br><span style="color:var(--muted)">${sodRuleNames[data.ruleId]}</span>` : ''}`
     : `<b>Query ${data.queryId || ''}</b>`;
   if (userId) N('rc_user', `User\n${userId}`, 'rc-user', ring.user, `<b>${userId}</b>`);
-  N('rc_top', topLabel, 'rc-rule', ring.rule, topDetail);
+  N('rc_top', topLabel, topIsRule ? 'rc-rule' : 'rc-query', ring.rule, topDetail);
   if (userId) E('rc_user', 'rc_top', '', topIsRule ? 'verletzt' : 'matcht');
 
   if (!topIsRule) {
