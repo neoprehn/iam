@@ -199,9 +199,11 @@
   },
   {
     "query": "1000_BC-SEC",
-    "riskType": null,
+    "riskType": "Detection risk",
     "riskLevel": "very-critical",
-    "riskStatus": null
+    "riskStatus": "Not assessed",
+    "risk": "ein Risiko",
+    "description": null
   },
   {
     "query": "1001_BC-SEC",

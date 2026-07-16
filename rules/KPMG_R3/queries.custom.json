@@ -1,7 +1,11 @@
 [
   {
     "query": "1000_BC-SEC",
-    "shortDescription": "BC-SEC - Replace in Debugging"
+    "shortDescription": "BC-SEC - Replace in Debugging",
+    "description": "BC-SEC - Replace in Debugging (/h)",
+    "criticality": "very-critical",
+    "queryType": "JAP",
+    "disregardTcode": false
   },
   {
     "query": "1001_BC-SEC",
