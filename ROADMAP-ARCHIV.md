@@ -1066,6 +1066,24 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
     Zeilenklick wechselt Lauf und Filter korrekt und schließt den Dialog, Gegenprobe (Einzellauf)
     hält den Button ausgeblendet. Test-Batch (2 Runs) danach über `POST /runs/{runId}/delete`
     wieder entfernt.
+- [x] **Vier kleinere UX-Punkte im Org-Varianten-Editor** (`frontend/admin-org-profiles.html`,
+  2026-07-16, direkt im Anschluss, alle rein clientseitig — kein neuer Endpunkt nötig):
+  - **„alle Felder = UND"-Hinweis** — Hinweistext oberhalb der Kriterienliste, nur sichtbar ab
+    2 Kriterien (bestätigt die AND-Verknüpfung aus `materialize_matches_one.cypher`).
+  - **Beschreibungsfeld** von `<input>` auf `<textarea rows="2">` umgestellt, neuer
+    „Vergrößern"-Knopf (`#opDescExpandBtn`) toggelt zwischen 2 und 6 Zeilen.
+  - **Responsives Kriterien-Layout** — `#criteriaList` als 2-spaltiges CSS-Grid; generische Regel
+    „bei ungerader Kriterienzahl spannt das letzte Kriterium volle Breite" (`.criterion.full`,
+    `grid-column:1/-1`) deckt exakt die geforderten Fälle 1/2/3/4 ab (und verallgemeinert sauber
+    auf 5+): 1 Kriterium = volle Breite, 2 nebeneinander, 3. volle Breite darunter, 4 als 2×2.
+  - **Import/Export der Kriterien als JSON-Datei** (`#opImportBtn`/`#opExportBtn`,
+    `#opImportFile`) — gleiche Struktur wie `formPayload().criteria`, damit eine exportierte Datei
+    ohne Anpassung wieder importierbar ist; Import validiert `field`/`op` je Eintrag, füllt nur das
+    `criteria`-Array (Speichern weiterhin über den bestehenden Speichern-Knopf, kein Auto-Save).
+  Mit Playwright verifiziert: Textarea + Zeilen-Toggle, AND-Hinweis-Sichtbarkeit ab 2 Kriterien,
+  `.full`-Klasse korrekt für 1/2/3/4 Kriterien, Import-Export-Roundtrip (Datei→Kriterien→Datei
+  identisch), echter Speichern-Regressionstest (neue Variante mit Textarea-Beschreibung
+  angelegt, danach wieder gelöscht).
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren

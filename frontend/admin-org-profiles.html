@@ -75,9 +75,19 @@
   .lock-badge { font-size:10px; color:var(--muted); }
   .custom-badge { font-size:10px; color:var(--accent); }
 
-  .criterion { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-bottom:10px;
+  /* Responsives Kriterien-Layout: 1 Kriterium = volle Breite, 2 = nebeneinander, 3. = volle
+     Breite darunter, 4 = sauberes 2x2 -- generische Regel deckt das ab: bei ungerader Anzahl
+     spannt das letzte Kriterium ueber beide Spalten (renderCriteria() setzt .full dafuer). */
+  #criteriaList { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .criterion { border:1px solid var(--line); border-radius:8px; padding:10px 12px;
     background:var(--bg); }
+  .criterion.full { grid-column:1 / -1; }
   .criterion .top { display:flex; justify-content:space-between; align-items:baseline; }
+  .field-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .icon-btn { background:transparent; border:1px solid var(--line); color:var(--muted);
+    border-radius:5px; width:22px; height:22px; line-height:1; cursor:pointer; font-size:12px;
+    padding:0; }
+  .icon-btn:hover { color:var(--fg); border-color:var(--accent); }
   .actions { display:flex; gap:8px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); }
   .badge { font-size:10.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
     border-radius:10px; padding:3px 9px; white-space:nowrap; }
@@ -154,10 +164,21 @@
         <div id="opForm">
           <label for="opName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
           <input id="opName" placeholder="z. B. bukrs-3000" />
-          <label for="opDescription">Beschreibung</label>
-          <input id="opDescription" placeholder="z. B. Buchungskreis 3000" />
+          <div class="field-label-row">
+            <label for="opDescription" style="margin:12px 0 4px">Beschreibung</label>
+            <button type="button" class="icon-btn" id="opDescExpandBtn" title="Vergr&ouml;&szlig;ern/Verkleinern">&#9974;</button>
+          </div>
+          <textarea id="opDescription" rows="2" placeholder="z. B. Buchungskreis 3000"></textarea>
 
-          <h2>Org-Kriterien</h2>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:18px">
+            <h2 style="margin:0">Org-Kriterien</h2>
+            <div>
+              <button class="ghost" id="opImportBtn" type="button" style="width:auto;padding:5px 10px;font-size:12px" title="Kriterien aus einer JSON-Datei laden">Importieren</button>
+              <button class="ghost" id="opExportBtn" type="button" style="width:auto;padding:5px 10px;font-size:12px" title="Kriterien als JSON-Datei sichern">Exportieren</button>
+            </div>
+          </div>
+          <input type="file" id="opImportFile" accept="application/json" style="display:none" />
+          <div class="hint" id="opAndHint" style="display:none;margin-bottom:8px">Mehrere Org-Felder werden immer mit <b>UND</b> verkn&uuml;pft &mdash; der Operator je Kriterium (UND/ODER/Bereich) gilt nur innerhalb des jeweiligen Felds.</div>
           <div id="criteriaList"></div>
           <button class="ghost" id="opAddCriterionBtn" type="button" style="width:100%">+ Kriterium hinzuf&uuml;gen</button>
 
@@ -317,8 +338,9 @@ $('opAddCriterionBtn').onclick = addCriterion;
 
 function renderCriteria() {
   const box = $('criteriaList'); box.innerHTML = '';
+  $('opAndHint').style.display = criteria.length > 1 ? '' : 'none';
   if (!criteria.length) {
-    box.innerHTML = '<div class="hint">Noch kein Kriterium — ohne Kriterium ist die Variante nicht speicherbar.</div>';
+    box.innerHTML = '<div class="hint criterion full" style="border:none;background:none;padding:0">Noch kein Kriterium — ohne Kriterium ist die Variante nicht speicherbar.</div>';
     return;
   }
   criteria.forEach((c, i) => {
@@ -327,7 +349,8 @@ function renderCriteria() {
     const valuesHint = !loaded ? '<div class="hint"><span class="spin"></span> Werte werden geladen…</div>'
       : !vals.length ? '<div class="hint">Keine konkreten Werte für dieses Feld im Dataset gefunden — anderes Feld wählen.</div>' : '';
     const div = document.createElement('div');
-    div.className = 'criterion';
+    // Ungerade Kriterienzahl: das letzte spannt volle Breite (deckt 1/3/5.../… ab, s. CSS-Kommentar).
+    div.className = 'criterion' + (criteria.length % 2 === 1 && i === criteria.length - 1 ? ' full' : '');
     div.innerHTML = `
       <div class="row">
         <div><label>Org-Feld</label><select class="critField" data-i="${i}">
@@ -385,6 +408,54 @@ function renderCriteria() {
 }
 
 ['opDescription'].forEach(id => $(id).addEventListener('input', () => setDirty(true)));
+// "Vergroessern": Beschreibung ist per Default 2-zeilig (analog zum Risikotext-Feld im Query-/
+// SoD-Editor) -- Klick vergroessert auf eine komfortablere Editierhoehe und wieder zurueck.
+let opDescExpanded = false;
+$('opDescExpandBtn').onclick = () => {
+  opDescExpanded = !opDescExpanded;
+  $('opDescription').rows = opDescExpanded ? 6 : 2;
+};
+
+// Import/Export der Org-Kriterien als JSON-Datei (ROADMAP 9.3 "Importformat fuer neue
+// Varianten") -- gleiche Struktur wie formPayload().criteria, damit eine exportierte Datei ohne
+// Anpassung wieder importierbar ist. Rein clientseitig (kein Endpunkt noetig): fuellt nur das
+// criteria-Array, gespeichert wird weiterhin ueber den bestehenden Speichern-Knopf.
+$('opExportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify(criteria.map(c => ({
+    field: c.field, op: c.op,
+    values: c.op === 'RANGE' ? null : (c.values || []),
+    rangeFrom: c.op === 'RANGE' ? c.rangeFrom : null,
+    rangeTo: c.op === 'RANGE' ? c.rangeTo : null,
+  })), null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (selectedName || 'org-kriterien') + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+};
+$('opImportBtn').onclick = () => $('opImportFile').click();
+$('opImportFile').addEventListener('change', async e => {
+  const file = e.target.files[0]; e.target.value = '';
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    if (!Array.isArray(parsed)) throw new Error('Datei muss ein JSON-Array von Kriterien sein.');
+    const imported = [];
+    for (const c of parsed) {
+      if (!c || typeof c.field !== 'string' || !['AND', 'OR', 'RANGE'].includes(c.op)) {
+        throw new Error('Ungültiges Kriterium: ' + JSON.stringify(c));
+      }
+      imported.push({ field: c.field, op: c.op, values: c.values || [],
+                       rangeFrom: c.rangeFrom || '', rangeTo: c.rangeTo || '' });
+    }
+    criteria = imported;
+    setDirty(true);
+    await Promise.all(criteria.map(c => valuesForField(c.field)));
+    renderCriteria();
+    setStatus(`${doneTag} ${criteria.length} Kriterium/Kriterien importiert — noch nicht gespeichert.`);
+  } catch (err) {
+    setStatus('<b>Fehler beim Import:</b> ' + (err.message || String(err)), true);
+  }
+});
 $('opName').addEventListener('input', () => {
   setDirty(true);
   $('opTitle').textContent = $('opName').value.trim() || (isNew ? 'Neue Variante' : '');

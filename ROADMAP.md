@@ -183,15 +183,18 @@ jetzt dran.**
   Gewünscht: boolesche Verschachtelung wie **„(1000 & 2000) OR 3000"** je Feld. Braucht (a) einen
   Ausdrucks-/Baum-Editor in der Varianten-UI und (b) eine rekursive Auswertung im Cypher statt des
   flachen `op`.
-- [ ] **Feldübergreifende Semantik in der UI ausweisen** — *mehrere* Org-Felder (z. B. BUKRS **und**
-  Verkaufsorg) werden mit **UND** verknüpft (bestätigt: `all(obj IN objects …)` in
+- [x] **Feldübergreifende Semantik in der UI ausweisen** (2026-07-16) — *mehrere* Org-Felder (z. B.
+  BUKRS **und** Verkaufsorg) werden mit **UND** verknüpft (bestätigt: `all(obj IN objects …)` in
   `materialize_matches_one.cypher`; die Wahl AND/OR/RANGE gilt nur **innerhalb** eines Feldes).
-  Hinweistext/Badge „alle Felder = UND" ergänzen.
-- [ ] **Beschreibungsfeld 2-zeilig + Vergrößern** — analog zum Risikotext-Feld (Textarea + Expand-Icon).
-- [ ] **Responsive Kriterien-Layout bei der Varianten-Erstellung** — eine Spalte bei einem Kriterium;
-  ab dem Hinzufügen: 2 nebeneinander, das 3. über volle Breite darunter, 4 als 2×2.
-- [ ] **Importformat für neue Varianten** — Org-Kombinationen als Datei ein-/auslesbar statt nur per
-  UI-Eingabe.
+  Hinweistext „alle Felder = UND" im Org-Varianten-Editor ergänzt (nur ab 2 Kriterien sichtbar).
+- [x] **Beschreibungsfeld 2-zeilig + Vergrößern** (2026-07-16) — `#opDescription` im
+  Org-Varianten-Editor jetzt Textarea (2 Zeilen) mit Vergrößern-Knopf.
+- [x] **Responsive Kriterien-Layout bei der Varianten-Erstellung** (2026-07-16) — CSS-Grid (2 Spalten),
+  generische Regel „letztes Kriterium spannt volle Breite bei ungerader Anzahl" deckt 1/3/5…
+  automatisch ab, gerade Anzahlen (2/4/…) füllen sich von selbst sauber.
+- [x] **Importformat für neue Varianten** (2026-07-16) — Kriterien als JSON-Datei export-/importierbar
+  (clientseitig, gleiche Struktur wie beim Speichern; kein neuer Endpunkt nötig) im
+  Org-Varianten-Editor.
 - [ ] **Performance des Varianten-Aufbaus untersuchen** — Ursache: jede Variante ist ein **eigener, voll
   materialisierter Lauf** (MATCHES über alle User × Queries je Variante). Ansätze: gemeinsame
   Kandidaten-Vorfilterung über Varianten hinweg, Wiederverwendung der org-unabhängigen MATCHES-Basis,
