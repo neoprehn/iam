@@ -1029,6 +1029,44 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   `CONTAINS`-Kanten mit korrekter Klasse/Quelle/Ziel). Testartefakt (testweise geänderter
   `riskLevel` bei `1005_BC-SEC`) danach zurückgesetzt.
 
+#### 9.3 „Can-Do nach Org" (2026-07-16)
+- [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
+  bestehenden Org-Varianten-Mechanismus (Entscheidung 2026-07-11: eigener `(:Run)` je Kombination,
+  kein Live-Post-hoc-Filter). Es fehlte nur die **kombinierte Ansicht** über mehrere Varianten
+  eines Batches hinweg — bisher musste man nach einem `POST /runs/batch`-Lauf manuell zwischen den
+  resultierenden Einzelläufen hin- und herschalten.
+  - **`batchId` am Run-Knoten** (neues, explizites Korrelationsfeld): `(:Run)`-Knoten eines Batches
+    hatten bisher keine gemeinsame ID, nur implizit denselben `runId`-Präfix
+    (`{ruleset}-{ts}-{i}-{slug}`). `do_run_batch()` berechnet jetzt einmalig
+    `batch_id = f"{ruleset}-{ts}"` (wiederverwendet die ohnehin vorhandene `ts`-Variable, bleibt
+    auch beim Resume stabil) und reicht sie durch `_run_one()` an
+    `cypher/sod/evaluate_sod_init.cypher` weiter (`SET run.batchId = $batchId`). Einzelläufe
+    (`POST /runs`) übergeben nichts → Property bleibt ungesetzt, kein Migrations-/Backfill-Bedarf
+    für bestehende Runs.
+  - **Neuer Endpunkt `GET /runs/{runId}/org-compare?query=<id>` bzw. `?rule=<id>`** — analog zu
+    `GET /root-cause` (Query ODER Regel als Alternative): löst über `run.batchId` alle
+    Geschwister-Läufe auf und zählt pro Variante die betroffene User-Zahl (Zähllogik 1:1 aus
+    `queries_summary()`/`sod_rules_summary()` übernommen, nur über alle Batch-Runs statt eines
+    einzelnen `runId`, in einer Cypher-Abfrage statt N Einzelrequests). **Stolperstein:** `query`
+    als Cypher-Parametername kollidierte mit dem intern gleichnamigen ersten Positionsparameter
+    von `Session.run()` im Neo4j-Treiber (`TypeError: got multiple values for argument 'query'`) —
+    Parameter auf `queryId` umbenannt.
+  - **UI:** neuer „Org-Vergleich"-Button in der Aktiv-Filter-Leiste (`#filterActive`), sichtbar nur
+    wenn der aktive Lauf zu einem Batch gehört **und** genau eine Query oder Regel als Filter aktiv
+    ist (`applyFilters()`, `hideFilterActive()` blendet ihn konsistent mit aus). Öffnet
+    `dlg-org-compare`: sortierbare Tabelle (Org-Variante · betroffene User · „Treffer anzeigen"),
+    Zeilenklick wechselt den aktiven Lauf (`showFindings()`) und wendet denselben Query-/Regel-Filter
+    dort erneut an (`jumpToOrgVariant()`, analog zu `jumpToQueryFilter()`/`jumpToRuleFilter()`, nur
+    zusätzlich mit Laufwechsel).
+  - Mit einem echten 2-Varianten-Testbatch gegen den laufenden Container verifiziert: `batchId`
+    korrekt geteilt zwischen den Geschwister-Runs, ungesetzt bei bestehenden Alt-Runs;
+    `org-compare`-Zählung deckungsgleich mit einer unabhängigen Gegenprobe über
+    `GET /matches?runId=&query=` je Variante; 404 bei einem Einzellauf ohne `batchId`. Playwright:
+    Button erscheint nur bei Batch-Lauf + Einzelfilter, Dialog zeigt korrekte Zeilenzahl,
+    Zeilenklick wechselt Lauf und Filter korrekt und schließt den Dialog, Gegenprobe (Einzellauf)
+    hält den Button ausgeblendet. Test-Batch (2 Runs) danach über `POST /runs/{runId}/delete`
+    wieder entfernt.
+
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren
   (Ruleset-Editor)" im Admin-Dialog scharfgeschaltet: bearbeitet **Bezeichnung/Kritikalität/

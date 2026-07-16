@@ -522,6 +522,7 @@
       <div id="filterActive">
         <button class="ghost" id="filterBackBtn" style="display:none;margin:0;width:auto;padding:4px 10px">&larr; zur&uuml;ck</button>
         <span class="muted" id="filterActiveText"></span>
+        <button class="ghost" id="orgCompareBtn" style="display:none;margin:0;width:auto;padding:4px 10px" title="Betroffene User dieser Query/Regel je Org-Variante des Batches vergleichen">Org-Vergleich</button>
         <button class="ghost" id="filterActiveClear" style="margin:0;width:auto;padding:4px 10px">zur&uuml;cksetzen</button></div>
       <table id="findingsTable">
         <thead><tr>
@@ -1105,6 +1106,21 @@
   <label for="rmDesc">Beschreibung (optional)</label>
   <textarea id="rmDesc" placeholder="z. B. Zweck der Variante, Abgrenzung zu anderen L&auml;ufen&hellip;"></textarea>
   <button class="primary" id="rmSaveBtn">Speichern</button>
+</div></div>
+
+<!-- Dialog: Org-Vergleich (ROADMAP 9.3, "Can-Do nach Org") -- betroffene User einer Query/SoD-Regel
+     je Org-Varianten-Lauf des Batches, zu dem der aktive Lauf gehoert. -->
+<div class="overlay" id="dlg-org-compare"><div class="dialog" style="width:min(700px,94vw)">
+  <span class="x" data-close>&times;</span><h3 id="ocTitle">Org-Vergleich</h3>
+  <div class="sub" id="ocSub"></div>
+  <table id="ocTable">
+    <thead><tr>
+      <th data-sort-key="title">Org-Variante<span class="sort-ind"></span></th>
+      <th data-sort-key="userCount">Betroffene User<span class="sort-ind"></span></th>
+      <th></th>
+    </tr></thead>
+    <tbody id="ocBody"></tbody>
+  </table>
 </div></div>
 
 <!-- Dialog: Verwalten -->
@@ -2864,7 +2880,7 @@ function renderCausingActors(finding) {
 }
 
 function showFilterActive(text) { $('filterActiveText').textContent = text; $('filterActive').classList.add('show'); }
-function hideFilterActive() { $('filterActive').classList.remove('show'); }
+function hideFilterActive() { $('filterActive').classList.remove('show'); $('orgCompareBtn').style.display = 'none'; }
 
 const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
 const CRIT_RANK = { 'very-critical': 5, critical: 4, high: 3, medium: 2, low: 1 };
@@ -3408,6 +3424,9 @@ async function applyFilters() {
   const u = $('filterUser').value, r = $('filterRule').value, q = $('filterQuery').value;
   const uts = userTypeValues();
   const rc = ruleCritValue;
+  // Org-Vergleich (ROADMAP 9.3) ist nur sinnvoll bei GENAU einer aktiven Query/Regel und wenn der
+  // aktive Lauf zu einem Varianten-Batch gehoert (run.batchId, gesetzt von do_run_batch()).
+  $('orgCompareBtn').style.display = (runsById[activeRunId]?.batchId && ((q && !r) || (r && !q))) ? '' : 'none';
   await updateResultContext(u, r);
   await updateQueryCascade(u);
   renderRuleSelect();
@@ -3874,6 +3893,54 @@ function jumpToRuleFilter(ruleId) {
 $('summaryBackBtn').onclick = () => { $('summaryView').style.display = 'none'; showResultsView(); };
 $('cmdQuerySummary').onclick = () => openSummaryView('query');
 $('cmdSodSummary').onclick = () => openSummaryView('sod');
+
+/* ── Org-Vergleich (ROADMAP 9.3, "Can-Do nach Org"): fuer die aktuell aktive Query ODER Regel
+   (orgCompareBtn nur sichtbar bei genau einer von beiden + Batch-Lauf, s. applyFilters()) die
+   betroffene User-Zahl je Org-Varianten-Geschwisterlauf. Zeilenklick springt in die gefilterte
+   Trefferliste dieser Variante (analog jumpToQueryFilter/jumpToRuleFilter, aber zusaetzlich mit
+   Laufwechsel). */
+let ocRows = [], ocTarget = null;
+function renderOcRows() {
+  $('ocBody').innerHTML = ocRows.map(r =>
+    `<tr><td>${esc(r.title || r.runId)}</td><td>${r.userCount}</td>`
+    + `<td><span class="click" data-run="${esc(r.runId)}" title="In dieser Variante anzeigen">Treffer anzeigen</span></td></tr>`
+  ).join('');
+  $('ocBody').querySelectorAll('[data-run]').forEach(td => {
+    td.onclick = () => jumpToOrgVariant(td.dataset.run, ocTarget.query, ocTarget.rule);
+  });
+}
+const ocSort = makeSortable($('ocTable'), () => ocRows, {
+  title: r => r.title || r.runId,
+  userCount: r => r.userCount,
+}, renderOcRows);
+async function openOrgCompare() {
+  const q = $('filterQuery').value, r = $('filterRule').value;
+  if (!activeRunId || (!q && !r)) return;
+  ocTarget = q ? { query: q } : { rule: r };
+  $('ocTitle').textContent = 'Org-Vergleich: ' + (q ? `Query „${q}"` : `Regel „${r}"`);
+  $('ocSub').textContent = 'lädt…'; ocRows = [];
+  openDlg('dlg-org-compare');
+  try {
+    const url = '/runs/' + encodeURIComponent(activeRunId) + '/org-compare?'
+      + (q ? 'query=' + encodeURIComponent(q) : 'rule=' + encodeURIComponent(r));
+    const res = await api(url);
+    ocRows = res.runs;
+    $('ocSub').textContent = `${ocRows.length} Org-Variante(n) in diesem Batch.`;
+    ocSort.reset();
+    renderOcRows();
+  } catch (err) {
+    $('ocSub').textContent = 'Fehler: ' + (err.detail || JSON.stringify(err));
+  }
+}
+$('orgCompareBtn').onclick = openOrgCompare;
+async function jumpToOrgVariant(runId, query, rule) {
+  closeDlg();
+  _showResultsLayout();
+  await showFindings(runId);
+  if (query) { resultTypeValue = 'query'; renderResultTypePills(); $('filterQuery').value = query; }
+  else { resultTypeValue = 'sod'; renderResultTypePills(); renderRuleSelect(); $('filterRule').value = rule; }
+  applyFilters();
+}
 
 /* ── User-Liste: Ziel jeder anklickbaren "N User"-Kennzahl (Rollen-Detail "Zugewiesene User",
    Konsistenzcheck-KPI). Immer dieselben 6 Spalten, egal ob die IDs aus einer Rolle (GET

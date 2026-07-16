@@ -449,7 +449,8 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
              query_scope: str, query_ids: list[str], evaluate_sod: bool, run_id: str, title: str,
              skip_ruleset_load: bool, skip_materialize: bool,
              skip_explain: bool, step_prefix: str = "", checkpoint_base: dict | None = None,
-             resume_phase: str | None = None, resume_units: list[str] | None = None) -> dict:
+             resume_phase: str | None = None, resume_units: list[str] | None = None,
+             batch_id: str | None = None) -> dict:
     """Ein einzelner Lauf ([ruleset] -> materialize -> evaluate -> [explain] -> Ergebnis-
     Zaehlung). Von do_run() (1 Variante) UND do_run_batch() (mehrere Varianten, gemeinsame
     Session) genutzt — step_prefix erlaubt dem Batch, den Fortschritt je Variante anzuzeigen
@@ -458,7 +459,10 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
     checkpoint_base traegt die dataset-weiten Zusatzfelder wie runId/params/Batch-Kontext).
     resume_phase/resume_units setzen an einem frueheren Abbruch fort: Phasen VOR resume_phase
     gelten als bereits abgeschlossen (werden uebersprungen), resume_phase selbst macht bei den
-    darin bereits erledigten Einheiten weiter, alles danach laeuft frisch."""
+    darin bereits erledigten Einheiten weiter, alles danach laeuft frisch.
+
+    batch_id (nur von do_run_batch() gesetzt, sonst None) gruppiert die Geschwister-Laeufe eines
+    Varianten-Batches auf dem Run-Knoten (s. GET /runs/{runId}/org-compare, ROADMAP 9.3)."""
     utp = next((p for p in cfg["userTypeProfiles"] if p["name"] == user_type_profile), None)
     if not utp:
         raise ValueError(f"userTypeProfile '{user_type_profile}' unbekannt")
@@ -523,6 +527,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                 "queryIds": query_ids,
                 "queryScope": query_scope,
                 "title": title,
+                "batchId": batch_id,
             }
             if not this_phase_resume:
                 # Legt/aktualisiert den (:Run)-Knoten IMMER an (Ergebnis-Views wie /queries/summary
@@ -626,6 +631,9 @@ def do_run_batch(job_id: str, req: RunBatchReq):
             resume_phase, resume_units = None, None
         sleep_days = eff_req.sleepDays if eff_req.sleepDays is not None else int(cfg["sleeping"]["sleepDays"])
         n = len(eff_req.orgProfiles)
+        # Gruppiert die Geschwister-Laeufe dieses Batches auf dem Run-Knoten (s. GET
+        # /runs/{runId}/org-compare) -- wiederverwendet `ts`, bleibt daher auch beim Resume stabil.
+        batch_id = f"{eff_req.ruleset}-{ts}"
         jobs[job_id].update(status="running", step="start", runs=results)
         with driver.session() as s:
             for i, profile_name in enumerate(eff_req.orgProfiles, start=1):
@@ -653,6 +661,7 @@ def do_run_batch(job_id: str, req: RunBatchReq):
                     checkpoint_base=checkpoint_base,
                     resume_phase=resume_phase if i == start_index else None,
                     resume_units=resume_units if i == start_index else None,
+                    batch_id=batch_id,
                 )
                 results.append(result)
                 jobs[job_id]["runs"] = results
@@ -2758,6 +2767,49 @@ def sod_rules_summary(runId: str):
             "MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:$runId}) "
             "RETURN count(DISTINCT u) AS c", ruleset=ruleset, runId=runId).single()["c"]
         return {"totalUsers": total_users, "rows": rows}
+
+
+@app.get("/runs/{runId}/org-compare")
+def run_org_compare(runId: str, query: str | None = None, rule: str | None = None):
+    """'Kombinierte Einzelfilter-/SoD-nach-Org-Ansicht' (ROADMAP 9.3, 'Can-Do nach Org'): fuer
+    EINE Query ODER SoD-Regel (analog zu GET /root-cause, query/rule als Alternative) die
+    betroffene User-Zahl je Org-Varianten-Lauf des Batches, zu dem runId gehoert (s. run.batchId,
+    gesetzt von do_run_batch() -- Einzellaeufe ohne batchId liefern 404, da es dort nichts zu
+    vergleichen gibt). Zaehllogik 1:1 aus queries_summary()/sod_rules_summary() uebernommen, nur
+    ueber alle Batch-Runs statt nur $runId."""
+    if not query and not rule:
+        raise HTTPException(400, "query oder rule angeben")
+    with driver.session() as s:
+        run = s.run("MATCH (r:Run {runId:$id}) RETURN r.ruleset AS ruleset, r.batchId AS batchId",
+                     id=runId).single()
+        if not run:
+            raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
+        if not run["batchId"]:
+            raise HTTPException(404, f"Lauf '{runId}' gehoert zu keinem Varianten-Batch (Einzellauf)")
+        ruleset, batch_id = run["ruleset"], run["batchId"]
+        siblings = {r["runId"]: dict(r) for r in s.run(
+            "MATCH (r:Run {batchId:$batchId, ruleset:$ruleset}) "
+            "RETURN r.runId AS runId, r.title AS title, r.orgMode AS orgMode, r.orgFilters AS orgFilters",
+            batchId=batch_id, ruleset=ruleset)}
+        if query:
+            # 'query' waere hier als Kwarg-Name eine Kollision mit dem ersten Positionsparameter von
+            # Session.run() selbst (der intern ebenfalls 'query' heisst, s. neo4j-Treiber) --
+            # deshalb im Cypher/als Python-Kwarg 'queryId' statt 'query' benannt.
+            counts = s.run(
+                "MATCH (r:Run {batchId:$batchId, ruleset:$ruleset}) "
+                "OPTIONAL MATCH (u:User)-[:MATCHES {ruleset:$ruleset, runId:r.runId}]->(:Query {id:$queryId, ruleset:$ruleset}) "
+                "RETURN r.runId AS runId, count(DISTINCT u) AS c",
+                batchId=batch_id, ruleset=ruleset, queryId=query)
+        else:
+            counts = s.run(
+                "MATCH (r:Run {batchId:$batchId, ruleset:$ruleset}) "
+                "OPTIONAL MATCH (u:User)-[:VIOLATES]->(:SoDConflict {ruleset:$ruleset, runId:r.runId, ruleId:$rule}) "
+                "RETURN r.runId AS runId, count(DISTINCT u) AS c",
+                batchId=batch_id, ruleset=ruleset, rule=rule)
+        for c in counts:
+            siblings[c["runId"]]["userCount"] = c["c"]
+        rows = sorted(siblings.values(), key=lambda r: r["userCount"], reverse=True)
+        return {"batchId": batch_id, "queryId": query, "ruleId": rule, "runs": rows}
 
 
 _USER_TYP_STATUS_CYPHER = (

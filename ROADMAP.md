@@ -169,12 +169,15 @@ jetzt dran.**
   [Archiv](ROADMAP-ARCHIV.md#92-fancy-cytoscapejs-frontend--neodash-ablösung-komplett-2026-07-16).
 
 #### 9.3 Org-Varianten & „Can-Do nach Org" — Ausbau, UX, Performance  ← als Nächstes
-- [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten"): „wer kann *Funktion* in *Buchungskreis
-  X*" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…. **Entschieden (2026-07-11):** über den
-  bestehenden Org-Varianten-Mechanismus (eigener `(:Run)` je Kombination), **kein** Live-Post-hoc-Filter
-  (die `MATCHES`-Kante ist rein boolesch; Nachfiltern müsste die `$orgMode`/`$orgFilters`-Logik aus
-  `materialize_matches_one.cypher` als Live-Query nachbauen — kein echter Vorteil). Fehlt nur die
-  kombinierte Einzelfilter-nach-Org-Ansicht.
+- [x] **„Can-Do nach Org"** (2026-07-16, Rest von „Zwei Auswertungsarten"): „wer kann *Funktion* in
+  *Buchungskreis X*" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…. **Entschieden
+  (2026-07-11):** über den bestehenden Org-Varianten-Mechanismus (eigener `(:Run)` je Kombination),
+  **kein** Live-Post-hoc-Filter. Umgesetzt: neues `batchId`-Feld am Run-Knoten gruppiert die
+  Geschwister-Läufe eines Varianten-Batches (`POST /runs/batch`); neuer Endpunkt
+  `GET /runs/{runId}/org-compare?query=|rule=` liefert die betroffene User-Zahl je Org-Variante;
+  „Org-Vergleich"-Button in der Aktiv-Filter-Leiste (nur bei Batch-Lauf + genau einer aktiven
+  Query/Regel sichtbar) öffnet einen sortierbaren Vergleichsdialog mit Sprung in die gefilterte
+  Trefferliste der gewählten Variante. [Archiv](ROADMAP-ARCHIV.md#93-can-do-nach-org-2026-07-16).
 - [ ] **Verschachtelte Org-Abfragen** — heute je Org-Feld genau **ein** Operator (`AND`/`OR`/`RANGE`)
   über eine flache Werteliste (`materialize_matches_one.cypher`, `$orgFilters[feld].op/.values`).
   Gewünscht: boolesche Verschachtelung wie **„(1000 & 2000) OR 3000"** je Feld. Braucht (a) einen

@@ -2,7 +2,7 @@
 // waeren bereits fertig ausgewertete Regeln wieder weg): Constraints, alte Findings dieses
 // Laufs loeschen, Run-Knoten mit dem Scope des Laufs anlegen/aktualisieren.
 // Parameter: $ruleset, $dataset, $runId, $title, $asOf, $userTypes, $excludeLocked, $sleepDays,
-//            $minCriticalityRank, $orgMode, $orgFilters, $queryScope, $queryIds, $sodRules.
+//            $minCriticalityRank, $orgMode, $orgFilters, $queryScope, $queryIds, $sodRules, $batchId.
 CREATE CONSTRAINT sodconflict_key IF NOT EXISTS FOR (f:SoDConflict) REQUIRE f.key IS UNIQUE;
 CREATE CONSTRAINT run_key IF NOT EXISTS FOR (r:Run) REQUIRE r.key IS UNIQUE;
 
@@ -20,10 +20,13 @@ WITH ds
 // u. a. von GET /queries, GET /sodrules und GET /queries/summary gelesen, um die
 // Einzelfilter-/SoD-Auswahl (Sidebar-Filter + Uebersicht) auf genau das zu beschraenken, was in
 // DIESEM Lauf tatsaechlich materialisiert/ausgewertet wurde (Katalog-Auswahl-Scope, s. ROADMAP).
+// batchId gruppiert die Geschwister-Laeufe eines Varianten-Batches (POST /runs/batch, s.
+// GET /runs/{runId}/org-compare) -- bei Einzellaeufen bleibt $batchId null, die Property wird
+// dann nicht gesetzt (kein Migrations-/Backfill-Bedarf fuer bestehende Runs).
 MERGE (run:Run {key: $ruleset + '|' + $dataset + '|' + $runId})
   SET run.runId = $runId, run.title = $title, run.ruleset = $ruleset, run.dataset = $dataset, run.asOf = $asOf,
       run.userTypes = $userTypes, run.excludeLocked = $excludeLocked, run.sleepDays = $sleepDays,
       run.minCriticalityRank = $minCriticalityRank, run.generatedAt = datetime(),
       run.orgMode = $orgMode, run.orgFilters = apoc.convert.toJson($orgFilters),
       run.queryScope = $queryScope, run.queryIds = $queryIds, run.sodRules = $sodRules,
-      run.datasetUid = ds.uid;
+      run.datasetUid = ds.uid, run.batchId = $batchId;
