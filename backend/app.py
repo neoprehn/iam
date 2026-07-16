@@ -2239,13 +2239,22 @@ def admin_update_query(ruleset: str, queryId: str, req: QueryEditReq):
     landen als Overlay-Eintrag in queries.custom.json, die vier Risiko-Felder (riskType/riskLevel/
     riskStatus/risk) dagegen direkt in risks.json (Nutzerentscheid 2026-07-15: getrennte Dateien,
     auch beim Speichern -- nicht nur bei der Erstbefuellung, s. _save_ruleset_risk). Vendor-Dateien
-    bleiben unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt)."""
+    bleiben unberuehrt. Ladet das Ruleset danach sofort neu (Edit wirkt ohne extra Schritt).
+
+    Der Editor sendet bei jedem Speichern IMMER den kompletten Formularschnappschuss, nicht nur
+    das geaenderte Feld (frontend/index.html formFields()) -- deshalb hier gegen den aktuell
+    gemergten Wert vergleichen und nur tatsaechlich GEAENDERTE Filterset-Felder ins Overlay
+    schreiben (Nutzerfund 2026-07-16: sonst haette z. B. ein reiner Risiko-Edit unveraenderte
+    Felder wie criticality/description explizit ins Overlay eingefroren -- eine spaetere
+    Vendor-Korrektur an diesen Feldern waere dann durch den unbeabsichtigten Overlay-Eintrag
+    verdeckt geblieben)."""
     merged, _ = _merged_queries(ruleset)
     if queryId not in merged:
         raise HTTPException(404, f"Query '{queryId}' nicht gefunden")
+    current = merged[queryId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
-    filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS}
+    filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS and current.get(k) != v}
     if filterset_fields:
         custom_path = ensure_custom_queries_file(ruleset)
         custom = _load_json_list(custom_path)
@@ -2424,13 +2433,17 @@ def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
     """Bearbeitet Metadaten einer SoD-Regel. Filterset-Felder (Kurzbezeichnung/Kritikalitaet/...)
     landen als Overlay-Eintrag in sod_rules.custom.json, die vier Risiko-Felder (riskType/
     riskLevel/riskStatus/risk) dagegen direkt in risks.json (analog zu admin_update_query, s.
-    _save_ruleset_risk). Vendor-Datei bleibt unberuehrt. Ladet das Ruleset danach sofort neu."""
+    _save_ruleset_risk). Vendor-Datei bleibt unberuehrt. Ladet das Ruleset danach sofort neu.
+
+    Nur tatsaechlich geaenderte Filterset-Felder landen im Overlay (analog zu admin_update_query,
+    s. dortige Begruendung) -- der Editor sendet immer den vollen Formularschnappschuss."""
     merged, _ = _merged_sodrules(ruleset)
     if ruleId not in merged:
         raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
+    current = merged[ruleId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
-    filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS}
+    filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS and current.get(k) != v}
     if filterset_fields:
         custom_path = ensure_custom_sodrules_file(ruleset)
         custom = _load_json_list(custom_path)
