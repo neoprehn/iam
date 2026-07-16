@@ -4292,6 +4292,33 @@ async function restoreRunBackup(file, force) {
 
 async function refreshAll() {
   await refreshDatasets(); await loadRuns(); await loadImportFolders(); await loadBackups(); await loadRunBackups();
+  await refreshActiveRunView();
+}
+/* "Aktualisieren" (cmdRefresh) rief bisher nur refreshAll() ohne sichtbaren Effekt auf die gerade
+   angezeigte Ergebnis-Tabelle -- loadRuns() aktualisiert nur die Lauf-Karten in der Sidebar
+   (Findings-/Regel-/Sleeping-Zaehler), die eigentliche Findings-/Matches-Tabelle blieb der
+   zwischengespeicherte Stand von allFindingsForRun (Nutzerfund: "scheinbar keine Funktion").
+   Fix: die Rohdaten des aktiven Laufs neu laden, aber -- anders als showFindings() -- OHNE die
+   Filterauswahl zurueckzusetzen, danach applyFilters() erneut anwenden. */
+async function refreshActiveRunView() {
+  if (!activeRunId) return;
+  // Wie populateFilterSelects(), aber die User-Auswahl BLEIBT erhalten (sonst wuerde renderRuleSelect()
+  // intern mit der schon zurueckgesetzten Auswahl kaskadieren, bevor wir sie wiederherstellen koennten).
+  const curUser = $('filterUser').value;
+  const [freshFindings] = await Promise.all([
+    api('/findings?runId=' + encodeURIComponent(activeRunId) + '&limit=500'),
+    loadSodRuleNames(activeRunId),
+  ]);
+  allFindingsForRun = freshFindings;
+  rulesCache = [...new Map(allFindingsForRun.map(f => [f.rule, f.criticality])).entries()]
+    .map(([rule, criticality]) => ({ rule, criticality }));
+  const users = [...new Set(allFindingsForRun.map(f => f.user))].sort();
+  const su = $('filterUser'); su.innerHTML = '<option value="">&ndash; alle &ndash;</option>';
+  users.forEach(u => opt(su, u, u));
+  if (users.includes(curUser)) su.value = curUser;
+  renderRuleSelect();
+  await loadQueriesForRun(activeRunId);
+  await applyFilters();
 }
 
 /* Job-Lauf mit globaler Statusanzeige */
