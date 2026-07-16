@@ -229,27 +229,27 @@
         </h2>
         <div id="tab-meta">
           <label for="amShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
-          <input id="amShortDescription" />
+          <input id="amShortDescription" disabled />
           <label for="amDescription">Langbezeichnung</label>
-          <input id="amDescription" />
+          <input id="amDescription" disabled />
           <div class="row">
             <div><label for="amCriticality">Kritikalit&auml;t</label>
-              <select id="amCriticality">
+              <select id="amCriticality" disabled>
                 <option value="">&ndash;</option>
                 <option value="very-critical">very critical</option><option value="critical">critical</option>
                 <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="amDatenschutz">Datenschutz</label>
-              <select id="amDatenschutz">
+              <select id="amDatenschutz" disabled>
                 <option value="">&ndash;</option>
                 <option value="very-critical">very critical</option><option value="critical">critical</option>
                 <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
-            <div><label for="amModule">Modul</label><input id="amModule" /></div>
+            <div><label for="amModule">Modul</label><input id="amModule" disabled /></div>
           </div>
           <label for="amQueryType">Query-Typ</label>
-          <input id="amQueryType" />
-          <div class="check"><input type="checkbox" id="amDisregardTcode" />
+          <input id="amQueryType" disabled />
+          <div class="check"><input type="checkbox" id="amDisregardTcode" disabled />
             <label for="amDisregardTcode">TCode ignorieren (disregardTcode)</label></div>
         </div>
 
@@ -270,20 +270,20 @@
         <div class="tabpanel" id="tab-risiko" hidden>
           <div class="row">
             <div><label for="amRiskType">Risikoart</label>
-              <select id="amRiskType">
+              <select id="amRiskType" disabled>
                 <option value="">&ndash;</option>
                 <option value="Detection risk">Detection risk</option>
                 <option value="Inherent risk">Inherent risk</option>
                 <option value="Internal control risk">Internal control risk</option>
               </select></div>
             <div><label for="amRiskLevel">Risikostufe</label>
-              <select id="amRiskLevel">
+              <select id="amRiskLevel" disabled>
                 <option value="">&ndash;</option>
                 <option value="very-critical">very critical</option><option value="critical">critical</option>
                 <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="amRiskStatus">Status</label>
-              <select id="amRiskStatus">
+              <select id="amRiskStatus" disabled>
                 <option value="">&ndash;</option>
                 <option value="Not assessed">Not assessed</option>
                 <option value="Not mitigated">Not mitigated</option>
@@ -292,15 +292,16 @@
               </select></div>
           </div>
           <label for="amRisk" style="margin-top:14px">Potenzielles Risiko</label>
-          <textarea id="amRisk" placeholder="Beschreibung des Risikos&hellip;"></textarea>
+          <textarea id="amRisk" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
         </div>
 
         <div class="tabpanel" id="tab-controls" hidden>
           <label for="amControls">Mitigierende Ma&szlig;nahmen</label>
-          <textarea id="amControls" placeholder="Beschreibung der Controls&hellip;"></textarea>
+          <textarea id="amControls" placeholder="Beschreibung der Controls&hellip;" disabled></textarea>
         </div>
 
         <div class="actions">
+          <button class="ghost" id="amEditBtn">Bearbeiten</button>
           <button class="primary" id="amSaveBtn" disabled>Speichern</button>
           <button class="ghost" id="amCancelBtn" disabled>Abbrechen</button>
         </div>
@@ -314,12 +315,12 @@
         </h2>
         <div id="tab-srmeta">
           <label for="srShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
-          <input id="srShortDescription" />
+          <input id="srShortDescription" disabled />
           <label for="srDescription">Langbezeichnung</label>
-          <input id="srDescription" />
+          <input id="srDescription" disabled />
           <div class="row">
             <div><label for="srCriticality">Kritikalit&auml;t</label>
-              <select id="srCriticality">
+              <select id="srCriticality" disabled>
                 <option value="">&ndash;</option>
                 <option value="very-critical">very critical</option><option value="critical">critical</option>
                 <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
@@ -343,20 +344,20 @@
         <div class="tabpanel" id="tab-srrisiko" hidden>
           <div class="row">
             <div><label for="srRiskType">Risikoart</label>
-              <select id="srRiskType">
+              <select id="srRiskType" disabled>
                 <option value="">&ndash;</option>
                 <option value="Detection risk">Detection risk</option>
                 <option value="Inherent risk">Inherent risk</option>
                 <option value="Internal control risk">Internal control risk</option>
               </select></div>
             <div><label for="srRiskLevel">Risikostufe</label>
-              <select id="srRiskLevel">
+              <select id="srRiskLevel" disabled>
                 <option value="">&ndash;</option>
                 <option value="very-critical">very critical</option><option value="critical">critical</option>
                 <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="srRiskStatus">Status</label>
-              <select id="srRiskStatus">
+              <select id="srRiskStatus" disabled>
                 <option value="">&ndash;</option>
                 <option value="Not assessed">Not assessed</option>
                 <option value="Not mitigated">Not mitigated</option>
@@ -365,15 +366,16 @@
               </select></div>
           </div>
           <label for="srRisk" style="margin-top:14px">Potenzielles Risiko</label>
-          <textarea id="srRisk" placeholder="Beschreibung des Risikos&hellip;"></textarea>
+          <textarea id="srRisk" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
         </div>
 
         <div class="tabpanel" id="tab-srcontrols" hidden>
           <label for="srControls">Mitigierende Ma&szlig;nahmen</label>
-          <textarea id="srControls" placeholder="Beschreibung der Controls&hellip;"></textarea>
+          <textarea id="srControls" placeholder="Beschreibung der Controls&hellip;" disabled></textarea>
         </div>
 
         <div class="actions">
+          <button class="ghost" id="srEditBtn">Bearbeiten</button>
           <button class="primary" id="srSaveBtn" disabled>Speichern</button>
           <button class="ghost" id="srCancelBtn" disabled>Abbrechen</button>
         </div>
@@ -401,9 +403,26 @@ function setStatus(html, isErr) {
   const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
 }
 
-let queries = [], selectedId = null, dirty = false;
+let queries = [], selectedId = null, dirty = false, editMode = false;
 let sodRules = [], selectedSodId = null;
 let mode = 'query';
+// Formular ist per Default read-only (disabled, s. HTML) -- verhindert versehentliches "dirty"
+// setzen durch bloszes Anschauen; "Bearbeiten" schaltet erst explizit frei (Nutzerfeedback:
+// staendiges "Ungespeicherte Aenderungen verwerfen?" beim Durchklicken war verwirrend).
+const QUERY_EDIT_FIELDS = ['amShortDescription', 'amDescription', 'amCriticality', 'amDatenschutz',
+  'amModule', 'amQueryType', 'amDisregardTcode', 'amRiskType', 'amRiskLevel', 'amRiskStatus',
+  'amRisk', 'amControls'];
+const SOD_EDIT_FIELDS = ['srShortDescription', 'srDescription', 'srCriticality', 'srRiskType',
+  'srRiskLevel', 'srRiskStatus', 'srRisk', 'srControls'];
+function setEditMode(v) {
+  editMode = v;
+  QUERY_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
+  SOD_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
+  $('amEditBtn').style.display = v ? 'none' : '';
+  $('srEditBtn').style.display = v ? 'none' : '';
+  $('amCancelBtn').disabled = !v; $('srCancelBtn').disabled = !v; $('cmdCancel').disabled = !v;
+  if (!v) setDirty(false);
+}
 function isQueryMode() { return mode === 'query'; }
 
 async function loadRulesets() {
@@ -533,7 +552,7 @@ async function selectQuery(id) {
   $('amRisk').value = q.risk || '';
   $('amControls').value = q.controls || '';
   renderAufbau(q);
-  setDirty(false);
+  setEditMode(false);
 }
 
 function renderAufbau(q) {
@@ -597,7 +616,7 @@ async function selectSodRule(id) {
   $('srRisk').value = r.risk || '';
   $('srControls').value = r.controls || '';
   renderSodAufbau(r);
-  setDirty(false);
+  setEditMode(false);
 }
 
 /* Query-Bezeichnung fuer die Klausel-/Variablen-Anzeige — nutzt die bereits geladene Query-Liste
@@ -661,9 +680,7 @@ async function saveSodCurrent() {
 function setDirty(v) {
   dirty = v;
   $('amDirtyChip').style.display = v ? '' : 'none';
-  $('amSaveBtn').disabled = !v; $('amCancelBtn').disabled = !v;
-  $('srSaveBtn').disabled = !v; $('srCancelBtn').disabled = !v;
-  $('cmdSave').disabled = !v; $('cmdCancel').disabled = !v;
+  $('amSaveBtn').disabled = !v; $('srSaveBtn').disabled = !v; $('cmdSave').disabled = !v;
 }
 ['amShortDescription', 'amDescription', 'amModule', 'amQueryType', 'amRisk', 'amControls']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
@@ -707,6 +724,8 @@ async function saveQueryCurrent() {
    oder SoD) — nur einer der beiden Detail-Bereiche ist je sichtbar/editierbar. */
 function saveCurrent() { return isQueryMode() ? saveQueryCurrent() : saveSodCurrent(); }
 function cancelCurrent() { return isQueryMode() ? selectQuery(selectedId) : selectSodRule(selectedSodId); }
+$('amEditBtn').onclick = () => setEditMode(true);
+$('srEditBtn').onclick = () => setEditMode(true);
 $('amSaveBtn').onclick = saveCurrent;
 $('srSaveBtn').onclick = saveCurrent;
 $('cmdSave').onclick = saveCurrent;
