@@ -35,13 +35,13 @@ Die Oberfläche ist als **Ribbon-Bar** genau nach diesem Ablauf gegliedert:
 ## Starten
 
 ```bash
-docker compose up -d --build      # Neo4j + Backend (+ NeoDash) starten
+docker compose up -d --build      # Neo4j + Backend starten
 docker compose run --rm migrations  # Schema einmalig anlegen (idempotent)
 # Browser öffnen: http://localhost:8000/
 ```
 
 Beim ersten Start werden die Images gezogen und das Backend gebaut. Danach ist die App unter
-Port **8000** erreichbar; der Neo4j-Browser liegt auf **7474**, NeoDash (Showcase) auf **5005**.
+Port **8000** erreichbar; der Neo4j-Browser liegt auf **7474**.
 
 ## Begriffe in Kürze
 

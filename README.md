@@ -33,7 +33,7 @@ docker compose run --rm migrations
 
 # 5. App öffnen
 #    Web-App (Import/Auswertung/Ergebnisse/Sichern/Verwalten) : http://localhost:8000/
-#    Neo4j Browser : http://localhost:7474   ·   NeoDash : http://localhost:5005
+#    Neo4j Browser : http://localhost:7474
 ```
 
 ## Bedienung über die App (empfohlen)
@@ -53,7 +53,7 @@ verlassen die Umgebung nie. Die alternativen Host-Runner `run/run_import.ps1` /
 
 ```
 iam/
-├─ docker-compose.yml   # neo4j + neodash + backend (+ migrations als tools-Profil), gepinnt, APOC
+├─ docker-compose.yml   # neo4j + backend (+ migrations als tools-Profil), gepinnt, APOC
 ├─ docker/              # Dockerfile(s), z. B. neo4j-migrations-CLI (gepinnt)
 ├─ backend/            # FastAPI-App (app.py) + SE16-Konverter (convert.py), Dockerfile
 ├─ frontend/           # statische Ribbon-UI (index.html), vom Backend ausgeliefert
@@ -66,7 +66,6 @@ iam/
 │  ├─ sod/             # SoD-Materialisierung + Auswertung
 │  ├─ ruleset/        # Ruleset-Loader (JSON → Graph)
 │  └─ admin/           # clear_dataset / reset_data
-├─ dashboards/         # NeoDash-Export (JSON, PoC)
 ├─ run/                # run_import.ps1 / run_evaluate.ps1 (Host-Runner)
 ├─ docs/               # Sphinx/MyST: Phasen, Datenmodell, Extraktionsleitfaden
 │  └─ legacy/          # Alte Importskripte (Referenz)
@@ -77,7 +76,7 @@ iam/
 ## Anforderungen
 
 - Docker Desktop mit WSL2-Backend (Windows)
-- Neo4j Community + NeoDash + APOC laufen als Container (gepinnte Versionen, siehe
+- Neo4j Community + APOC laufen als Container (gepinnte Versionen, siehe
   `docker-compose.yml`)
 
 ## Legacy

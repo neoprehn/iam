@@ -953,12 +953,47 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   wieder her (Filter-Historie als Stack, Schnappschuss vor jedem Sprung; erkennt auch die
   Übersichts-Sicht als Ursprung). Erledigt 2026-07-12.
 
-> **Farblegende + Vollbild-Bedienung der Graphen** sind nach **9.2** verschoben (2026-07-12) — beides
-> hängt am Cytoscape-Frontend, keine sinnvolle Zwischenlösung auf der heutigen Root-Cause-Graphseite.
-> Für den listenweiten Baum-Graph (s. o.) inzwischen erledigt (2026-07-15); **Pfad-/Radial-Root-Cause
-> bleiben offen** (Farblegende + überarbeitete Vollbild-Bedienung dort weiterhin Teil von 9.2).
 > **Kritikalität prominent an Einzelfilter/SoD** ist nach **9.4** verschoben (2026-07-12) — Farben/
 > Stufen kommen aus den dortigen Kritikalitäts-Stammdaten, vorher wäre die Badge-Logik hartkodiert.
+
+#### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung (komplett, 2026-07-16)
+- [x] **Gebrandetes Cytoscape.js-Frontend mit Konfliktpfad-Graph** — bereits über die Root-Cause-Seite
+  (Tabelle/Pfadgraph/Radial, `rcViewPills`) und die 9.1-Baumvollansicht abgedeckt (KPI-Kacheln,
+  Konfliktpfad-Darstellung inkl. `VIA_ROLE`/`VIA_PROFILE`-Evidenzkanten, Drill-down per Knotenklick)
+  — löst den NeoDash-PoC (`dashboards/sod_poc.json`) vollständig ab, kein separater Baustein mehr
+  nötig.
+- [x] **Farblegende in allen Graphansichten (komplett)** — Pfad-/Radial-Ansicht der Root-Cause-Seite
+  ergänzt (`rcRenderLegend()`/`#rcLegend`, neun Einträge: User/SoD-Regel/Klausel/Einzelfilter/
+  Berechtigungsobjekt/Rolle/Profil sowie die beiden Rand-Modifier „technisch generiert" (gestrichelt)
+  und „verwaist" (roter Rand) — deckungsgleich mit den Cytoscape-Knotenklassen aus `rcCyStyle()`.
+  Farbzuordnung aus der bestehenden Baum-Vollansichts-Legende in eine gemeinsame `graphNodeColor()`
+  ausgelagert (ein Source of Truth für Legende **und** tatsächliche Knotenfarbe). Nur sichtbar im
+  Graph-Modus (mit Tabelle/Pfadgraph/Radial-Umschalter synchronisiert).
+- [x] **Vollbild-Bedienung der Graphen überarbeitet** — der bisherige Vollbild-Knopf schwebte
+  absolut positioniert **über** dem Graph-Canvas (`.rc-graph-fsbtn`, verdeckte teils den Inhalt);
+  jetzt ein Toggle-Button (`.pill.graph-fsbtn`, aktiver Zustand optisch hervorgehoben) fest in der
+  Ansichts-Leiste (`resultbar`/Pillgroup-Zeile) für alle drei Graphansichten — Root-Cause
+  (`rcFullscreenBtn`), Baum-Vollansicht (`ftfvFullscreenBtn`, neben dem Dialogtitel) und
+  Konsistenzcheck-Graph (`ccdGraphFullscreen`, neben dem Tabelle/Graph-Umschalter). ESC zum
+  Verlassen war über die native Fullscreen-API schon immer vorhanden (Browser-Standardverhalten),
+  neu ist nur die Platzierung/das Toggle-Feedback. Die kleineren „Einpassen"/Zoom-Regler bleiben
+  bewusst am Canvas-Rand (kein Nutzer-Feedback dazu, anders als beim Vollbild-Knopf).
+- [x] **NeoDash vollständig entfernt** — Compose-Service `iam-neodash` (Port 5005) samt laufendem
+  Container gestoppt/entfernt, `dashboards/sod_poc.json` gelöscht (Git-Historie bleibt als Referenz),
+  Erwähnungen in `README.md`/`docs/handbuch/ueberblick.md`/`docs/technik/architektur.md`
+  (Laufzeitdiagramm) sowie in `docs/phasen/phase-9.md` bereinigt bzw. auf den heutigen Stand
+  aktualisiert; historische Phasendoku (`docs/phasen/phase-0.md`, `phase-3.md`, Phase 6 im Archiv)
+  bewusst **unverändert** gelassen — dokumentiert den damaligen Bau-Stand, wird wie die
+  Git-Historie nicht rückwirkend umgeschrieben. `AE-14`-Pin-Hinweis auf Neo4j/APOC reduziert
+  (NeoDash-Image-Tag entfällt).
+  Mit Playwright gegen den laufenden Container verifiziert: Legende zeigt in Pfad- **und**
+  Radial-Ansicht alle 9 Einträge mit den erwarteten Beschriftungen; Vollbild-/Legende-Sichtbarkeit
+  korrekt an Tabellen- vs. Graph-Modus gekoppelt (`display:none` im Tabellenmodus); Vollbild-Klick
+  setzt `document.fullscreenElement` + `.active`-Klasse korrekt (und wieder zurück beim Verlassen);
+  Konsistenzcheck-Graph-Toggle strukturell identisch geprüft (Button-Sichtbarkeit/Position wechselt
+  korrekt mit dem Tabelle/Graph-Pill); Port 5005 nicht mehr erreichbar, kein `iam-neodash`-Container
+  mehr vorhanden, App (`iam-backend`/`iam-neo4j`) läuft unverändert weiter, keine neuen
+  Konsolenfehler.
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren

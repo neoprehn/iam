@@ -258,12 +258,15 @@
   .ft-fv-graph-box { height:50vh; min-height:340px; position:relative; }
   .ft-legend-chip { display:inline-flex; align-items:center; gap:6px; }
   .ft-legend-swatch { display:inline-block; width:11px; height:11px; border-radius:3px; }
+  .ft-legend-swatch.dashed { background:transparent; border:2px dashed var(--muted); }
+  .ft-legend-swatch.orphaned { background:transparent; border:2px solid var(--crit); }
   /* Vertikaler Zoom-Slider am rechten Graph-Rand (schnelles Rein-/Rauszoomen) */
   #rcZoom { position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:5;
     writing-mode:vertical-lr; direction:rtl; -webkit-appearance:slider-vertical; appearance:slider-vertical;
     width:22px; height:190px; cursor:pointer; accent-color:var(--accent); }
-  .rc-graph-fsbtn { position:absolute; left:12px; top:12px; z-index:5; width:auto;
-    padding:5px 10px; font-size:12px; }
+  /* Vollbild-Toggle sitzt in der Ansichts-Leiste (resultbar/pillgroup), nicht mehr schwebend auf
+     dem Graph-Canvas (Nutzer-Feedback aus 9.1: vorheriger schwebender Knopf war ungeeignet). */
+  .graph-fsbtn.active { color:var(--fg); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 15%, transparent); }
   #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
   #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
@@ -580,11 +583,12 @@
           <button type="button" class="pill active" data-value="hits" title="Nur die zur Anforderung passenden (grünen) Werte zeigen — hilfreich bei Rollen mit sehr vielen TCodes/Werten">nur Treffer</button>
         </div>
         <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px">Einpassen</button>
+        <button type="button" class="pill graph-fsbtn" id="rcFullscreenBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px" title="Vollbild an-/ausschalten (ESC zum Verlassen)">&#9974; Vollbild</button>
       </div>
+      <div id="rcLegend" style="display:none;margin:0 0 10px;flex-wrap:wrap;gap:14px"></div>
       <div id="rcObjects"></div>
       <div id="rcGraphWrap" style="display:none;position:relative">
         <div id="rcGraph" class="rc-graph-box" style="border:1px solid var(--line);border-radius:8px;background:var(--panel)"></div>
-        <button class="ghost rc-graph-fsbtn" id="rcFullscreenBtn" title="Vollbild">&#9974; Vollbild</button>
         <input type="range" id="rcZoom" min="0" max="100" value="50" title="Zoom" />
       </div>
     </div>
@@ -707,6 +711,7 @@
               <button type="button" class="pill active" data-value="table">Tabelle</button>
               <button type="button" class="pill" data-value="graph" disabled title="nur f&uuml;r Checks mit Graph-Ansicht">Graph</button>
             </div>
+            <button type="button" class="pill graph-fsbtn" id="ccdGraphFullscreen" style="display:none;width:auto;padding:4px 10px;font-size:12px" title="Vollbild an-/ausschalten (ESC zum Verlassen)">&#9974; Vollbild</button>
           </div>
           <div id="ccdNoResultYet" class="muted">Noch keine Ausf&uuml;hrung &mdash; links Dataset w&auml;hlen und „Ausf&uuml;hren" klicken.</div>
           <div id="ccdResult" style="display:none; max-height:480px; overflow:auto">
@@ -714,10 +719,7 @@
           </div>
           <div id="ccdGraphWrap" style="display:none; position:relative">
             <div id="ccdGraph" class="ccd-graph-box" style="border:1px solid var(--line); border-radius:8px"></div>
-            <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px; z-index:5">
-              <button type="button" class="pill" id="ccdGraphFit" title="Einpassen / Zoom zur&uuml;cksetzen">Einpassen</button>
-              <button type="button" class="pill" id="ccdGraphFullscreen" title="Vollbild">Vollbild</button>
-            </div>
+            <button type="button" class="pill" id="ccdGraphFit" style="position:absolute; top:8px; right:8px; z-index:5" title="Einpassen / Zoom zur&uuml;cksetzen">Einpassen</button>
           </div>
         </div>
       </div>
@@ -1177,12 +1179,15 @@
 
 <!-- Dialog: Vollansicht (Cytoscape-Graph fuer den aktuell aufgeklappten Baum-Pfad) -->
 <div class="overlay" id="dlg-tree-fullview"><div class="dialog" style="width:min(900px,94vw)">
-  <span class="x" data-close>&times;</span><h3>Vollansicht</h3>
+  <span class="x" data-close>&times;</span>
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <h3 style="margin:0">Vollansicht</h3>
+    <button type="button" class="pill graph-fsbtn" id="ftfvFullscreenBtn" style="width:auto;padding:4px 10px;font-size:12px" title="Vollbild an-/ausschalten (ESC zum Verlassen)">&#9974; Vollbild</button>
+  </div>
   <div class="sub" id="ftfvSub">Regel/Query &rarr; User &rarr; belegende Rolle(n)/Profil(e) &mdash; nur der aktuell aufgeklappte Pfad.</div>
   <div id="ftfvGraphWrap" class="ft-fv-graph-box">
     <div id="ftfvGraph" style="width:100%;height:100%"></div>
     <input type="range" id="ftfvZoom" min="0" max="100" value="50" title="Zoom">
-    <button type="button" class="ghost rc-graph-fsbtn" id="ftfvFullscreenBtn">&#9974; Vollbild</button>
   </div>
   <div id="ftfvLegend" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:14px"></div>
 </div></div>
@@ -1895,6 +1900,7 @@ $('ccdViewTogglePills').querySelectorAll('.pill').forEach(b => b.addEventListene
   if (b.disabled || b.classList.contains('active')) return;
   ccdViewMode = b.dataset.value;
   $('ccdViewTogglePills').querySelectorAll('.pill').forEach(x => x.classList.toggle('active', x === b));
+  $('ccdGraphFullscreen').style.display = ccdViewMode === 'graph' ? '' : 'none';
   if (ccdViewMode === 'graph') { loadConsistencyGraph(); }
   else { ccdDestroyGraph(); $('ccdGraphWrap').style.display = 'none'; $('ccdResult').style.display = ''; }
 }));
@@ -1910,6 +1916,7 @@ $('ccdGraphFullscreen').addEventListener('click', () => {
   }
 });
 document.addEventListener('fullscreenchange', () => {
+  $('ccdGraphFullscreen').classList.toggle('active', document.fullscreenElement === $('ccdGraphWrap'));
   if (!ccdCyInstance) return;
   // Doppelter rAF: die CSS-Hoehenaenderung (#ccdGraphWrap:fullscreen #ccdGraph) muss erst
   // gerendert sein, bevor resize()/fit() die neue Containergroesse messen -- sonst bleibt das
@@ -2051,6 +2058,8 @@ function rcRender() {
   $('rcObjects').style.display = graph ? 'none' : '';
   $('rcGraphWrap').style.display = graph ? '' : 'none';
   $('rcFitBtn').style.display = graph ? '' : 'none';
+  $('rcFullscreenBtn').style.display = graph ? '' : 'none';
+  $('rcLegend').style.display = graph ? 'flex' : 'none';
   if (graph) renderRootCauseGraph(rcLastData, rcDisplayMode);
   else renderRootCause(rcLastData);
 }
@@ -2058,6 +2067,7 @@ function rcShowError(msg) {
   rcDisplayMode = 'table';
   document.querySelectorAll('#rcViewPills .pill').forEach(x => x.classList.toggle('active', x.dataset.value === 'table'));
   $('rcGraphWrap').style.display = 'none'; $('rcFitBtn').style.display = 'none';
+  $('rcFullscreenBtn').style.display = 'none'; $('rcLegend').style.display = 'none';
   $('rcObjects').style.display = ''; $('rcObjects').innerHTML = '<div class="muted">' + msg + '</div>';
 }
 
@@ -2084,6 +2094,7 @@ $('rcFullscreenBtn').addEventListener('click', () => {
 document.addEventListener('fullscreenchange', () => {
   // Doppelter rAF: die CSS-Hoehenaenderung (:fullscreen) muss erst greifen, bevor cy neu misst.
   if (document.fullscreenElement === $('rcGraphWrap') || !document.fullscreenElement) {
+    $('rcFullscreenBtn').classList.toggle('active', document.fullscreenElement === $('rcGraphWrap'));
     if (rcCy) requestAnimationFrame(() => requestAnimationFrame(() => {
       if (!rcCy) return; rcCy.resize(); rcCy.fit(undefined, 30); rcZoomToSlider();
     }));
@@ -2263,6 +2274,7 @@ function rcBuildGraph(data, mode) {
 }
 function renderRootCauseGraph(data, mode) {
   if (!data.blocks || !data.blocks.length) { rcShowError('Keine Berechtigungsanforderungen gefunden.'); return; }
+  rcRenderLegend();
   const { els, layout } = rcBuildGraph(data, mode);
   // Frische Instanz je Render (wie der Konsistenzcheck-Graph-Pilot renderCcdGraph) -- vermeidet
   // Stale-Viewport-Effekte beim Wiederverwenden. elements+layout direkt im Konstruktor; danach
@@ -3287,11 +3299,27 @@ $('ftfvFullscreenBtn').addEventListener('click', () => {
 });
 document.addEventListener('fullscreenchange', () => {
   if (document.fullscreenElement === $('ftfvGraphWrap') || !document.fullscreenElement) {
+    $('ftfvFullscreenBtn').classList.toggle('active', document.fullscreenElement === $('ftfvGraphWrap'));
     if (ftfvCy) requestAnimationFrame(() => requestAnimationFrame(() => {
       if (!ftfvCy) return; ftfvCy.resize(); ftfvCy.fit(undefined, 30); ftfvZoomToSlider();
     }));
   }
 });
+/* Gemeinsame Node-Farbzuordnung fuer alle Cytoscape-Graphansichten (Root-Cause, Baum-Vollansicht) --
+   deckt sich 1:1 mit den Klassen aus rcCyStyle(), damit Legende und tatsaechliche Knotenfarbe nie
+   auseinanderlaufen. */
+function graphNodeColor(cls) {
+  const css = getComputedStyle(document.documentElement);
+  return {
+    'rc-user': css.getPropertyValue('--ok'), 'rc-rule': css.getPropertyValue('--crit'),
+    'rc-clause': '#5a6478', 'rc-query': '#2f9e97', 'rc-object': '#b98900',
+    'rc-role': css.getPropertyValue('--accent'), 'rc-profile': '#8a5cf6',
+  }[cls];
+}
+function legendChipHtml(l) {
+  if (l.modifier) return `<span class="ft-legend-chip"><span class="ft-legend-swatch ${l.modifier}"></span>${esc(l.label)}</span>`;
+  return `<span class="ft-legend-chip"><span class="ft-legend-swatch" style="background:${graphNodeColor(l.cls)}"></span>${esc(l.label)}</span>`;
+}
 const FT_LEGEND = [
   { cls: 'rc-user', label: 'User' },
   { cls: 'rc-rule', label: 'SoD-Regel' },
@@ -3300,14 +3328,24 @@ const FT_LEGEND = [
   { cls: 'rc-profile', label: 'Profil (direkt zugewiesen)' },
 ];
 function ftRenderLegend() {
-  const css = getComputedStyle(document.documentElement);
-  const colorOf = cls => ({
-    'rc-user': css.getPropertyValue('--ok'), 'rc-rule': css.getPropertyValue('--crit'),
-    'rc-query': '#2f9e97', 'rc-role': css.getPropertyValue('--accent'), 'rc-profile': '#8a5cf6',
-  })[cls];
-  $('ftfvLegend').innerHTML = FT_LEGEND.map(l =>
-    `<span class="ft-legend-chip"><span class="ft-legend-swatch" style="background:${colorOf(l.cls)}"></span>${esc(l.label)}</span>`
-  ).join('');
+  $('ftfvLegend').innerHTML = FT_LEGEND.map(legendChipHtml).join('');
+}
+/* Root-Cause-Seite (Pfad-/Radial-Ansicht) zeigt zusaetzlich Klausel/Objekt sowie die beiden
+   Rand-Modifier technisch/verwaist (s. rcCyStyle: .rc-technical gestrichelter Rand, .rc-orphaned
+   roter Rand) -- 9.2-Nachtrag zur bereits erledigten Legende der listenweiten Baum-Vollansicht. */
+const RC_LEGEND = [
+  { cls: 'rc-user', label: 'User' },
+  { cls: 'rc-rule', label: 'SoD-Regel' },
+  { cls: 'rc-clause', label: 'Klausel' },
+  { cls: 'rc-query', label: 'Einzelfilter (Query)' },
+  { cls: 'rc-object', label: 'Berechtigungsobjekt' },
+  { cls: 'rc-role', label: 'Rolle' },
+  { cls: 'rc-profile', label: 'Profil (direkt zugewiesen)' },
+  { modifier: 'dashed', label: 'technisch generiert (gestrichelt)' },
+  { modifier: 'orphaned', label: 'verwaist (erzeugende Rolle nicht mehr im Bestand)' },
+];
+function rcRenderLegend() {
+  $('rcLegend').innerHTML = RC_LEGEND.map(legendChipHtml).join('');
 }
 function openTreeFullview() {
   if (!ftfvState) return;

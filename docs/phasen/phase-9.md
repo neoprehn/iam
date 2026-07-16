@@ -92,7 +92,7 @@ Gebatcht über `apoc.periodic.iterate` (`cypher/admin/`).
 ## Starten
 
 ```bash
-docker compose up -d --build          # neo4j + neodash + backend
+docker compose up -d --build          # neo4j + backend
 # Browser: http://localhost:8000/
 ```
 
@@ -121,11 +121,14 @@ mehrbenutzerfähig zentral betrieben wird.
 ZIP-Upload, Ribbon-Oberfläche nach Lebenszyklus, Ergebnisse + CSV-Export, Backup/Restore (inkl.
 Backup & Clear, Download), Clear/Reset.
 
-**Offen:** Mandanten-**Vergleich** (zwei `dataset`, Delta), natives **`.xlsx`**, gebrandetes
-**Cytoscape.js**-Frontend mit Konfliktpfad-Graph (Lib-Entscheidung am Konsistenzcheck-Graph-Pilot
-A1–A3 erprobt, s. Phase 7 — NVL verworfen, Lizenz nur für Aura/kommerzielle Neo4j-Subscription,
-nicht für die hier genutzte Community Edition; die NeoDash-Karten-Cypher aus Phase 6 sind die
-Vorlage), **Ruleset-Editor** (Vendor-Basis vs. Custom, Round-Trip auf die JSON).
+**Umgesetzt (Nachtrag):** Gebrandetes **Cytoscape.js**-Frontend mit Konfliktpfad-Graph auf der
+Root-Cause-Seite (Tabelle/Pfadgraph/Radial, Farblegende, Vollbild-Toggle) — löst den NeoDash-PoC
+aus Phase 6 vollständig ab (Lib-Entscheidung am Konsistenzcheck-Graph-Pilot A1–A3 erprobt, s. Phase 7
+— NVL verworfen, Lizenz nur für Aura/kommerzielle Neo4j-Subscription, nicht für die hier genutzte
+Community Edition). NeoDash-Service/-Dashboard seit 2026-07-16 entfernt (s. ROADMAP 9.2).
+
+**Offen:** Mandanten-**Vergleich** (zwei `dataset`, Delta), **Ruleset-Editor** (Vendor-Basis vs.
+Custom, Round-Trip auf die JSON). Details/vollständige Liste: [ROADMAP.md](../../ROADMAP.md).
 
 **DoD (Phase 9):** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich,
 Anzeige, Export und Backup/Restore ohne JSON-Pflege bedienbar sind — lokal, ohne dass Mandantendaten

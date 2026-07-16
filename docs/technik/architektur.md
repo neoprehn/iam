@@ -18,8 +18,12 @@ Diese Seite beschreibt das System **wie es heute gebaut ist**. Wie es dahin kam,
    ├─ konstante Ruleset-Schicht (Query/SoDRule/AuthReq/Clause)
    └─ regenerierbare Findings (:SoDConflict) + (:Run)-Scope/Provenienz
 
- iam-neodash (PoC-Anzeige, Port 5005)   ·   iam-migrations (Schema, Profil „tools")
+ iam-migrations (Schema, Profil „tools")
 ```
+
+Die Graph-Darstellung (Konfliktpfade, Root-Cause) läuft direkt in der Ribbon-UI über vendored
+Cytoscape.js — der frühere `iam-neodash`-PoC-Container (Port 5005, Phase 6) ist seit 2026-07-16
+vollständig abgelöst und entfernt (s. ROADMAP 9.2).
 
 Alles **lokal**, alles in **einem Docker-Compose**. Das **Backend** ist als Container
 plattformunabhängig und ersetzt die früheren PowerShell-Runner (die als Host-Variante erhalten

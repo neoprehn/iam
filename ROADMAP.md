@@ -73,9 +73,9 @@ Hintergrund: SAP-Berechtigungsdaten zeigen, wer in einem (regulierten) Finanzsys
 
 **AE-13 — STAD ist Nutzungs-, kein Audit-Log.** Für Forensik SM20/SAL bzw. `CDHDR`/`CDPOS`. STAD/ST03N für Least-Privilege.
 
-**AE-14 — Reproduzierbarkeit über gepinnte Versionen.** Docker-Image-Tags (Neo4j, NeoDash, APOC) fixieren.
+**AE-14 — Reproduzierbarkeit über gepinnte Versionen.** Docker-Image-Tags (Neo4j, APOC) fixieren.
 
-**AE-15 — Container-only auf Windows.** Neo4j/NeoDash/`neo4j-migrations` als Container; keine lokale Neo4j-/Java-Installation. `cypher-shell` über den Container.
+**AE-15 — Container-only auf Windows.** Neo4j/`neo4j-migrations` als Container; keine lokale Neo4j-/Java-Installation. `cypher-shell` über den Container.
 
 **AE-16 — Der Stichtag (`asOf`) ist eine Eigenschaft des Datasets, kein Lauf-/Check-Parameter.** Ein Dataset ist ein SAP-Extrakt zu einem festen Downloaddatum — eine Auswertung gegen ein *anderes* Datum als den eigenen Extraktstand ergibt ohne Änderungs-Tracking (`RSUSR100N`/Change Documents über die Zeit im selben Dataset) keinen Erkenntnisgewinn. `(:Dataset).asOf` wird einmalig bei Erst-Import gesetzt — explizit übergeben oder automatisch aus den Dateizeitstempeln des Import-Ordners abgeleitet (`_infer_dataset_asof()`: alle Tabellen eines Extrakts teilen sich praktisch immer denselben Exporttag), nur falls der Quellordner fehlt als letzter Ausweg `heute` — und bleibt über Re-Importe stabil. Ältere Datasets ohne den Wert (vor Einführung dieses Felds importiert) bekommen ihn lazy über denselben Mechanismus nachgetragen. `RunReq`/`ConsistencyRunReq` nehmen kein `asOf` mehr vom Client an, sondern lösen es serverseitig über `_dataset_asof()` auf. Bewusste Korrektur ausschließlich global über `PUT /datasets/{id}/asof` — wirkt auf alle folgenden Läufe/Checks dieses Datasets.
 
@@ -142,7 +142,8 @@ Die folgenden offenen Ausbauten wurden am **2026-07-12** mit den handschriftlich
 `ideen.md` zusammengeführt und in thematische Arbeitspakete **9.1–9.8** gegliedert.
 **Reihenfolge (Nutzer-Steuerung):** zunächst **9.1 + 9.2** (Interaktive Ergebnisse / Graph-Frontend),
 danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen sich an.
-**9.1 ist seit 2026-07-15 abgeschlossen** (s. „Kürzlich erledigt" + Archiv) — **9.2 ist jetzt dran.**
+**9.1 und 9.2 sind seit 2026-07-16 abgeschlossen** (s. „Kürzlich erledigt" + Archiv) — **9.3 ist
+jetzt dran.**
 
 #### Kürzlich erledigt (Kontext, Details im Archiv)
 - **Geführte Auswertung** — Assistent-Stepper, Katalog-Auswahl, zwei Auswertungsarten, persistente
@@ -158,25 +159,13 @@ danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen s
   Konsistenzcheck-Katalog, Zurück-Button im Drill-down, Balkendiagramm + neue aufklappbare
   Baum-Ansicht (Regel/Query → User → Rolle/Profil) samt Cytoscape-Vollansicht+Farblegende.
   [Archiv](ROADMAP-ARCHIV.md#interaktive-ergebnisse--graph-ux-91).
+- **9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung (komplett, 2026-07-16)** — Konfliktpfad-Graph
+  bereits über die Root-Cause-Seite abgedeckt, Farblegende jetzt auch in Pfad-/Radial-Ansicht,
+  Vollbild-Toggle aus allen drei Graphansichten in die Ansichts-Leiste verschoben (statt schwebend
+  über dem Canvas), NeoDash-Service/-Dashboard/-Doku-Erwähnungen vollständig entfernt.
+  [Archiv](ROADMAP-ARCHIV.md#92-fancy-cytoscapejs-frontend--neodash-ablösung-komplett-2026-07-16).
 
-#### 9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung  ← als Nächstes
-- [ ] **Gebrandetes Frontend mit Cytoscape.js** — ersetzt den temporären NeoDash-PoC (Phase 6). KPIs,
-  Graph-Darstellung der Konfliktpfade (Cytoscape statt NVL — NVL verworfen, Lizenz nur Aura/kommerziell),
-  Drill-down; visualisiert die Evidenz-Kanten (`VIA_ROLE`/`VIA_PROFILE`). Vorlage:
-  `dashboards/sod_poc.json`. **Heatmap/Matrix bereits erledigt** (s. 9.1, regel-/query-zentriertes
-  Balkendiagramm statt User×Regel-Matrix) — hier nur noch der eigentliche Cytoscape-Konfliktpfad-Teil
-  offen.
-- [~] **Farblegende in allen Graphansichten** (aus 9.1) — erklärt die Knotenbedeutung (User/Regel/
-  Klausel/Query/Objekt/Rolle/Profil, technisch/verwaist). Gilt für Pfad-, Radial- und den listenweiten
-  Graphen. **Listenweiter Graph (Baum-Vollansicht) erledigt** (2026-07-15, s. 9.1). **Offen:** Pfad-
-  und Radial-Ansicht der Root-Cause-Seite.
-- [ ] **Vollbild-Bedienung der Graphen überarbeiten** (aus 9.1) — heutiger Vollbild-Knopf ist
-  ungünstig; besseres Muster (Toggle in der Ansichts-Leiste, ESC zum Verlassen).
-- [ ] **NeoDash danach vollständig entfernen** — Compose-Service `iam-neodash` (Port 5005), Erwähnungen
-  in `README.md`/`docs/`/Laufzeitdiagramm, `dashboards/sod_poc.json` archivieren/löschen, `AE-14`-Pin
-  reduzieren.
-
-#### 9.3 Org-Varianten & „Can-Do nach Org" — Ausbau, UX, Performance
+#### 9.3 Org-Varianten & „Can-Do nach Org" — Ausbau, UX, Performance  ← als Nächstes
 - [ ] **„Can-Do nach Org"** (Rest von „Zwei Auswertungsarten"): „wer kann *Funktion* in *Buchungskreis
   X*" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…. **Entschieden (2026-07-11):** über den
   bestehenden Org-Varianten-Mechanismus (eigener `(:Run)` je Kombination), **kein** Live-Post-hoc-Filter
@@ -537,7 +526,7 @@ Lokal, ein Compose, Vertrauensgrenze bleibt — **keine Mandantendaten verlassen
    ├─ konstante Ruleset-Schicht (Query/SoDRule/AuthReq/Clause)
    └─ regenerierbare Findings (:SoDConflict) + Evidenz (VIA_ROLE/VIA_PROFILE) + (:Run)-Provenienz
 
- iam-neodash (PoC-Anzeige, Port 5005 — temporär, wird durch Cytoscape.js-Frontend ersetzt)   ·   iam-migrations (Schema, profile: tools)
+ iam-migrations (Schema, profile: tools)
 ```
 
 ## Zielarchitektur — Repo-Struktur
@@ -545,7 +534,7 @@ Lokal, ein Compose, Vertrauensgrenze bleibt — **keine Mandantendaten verlassen
 ```
 iam/
 ├─ ROADMAP.md / ROADMAP-ARCHIV.md / README.md 
-├─ docker-compose.yml          # neo4j + neodash + backend (+ migrations als tools-Profil), gepinnt
+├─ docker-compose.yml          # neo4j + backend (+ migrations als tools-Profil), gepinnt
 ├─ .gitignore                  # /data, /backups, .env, *.dump
 ├─ .gitattributes              # Zeilenenden (LF für .cypher/.sh) für Linux-Container
 ├─ backend/                    # FastAPI-App (app.py), SE16-Konverter (convert.py), Dockerfile, requirements
@@ -559,7 +548,6 @@ iam/
 │   ├─ sod/                    # SoD-Materialisierung + Auswertung + Evidenz (explain_sod)
 │   ├─ ruleset/               # Ruleset-Loader (JSON → Graph)
 │   └─ admin/                  # clear_dataset / reset_data (gebatcht)
-├─ dashboards/                 # NeoDash-Export (JSON, PoC — temporär)
 ├─ run/                        # run_import.ps1 / run_evaluate.ps1 (Host-Runner, weiter nutzbar)
 ├─ docs/                       # Sphinx/MyST (Read the Docs): Benutzerhandbuch + Technische Doku
 ├─ data/                       # GITIGNORED: SAP-CSV + Import + DB-Volume
