@@ -994,6 +994,40 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   korrekt mit dem Tabelle/Graph-Pill); Port 5005 nicht mehr erreichbar, kein `iam-neodash`-Container
   mehr vorhanden, App (`iam-backend`/`iam-neo4j`) läuft unverändert weiter, keine neuen
   Konsolenfehler.
+- [x] **Vier Nachbesserungen aus dem ersten echten Test** (2026-07-16, direkt im Anschluss, alle vom
+  Nutzer beim Ausprobieren gefunden):
+  - **Legende im Vollbild unsichtbar** — `#rcLegend`/`#ftfvLegend` waren Geschwister des
+    Fullscreen-Elements; die native Fullscreen-API rendert nur Element+Nachfahren, Geschwister
+    verschwinden. Fix: Legende als schwebende Leiste (`.graph-legend-bar`) in
+    `rcGraphWrap`/`ftfvGraphWrap` verschoben (analog zum bestehenden Zoom-Slider-Muster); dabei
+    einen toten ftfv-Fullscreen-Höhen-CSS-Selektor mitkorrigiert (Klasse saß direkt auf dem
+    Element, nicht auf einem Nachfahren, griff also nie).
+  - **Overlay wurde bei reinem Risiko-Edit trotzdem vollgeschrieben** — Nutzer bemerkte, dass
+    `queries.custom.json`/`sod_rules.custom.json` beim Speichern auch unveränderte Felder
+    (Kurzbezeichnung/Kritikalität/Modul/…) explizit übernahmen, weil der Editor immer den vollen
+    Formularschnappschuss sendet (nicht nur das geänderte Feld). Risiko: eine spätere
+    Vendor-Korrektur an diesen Feldern wäre durch den unbeabsichtigten Overlay-Eintrag dauerhaft
+    verdeckt geblieben. Fix: `admin_update_query`/`admin_update_sodrule` vergleichen jetzt gegen
+    den aktuell gemergten Wert und schreiben nur noch **tatsächlich geänderte** Filterset-Felder
+    ins Overlay.
+  - **Root-Cause-Graph färbte den Einzelfilter-Wurzelknoten wie eine SoD-Regel** — `rcBuildGraph()`
+    setzte die Klasse des Wurzelknotens (`rc_top`) hart auf `rc-rule`, unabhängig vom tatsächlichen
+    Modus; fiel erst durch die neue Farblegende auf (Nutzer: „SoD und Einzelfilter vertauscht").
+    Die Baum-Vollansicht hatte diese Unterscheidung schon korrekt (`ftfvState.topClass`). Fix:
+    Klasse jetzt abhängig von `topIsRule` (`rc-rule` vs. `rc-query`).
+  - **Kantenlabel „ODER" zwischen Objekt/BO und Rolle war irreführend** — beschrieb nur die Menge
+    paralleler Kanten insgesamt, nicht die einzelne Kante. Per `AskUserQuestion` geklärt: Label auf
+    Englisch **„CONTAINS"** (passend zu AE-04, Kanten als englische Verben wie
+    `ASSIGNED_TO`/`HAS_AUTH`) **und** Pfeilspitze visuell ans Objekt-Ende verschoben
+    (`source-arrow-shape`/`target-arrow-shape:none`, neue Klasse `.rc-contains`) — Quelle/Ziel der
+    Kante selbst bleiben unverändert, damit das breadthfirst-Baum-Layout (Objekt bleibt
+    Elternknoten des Akteurs) nicht bricht. Gilt einheitlich für Berechtigungsobjekte **und**
+    S_TCODE-Prüfungen (beide über dieselbe `attachObject()`-Funktion).
+  Alle vier mit Playwright/API-Tests gegen den laufenden Container verifiziert (Legende bleibt im
+  aktiven Vollbild sichtbar; ein reiner `riskLevel`-Edit landet nachweislich ausschließlich in
+  `risks.json`, `queries.custom.json` bleibt byte-identisch; Wurzelknoten-Klasse korrekt je Modus;
+  `CONTAINS`-Kanten mit korrekter Klasse/Quelle/Ziel). Testartefakt (testweise geänderter
+  `riskLevel` bei `1005_BC-SEC`) danach zurückgesetzt.
 
 #### Admin-Bereich
 - [x] **Einzelfilter-Editor (Query-Metadaten).** „Einzelfilter nachjustieren

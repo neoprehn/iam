@@ -162,7 +162,10 @@ jetzt dran.**
 - **9.2 „Fancy" Cytoscape.js-Frontend + NeoDash-Ablösung (komplett, 2026-07-16)** — Konfliktpfad-Graph
   bereits über die Root-Cause-Seite abgedeckt, Farblegende jetzt auch in Pfad-/Radial-Ansicht,
   Vollbild-Toggle aus allen drei Graphansichten in die Ansichts-Leiste verschoben (statt schwebend
-  über dem Canvas), NeoDash-Service/-Dashboard/-Doku-Erwähnungen vollständig entfernt.
+  über dem Canvas), NeoDash-Service/-Dashboard/-Doku-Erwähnungen vollständig entfernt. Plus vier
+  Nachbesserungen aus dem ersten echten Test (Legende blieb im Vollbild unsichtbar, Overlay wurde
+  bei reinem Risiko-Edit trotzdem vollgeschrieben, Einzelfilter-Wurzelknoten fälschlich rot
+  eingefärbt, Kantenlabel „ODER" → „CONTAINS").
   [Archiv](ROADMAP-ARCHIV.md#92-fancy-cytoscapejs-frontend--neodash-ablösung-komplett-2026-07-16).
 
 #### 9.3 Org-Varianten & „Can-Do nach Org" — Ausbau, UX, Performance  ← als Nächstes
