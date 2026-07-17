@@ -155,10 +155,11 @@
   </div>
   <div class="group">
     <div class="cmds">
+      <button class="cmd" id="cmdEdit"><span class="ico">&#9998;</span>Aendern</button>
       <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
       <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
     </div>
-    <div class="lbl">Editieren</div>
+    <div class="lbl">Bearbeiten</div>
   </div>
   <div class="group">
     <div class="cmds"><button class="cmd" id="cmdDownloadOverlay"><span class="ico">&#8595;</span>Overlay sichern</button></div>
@@ -214,21 +215,6 @@
         </div>
       </div>
 
-      <h2 id="masterdata">Masterdata</h2>
-      <div class="filterbox">
-        <div class="hint">Kritikalit&auml;tskatalog (Stufe, Rang, Farbe, KRI-Score) f&uuml;r
-          Query-/SoD-Dropdowns und Validierung.</div>
-        <table class="auftable" id="mdCritTable" style="margin-top:8px">
-          <thead><tr><th>ID</th><th>Label</th><th>Rang</th><th>Farbe</th><th>KRI</th><th></th></tr></thead>
-          <tbody id="mdCritBody"></tbody>
-        </table>
-        <div class="row" style="margin-top:8px">
-          <div><button class="ghost" id="mdCritAdd" style="width:100%">+ Stufe</button></div>
-          <div><button class="ghost" id="mdCritReload" style="width:100%">Neu laden</button></div>
-          <div><button class="primary" id="mdCritSave" style="width:100%">Masterdata speichern</button></div>
-        </div>
-      </div>
-
       <h2>Geplant</h2>
       <div class="filterbox">
         <button class="ghost" disabled title="kommt sp&auml;ter" style="width:100%">Neues Filterset importieren</button>
@@ -261,10 +247,10 @@
               <select id="amDatenschutz" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="amModule">Modul</label><input id="amModule" disabled /></div>
+            <div><label for="amModule">Modul</label><select id="amModule" disabled><option value="">&ndash;</option></select></div>
           </div>
           <label for="amQueryType">Query-Typ</label>
-          <input id="amQueryType" disabled />
+          <select id="amQueryType" disabled><option value="">&ndash;</option></select>
           <div class="check"><input type="checkbox" id="amDisregardTcode" disabled />
             <label for="amDisregardTcode">TCode ignorieren (disregardTcode)</label></div>
         </div>
@@ -315,7 +301,6 @@
         </div>
 
         <div class="actions">
-          <button class="ghost" id="amEditBtn">Bearbeiten</button>
           <button class="primary" id="amSaveBtn" disabled>Speichern</button>
           <button class="ghost" id="amCancelBtn" disabled>Abbrechen</button>
         </div>
@@ -337,7 +322,7 @@
               <select id="srCriticality" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="srReasonCode">Reason-Code</label><input id="srReasonCode" disabled /></div>
+            <div><label for="srReasonCode">Reason-Code</label><select id="srReasonCode" disabled><option value="">&ndash;</option></select></div>
           </div>
         </div>
 
@@ -385,7 +370,6 @@
         </div>
 
         <div class="actions">
-          <button class="ghost" id="srEditBtn">Bearbeiten</button>
           <button class="primary" id="srSaveBtn" disabled>Speichern</button>
           <button class="ghost" id="srCancelBtn" disabled>Abbrechen</button>
         </div>
@@ -417,7 +401,9 @@ let queries = [], selectedId = null, dirty = false, editMode = false;
 let sodRules = [], selectedSodId = null;
 let mode = 'query';
 let critLevels = [];
-let masterCritLevels = [];
+let moduleLevels = [];
+let queryTypeLevels = [];
+let reasonCodeLevels = [];
 // Formular ist per Default read-only (disabled, s. HTML) -- verhindert versehentliches "dirty"
 // setzen durch bloszes Anschauen; "Bearbeiten" schaltet erst explizit frei (Nutzerfeedback:
 // staendiges "Ungespeicherte Aenderungen verwerfen?" beim Durchklicken war verwirrend).
@@ -425,13 +411,12 @@ const QUERY_EDIT_FIELDS = ['amShortDescription', 'amDescription', 'amCriticality
   'amModule', 'amQueryType', 'amDisregardTcode', 'amRiskType', 'amRiskLevel', 'amRiskStatus',
   'amRisk', 'amControls'];
 const SOD_EDIT_FIELDS = ['srShortDescription', 'srDescription', 'srCriticality', 'srRiskType',
-  'srRiskLevel', 'srRiskStatus', 'srRisk', 'srControls'];
+  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls'];
 function setEditMode(v) {
   editMode = v;
   QUERY_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
   SOD_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
-  $('amEditBtn').style.display = v ? 'none' : '';
-  $('srEditBtn').style.display = v ? 'none' : '';
+  $('cmdEdit').disabled = v;
   $('amCancelBtn').disabled = !v; $('srCancelBtn').disabled = !v; $('cmdCancel').disabled = !v;
   if (!v) setDirty(false);
 }
@@ -450,7 +435,6 @@ async function loadRulesets() {
 async function loadCriticalities() {
   const payload = await api('/admin/masterdata/criticalities');
   critLevels = (payload.criticalities || []).slice().sort((a, b) => (b.rank - a.rank) || a.id.localeCompare(b.id));
-  masterCritLevels = critLevels.map(x => ({ ...x }));
   fillFixedSelect('amCriticality', critLevels);
   fillFixedSelect('amDatenschutz', critLevels);
   fillFixedSelect('amRiskLevel', critLevels);
@@ -458,63 +442,31 @@ async function loadCriticalities() {
   fillFixedSelect('srRiskLevel', critLevels);
   fillFixedSelect('amFilterCriticality', critLevels, true);
   fillFixedSelect('srFilterCriticality', critLevels, true);
-  renderCriticalityMasterTable();
 }
 
-function renderCriticalityMasterTable() {
-  const body = $('mdCritBody');
-  body.innerHTML = '';
-  if (!masterCritLevels.length) {
-    body.innerHTML = '<tr><td colspan="6" class="muted">keine Stufen</td></tr>';
-    return;
-  }
-  masterCritLevels
-    .slice()
-    .sort((a, b) => ((Number(b.rank) || 0) - (Number(a.rank) || 0)) || (a.id || '').localeCompare(b.id || ''))
-    .forEach((lvl, idx) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = ''
-        + `<td><input data-k="id" data-i="${idx}" value="${escapeHtml(lvl.id || '')}" /></td>`
-        + `<td><input data-k="label" data-i="${idx}" value="${escapeHtml(lvl.label || '')}" /></td>`
-        + `<td><input type="number" min="1" step="1" data-k="rank" data-i="${idx}" value="${escapeHtml(String(lvl.rank ?? ''))}" /></td>`
-        + `<td><input data-k="color" data-i="${idx}" value="${escapeHtml(lvl.color || '')}" placeholder="#RRGGBB" /></td>`
-        + `<td><input type="number" step="1" data-k="kriScore" data-i="${idx}" value="${escapeHtml(lvl.kriScore == null ? '' : String(lvl.kriScore))}" /></td>`
-        + `<td><button class="ghost" data-del="${idx}" style="width:auto;padding:4px 8px">x</button></td>`;
-      body.appendChild(tr);
-    });
-  body.querySelectorAll('input[data-k]').forEach(inp => inp.addEventListener('input', () => {
-    const i = Number(inp.dataset.i);
-    const k = inp.dataset.k;
-    const v = inp.value;
-    if (k === 'rank') masterCritLevels[i][k] = v === '' ? '' : Number(v);
-    else if (k === 'kriScore') masterCritLevels[i][k] = v === '' ? null : Number(v);
-    else masterCritLevels[i][k] = v;
-  }));
-  body.querySelectorAll('button[data-del]').forEach(btn => btn.addEventListener('click', () => {
-    const i = Number(btn.dataset.del);
-    masterCritLevels.splice(i, 1);
-    renderCriticalityMasterTable();
-  }));
+async function loadNamedCatalogs() {
+  const [modulesPayload, queryTypesPayload, reasonCodesPayload] = await Promise.all([
+    api('/admin/masterdata/modules'),
+    api('/admin/masterdata/query-types'),
+    api('/admin/masterdata/reason-codes'),
+  ]);
+  moduleLevels = modulesPayload.items || [];
+  queryTypeLevels = queryTypesPayload.items || [];
+  reasonCodeLevels = reasonCodesPayload.items || [];
+  fillNamedSelect('amModule', moduleLevels);
+  fillNamedSelect('amQueryType', queryTypeLevels);
+  fillNamedSelect('srReasonCode', reasonCodeLevels);
 }
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
 }
 
-function normalizeMasterCriticalitiesForSave() {
-  return masterCritLevels.map(r => ({
-    id: String(r.id || '').trim(),
-    label: String(r.label || '').trim(),
-    rank: Number(r.rank),
-    color: String(r.color || '').trim() || null,
-    kriScore: (r.kriScore == null || r.kriScore === '' || Number.isNaN(Number(r.kriScore))) ? null : Number(r.kriScore),
-  }));
-}
-
 /* Beide Listen werden bei jedem Ruleset-Wechsel geladen (nicht erst bei Moduswechsel) — die
    Queries werden ausserdem im SoD-Aufbau-Tab gebraucht (Klausel-Anzeige -> Query-Bezeichnung). */
 async function loadAll() {
   await loadCriticalities();
+  await loadNamedCatalogs();
   await loadQueries();
   await loadSodRules();
 }
@@ -569,33 +521,34 @@ function fillFixedSelect(id, levels, allOption) {
   if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
 }
 
-$('mdCritAdd').addEventListener('click', () => {
-  masterCritLevels.push({ id: '', label: '', rank: 1, color: '', kriScore: null });
-  renderCriticalityMasterTable();
-});
+function fillNamedSelect(id, items, allOption) {
+  const sel = $(id);
+  const cur = sel.value;
+  sel.innerHTML = allOption ? '<option value="">– alle –</option>' : '<option value="">&ndash;</option>';
+  (items || []).forEach(x => {
+    const o = document.createElement('option');
+    o.value = x.id;
+    o.textContent = (x.label || x.id) + (x.description ? ' - ' + x.description : '');
+    sel.appendChild(o);
+  });
+  if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
 
-$('mdCritReload').addEventListener('click', async () => {
-  await loadCriticalities();
-  setStatus(`${doneTag} Masterdata neu geladen.`);
-});
-
-$('mdCritSave').addEventListener('click', async () => {
-  setStatus('<span class="spin"></span> Masterdata speichern&hellip;');
-  try {
-    const payload = { criticalities: normalizeMasterCriticalitiesForSave() };
-    await api('/admin/masterdata/criticalities', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    await loadAll();
-    if (selectedId) await selectQuery(selectedId);
-    if (selectedSodId) await selectSodRule(selectedSodId);
-    setStatus(`${doneTag} Masterdata gespeichert.`);
-  } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+function ensureSelectValue(id, value) {
+  const sel = $(id);
+  const v = value || '';
+  if (!v) {
+    sel.value = '';
+    return;
   }
-});
+  if (![...sel.options].some(o => o.value === v)) {
+    const o = document.createElement('option');
+    o.value = v;
+    o.textContent = v;
+    sel.appendChild(o);
+  }
+  sel.value = v;
+}
 
 /* Suche unterstuetzt '*' als Platzhalter (z. B. "BC-SEC*"); ohne '*' = einfache Teilstring-Suche. */
 function matchesSearch(q, term) {
@@ -661,8 +614,8 @@ async function selectQuery(id) {
   $('amDescription').value = q.description || '';
   $('amCriticality').value = q.criticality || '';
   $('amDatenschutz').value = q.datenschutz || '';
-  $('amModule').value = q.module || '';
-  $('amQueryType').value = q.queryType || '';
+  ensureSelectValue('amModule', q.module || '');
+  ensureSelectValue('amQueryType', q.queryType || '');
   $('amDisregardTcode').checked = !!q.disregardTcode;
   $('amRiskType').value = q.riskType || '';
   $('amRiskLevel').value = q.riskLevel || '';
@@ -727,7 +680,7 @@ async function selectSodRule(id) {
   $('srShortDescription').value = r.shortDescription || '';
   $('srDescription').value = r.description || '';
   $('srCriticality').value = r.criticality || '';
-  $('srReasonCode').value = r.reasonCode || '';
+  ensureSelectValue('srReasonCode', r.reasonCode || '');
   $('srRiskType').value = r.riskType || '';
   $('srRiskLevel').value = r.riskLevel || '';
   $('srRiskStatus').value = r.riskStatus || '';
@@ -768,6 +721,7 @@ function formSodFields() {
     shortDescription: $('srShortDescription').value.trim() || null,
     description: $('srDescription').value.trim() || null,
     criticality: $('srCriticality').value || null,
+    reasonCode: $('srReasonCode').value || null,
     risk: $('srRisk').value.trim() || null,
     controls: $('srControls').value.trim() || null,
     riskType: $('srRiskType').value || null,
@@ -800,9 +754,9 @@ function setDirty(v) {
   $('amDirtyChip').style.display = v ? '' : 'none';
   $('amSaveBtn').disabled = !v; $('srSaveBtn').disabled = !v; $('cmdSave').disabled = !v;
 }
-['amShortDescription', 'amDescription', 'amModule', 'amQueryType', 'amRisk', 'amControls']
+['amShortDescription', 'amDescription', 'amRisk', 'amControls']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
-['amCriticality', 'amDatenschutz', 'amRiskType', 'amRiskLevel', 'amRiskStatus']
+['amCriticality', 'amDatenschutz', 'amModule', 'amQueryType', 'amRiskType', 'amRiskLevel', 'amRiskStatus', 'srReasonCode']
   .forEach(id => $(id).addEventListener('change', () => setDirty(true)));
 $('amDisregardTcode').addEventListener('change', () => setDirty(true));
 
@@ -812,8 +766,8 @@ function formFields() {
     description: $('amDescription').value.trim() || null,
     criticality: $('amCriticality').value || null,
     datenschutz: $('amDatenschutz').value || null,
-    module: $('amModule').value.trim() || null,
-    queryType: $('amQueryType').value.trim() || null,
+    module: $('amModule').value || null,
+    queryType: $('amQueryType').value || null,
     disregardTcode: $('amDisregardTcode').checked,
     risk: $('amRisk').value.trim() || null,
     controls: $('amControls').value.trim() || null,
@@ -842,8 +796,7 @@ async function saveQueryCurrent() {
    oder SoD) — nur einer der beiden Detail-Bereiche ist je sichtbar/editierbar. */
 function saveCurrent() { return isQueryMode() ? saveQueryCurrent() : saveSodCurrent(); }
 function cancelCurrent() { return isQueryMode() ? selectQuery(selectedId) : selectSodRule(selectedSodId); }
-$('amEditBtn').onclick = () => setEditMode(true);
-$('srEditBtn').onclick = () => setEditMode(true);
+$('cmdEdit').onclick = () => setEditMode(true);
 $('amSaveBtn').onclick = saveCurrent;
 $('srSaveBtn').onclick = saveCurrent;
 $('cmdSave').onclick = saveCurrent;

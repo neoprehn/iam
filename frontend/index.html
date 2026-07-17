@@ -2371,6 +2371,27 @@ async function loadMeta() {
   $('sleepDays').value = meta.sleepDays;
   metaCache = meta; showUtHint();
 }
+
+async function loadCriticalityCatalog() {
+  try {
+    const payload = await api('/admin/masterdata/criticalities');
+    const rows = (payload.criticalities || []).map(x => ({
+      id: String(x.id || '').trim(),
+      label: String(x.label || x.id || '').trim(),
+      rank: Number(x.rank || 0),
+      color: String(x.color || '').trim() || null,
+    })).filter(x => x.id);
+    if (rows.length) {
+      criticalityCatalog = rows;
+      CRIT_COLOR = Object.fromEntries(rows.filter(x => x.color).map(x => [x.id, x.color]));
+      CRIT_RANK = Object.fromEntries(rows.map(x => [x.id, x.rank]));
+      CRIT_LABEL = Object.fromEntries(rows.map(x => [x.id, x.label || x.id]));
+    }
+  } catch {
+    // Fallback to built-in defaults when masterdata endpoint is not available.
+  }
+  renderRuleCritPillOptions();
+}
 function showUtHint() {
   const p = metaCache.userTypeProfiles.find(x => x.name === $('userTypeProfile').value);
   $('utHint').textContent = p ? p.description : '';
@@ -2531,7 +2552,38 @@ async function checkRunState(dataset) {
   } catch { banner.style.display = 'none'; _runResumeState = null; }
 }
 
-function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLowerCase()}">${c || '?'}</span>`; }
+let criticalityCatalog = [
+  { id: 'very-critical', label: 'very critical', rank: 5, color: '#ff5c5c' },
+  { id: 'critical', label: 'critical', rank: 4, color: '#ff7a66' },
+  { id: 'high', label: 'high', rank: 3, color: '#ffa552' },
+  { id: 'medium', label: 'medium', rank: 2, color: '#f5c451' },
+  { id: 'low', label: 'low', rank: 1, color: '#7bd690' },
+];
+let CRIT_COLOR = Object.fromEntries(criticalityCatalog.map(x => [x.id, x.color]));
+let CRIT_RANK = Object.fromEntries(criticalityCatalog.map(x => [x.id, x.rank]));
+let CRIT_LABEL = Object.fromEntries(criticalityCatalog.map(x => [x.id, x.label]));
+
+function _hexToRgba(hex, alpha) {
+  const m = /^#?([0-9a-fA-F]{6})$/.exec(String(hex || '').trim());
+  if (!m) return `rgba(127,127,127,${alpha})`;
+  const raw = m[1];
+  const r = parseInt(raw.slice(0, 2), 16);
+  const g = parseInt(raw.slice(2, 4), 16);
+  const b = parseInt(raw.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function critTag(c) {
+  const key = String(c || '').trim();
+  if (!key) return '<span class="tag">?</span>';
+  const color = CRIT_COLOR[key];
+  const label = CRIT_LABEL[key] || key;
+  const cls = key.replace(/[^a-z0-9]+/gi, '').toLowerCase();
+  const style = color
+    ? ` style="color:${color};border:1px solid ${color};background:${_hexToRgba(color, .20)}"`
+    : '';
+  return `<span class="tag ${cls}"${style}>${escapeHtml(label)}</span>`;
+}
 
 function fmtDateTime(iso) {
   if (!iso) return '&ndash;';
@@ -2882,8 +2934,6 @@ function renderCausingActors(finding) {
 function showFilterActive(text) { $('filterActiveText').textContent = text; $('filterActive').classList.add('show'); }
 function hideFilterActive() { $('filterActive').classList.remove('show'); $('orgCompareBtn').style.display = 'none'; }
 
-const CRIT_COLOR = { 'very-critical': '#ff5c5c', critical: '#ff7a66', high: '#ffa552', medium: '#f5c451', low: '#7bd690' };
-const CRIT_RANK = { 'very-critical': 5, critical: 4, high: 3, medium: 2, low: 1 };
 function critRank(c) { return CRIT_RANK[(c || '').toLowerCase()] || 0; }
 
 let findingsViewMode = 'table';           // 'table' | 'graph'
@@ -2900,6 +2950,18 @@ let ruleCritValue = '', resultTypeValue = '', sleepingValue = '';
 let sleepDaysOverrideValue = '', lockedValue = '', lockReasonValue = 'alle';
 function renderRuleCritPills() {
   document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === ruleCritValue));
+}
+function renderRuleCritPillOptions() {
+  const wrap = $('ruleCritPills');
+  const old = ruleCritValue;
+  const rows = (criticalityCatalog || []).slice().sort((a, b) => (Number(b.rank || 0) - Number(a.rank || 0)) || String(a.id).localeCompare(String(b.id)));
+  wrap.innerHTML = '<button type="button" class="pill" data-value="">alle</button>'
+    + rows.map(x => {
+      const style = x.color ? ` style="color:${x.color};border-color:${x.color};background:${_hexToRgba(x.color, .20)}"` : '';
+      return `<button type="button" class="pill tag" data-value="${escapeHtml(x.id)}"${style}>${escapeHtml(x.label || x.id)}</button>`;
+    }).join('');
+  if (old && !rows.some(x => x.id === old)) ruleCritValue = '';
+  renderRuleCritPills();
 }
 function renderResultTypePills() {
   document.querySelectorAll('#resultTypePills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === resultTypeValue));
@@ -2946,9 +3008,14 @@ function renderLockReasonVisibility() {
 function renderLockReasonPills() {
   document.querySelectorAll('#lockReasonPills .pill').forEach(b => b.classList.toggle('active', b.dataset.value === lockReasonValue));
 }
-document.querySelectorAll('#ruleCritPills .pill').forEach(b => b.addEventListener('click', () => {
-  ruleCritValue = b.dataset.value; renderRuleCritPills(); renderRuleSelect(); applyFilters();
-}));
+$('ruleCritPills').addEventListener('click', e => {
+  const b = e.target.closest('.pill');
+  if (!b) return;
+  ruleCritValue = b.dataset.value || '';
+  renderRuleCritPills();
+  renderRuleSelect();
+  applyFilters();
+});
 document.querySelectorAll('#resultTypePills .pill').forEach(b => b.addEventListener('click', () => {
   resultTypeValue = b.dataset.value; renderResultTypePills(); applyFilters();
 }));
@@ -4291,6 +4358,7 @@ async function restoreRunBackup(file, force) {
 }
 
 async function refreshAll() {
+  await loadCriticalityCatalog();
   await refreshDatasets(); await loadRuns(); await loadImportFolders(); await loadBackups(); await loadRunBackups();
   await refreshActiveRunView();
 }
@@ -5337,7 +5405,7 @@ $('asst-rpt-download').onclick = async () => {
 };
 // ── Ende Assistent ────────────────────────────────────────────────────────────
 
-loadMeta().then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).then(loadRunBackups).catch(e =>
+loadMeta().then(loadCriticalityCatalog).then(refreshDatasets).then(loadRuns).then(loadImportFolders).then(loadBackups).then(loadRunBackups).catch(e =>
   document.body.insertAdjacentHTML('beforeend',
     '<p style="color:#ff8a8e;padding:20px">Backend nicht erreichbar: ' + JSON.stringify(e) + '</p>'));
 </script>

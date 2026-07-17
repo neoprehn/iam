@@ -35,5 +35,217 @@
       "color": "#7bd690",
       "kriScore": 20
     }
+  ],
+  "modules": [
+    {
+      "id": "Asset Accounting",
+      "label": "Asset Accounting"
+    },
+    {
+      "id": "Basis Component",
+      "label": "Basis Component"
+    },
+    {
+      "id": "Basis Module",
+      "label": "Basis Module"
+    },
+    {
+      "id": "C",
+      "label": "C"
+    },
+    {
+      "id": "Controlling",
+      "label": "Controlling"
+    },
+    {
+      "id": "F",
+      "label": "F"
+    },
+    {
+      "id": "Financial Accounting",
+      "label": "Financial Accounting"
+    },
+    {
+      "id": "Human Resources",
+      "label": "Human Resources"
+    },
+    {
+      "id": "M",
+      "label": "M"
+    },
+    {
+      "id": "Master Data",
+      "label": "Master Data"
+    },
+    {
+      "id": "Materials Management",
+      "label": "Materials Management"
+    },
+    {
+      "id": "Module",
+      "label": "Module"
+    },
+    {
+      "id": "Plant Maintenance",
+      "label": "Plant Maintenance"
+    },
+    {
+      "id": "Production Planning",
+      "label": "Production Planning"
+    },
+    {
+      "id": "Project Systems",
+      "label": "Project Systems"
+    },
+    {
+      "id": "Q",
+      "label": "Q"
+    },
+    {
+      "id": "Quality Management",
+      "label": "Quality Management"
+    },
+    {
+      "id": "S",
+      "label": "S"
+    },
+    {
+      "id": "Sales & Distribution",
+      "label": "Sales & Distribution"
+    },
+    {
+      "id": "V",
+      "label": "V"
+    },
+    {
+      "id": "Warehouse Management",
+      "label": "Warehouse Management"
+    }
+  ],
+  "queryTypes": [
+    {
+      "id": "AO",
+      "label": "AO",
+      "description": "Audit Optional"
+    },
+    {
+      "id": "AR",
+      "label": "AR"
+    },
+    {
+      "id": "ARQ",
+      "label": "ARQ"
+    },
+    {
+      "id": "DISP",
+      "label": "DISP"
+    },
+    {
+      "id": "JAP",
+      "label": "JAP",
+      "description": "Jahresabschluss"
+    },
+    {
+      "id": "MO",
+      "label": "MO"
+    },
+    {
+      "id": "MR",
+      "label": "MR"
+    },
+    {
+      "id": "TEST",
+      "label": "TEST"
+    },
+    {
+      "id": "ZZ",
+      "label": "ZZ"
+    }
+  ],
+  "reasonCodes": [
+    {
+      "id": "A_A1+",
+      "label": "A_A1+"
+    },
+    {
+      "id": "A_A3+",
+      "label": "A_A3+"
+    },
+    {
+      "id": "A_F1+",
+      "label": "A_F1+"
+    },
+    {
+      "id": "A_F2+",
+      "label": "A_F2+"
+    },
+    {
+      "id": "A_F3+",
+      "label": "A_F3+"
+    },
+    {
+      "id": "A_M1+",
+      "label": "A_M1+"
+    },
+    {
+      "id": "A_M3+",
+      "label": "A_M3+"
+    },
+    {
+      "id": "A_P1+",
+      "label": "A_P1+"
+    },
+    {
+      "id": "A_P3+",
+      "label": "A_P3+"
+    },
+    {
+      "id": "A_V1+",
+      "label": "A_V1+"
+    },
+    {
+      "id": "A_V3+",
+      "label": "A_V3+"
+    },
+    {
+      "id": "A_X1+",
+      "label": "A_X1+"
+    },
+    {
+      "id": "FR_C",
+      "label": "FR_C"
+    },
+    {
+      "id": "FR_H",
+      "label": "FR_H"
+    },
+    {
+      "id": "OtC_C",
+      "label": "OtC_C"
+    },
+    {
+      "id": "OtC_H",
+      "label": "OtC_H"
+    },
+    {
+      "id": "PtP_C",
+      "label": "PtP_C"
+    },
+    {
+      "id": "PtP_H",
+      "label": "PtP_H"
+    },
+    {
+      "id": "PtP_V",
+      "label": "PtP_V"
+    },
+    {
+      "id": "SYS_C",
+      "label": "SYS_C"
+    },
+    {
+      "id": "SYS_V",
+      "label": "SYS_V"
+    }
   ]
 }

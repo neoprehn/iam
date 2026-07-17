@@ -218,26 +218,47 @@
       </article>
 
       <article class="sectionbox" id="sec-reason">
-        <div class="sectionhead"><h2>Reason-Code-Stammdaten (SoD)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Aktuell erkannte Reason-Codes aus Regeln (Vorschau):</div>
-        <div id="reasonPreview"></div>
+        <div class="sectionhead"><h2>Reason-Code-Stammdaten (SoD)</h2><span class="section-right"><span class="state wip">in Arbeit</span></span></div>
+        <div class="hint">Technische IDs + Label fuer SoD-Reason-Codes.</div>
+        <table style="margin-top:8px">
+          <thead><tr><th>ID</th><th>Label</th><th></th></tr></thead>
+          <tbody id="reasonBody"></tbody>
+        </table>
+        <div class="row" style="margin-top:8px">
+          <div><button class="ghost" id="reasonAdd" style="width:100%">+ Reason-Code</button></div>
+          <div><button class="primary" id="reasonSave" style="width:100%" disabled>Speichern</button></div>
+        </div>
       </article>
 
       <article class="sectionbox" id="sec-module">
-        <div class="sectionhead"><h2>Modul-Stammdaten</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Aktuell verwendete Module (Vorschau):</div>
-        <div id="modulePreview"></div>
+        <div class="sectionhead"><h2>Modul-Stammdaten</h2><span class="section-right"><span class="state wip">in Arbeit</span></span></div>
+        <div class="hint">ID ist technisch und nicht direkt editierbar (wird aus dem Label gebildet).</div>
+        <table style="margin-top:8px">
+          <thead><tr><th>ID</th><th>Label</th><th></th></tr></thead>
+          <tbody id="moduleBody"></tbody>
+        </table>
+        <div class="row" style="margin-top:8px">
+          <div><button class="ghost" id="moduleAdd" style="width:100%">+ Modul</button></div>
+          <div><button class="primary" id="moduleSave" style="width:100%" disabled>Speichern</button></div>
+        </div>
       </article>
 
       <article class="sectionbox" id="sec-qtype">
-        <div class="sectionhead"><h2>Querytyp-Stammdaten</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Aktuell verwendete Querytypen (Vorschau):</div>
-        <div id="queryTypePreview"></div>
+        <div class="sectionhead"><h2>Querytyp-Stammdaten</h2><span class="section-right"><span class="state wip">in Arbeit</span></span></div>
+        <div class="hint">ID ist technisch und nicht direkt editierbar. Label wird ueber den Code gefuehrt; Beschreibung erlaeutert den Typ (z. B. AO = Audit Optional, JAP = Jahresabschluss).</div>
+        <table style="margin-top:8px">
+          <thead><tr><th>ID</th><th>Label</th><th>Beschreibung</th><th></th></tr></thead>
+          <tbody id="queryTypeBody"></tbody>
+        </table>
+        <div class="row" style="margin-top:8px">
+          <div><button class="ghost" id="queryTypeAdd" style="width:100%">+ Querytyp</button></div>
+          <div><button class="primary" id="queryTypeSave" style="width:100%" disabled>Speichern</button></div>
+        </div>
       </article>
 
       <article class="sectionbox" id="sec-dropdowns">
-        <div class="sectionhead"><h2>Dropdowns statt Freitext</h2><span class="section-right"><span class="state wip">teilweise</span></span></div>
-        <div class="hint">Umgesetzt: Kritikalitaet/Datenschutz/RiskLevel ueber zentralen Katalog. Offen: Modul, Querytyp, Reason-Code.</div>
+        <div class="sectionhead"><h2>Dropdowns statt Freitext</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
+        <div class="hint">Das ist keine eigene Stammdatenfunktion, sondern die Nutzung der Stammdaten im Query Management. Stand: fuer Kritikalitaet, Modul, Querytyp und Reason-Code umgesetzt.</div>
       </article>
 
       <article class="sectionbox" id="sec-newsod">
@@ -291,6 +312,9 @@ $('themeToggle').onclick = () => {
 };
 
 let criticalities = [];
+let modulesCatalog = [];
+let queryTypesCatalog = [];
+let reasonCodesCatalog = [];
 let rulesetStats = [];
 let editMode = false;
 let dirty = false;
@@ -308,6 +332,13 @@ function toInternalId(label) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
   return raw || 'level';
+}
+
+function toCodeId(label) {
+  const raw = String(label || '').trim().toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  return raw || 'TYPE';
 }
 
 function normalizedHexColor(value) {
@@ -337,9 +368,13 @@ function setEditMode(v) {
   $('cmdCancelTop').disabled = !v;
   $('critAdd').disabled = !v;
   $('critSave').disabled = !v;
+  $('moduleAdd').disabled = !v;
+  $('queryTypeAdd').disabled = !v;
+  $('reasonAdd').disabled = !v;
   $('modeHint').textContent = v ? 'Modus: Aendern' : 'Modus: Anzeige';
   if (!v) setDirty(false);
   renderCriticalityTable();
+  renderCatalogTables();
 }
 
 function setActiveSection(sectionId, keepScroll) {
@@ -361,6 +396,9 @@ function setDirty(v) {
   const canSave = editMode && dirty;
   $('cmdSaveTop').disabled = !canSave;
   $('critSave').disabled = !canSave;
+  $('moduleSave').disabled = !canSave;
+  $('queryTypeSave').disabled = !canSave;
+  $('reasonSave').disabled = !canSave;
 }
 
 window.addEventListener('beforeunload', e => {
@@ -377,6 +415,133 @@ function renderBadges(elId, values) {
     return;
   }
   el.innerHTML = uniq.map(v => `<span class="badge">${esc(v)}</span>`).join('');
+}
+
+function renderReasonTable(rows) {
+  const body = $('reasonBody');
+  body.innerHTML = '';
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="3" class="muted">keine Werte</td></tr>';
+    return;
+  }
+  rows.forEach((row, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = ''
+      + `<td><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="id" value="${esc(row.id || '')}" /></td>`
+      + `<td><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="label" value="${esc(row.label || '')}" /></td>`
+      + `<td>${editMode ? `<button class="ghost" data-del="${idx}" style="width:auto;padding:4px 8px">x</button>` : '<span class="muted">-</span>'}</td>`;
+    body.appendChild(tr);
+  });
+  body.querySelectorAll('input[data-k]').forEach(inp => inp.addEventListener('input', () => {
+    if (!editMode) return;
+    const i = Number(inp.dataset.i);
+    const k = inp.dataset.k;
+    rows[i][k] = inp.value;
+    setDirty(true);
+  }));
+  body.querySelectorAll('button[data-del]').forEach(btn => btn.addEventListener('click', () => {
+    const i = Number(btn.dataset.del);
+    rows.splice(i, 1);
+    setDirty(true);
+    renderCatalogTables();
+  }));
+}
+
+function computedModuleCatalog(rows) {
+  const used = new Set();
+  return rows.map(r => {
+    const existing = String(r.id || '').trim();
+    const base = (r._new || !existing) ? String(r.label || '').trim() : existing;
+    let id = base || 'module';
+    let n = 2;
+    while (used.has(id)) id = `${base || 'module'}-${n++}`;
+    used.add(id);
+    return { ...r, _id: id };
+  });
+}
+
+function computedQueryTypeCatalog(rows) {
+  const used = new Set();
+  return rows.map(r => {
+    const existing = String(r.id || '').trim();
+    const base = (r._new || !existing) ? toCodeId(r.label) : existing;
+    let id = base;
+    let n = 2;
+    while (used.has(id)) id = `${base}_${n++}`;
+    used.add(id);
+    return { ...r, _id: id };
+  });
+}
+
+function renderComputedNamedTable(bodyId, rows, mode) {
+  const body = $(bodyId);
+  body.innerHTML = '';
+  const viewRows = mode === 'module' ? computedModuleCatalog(rows) : computedQueryTypeCatalog(rows);
+  if (!viewRows.length) {
+    body.innerHTML = mode === 'module'
+      ? '<tr><td colspan="3" class="muted">keine Werte</td></tr>'
+      : '<tr><td colspan="4" class="muted">keine Werte</td></tr>';
+    return;
+  }
+  viewRows.forEach((row, idx) => {
+    const tr = document.createElement('tr');
+    if (mode === 'module') {
+      tr.innerHTML = ''
+        + `<td><span class="badge key">${esc(row._id || '')}</span></td>`
+        + `<td><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="label" value="${esc(row.label || '')}" /></td>`
+        + `<td>${editMode ? `<button class="ghost" data-del="${idx}" style="width:auto;padding:4px 8px">x</button>` : '<span class="muted">-</span>'}</td>`;
+    } else {
+      tr.innerHTML = ''
+        + `<td><span class="badge key">${esc(row._id || '')}</span></td>`
+        + `<td><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="label" value="${esc(row.label || '')}" /></td>`
+        + `<td><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="description" value="${esc(row.description || '')}" placeholder="z. B. Jahresabschluss" /></td>`
+        + `<td>${editMode ? `<button class="ghost" data-del="${idx}" style="width:auto;padding:4px 8px">x</button>` : '<span class="muted">-</span>'}</td>`;
+    }
+    body.appendChild(tr);
+  });
+  body.querySelectorAll('input[data-k]').forEach(inp => inp.addEventListener('input', () => {
+    if (!editMode) return;
+    const i = Number(inp.dataset.i);
+    const k = inp.dataset.k;
+    rows[i][k] = inp.value;
+    rows[i]._new = true;
+    setDirty(true);
+    if (mode !== 'reason') renderCatalogTables();
+  }));
+  body.querySelectorAll('button[data-del]').forEach(btn => btn.addEventListener('click', () => {
+    const i = Number(btn.dataset.del);
+    rows.splice(i, 1);
+    setDirty(true);
+    renderCatalogTables();
+  }));
+}
+
+function renderCatalogTables() {
+  renderComputedNamedTable('moduleBody', modulesCatalog, 'module');
+  renderComputedNamedTable('queryTypeBody', queryTypesCatalog, 'qtype');
+  renderReasonTable(reasonCodesCatalog);
+}
+
+function normalizeNamedCatalog(rows, mode) {
+  if (mode === 'module') {
+    return computedModuleCatalog(rows).map(r => ({
+      id: String(r._id || '').trim(),
+      label: String(r.label || '').trim() || String(r._id || '').trim(),
+      description: null,
+    }));
+  }
+  if (mode === 'qtype') {
+    return computedQueryTypeCatalog(rows).map(r => ({
+      id: String(r._id || '').trim(),
+      label: String(r._id || '').trim(),
+      description: String(r.description || '').trim() || null,
+    }));
+  }
+  return rows.map(r => ({
+    id: String(r.id || '').trim(),
+    label: String(r.label || '').trim() || String(r.id || '').trim(),
+    description: String(r.description || '').trim() || null,
+  }));
 }
 
 function renderCriticalityTable() {
@@ -509,7 +674,16 @@ async function loadAll() {
     api('/profiles'),
   ]);
   criticalities = (critPayload.criticalities || []).map(x => ({ ...x, _new: false }));
+  const [modulesPayload, queryTypesPayload, reasonCodesPayload] = await Promise.all([
+    api('/admin/masterdata/modules'),
+    api('/admin/masterdata/query-types'),
+    api('/admin/masterdata/reason-codes'),
+  ]);
+  modulesCatalog = (modulesPayload.items || []).map(x => ({ ...x }));
+  queryTypesCatalog = (queryTypesPayload.items || []).map(x => ({ ...x }));
+  reasonCodesCatalog = (reasonCodesPayload.items || []).map(x => ({ ...x }));
   renderCriticalityTable();
+  renderCatalogTables();
 
   const rs = (profile.rulesets || []).map(r => r.id);
   const details = await Promise.all(rs.map(async id => {
@@ -523,11 +697,6 @@ async function loadAll() {
   rulesetDetails = details;
   renderRulesetSelect();
   const picked = detailsBySelectedRuleset();
-  const allQueries = picked.flatMap(d => d.queries || []);
-  const allSods = picked.flatMap(d => d.sodRules || []);
-  renderBadges('modulePreview', allQueries.map(q => q.module));
-  renderBadges('queryTypePreview', allQueries.map(q => q.queryType));
-  renderBadges('reasonPreview', allSods.map(r => r.reasonCode));
 
   rulesetStats = details.map(d => {
     const queries = d.queries || [];
@@ -599,14 +768,49 @@ $('cmdRefresh').onclick = async () => {
 
 $('rulesetSelect').addEventListener('change', () => {
   selectedRuleset = $('rulesetSelect').value || '';
-  const picked = detailsBySelectedRuleset();
-  const allQueries = picked.flatMap(d => d.queries || []);
-  const allSods = picked.flatMap(d => d.sodRules || []);
-  renderBadges('modulePreview', allQueries.map(q => q.module));
-  renderBadges('queryTypePreview', allQueries.map(q => q.queryType));
-  renderBadges('reasonPreview', allSods.map(r => r.reasonCode));
   renderRiskCoverage();
 });
+
+async function saveNamedCatalog(path, rows, label) {
+  if (!editMode) return;
+  setStatus(label + ' wird gespeichert ...');
+  try {
+    await api(path, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: normalizeNamedCatalog(rows, path.includes('query-types') ? 'qtype' : (path.includes('modules') ? 'module' : 'reason')) }),
+    });
+    await loadAll();
+    setEditMode(false);
+    setDirty(false);
+    setStatus(label + ' gespeichert.');
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+}
+
+$('moduleAdd').onclick = () => {
+  if (!editMode) return;
+  modulesCatalog.push({ id: '', label: '', _new: true });
+  setDirty(true);
+  renderCatalogTables();
+};
+$('queryTypeAdd').onclick = () => {
+  if (!editMode) return;
+  queryTypesCatalog.push({ id: '', label: '', description: '', _new: true });
+  setDirty(true);
+  renderCatalogTables();
+};
+$('reasonAdd').onclick = () => {
+  if (!editMode) return;
+  reasonCodesCatalog.push({ id: '', label: '', description: '', _new: true });
+  setDirty(true);
+  renderCatalogTables();
+};
+
+$('moduleSave').onclick = () => saveNamedCatalog('/admin/masterdata/modules', modulesCatalog, 'Modul-Stammdaten');
+$('queryTypeSave').onclick = () => saveNamedCatalog('/admin/masterdata/query-types', queryTypesCatalog, 'Querytyp-Stammdaten');
+$('reasonSave').onclick = () => saveNamedCatalog('/admin/masterdata/reason-codes', reasonCodesCatalog, 'Reason-Code-Stammdaten');
 
 document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', e => {
   e.preventDefault();

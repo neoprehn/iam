@@ -1054,15 +1054,35 @@ _DEFAULT_CRITICALITIES = [
     {"id": "low", "label": "low", "rank": 1, "color": "#7bd690", "kriScore": 20},
 ]
 
+_CATALOG_KEYS = ("modules", "queryTypes", "reasonCodes")
+
 
 def _ensure_masterdata_file() -> Path:
     if not MASTERDATA_PATH.is_file():
         MASTERDATA_PATH.parent.mkdir(parents=True, exist_ok=True)
         MASTERDATA_PATH.write_text(
-            json.dumps({"criticalities": _DEFAULT_CRITICALITIES}, ensure_ascii=False, indent=2),
+            json.dumps({
+                "criticalities": _DEFAULT_CRITICALITIES,
+                "modules": [],
+                "queryTypes": [],
+                "reasonCodes": [],
+            }, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
     return MASTERDATA_PATH
+
+
+def _load_masterdata_payload() -> dict:
+    path = _ensure_masterdata_file()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        raise HTTPException(500, "config/masterdata.json ist kein gueltiges JSON") from exc
+    if not isinstance(payload, dict):
+        raise HTTPException(500, "config/masterdata.json muss ein Objekt sein")
+    if "criticalities" not in payload:
+        raise HTTPException(500, "config/masterdata.json: Feld 'criticalities' fehlt")
+    return payload
 
 
 def _normalize_criticalities(raw: list[dict]) -> list[dict]:
@@ -1106,15 +1126,45 @@ def _normalize_criticalities(raw: list[dict]) -> list[dict]:
 
 
 def _load_criticalities() -> list[dict]:
-    path = _ensure_masterdata_file()
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except ValueError as exc:
-        raise HTTPException(500, "config/masterdata.json ist kein gueltiges JSON") from exc
+    payload = _load_masterdata_payload()
     raw = payload.get("criticalities")
     if not isinstance(raw, list):
         raise HTTPException(500, "config/masterdata.json: Feld 'criticalities' fehlt")
     return _normalize_criticalities(raw)
+
+
+def _normalize_named_catalog(raw: list[dict], field_name: str) -> list[dict]:
+    out = []
+    seen = set()
+    for i, row in enumerate(raw):
+        lid = str(row.get("id", "")).strip()
+        if not lid:
+            raise HTTPException(400, f"{field_name}[{i}].id fehlt")
+        if lid in seen:
+            raise HTTPException(400, f"{field_name}: '{lid}' mehrfach vorhanden")
+        seen.add(lid)
+        label = str(row.get("label") or lid).strip()
+        if not label:
+            raise HTTPException(400, f"{field_name}[{i}].label fehlt")
+        description = row.get("description")
+        if description is not None:
+            description = str(description).strip() or None
+        out.append({"id": lid, "label": label, "description": description})
+    return sorted(out, key=lambda x: x["label"].lower())
+
+
+def _load_named_catalog(key: str) -> list[dict]:
+    payload = _load_masterdata_payload()
+    raw = payload.get(key)
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise HTTPException(500, f"config/masterdata.json: Feld '{key}' muss eine Liste sein")
+    return _normalize_named_catalog(raw, key)
+
+
+def _catalog_id_set(key: str) -> set[str]:
+    return {x["id"] for x in _load_named_catalog(key)}
 
 
 def _criticality_rank_map() -> dict[str, int]:
@@ -1131,6 +1181,17 @@ def _validate_catalog_criticality(value: str | None, field_name: str) -> None:
     allowed = _criticality_rank_map()
     if value not in allowed:
         raise HTTPException(400, f"{field_name}: unbekannte Kritikalitaet '{value}'")
+
+
+def _validate_catalog_named(value: str | None, field_name: str, key: str) -> None:
+    if value is None:
+        return
+    allowed = _catalog_id_set(key)
+    # During rollout an empty catalog means "not configured yet".
+    if not allowed:
+        return
+    if value not in allowed:
+        raise HTTPException(400, f"{field_name}: unbekannter Masterdata-Wert '{value}'")
 
 
 def _backup_path(file: str) -> Path:
@@ -2506,6 +2567,8 @@ def admin_update_query(ruleset: str, queryId: str, req: QueryEditReq):
     _validate_catalog_criticality(req.criticality, "criticality")
     _validate_catalog_criticality(req.datenschutz, "datenschutz")
     _validate_catalog_criticality(req.riskLevel, "riskLevel")
+    _validate_catalog_named(req.module, "module", "modules")
+    _validate_catalog_named(req.queryType, "queryType", "queryTypes")
     current = merged[queryId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
@@ -2556,6 +2619,8 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     _validate_catalog_criticality(req.criticality, "criticality")
     _validate_catalog_criticality(req.datenschutz, "datenschutz")
     _validate_catalog_criticality(req.riskLevel, "riskLevel")
+    _validate_catalog_named(req.module, "module", "modules")
+    _validate_catalog_named(req.queryType, "queryType", "queryTypes")
     src = merged.get(req.fromId)
     if not src:
         raise HTTPException(404, f"Quell-Query '{req.fromId}' nicht gefunden")
@@ -2683,6 +2748,7 @@ class SodRuleEditReq(BaseModel):
     description: str | None = None
     shortDescription: str | None = None
     criticality: str | None = None
+    reasonCode: str | None = None
     risk: str | None = None
     controls: str | None = None
     riskType: str | None = None
@@ -2704,6 +2770,7 @@ def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
         raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
     _validate_catalog_criticality(req.criticality, "criticality")
     _validate_catalog_criticality(req.riskLevel, "riskLevel")
+    _validate_catalog_named(req.reasonCode, "reasonCode", "reasonCodes")
     current = merged[ruleId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
@@ -2775,6 +2842,16 @@ class CriticalityCatalogReq(BaseModel):
     criticalities: list[CriticalityLevelReq]
 
 
+class NamedCatalogItemReq(BaseModel):
+    id: str
+    label: str
+    description: str | None = None
+
+
+class NamedCatalogReq(BaseModel):
+    items: list[NamedCatalogItemReq]
+
+
 @app.get("/admin/masterdata/criticalities")
 def admin_get_criticalities():
     """Liefert den konfigurierbaren Kritikalitaetskatalog (Stufe/Farbe/Rang/KRI-Score)."""
@@ -2788,11 +2865,58 @@ def admin_update_criticalities(req: CriticalityCatalogReq):
     Schreibt nur den Katalog selbst; bestehende Query-/SoD-Werte bleiben unveraendert und muessen
     weiterhin auf eine der konfigurierten IDs zeigen."""
     normalized = _normalize_criticalities([x.model_dump() for x in req.criticalities])
+    payload = _load_masterdata_payload()
+    payload["criticalities"] = normalized
+    for key in _CATALOG_KEYS:
+        if key not in payload or not isinstance(payload.get(key), list):
+            payload[key] = []
     _ensure_masterdata_file().write_text(
-        json.dumps({"criticalities": normalized}, ensure_ascii=False, indent=2),
+        json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     return {"saved": len(normalized), "criticalities": normalized}
+
+
+@app.get("/admin/masterdata/modules")
+def admin_get_modules_catalog():
+    return {"items": _load_named_catalog("modules")}
+
+
+@app.put("/admin/masterdata/modules")
+def admin_update_modules_catalog(req: NamedCatalogReq):
+    normalized = _normalize_named_catalog([x.model_dump() for x in req.items], "modules")
+    payload = _load_masterdata_payload()
+    payload["modules"] = normalized
+    _ensure_masterdata_file().write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": len(normalized), "items": normalized}
+
+
+@app.get("/admin/masterdata/query-types")
+def admin_get_query_types_catalog():
+    return {"items": _load_named_catalog("queryTypes")}
+
+
+@app.put("/admin/masterdata/query-types")
+def admin_update_query_types_catalog(req: NamedCatalogReq):
+    normalized = _normalize_named_catalog([x.model_dump() for x in req.items], "queryTypes")
+    payload = _load_masterdata_payload()
+    payload["queryTypes"] = normalized
+    _ensure_masterdata_file().write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": len(normalized), "items": normalized}
+
+
+@app.get("/admin/masterdata/reason-codes")
+def admin_get_reason_codes_catalog():
+    return {"items": _load_named_catalog("reasonCodes")}
+
+
+@app.put("/admin/masterdata/reason-codes")
+def admin_update_reason_codes_catalog(req: NamedCatalogReq):
+    normalized = _normalize_named_catalog([x.model_dump() for x in req.items], "reasonCodes")
+    payload = _load_masterdata_payload()
+    payload["reasonCodes"] = normalized
+    _ensure_masterdata_file().write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": len(normalized), "items": normalized}
 
 
 @app.get("/admin/rulesets/{ruleset}/scopes")
