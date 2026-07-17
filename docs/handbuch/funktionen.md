@@ -401,6 +401,7 @@ Beide Aktionen fragen vor dem Ausführen nach.
 | Befehl | Wirkung |
 | --- | --- |
 | **Query Management** | Link direkt auf die eigene Seite `/admin.html` (kein Zwischendialog). |
+| **Masterdata** | Link direkt auf die eigene Seite `/admin-masterdata.html` (kein Zwischendialog). |
 | **Scope** | Link direkt auf die eigene Seite `/admin-scopes.html` (kein Zwischendialog). |
 | **Fehlerprotokoll** | Dialog mit fehlgeschlagenen Jobs (Import/Lauf/Backup/Restore/Bereinigen) — **persistent**, überlebt einen Container-Neustart (Datei `data/logs/job_errors.jsonl`). Neueste zuerst. |
 
@@ -408,9 +409,12 @@ Beide Aktionen fragen vor dem Ausführen nach.
 
 Erreichbar &uuml;ber das Men&uuml; „Admin" (Gruppe „7 &middot; Admin") &rarr; „Query Management".
 Eigene Ribbon-Gruppen: **Anzeige**
-(Aktualisieren), **Editieren** (Speichern/Abbrechen, aktiv sobald etwas ge&auml;ndert wurde),
+(Aktualisieren), **Bearbeiten** (Aendern/Speichern/Abbrechen; Speichern/Abbrechen aktiv sobald etwas ge&auml;ndert wurde),
 **Backup** (Overlay-Datei des gew&auml;hlten Rulesets herunterladen) und **Zur&uuml;ck** (zur
 Auswertung).
+
+Das fr&uuml;her eingebettete Masterdata-Panel ist aus Query Management entfernt; die Pflege der
+Kataloge erfolgt zentral auf der eigenen Seite **Masterdata** (`/admin-masterdata.html`).
 
 Links: **Filterset** w&auml;hlen (aktuell 3 Rulesets), darunter der **Modus-Umschalter
 „Einzelfilter"/„SoD"** — wechselt Liste, Filter und Detailbereich, ohne die Auswahl im jeweils
@@ -433,7 +437,7 @@ Unten links: eine **neue Query aus der gew&auml;hlten ableiten** (Berechtigungen
 &uuml;bernommen, Stammdaten/Risiko/Controls oben vorher anpassen) — nur im Modus Einzelfilter.
 
 **Modus SoD** — rechts nach Auswahl einer Regel: Stammdaten (Kurz-/Langbezeichnung,
-Kritikalit&auml;t, Reason-Code, read-only), darunter drei **Tabs**:
+Kritikalit&auml;t, Reason-Code), darunter drei **Tabs**:
 
 - **Aufbau** — die CNF-Klausel-Struktur: je Klausel die enthaltenen Queries (ID + Bezeichnung);
   alle Klauseln zusammen sind UND-verkn&uuml;pft, innerhalb einer Klausel reicht eine gematchte
@@ -449,6 +453,23 @@ Metadaten-Edits an bestehenden Regeln. Speichern/Abbrechen (Ribbon **oder** Deta
 &Auml;nderungen schreiben **nie** in die Vendor-Datei (`queries.json`), sondern in ein separates
 Overlay (`queries.custom.json`) je Ruleset — Vendor-Updates &uuml;berschreiben eigene Anpassungen
 dadurch nicht. Speichern/Ableiten wirkt **sofort** (kein extra Reload-Schritt n&ouml;tig).
+
+### Masterdata (eigene Seite, eigene Ribbon-Bar)
+
+Erreichbar &uuml;ber das Men&uuml; „Admin" (Gruppe „7 &middot; Admin") &rarr; „Masterdata".
+
+Die Seite b&uuml;ndelt die Pflege der zentralen Kataloge:
+
+- **Kritikalit&auml;ten** (ID intern berechnet; Label/Rang/Farbe/KRI editierbar)
+- **Reason-Codes (SoD)**
+- **Module** (ID technisch, aus Label abgeleitet)
+- **Querytypen** (ID technisch, aus Label abgeleitet, mit Beschreibung)
+
+Diese Kataloge werden im Query Management als **Dropdowns statt Freitext** genutzt
+(Kritikalit&auml;t/Datenschutz/RiskLevel sowie Modul/Querytyp/Reason-Code).
+
+Der Abschnitt „Kritikalit&auml;t prominent an Einzelfilter/SoD" beschreibt die UI-Nutzung der
+Katalogwerte (Badges/Farben/Filter) und ist **kein separater Stammdaten-Katalog**.
 
 ### Scope (eigene Seite, eigene Ribbon-Bar)
 

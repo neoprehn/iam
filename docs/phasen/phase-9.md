@@ -67,6 +67,11 @@ Lange Schritte laufen als **asynchrone Jobs**; der Fortschritt wird über `GET /
 | `GET /backups`, `GET /backups/{file}/download` | Backups listen / herunterladen |
 | `POST /backups/{file}/restore` | Restore = entpacken + Re-Import |
 | `POST /datasets/{d}/clear`, `POST /reset` | Dataset leeren / alles zurücksetzen (Ruleset & Schema bleiben) |
+| `GET|PUT /admin/masterdata/criticalities` | Kritikalit&auml;tskatalog (Stufe/Label/Rang/Farbe/KRI) lesen/pflegen |
+| `GET|PUT /admin/masterdata/modules` | Modul-Stammdaten lesen/pflegen |
+| `GET|PUT /admin/masterdata/query-types` | Querytyp-Stammdaten lesen/pflegen |
+| `GET|PUT /admin/masterdata/reason-codes` | Reason-Code-Stammdaten lesen/pflegen |
+| `GET|PUT /admin/rulesets/{ruleset}/queries/{id}`, `GET|PUT /admin/rulesets/{ruleset}/sodrules/{id}` | Query-/SoD-Metadaten im Overlay bearbeiten (katalogvalidiert) |
 
 ## Entwurfsentscheidungen
 
