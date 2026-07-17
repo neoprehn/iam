@@ -2757,6 +2757,26 @@ class SodRuleEditReq(BaseModel):
     riskStatus: str | None = None
 
 
+class SodRuleCreateReq(BaseModel):
+    newId: str
+    fromId: str | None = None
+    description: str | None = None
+    shortDescription: str | None = None
+    criticality: str | None = None
+    reasonCode: str | None = None
+    clauses: list[list[str]] | None = None
+    risk: str | None = None
+    controls: str | None = None
+    riskType: str | None = None
+    riskLevel: str | None = None
+    riskStatus: str | None = None
+
+
+class SodRuleTestReq(BaseModel):
+    clauses: list[list[str]]
+    runId: str | None = None
+
+
 def _normalize_sod_clauses(clauses: list[list[str]]) -> list[list[str]]:
     """Normalisiert CNF-Klauseln aus dem SoD-Editor: trimmt Query-IDs, entfernt Leerwerte,
     dedupliziert innerhalb einer Klausel und erzwingt mind. einen Eintrag pro Klausel."""
@@ -2773,6 +2793,68 @@ def _normalize_sod_clauses(clauses: list[list[str]]) -> list[list[str]]:
                 deduped.append(qid)
         normalized.append(deduped)
     return normalized
+
+
+@app.post("/admin/rulesets/{ruleset}/sodrules/create")
+def admin_create_sodrule(ruleset: str, req: SodRuleCreateReq):
+    """Legt eine neue SoD-Regel an (optional als Ableitung aus bestehender Regel).
+    Die Regel landet als Overlay-Eintrag in sod_rules.custom.json; Risiko-Felder werden
+    parallel in risks.json unter alias=<newId> gepflegt."""
+    if not _SAFE_NAME.match(req.newId):
+        raise HTTPException(400, "ungueltige SoD-ID (erlaubt: Buchstaben/Ziffern/._-)")
+    merged, _ = _merged_sodrules(ruleset)
+    if req.newId in merged:
+        raise HTTPException(409, f"SoD-ID '{req.newId}' existiert bereits")
+    _validate_catalog_criticality(req.criticality, "criticality")
+    _validate_catalog_criticality(req.riskLevel, "riskLevel")
+    _validate_catalog_named(req.reasonCode, "reasonCode", "reasonCodes")
+
+    src = None
+    if req.fromId:
+        src = merged.get(req.fromId)
+        if not src:
+            raise HTTPException(404, f"Quell-SoD-Regel '{req.fromId}' nicht gefunden")
+
+    if req.clauses is not None:
+        clauses = _normalize_sod_clauses(req.clauses)
+    elif src is not None:
+        clauses = _normalize_sod_clauses(src.get("clauses") or [])
+    else:
+        clauses = []
+    if not clauses:
+        raise HTTPException(400, "mindestens eine Klausel ist erforderlich")
+
+    known_queries = set(_merged_queries(ruleset)[0].keys())
+    for i, clause in enumerate(clauses, start=1):
+        unknown = [qid for qid in clause if qid not in known_queries]
+        if unknown:
+            raise HTTPException(400, f"Klausel {i} enthaelt unbekannte Query-IDs: {', '.join(unknown)}")
+
+    new_rule = {}
+    if src is not None:
+        new_rule = {k: v for k, v in src.items() if k not in _RISK_FIELDS}
+        new_rule["derivedFrom"] = req.fromId
+    new_rule["sodRule"] = req.newId
+    new_rule["clauses"] = clauses
+
+    for field in ("description", "shortDescription", "criticality", "reasonCode", "controls"):
+        v = getattr(req, field)
+        if v is not None:
+            new_rule[field] = v
+
+    risk_fields = {k: src.get(k) for k in _RISK_FIELDS if src and src.get(k) is not None}
+    for field in _RISK_FIELDS:
+        v = getattr(req, field)
+        if v is not None:
+            risk_fields[field] = v
+
+    custom_path = ensure_custom_sodrules_file(ruleset)
+    custom = _load_json_list(custom_path)
+    custom.append(new_rule)
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    _save_ruleset_risk(ruleset, "alias", req.newId, risk_fields)
+    reload_ruleset(ruleset)
+    return {"sodRule": req.newId, "derivedFrom": req.fromId}
 
 
 @app.put("/admin/rulesets/{ruleset}/sodrules/{ruleId}")
@@ -2815,6 +2897,59 @@ def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
     _save_ruleset_risk(ruleset, "alias", ruleId, risk_fields)
     reload_ruleset(ruleset)
     return {"sodRule": ruleId, "saved": fields}
+
+
+@app.post("/admin/rulesets/{ruleset}/sodrules/test")
+def admin_test_sodrule(ruleset: str, req: SodRuleTestReq):
+    """Testet eine SoD-Definition gegen bereits materialisierte MATCHES des neuesten (oder
+    explizit angegebenen) Runs des Rulesets und liefert Anzahl/Beispiel betroffener User."""
+    clauses = _normalize_sod_clauses(req.clauses or [])
+    if not clauses:
+        raise HTTPException(400, "mindestens eine Klausel ist erforderlich")
+    known_queries = set(_merged_queries(ruleset)[0].keys())
+    for i, clause in enumerate(clauses, start=1):
+        unknown = [qid for qid in clause if qid not in known_queries]
+        if unknown:
+            raise HTTPException(400, f"Klausel {i} enthaelt unbekannte Query-IDs: {', '.join(unknown)}")
+
+    with driver.session() as s:
+        if req.runId:
+            run = s.run(
+                "MATCH (r:Run {runId:$id}) RETURN r.runId AS runId, r.ruleset AS ruleset, r.dataset AS dataset",
+                id=req.runId,
+            ).single()
+            if not run:
+                raise HTTPException(404, f"Run '{req.runId}' nicht gefunden")
+            if run["ruleset"] != ruleset:
+                raise HTTPException(400, f"Run '{req.runId}' gehoert nicht zum Ruleset '{ruleset}'")
+        else:
+            run = s.run(
+                "MATCH (r:Run {ruleset:$ruleset}) "
+                "RETURN r.runId AS runId, r.dataset AS dataset "
+                "ORDER BY r.ts DESC, r.runId DESC LIMIT 1",
+                ruleset=ruleset,
+            ).single()
+            if not run:
+                raise HTTPException(404, f"Kein Run fuer Ruleset '{ruleset}' gefunden (bitte erst auswerten)")
+
+        row = s.run(
+            "MATCH (u:User {dataset:$dataset}) "
+            "WHERE all(cl IN $clauses WHERE any(qid IN cl WHERE EXISTS { "
+            "  MATCH (u)-[:MATCHES {ruleset:$ruleset, runId:$runId}]->(:Query {ruleset:$ruleset, id:qid}) "
+            "})) "
+            "RETURN count(u) AS affectedUsers, collect(u.id)[0..20] AS sampleUsers",
+            dataset=run["dataset"], ruleset=ruleset, runId=run["runId"], clauses=clauses,
+        ).single()
+
+    unique_qids = sorted({qid for cl in clauses for qid in cl})
+    return {
+        "runId": run["runId"],
+        "dataset": run["dataset"],
+        "affectedUsers": int(row["affectedUsers"] or 0),
+        "sampleUsers": row["sampleUsers"] or [],
+        "clauses": clauses,
+        "queryIds": unique_qids,
+    }
 
 
 # --- Scope-Profile (persistente Katalog-Auswahl, Admin-Seite "Scope") -------------------

@@ -131,6 +131,15 @@
     0% { box-shadow:0 0 0 0 rgba(76,139,245,.55); }
     100% { box-shadow:0 0 0 18px rgba(76,139,245,0); }
   }
+  .sod-builder { margin-top:10px; display:grid; gap:10px; }
+  .sod-group { border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:10px; }
+  .sod-group-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  .sod-group-head .hint { margin:0; }
+  .sod-group-children { display:grid; gap:8px; }
+  .sod-leaf { display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; }
+  .sod-op { width:auto; min-width:110px; }
+  .sod-small { width:auto; padding:6px 10px; font-size:12px; }
+  .sod-preview { border:1px dashed var(--line); border-radius:8px; padding:8px 10px; background:var(--panel); }
 </style>
 </head>
 <body>
@@ -212,6 +221,17 @@
           <label for="amNewId">Neue Query-ID</label>
           <input id="amNewId" placeholder="z. B. BC_EIGENE_01" />
           <button class="ghost" id="amDeriveBtn" style="width:100%;margin-top:8px">Ableiten &amp; &uuml;bernehmen</button>
+        </div>
+      </div>
+
+      <div id="sodCreateSection" style="display:none">
+        <h2>Neue SoD-Regel</h2>
+        <div class="filterbox">
+          <div class="hint">Legt eine neue SoD-Regel als Ableitung der links gew&auml;hlten Regel an.
+            Stammdaten, Risiko und Klauseln aus dem rechten Bereich werden &uuml;bernommen.</div>
+          <label for="srNewId">Neue SoD-ID</label>
+          <input id="srNewId" placeholder="z. B. BCX_9001" />
+          <button class="ghost" id="srCreateBtn" style="width:100%;margin-top:8px">Neu anlegen &amp; &uuml;bernehmen</button>
         </div>
       </div>
 
@@ -337,10 +357,22 @@
             Query, alle Klauseln zusammen sind UND-verkn&uuml;pft. Im Modus „Aendern" kann die
             Struktur direkt bearbeitet werden.</div>
           <div id="srClauses" style="margin-top:10px"></div>
-          <label for="srClausesEditor" style="margin-top:12px">SoD-Klauseln bearbeiten <span class="muted">(eine Klausel je Zeile, Query-IDs mit | trennen)</span></label>
-          <textarea id="srClausesEditor" disabled placeholder="Beispiel:
-Z_CUST_CHANGE | Z_CUST_DISPLAY
-Z_ROLE_ADMIN"></textarea>
+          <div class="sod-builder">
+            <label for="srExprBuilder" style="margin-top:4px">Schritt 1: SoD-Logik zusammenklicken</label>
+            <div id="srExprBuilder"></div>
+            <div class="sod-preview"><b>Vorschau:</b> <span id="srFormulaPreview" class="muted">-</span></div>
+
+            <label for="srClausesEditor">Schritt 2 (optional): Formel-/Klauseltext bearbeiten <span class="muted">(eine Klausel je Zeile, Query-IDs mit | trennen)</span></label>
+            <textarea id="srClausesEditor" disabled placeholder="Beispiel:
+Q1 | Q2
+Q3
+Q4 | Q5"></textarea>
+            <div class="row">
+              <div><button class="ghost" id="srApplyFormulaBtn" style="width:100%" disabled>Text in Builder &uuml;bernehmen</button></div>
+              <div><button class="ghost" id="srTestBtn" style="width:100%">SoD testen</button></div>
+            </div>
+            <div id="srTestResult" class="hint"></div>
+          </div>
         </div>
 
         <div class="tabpanel" id="tab-srrisiko" hidden>
@@ -409,6 +441,9 @@ let critLevels = [];
 let moduleLevels = [];
 let queryTypeLevels = [];
 let reasonCodeLevels = [];
+let sodExprTree = null;
+const SOD_MAX_TERMS = 10;
+const SOD_MAX_DEPTH = 3;
 // Formular ist per Default read-only (disabled, s. HTML) -- verhindert versehentliches "dirty"
 // setzen durch bloszes Anschauen; "Bearbeiten" schaltet erst explizit frei (Nutzerfeedback:
 // staendiges "Ungespeicherte Aenderungen verwerfen?" beim Durchklicken war verwirrend).
@@ -416,13 +451,14 @@ const QUERY_EDIT_FIELDS = ['amShortDescription', 'amDescription', 'amCriticality
   'amModule', 'amQueryType', 'amDisregardTcode', 'amRiskType', 'amRiskLevel', 'amRiskStatus',
   'amRisk', 'amControls'];
 const SOD_EDIT_FIELDS = ['srShortDescription', 'srDescription', 'srCriticality', 'srRiskType',
-  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls', 'srClausesEditor'];
+  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls', 'srClausesEditor', 'srApplyFormulaBtn'];
 function setEditMode(v) {
   editMode = v;
   QUERY_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
   SOD_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
   $('cmdEdit').disabled = v;
   $('amCancelBtn').disabled = !v; $('srCancelBtn').disabled = !v; $('cmdCancel').disabled = !v;
+  if (sodExprTree) renderSodExprBuilder();
   if (!v) setDirty(false);
 }
 function isQueryMode() { return mode === 'query'; }
@@ -494,6 +530,7 @@ function applyMode() {
   $('queryFilterRow').style.display = q ? '' : 'none';
   $('sodFilterRow').style.display = q ? 'none' : '';
   $('deriveSection').style.display = q ? '' : 'none';
+  $('sodCreateSection').style.display = q ? 'none' : '';
   $('amEmpty').style.display = q && !selectedId ? '' : 'none';
   $('amDetail').style.display = q && selectedId ? '' : 'none';
   $('srEmpty').style.display = !q && !selectedSodId ? '' : 'none';
@@ -691,7 +728,9 @@ async function selectSodRule(id) {
   $('srRiskStatus').value = r.riskStatus || '';
   $('srRisk').value = r.risk || '';
   $('srControls').value = r.controls || '';
+  sodExprTree = clausesToExprTree(r.clauses || []);
   $('srClausesEditor').value = clausesToEditorText(r.clauses || []);
+  renderSodExprBuilder();
   renderSodAufbau(r);
   setEditMode(false);
 }
@@ -702,6 +741,212 @@ function queryLabel(id) {
   const q = queries.find(x => x.id === id);
   const name = q && (q.shortDescription || q.description);
   return name ? `${id} &mdash; ${name}` : id;
+}
+
+function makeLeaf(qid) { return { type: 'leaf', qid: qid || '' }; }
+function makeGroup(op, children) { return { type: 'group', op: op || 'AND', children: children || [makeLeaf('')] }; }
+
+function cloneNode(node) {
+  return node.type === 'leaf'
+    ? makeLeaf(node.qid)
+    : makeGroup(node.op, (node.children || []).map(cloneNode));
+}
+
+function clausesToExprTree(clauses) {
+  const cl = (clauses || []).filter(c => (c || []).length);
+  if (!cl.length) return makeGroup('AND', [makeLeaf('')]);
+  return makeGroup('AND', cl.map(c => {
+    const leaves = c.map(qid => makeLeaf(qid));
+    return leaves.length === 1 ? leaves[0] : makeGroup('OR', leaves);
+  }));
+}
+
+function exprDepth(node) {
+  if (!node || node.type !== 'group') return 1;
+  const childDepth = Math.max(0, ...node.children.map(exprDepth));
+  return 1 + childDepth;
+}
+
+function exprLeafCount(node) {
+  if (!node) return 0;
+  if (node.type === 'leaf') return node.qid ? 1 : 0;
+  return (node.children || []).reduce((sum, ch) => sum + exprLeafCount(ch), 0);
+}
+
+function getNodeByPath(path) {
+  let n = sodExprTree;
+  for (const idx of path) {
+    if (!n || n.type !== 'group' || !n.children[idx]) return null;
+    n = n.children[idx];
+  }
+  return n;
+}
+
+function opJoin(op) { return op === 'OR' ? ' ODER ' : ' UND '; }
+
+function exprToHuman(node) {
+  if (!node) return '-';
+  if (node.type === 'leaf') return node.qid || '?';
+  const parts = (node.children || []).map(exprToHuman).filter(Boolean);
+  if (!parts.length) return '?';
+  const joined = parts.join(opJoin(node.op));
+  return parts.length > 1 ? `(${joined})` : joined;
+}
+
+function clausesToClauseSummary(clauses) {
+  if (!clauses.length) return '-';
+  return clauses.map((cl, i) => `Klausel ${i + 1}: ${cl.join(' ODER ')}`).join(' UND ');
+}
+
+function mergeClause(a, b) {
+  const out = [];
+  const seen = new Set();
+  [...a, ...b].forEach(v => {
+    if (!seen.has(v)) {
+      seen.add(v);
+      out.push(v);
+    }
+  });
+  return out;
+}
+
+function exprToClauses(node) {
+  if (!node) throw new Error('Leere SoD-Logik.');
+  if (node.type === 'leaf') {
+    const v = String(node.qid || '').trim();
+    if (!v) throw new Error('Bitte alle Bedingungen mit Einzelfiltern belegen.');
+    return [[v]];
+  }
+  const children = (node.children || []);
+  if (!children.length) throw new Error('Leere Gruppe in der SoD-Logik.');
+  const childClauses = children.map(exprToClauses);
+  if (node.op === 'AND') {
+    return childClauses.flat();
+  }
+  let acc = childClauses[0] || [];
+  for (let i = 1; i < childClauses.length; i++) {
+    const next = childClauses[i] || [];
+    const merged = [];
+    acc.forEach(c1 => next.forEach(c2 => merged.push(mergeClause(c1, c2))));
+    acc = merged;
+    if (acc.length > 128) {
+      throw new Error('Formel zu komplex nach ODER-Verteilung. Bitte weniger verschachteln.');
+    }
+  }
+  return acc;
+}
+
+function clauseOptionsHtml(selected) {
+  const opts = ['<option value="">-- Einzelfilter waehlen --</option>'];
+  queries.slice().sort((a, b) => String(a.id).localeCompare(String(b.id))).forEach(q => {
+    const label = `${q.id} — ${q.shortDescription || q.description || ''}`;
+    const sel = q.id === selected ? ' selected' : '';
+    opts.push(`<option value="${escapeHtml(q.id)}"${sel}>${escapeHtml(label)}</option>`);
+  });
+  return opts.join('');
+}
+
+function renderExprNode(node, path, depth) {
+  if (node.type === 'leaf') {
+    return ''
+      + `<div class="sod-leaf">`
+      + `<select data-sod-act="set-leaf" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>${clauseOptionsHtml(node.qid)}</select>`
+      + `${path.length ? `<button class="ghost sod-small" data-sod-act="remove" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>Entfernen</button>` : ''}`
+      + `</div>`;
+  }
+  const canNest = depth < SOD_MAX_DEPTH;
+  const childHtml = node.children.map((ch, idx) => renderExprNode(ch, [...path, idx], depth + 1)).join('');
+  return ''
+    + `<div class="sod-group">`
+    + `<div class="sod-group-head">`
+    + `<span class="hint">Verkn&uuml;pfung</span>`
+    + `<select class="sod-op" data-sod-act="set-op" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>`
+    + `<option value="AND"${node.op === 'AND' ? ' selected' : ''}>UND</option>`
+    + `<option value="OR"${node.op === 'OR' ? ' selected' : ''}>ODER</option>`
+    + `</select>`
+    + `<button class="ghost sod-small" data-sod-act="add-leaf" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>+ Bedingung</button>`
+    + `<button class="ghost sod-small" data-sod-act="add-group-and" data-path="${path.join('.')}" ${(!editMode || !canNest) ? 'disabled' : ''}>+ Gruppe UND</button>`
+    + `<button class="ghost sod-small" data-sod-act="add-group-or" data-path="${path.join('.')}" ${(!editMode || !canNest) ? 'disabled' : ''}>+ Gruppe ODER</button>`
+    + `${path.length ? `<button class="ghost sod-small" data-sod-act="remove" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>Gruppe entfernen</button>` : ''}`
+    + `</div>`
+    + `<div class="sod-group-children">${childHtml}</div>`
+    + `</div>`;
+}
+
+function updateSodPreview() {
+  let clauses = [];
+  try {
+    clauses = exprToClauses(sodExprTree);
+    $('srClausesEditor').value = clausesToEditorText(clauses);
+    $('srFormulaPreview').textContent = `${exprToHuman(sodExprTree)} => ${clausesToClauseSummary(clauses)}`;
+  } catch (e) {
+    $('srFormulaPreview').textContent = e.message || String(e);
+  }
+}
+
+function renderSodExprBuilder() {
+  if (!sodExprTree) sodExprTree = makeGroup('AND', [makeLeaf('')]);
+  const host = $('srExprBuilder');
+  host.innerHTML = renderExprNode(sodExprTree, [], 1);
+  updateSodPreview();
+
+  host.querySelectorAll('[data-sod-act]').forEach(el => el.addEventListener('click', evt => {
+    if (el.tagName === 'SELECT') return;
+    evt.preventDefault();
+    if (!editMode) return;
+    const act = el.dataset.sodAct;
+    const path = (el.dataset.path || '').split('.').filter(Boolean).map(Number);
+    const parentPath = path.slice(0, -1);
+    const idx = path[path.length - 1];
+    const node = getNodeByPath(path);
+    const parent = path.length ? getNodeByPath(parentPath) : null;
+    if (!node && act !== 'add-leaf' && act !== 'add-group-and' && act !== 'add-group-or') return;
+
+    if (act === 'add-leaf') {
+      const grp = getNodeByPath(path);
+      if (grp && grp.type === 'group') grp.children.push(makeLeaf(''));
+    }
+    if (act === 'add-group-and' || act === 'add-group-or') {
+      const grp = getNodeByPath(path);
+      if (grp && grp.type === 'group') grp.children.push(makeGroup(act === 'add-group-or' ? 'OR' : 'AND', [makeLeaf('')]));
+    }
+    if (act === 'remove' && parent && parent.type === 'group') {
+      parent.children.splice(idx, 1);
+      if (!parent.children.length) parent.children.push(makeLeaf(''));
+    }
+
+    if (exprLeafCount(sodExprTree) > SOD_MAX_TERMS) {
+      setStatus(`Maximal ${SOD_MAX_TERMS} Bedingungen erlaubt.`, true);
+      sodExprTree = clausesToExprTree(parseSodClausesEditor());
+      renderSodExprBuilder();
+      return;
+    }
+    if (exprDepth(sodExprTree) > SOD_MAX_DEPTH) {
+      setStatus(`Maximale Verschachtelungstiefe ${SOD_MAX_DEPTH} erreicht.`, true);
+      renderSodExprBuilder();
+      return;
+    }
+    setDirty(true);
+    renderSodExprBuilder();
+  }));
+
+  host.querySelectorAll('select[data-sod-act="set-op"]').forEach(sel => sel.addEventListener('change', () => {
+    if (!editMode) return;
+    const path = (sel.dataset.path || '').split('.').filter(Boolean).map(Number);
+    const grp = getNodeByPath(path);
+    if (grp && grp.type === 'group') grp.op = sel.value === 'OR' ? 'OR' : 'AND';
+    setDirty(true);
+    renderSodExprBuilder();
+  }));
+
+  host.querySelectorAll('select[data-sod-act="set-leaf"]').forEach(sel => sel.addEventListener('change', () => {
+    if (!editMode) return;
+    const path = (sel.dataset.path || '').split('.').filter(Boolean).map(Number);
+    const leaf = getNodeByPath(path);
+    if (leaf && leaf.type === 'leaf') leaf.qid = sel.value || '';
+    setDirty(true);
+    renderSodExprBuilder();
+  }));
 }
 
 function renderSodAufbau(r) {
@@ -731,11 +976,25 @@ function parseSodClausesEditor() {
     .split(/\r?\n/)
     .map(x => x.trim())
     .filter(Boolean);
-  return lines.map(line => {
-    const ids = line.split('|').map(x => x.trim()).filter(Boolean);
+  const parsed = lines.map(line => {
+    const ids = [...new Set(line.split('|').map(x => x.trim()).filter(Boolean))];
     if (!ids.length) throw new Error('Jede Klausel braucht mindestens eine Query-ID.');
     return ids;
   });
+  const terms = parsed.reduce((sum, cl) => sum + cl.length, 0);
+  if (terms > SOD_MAX_TERMS) throw new Error(`Maximal ${SOD_MAX_TERMS} Bedingungen erlaubt.`);
+  return parsed;
+}
+
+function getEffectiveSodClauses() {
+  const fromBuilder = exprToClauses(sodExprTree);
+  const fromText = parseSodClausesEditor();
+  if (JSON.stringify(fromBuilder) !== JSON.stringify(fromText)) {
+    sodExprTree = clausesToExprTree(fromText);
+    renderSodExprBuilder();
+    return fromText;
+  }
+  return fromBuilder;
 }
 
 function formSodFields() {
@@ -744,7 +1003,7 @@ function formSodFields() {
     description: $('srDescription').value.trim() || null,
     criticality: $('srCriticality').value || null,
     reasonCode: $('srReasonCode').value || null,
-    clauses: parseSodClausesEditor(),
+    clauses: getEffectiveSodClauses(),
     risk: $('srRisk').value.trim() || null,
     controls: $('srControls').value.trim() || null,
     riskType: $('srRiskType').value || null,
@@ -768,11 +1027,44 @@ async function saveSodCurrent() {
     setStatus('<b>Fehler:</b> ' + (err.detail || err.message || JSON.stringify(err)), true);
   }
 }
+
+async function testSodCurrent() {
+  const rs = $('amRuleset').value;
+  if (!rs) return;
+  $('srTestResult').innerHTML = '<span class="spin"></span> Test l&auml;uft&hellip;';
+  try {
+    const payload = { clauses: getEffectiveSodClauses() };
+    const out = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const sample = (out.sampleUsers || []).length
+      ? `<br><span class="muted">Beispiel-User: ${(out.sampleUsers || []).map(escapeHtml).join(', ')}</span>`
+      : '';
+    $('srTestResult').innerHTML = `Run <b>${escapeHtml(out.runId || '')}</b>, Dataset <b>${escapeHtml(out.dataset || '')}</b>: <b>${out.affectedUsers || 0}</b> betroffene User.${sample}`;
+  } catch (err) {
+    $('srTestResult').innerHTML = `<span style="color:var(--crit)"><b>Test fehlgeschlagen:</b> ${escapeHtml(err.detail || err.message || JSON.stringify(err))}</span>`;
+  }
+}
+
 ['srShortDescription', 'srDescription', 'srRisk', 'srControls']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
 $('srClausesEditor').addEventListener('input', () => setDirty(true));
 ['srCriticality', 'srRiskType', 'srRiskLevel', 'srRiskStatus']
   .forEach(id => $(id).addEventListener('change', () => setDirty(true)));
+$('srApplyFormulaBtn').addEventListener('click', () => {
+  if (!editMode) return;
+  try {
+    sodExprTree = clausesToExprTree(parseSodClausesEditor());
+    renderSodExprBuilder();
+    setDirty(true);
+    setStatus('Formeltext in den Builder &uuml;bernommen.');
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.message || String(err)), true);
+  }
+});
+$('srTestBtn').addEventListener('click', testSodCurrent);
 
 function setDirty(v) {
   dirty = v;
@@ -843,6 +1135,31 @@ $('amDeriveBtn').addEventListener('click', async () => {
     await selectQuery(newId);
   } catch (err) {
     setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+});
+
+$('srCreateBtn').addEventListener('click', async () => {
+  const rs = $('amRuleset').value;
+  const fromId = selectedSodId;
+  const newId = $('srNewId').value.trim();
+  if (!rs || !newId) return;
+  if (!fromId) {
+    setStatus('Bitte zuerst links eine SoD-Regel als Vorlage ausw&auml;hlen.', true);
+    return;
+  }
+  setStatus('<span class="spin"></span> SoD-Regel anlegen&hellip;');
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newId, fromId, ...formSodFields() }),
+    });
+    $('srNewId').value = '';
+    setStatus(`${doneTag} SoD-Regel <b>${newId}</b> angelegt.`);
+    await loadSodRules();
+    await selectSodRule(newId);
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || err.message || JSON.stringify(err)), true);
   }
 });
 

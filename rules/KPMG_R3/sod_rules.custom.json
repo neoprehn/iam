@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "sodRule": "BCX_005",
+    "reasonCode": "SYS_C",
+    "description": "Transport initiieren über Umwege (1017, 11409 oder 1300, 1301)",
+    "definition": "#TEMPL003a",
+    "definitionDescription": "SoD von QA AND QB AND ( QC OR QD)",
+    "expression": "QA AND QB AND ( QC OR QD)",
+    "variables": {
+      "QA": "1017_BC-SEC",
+      "QB": "1409_BC-SRV",
+      "QC": "1300_BC-CTS",
+      "QD": "1301_BC-CTS"
+    },
+    "criticality": "critical",
+    "criticalityRank": 4,
+    "clauses": [
+      [
+        "1017_BC-SEC"
+      ],
+      [
+        "1409_BC-SRV"
+      ],
+      [
+        "1300_BC-CTS",
+        "1301_BC-CTS"
+      ]
+    ],
+    "shortDescription": "Transport initiieren über Umwege",
+    "derivedFrom": "BCX_0004"
+  }
+]
