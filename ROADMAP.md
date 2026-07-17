@@ -191,15 +191,20 @@ Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitu
 - [ ] **Risikokatalog inhaltlich befüllen** — offene Pflege für Query-Risiken (alle Rulesets) und
   KPMG_R3-SoD-Risiken; `riskType`/`riskLevel` generisch, `riskStatus` mandantenbezogen nur aus
   lokal validierter Kontrollumgebung.
-- [ ] **Kritikalitäts-Stammdaten** — Stufen/Farben editierbar machen und optional KRI-Score je Stufe
-  mitführen.
+- [x] **Kritikalitäts-Stammdaten** (2026-07-17) — Basiskatalog umgesetzt: neue
+  `config/masterdata.json` mit Stufe/Label/Rang/Farbe/KRI-Score, Backend-API
+  `GET|PUT /admin/masterdata/criticalities`, Validierung gegen Katalog bei Query-/SoD-Edits,
+  sowie dynamische Verdrahtung der Kritikalitäts-Dropdowns/Filter im Admin-Editor
+  (keine hart codierten Stufen mehr).
 - [ ] **Kritikalität prominent an Einzelfilter/SoD** — Badge-Logik aus Findings in Katalog,
   Auswahl und Ergebniszeilen übernehmen.
 - [ ] **Reason-Code-Stammdaten (SoD)** — Prozesscode + Prozessbezeichnung als Masterdata.
 - [ ] **Modul-Stammdaten** — bestehende SAP-Module übernehmen und pflegbar machen.
 - [ ] **Querytyp-Stammdaten** — bestehende Querytypen übernehmen und pflegbar machen.
-- [ ] **Dropdowns statt Freitext** — Kritikalität/Modul/Querytyp/Reason-Code in Query-/SoD-Management.
+- [~] **Dropdowns statt Freitext** — **Kritikalität umgesetzt** (inkl. Datenschutz/RiskLevel auf
+  denselben Stufenkatalog), **Modul/Querytyp/Reason-Code noch offen**.
 - [ ] **Neuen SoD-Filter anlegen** — UI für Neuanlage (Klausel-/CNF-Struktur) ergänzen.
+- [ ] **Sprache** — Deutsch/Englisch Umschalter - mehrsprachigkeit.
 - [ ] **Authorizations/TCodes im Editor bearbeitbar (v2)** — verschachtelte Objekt/Feld/Wert-Listen.
 - [ ] **USOBT-gestützter Query-Builder (v2)** — Transaktion → Berechtigungsobjekt statt Freitext.
 - [ ] **Query → System-Typ-Zuordnung (v2)** — Zuordnung zu R/3, S/4HANA usw. als Stammdatenblatt.

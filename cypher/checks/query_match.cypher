@@ -20,6 +20,22 @@ WITH orgFields, q, reqs, apoc.coll.toSet([r IN reqs | r.object]) AS objects,
 
 MATCH (u:User {dataset:$dataset})
 WHERE
+      // 9.3-Perf: billiger Vorfilter ueber das erste benoetigte Objekt, bevor die volle
+      // all(obj IN objects ...)-Pruefung ausgefuehrt wird.
+      (size(objects)=0 OR EXISTS {
+            MATCH (u)-[asg:ASSIGNED_TO|HAS_PROFILE]->()-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(:Authorization {dataset:$dataset, object:objects[0]})
+            WHERE (type(asg) = 'HAS_PROFILE'
+                               OR ((asg.validFrom IS NULL OR asg.validFrom <= $asOf) AND (asg.validTo IS NULL OR $asOf <= asg.validTo)))
+      })
+      AND
+      // 9.3-Perf: frueher Kandidatenfilter fuer Queries mit aktivem TCode-Check.
+      ( disregard OR size(tcodes)=0 OR '*' IN tcodes OR EXISTS {
+            MATCH (u)-[asg:ASSIGNED_TO|HAS_PROFILE]->()-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(t:Authorization {dataset:$dataset, object:'S_TCODE'})
+            WHERE (type(asg) = 'HAS_PROFILE'
+                               OR ((asg.validFrom IS NULL OR asg.validFrom <= $asOf) AND (asg.validTo IS NULL OR $asOf <= asg.validTo)))
+                  AND apoc.any.property(t, 'f_TCD') IS NOT NULL
+      })
+      AND
   all(obj IN objects WHERE
     EXISTS {
       MATCH (u)-[asg:ASSIGNED_TO|HAS_PROFILE]->()-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:obj})

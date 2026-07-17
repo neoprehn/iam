@@ -49,6 +49,20 @@ SAP-Extrakte gehören lokal nach `data/import/<dataset>/` (oder per ZIP-Upload i
 verlassen die Umgebung nie. Die alternativen Host-Runner `run/run_import.ps1` /
 `run/run_evaluate.ps1` bleiben für PowerShell-Nutzung erhalten.
 
+## Sicherheits-Checks (Backend)
+
+Der Backend-Sicherheitscheck kombiniert zwei automatische Pruefungen:
+
+- AST-Guardrail gegen riskante Muster (z. B. `eval`, `exec`, `os.system`, `subprocess(..., shell=True)`).
+- Bandit-Scan mit Policy (`backend/bandit.yaml`).
+
+Ausfuehren:
+
+```powershell
+cd backend
+python -m unittest discover -s tests -p "test_security_patterns.py" -v
+```
+
 ## Repo-Struktur
 
 ```

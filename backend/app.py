@@ -31,6 +31,7 @@ NEO4J_URI = os.environ.get("NEO4J_URI", "bolt://neo4j:7687")
 NEO4J_USER = os.environ.get("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "/app/config"))
+MASTERDATA_PATH = CONFIG_DIR / "masterdata.json"
 RULES_DIR = Path(os.environ.get("RULES_DIR", "/app/rules"))
 CHECKS_DIR = Path(os.environ.get("CHECKS_DIR", "/app/checks"))
 CHECK_AREAS = {"user": ["A", "B", "C", "D", "E"], "role": ["R"], "import": ["I"]}
@@ -283,10 +284,30 @@ def split_statements(text: str) -> list[str]:
     return [s for s in stmts if s]
 
 
+# Heisser Pfad in 9.3: materialize/evaluate/explain rufen dieselben .cypher-Dateien sehr oft auf
+# (pro Query/Regel/Akteur). Wir cachen die bereits gesplitteten Statements pro Datei+mtime, damit
+# weder Dateilesen noch split_statements() fuer unveraenderte Dateien dauernd wiederholt werden.
+_CYPHER_STATEMENTS_CACHE: dict[str, tuple[int, list[str]]] = {}
+_CYPHER_STATEMENTS_CACHE_LOCK = threading.Lock()
+
+
+def _statements_for_path(path: Path) -> list[str]:
+    key = str(path.resolve())
+    mtime_ns = path.stat().st_mtime_ns
+    with _CYPHER_STATEMENTS_CACHE_LOCK:
+        cached = _CYPHER_STATEMENTS_CACHE.get(key)
+        if cached and cached[0] == mtime_ns:
+            return cached[1]
+    stmts = split_statements(path.read_text(encoding="utf-8"))
+    with _CYPHER_STATEMENTS_CACHE_LOCK:
+        _CYPHER_STATEMENTS_CACHE[key] = (mtime_ns, stmts)
+    return stmts
+
+
 def run_cypher_path(session, path: Path, params: dict) -> dict:
     """Eine .cypher-Datei ausfuehren; gibt aggregierte Summary-Zaehler zurueck."""
     totals = {"nodes_created": 0, "relationships_created": 0, "properties_set": 0}
-    for stmt in split_statements(path.read_text(encoding="utf-8")):
+    for stmt in _statements_for_path(path):
         c = session.run(stmt, **params).consume().counters
         totals["nodes_created"] += c.nodes_created
         totals["relationships_created"] += c.relationships_created
@@ -373,14 +394,14 @@ def _clear_checkpoint(path: Path) -> None:
 def _run_candidates(s, rel_path: str, params: dict) -> list[str]:
     """Fuehrt eine Kandidaten-Datei aus (ein einzelnes RETURN id-Statement) und gibt die
     Einheiten-IDs zurueck, die _run_phase() Schritt fuer Schritt abarbeitet."""
-    stmt = split_statements((CYPHER_DIR / rel_path).read_text(encoding="utf-8"))[0]
+    stmt = _statements_for_path(CYPHER_DIR / rel_path)[0]
     return [r["id"] for r in s.run(stmt, **params)]
 
 
 def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
                reset_rel_path: str | None, candidates_rel_path: str, one_rel_path: str,
                unit_param: str, params: dict, resume_units: set[str],
-               checkpoint_extra: dict) -> None:
+               checkpoint_extra: dict) -> dict:
     """Eine Phase (materialize/evaluate/explain-PROVIDES) als 'Reset einmalig -> Kandidaten
     ermitteln -> pro Einheit' statt als ein einziger, nicht unterbrechbarer Aufruf. Bei
     resume_units (nicht leer): reset_rel_path wird uebersprungen (sonst waeren bereits fertige
@@ -393,13 +414,30 @@ def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
     (s. Evidenz-Perf-Benchmark). Ein Absturz verliert dadurch hoechstens die letzten paar Sekunden
     bereits erledigter Einheiten -- unkritisch, da jede Einheit idempotent per MERGE schreibt und
     beim Resume einfach nochmal (billig) laeuft."""
-    if not resume_units and reset_rel_path:
+    phase_started = time.monotonic()
+    reset_started = time.monotonic()
+    reset_applied = bool(not resume_units and reset_rel_path)
+    if reset_applied:
         run_file(s, reset_rel_path, params)
+    reset_sec = time.monotonic() - reset_started if reset_applied else 0.0
 
+    candidates_started = time.monotonic()
     candidates = _run_candidates(s, candidates_rel_path, params)
+    candidates_sec = time.monotonic() - candidates_started
     total = len(candidates)
     completed = list(resume_units)
     completed_set = set(completed)
+    resumed_count = len(completed_set)
+    executed_sec_total = 0.0
+    slow_units: list[dict] = []
+
+    def _remember_slow(unit_id: str, sec: float) -> None:
+        # Nur die Top-10 behalten, damit Job-Status kompakt bleibt.
+        nonlocal slow_units
+        slow_units.append({"id": unit_id, "sec": round(sec, 3)})
+        slow_units.sort(key=lambda x: x["sec"], reverse=True)
+        if len(slow_units) > 10:
+            slow_units = slow_units[:10]
 
     def _persist():
         _write_checkpoint(state_path, {**checkpoint_extra, "phase": phase,
@@ -412,7 +450,11 @@ def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
         if unit_id in completed_set:
             continue
         _check_cancel(job_id)
+        unit_started = time.monotonic()
         run_file(s, one_rel_path, {**params, unit_param: unit_id})
+        unit_sec = time.monotonic() - unit_started
+        executed_sec_total += unit_sec
+        _remember_slow(unit_id, unit_sec)
         completed.append(unit_id)
         completed_set.add(unit_id)
         jobs[job_id].update(stepNum=len(completed), stepTotal=total)
@@ -425,23 +467,46 @@ def _run_phase(s, job_id: str, *, phase: str, step_label: str, state_path: Path,
     if completed:
         _persist()   # garantierter Abschluss-Checkpoint, auch wenn das Intervall nicht erreicht wurde
 
+    finished = len(completed_set)
+    executed_count = max(0, finished - resumed_count)
+    return {
+        "durationSec": round(time.monotonic() - phase_started, 3),
+        "resetSec": round(reset_sec, 3),
+        "candidatesSec": round(candidates_sec, 3),
+        "candidateCount": total,
+        "resumedCount": resumed_count,
+        "executedCount": executed_count,
+        "executedTotalSec": round(executed_sec_total, 3),
+        "executedAvgSec": round((executed_sec_total / executed_count), 3) if executed_count else 0.0,
+        "topSlowUnits": slow_units,
+        "completedCount": finished,
+        "resetApplied": reset_applied,
+    }
+
 
 def _explain_one(s, job_id: str, *, ruleset: str, dataset: str, as_of, run_id: str,
                  state_path: Path, checkpoint_extra: dict, resume_units: set[str],
-                 step_prefix: str = "") -> None:
+                 step_prefix: str = "") -> dict:
     """Evidenz (VIA_ROLE/VIA_PROFILE + conflictType) fuer einen Lauf berechnen -- PROVIDES
     (teuer, pro Akteur) ueber _run_phase() mit Fortschritt/Resume, der Abschluss
     (explain_sod_finalize.cypher, bereits auf die Findings dieses Laufs begrenzt und damit
     schnell) danach als ein Aufruf. Von _run_one() (explain-Phase eines Laufs) UND do_explain()
     (Ribbon-Button "Evidenz nachrechnen") gemeinsam genutzt."""
     base = {"ruleset": ruleset, "dataset": dataset, "asOf": as_of, "runId": run_id}
-    _run_phase(s, job_id, phase="explain", step_label=step_prefix + "explain",
-               state_path=state_path, reset_rel_path=None,
-               candidates_rel_path="sod/explain_sod_candidates.cypher",
-               one_rel_path="sod/explain_sod_one.cypher", unit_param="actorId",
-               params=base, resume_units=resume_units, checkpoint_extra=checkpoint_extra)
+    phase_started = time.monotonic()
+    provides_stats = _run_phase(s, job_id, phase="explain", step_label=step_prefix + "explain",
+                                state_path=state_path, reset_rel_path=None,
+                                candidates_rel_path="sod/explain_sod_candidates.cypher",
+                                one_rel_path="sod/explain_sod_one.cypher", unit_param="actorId",
+                                params=base, resume_units=resume_units, checkpoint_extra=checkpoint_extra)
     _check_cancel(job_id)
+    finalize_started = time.monotonic()
     run_file(s, "sod/explain_sod_finalize.cypher", base)
+    return {
+        "durationSec": round(time.monotonic() - phase_started, 3),
+        "provides": provides_stats,
+        "finalizeSec": round(time.monotonic() - finalize_started, 3),
+    }
 
 
 _RUN_PHASE_ORDER = ["ruleset", "materialize", "evaluate", "explain"]
@@ -480,6 +545,8 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
     base = {"ruleset": ruleset, "dataset": dataset, "asOf": as_of, "runId": run_id}
     state_path = _checkpoint_path(dataset, "_run_state.json")
     checkpoint_extra = checkpoint_base or {}
+    run_started = time.monotonic()
+    phase_stats: dict[str, dict] = {}
 
     enabled = {"ruleset": not skip_ruleset_load, "materialize": not skip_materialize,
                "evaluate": True, "explain": not skip_explain and evaluate_sod}
@@ -498,6 +565,7 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
         this_phase_resume = resume_units_set if phase == resume_phase else set()
 
         if phase == "ruleset":
+            ruleset_started = time.monotonic()
             _check_cancel(job_id)
             rdir = ruleset_dir(ruleset)
             if not rdir:
@@ -507,17 +575,23 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
             ensure_custom_sodrules_file(ruleset)   # sod_rules.custom.json ebenso
             run_file(s, "ruleset/load_ruleset.cypher",
                     {"dir": rdir, "ruleset": ruleset, "risks": _load_ruleset_risks(rdir)})
+            phase_stats["ruleset"] = {"durationSec": round(time.monotonic() - ruleset_started, 3)}
 
         elif phase == "materialize":
-            _run_phase(s, job_id, phase="materialize", step_label=step_prefix + "materialize",
-                       state_path=state_path, reset_rel_path="sod/materialize_matches_reset.cypher",
-                       candidates_rel_path="sod/materialize_matches_candidates.cypher",
-                       one_rel_path="sod/materialize_matches_one.cypher", unit_param="qid",
-                       params={**base, **org, "queryScope": query_scope, "sodRules": sod_rules,
-                               "queryIds": query_ids},
-                       resume_units=this_phase_resume, checkpoint_extra=checkpoint_extra)
+            phase_stats["materialize"] = _run_phase(
+                s, job_id, phase="materialize", step_label=step_prefix + "materialize",
+                state_path=state_path, reset_rel_path="sod/materialize_matches_reset.cypher",
+                candidates_rel_path="sod/materialize_matches_candidates.cypher",
+                one_rel_path="sod/materialize_matches_one.cypher", unit_param="qid",
+                params={**base, **org, "queryScope": query_scope, "sodRules": sod_rules,
+                        "queryIds": query_ids,
+                        "userTypes": list(utp.get("userTypes", [])),
+                        "excludeLocked": bool(utp.get("excludeLocked", False))},
+                resume_units=this_phase_resume, checkpoint_extra=checkpoint_extra,
+            )
 
         elif phase == "evaluate":
+            evaluate_started = time.monotonic()
             _check_cancel(job_id)
             jobs[job_id]["step"] = step_prefix + "evaluate"
             eval_params = {
@@ -537,18 +611,28 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
                 # brauchen ihn) -- auch im Can-Do-Modus (evaluate_sod=False), dort dann ohne
                 # anschliessenden Regel-Loop.
                 run_file(s, "sod/evaluate_sod_init.cypher", eval_params)
+            eval_loop_stats = None
             if evaluate_sod:
-                _run_phase(s, job_id, phase="evaluate", step_label=step_prefix + "evaluate",
-                           state_path=state_path, reset_rel_path=None,
-                           candidates_rel_path="sod/evaluate_sod_candidates.cypher",
-                           one_rel_path="sod/evaluate_sod_one.cypher", unit_param="ruleId",
-                           params=eval_params, resume_units=this_phase_resume,
-                           checkpoint_extra=checkpoint_extra)
+                eval_loop_stats = _run_phase(
+                    s, job_id, phase="evaluate", step_label=step_prefix + "evaluate",
+                    state_path=state_path, reset_rel_path=None,
+                    candidates_rel_path="sod/evaluate_sod_candidates.cypher",
+                    one_rel_path="sod/evaluate_sod_one.cypher", unit_param="ruleId",
+                    params=eval_params, resume_units=this_phase_resume,
+                    checkpoint_extra=checkpoint_extra,
+                )
+            phase_stats["evaluate"] = {
+                "durationSec": round(time.monotonic() - evaluate_started, 3),
+                "ruleLoop": eval_loop_stats,
+                "evaluateSod": bool(evaluate_sod),
+            }
 
         elif phase == "explain":
-            _explain_one(s, job_id, ruleset=ruleset, dataset=dataset, as_of=as_of, run_id=run_id,
-                        state_path=state_path, checkpoint_extra=checkpoint_extra,
-                        resume_units=this_phase_resume, step_prefix=step_prefix)
+            phase_stats["explain"] = _explain_one(
+                s, job_id, ruleset=ruleset, dataset=dataset, as_of=as_of, run_id=run_id,
+                state_path=state_path, checkpoint_extra=checkpoint_extra,
+                resume_units=this_phase_resume, step_prefix=step_prefix,
+            )
 
     rec = s.run(
         "MATCH (f:SoDConflict {runId:$r}) "
@@ -556,8 +640,19 @@ def _run_one(s, job_id: str, cfg: dict, *, ruleset: str, dataset: str, user_type
         "sum(CASE WHEN f.userSleeping THEN 1 ELSE 0 END) AS sleeping, "
         "sum(CASE WHEN f.conflictType='intra' THEN 1 ELSE 0 END) AS intra", r=run_id,
     ).single()
-    return {"runId": run_id, "title": title, "findings": rec["findings"], "rules": rec["rules"],
-            "sleeping": rec["sleeping"], "intra": rec["intra"]}
+    return {
+        "runId": run_id,
+        "title": title,
+        "findings": rec["findings"],
+        "rules": rec["rules"],
+        "sleeping": rec["sleeping"],
+        "intra": rec["intra"],
+        "perf": {
+            "orgProfile": org_profile,
+            "totalSec": round(time.monotonic() - run_started, 3),
+            "phases": phase_stats,
+        },
+    }
 
 
 def do_run(job_id: str, req: RunReq):
@@ -588,7 +683,7 @@ def do_run(job_id: str, req: RunReq):
                                skip_explain=eff_req.skipExplain, checkpoint_base=checkpoint_base,
                                resume_phase=resume_phase, resume_units=resume_units)
         _clear_checkpoint(_checkpoint_path(eff_req.dataset, "_run_state.json"))
-        jobs[job_id].update(status="done", step="done", **result)
+        jobs[job_id].update(status="done", step="done", **{k: v for k, v in result.items() if k != "perf"})
     except InterruptedError:
         jobs[job_id].update(status="cancelled", step="cancelled")
     except Exception as e:  # noqa: BLE001
@@ -666,7 +761,7 @@ def do_run_batch(job_id: str, req: RunBatchReq):
                     resume_units=resume_units if i == start_index else None,
                     batch_id=batch_id,
                 )
-                results.append(result)
+                results.append({k: v for k, v in result.items() if k != "perf"})
                 jobs[job_id]["runs"] = results
         _clear_checkpoint(_checkpoint_path(eff_req.dataset, "_run_state.json"))
         jobs[job_id].update(status="done", step="done", runs=results)
@@ -949,6 +1044,93 @@ def do_reset(job_id: str):
 # Restore = entpacken + deterministischer Re-Import. Online, transportabel (eine Datei), trust-aware
 # (nur bereinigte .csv, nie die rohen .txt). Findings sind regenerierbar (neu auswerten nach Restore).
 _SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
+_SAFE_LEVEL = re.compile(r"^[a-z0-9-]+$")
+
+_DEFAULT_CRITICALITIES = [
+    {"id": "very-critical", "label": "very critical", "rank": 5, "color": "#ff5c5c", "kriScore": 100},
+    {"id": "critical", "label": "critical", "rank": 4, "color": "#ff7a66", "kriScore": 80},
+    {"id": "high", "label": "high", "rank": 3, "color": "#ffa552", "kriScore": 60},
+    {"id": "medium", "label": "medium", "rank": 2, "color": "#f5c451", "kriScore": 40},
+    {"id": "low", "label": "low", "rank": 1, "color": "#7bd690", "kriScore": 20},
+]
+
+
+def _ensure_masterdata_file() -> Path:
+    if not MASTERDATA_PATH.is_file():
+        MASTERDATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+        MASTERDATA_PATH.write_text(
+            json.dumps({"criticalities": _DEFAULT_CRITICALITIES}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    return MASTERDATA_PATH
+
+
+def _normalize_criticalities(raw: list[dict]) -> list[dict]:
+    out = []
+    seen = set()
+    for i, row in enumerate(raw):
+        lid = str(row.get("id", "")).strip()
+        if not lid:
+            raise HTTPException(400, f"criticalities[{i}].id fehlt")
+        if not _SAFE_LEVEL.match(lid):
+            raise HTTPException(400, f"criticalities[{i}].id ungueltig (erlaubt: a-z, 0-9, -)")
+        if lid in seen:
+            raise HTTPException(400, f"criticality '{lid}' mehrfach vorhanden")
+        seen.add(lid)
+        label = str(row.get("label") or lid).strip()
+        if not label:
+            raise HTTPException(400, f"criticalities[{i}].label fehlt")
+        try:
+            rank = int(row.get("rank"))
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(400, f"criticalities[{i}].rank muss eine Zahl sein") from exc
+        if rank < 1:
+            raise HTTPException(400, f"criticalities[{i}].rank muss >= 1 sein")
+        color = row.get("color")
+        if color is not None:
+            color = str(color).strip()
+            if color and not re.match(r"^#[0-9A-Fa-f]{6}$", color):
+                raise HTTPException(400, f"criticalities[{i}].color muss #RRGGBB sein")
+            if not color:
+                color = None
+        kri_score = row.get("kriScore")
+        if kri_score is not None:
+            try:
+                kri_score = float(kri_score)
+            except Exception as exc:  # noqa: BLE001
+                raise HTTPException(400, f"criticalities[{i}].kriScore muss eine Zahl sein") from exc
+        out.append({"id": lid, "label": label, "rank": rank, "color": color, "kriScore": kri_score})
+    if not out:
+        raise HTTPException(400, "mindestens eine Kritikalitaetsstufe erforderlich")
+    return sorted(out, key=lambda x: (-x["rank"], x["id"]))
+
+
+def _load_criticalities() -> list[dict]:
+    path = _ensure_masterdata_file()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        raise HTTPException(500, "config/masterdata.json ist kein gueltiges JSON") from exc
+    raw = payload.get("criticalities")
+    if not isinstance(raw, list):
+        raise HTTPException(500, "config/masterdata.json: Feld 'criticalities' fehlt")
+    return _normalize_criticalities(raw)
+
+
+def _criticality_rank_map() -> dict[str, int]:
+    return {c["id"]: c["rank"] for c in _load_criticalities()}
+
+
+def _criticality_label_map() -> dict[str, str]:
+    return {c["id"]: c["label"] for c in _load_criticalities()}
+
+
+def _validate_catalog_criticality(value: str | None, field_name: str) -> None:
+    if value is None:
+        return
+    allowed = _criticality_rank_map()
+    if value not in allowed:
+        raise HTTPException(400, f"{field_name}: unbekannte Kritikalitaet '{value}'")
 
 
 def _backup_path(file: str) -> Path:
@@ -1397,10 +1579,10 @@ def role_can_do(roleId: str, runId: str):
                     id=runId).single()
         if not run:
             raise HTTPException(404, f"Lauf '{runId}' nicht gefunden")
-        q_stmt = split_statements((CYPHER_DIR / "roles/role_can_do.cypher").read_text(encoding="utf-8"))[0]
+        q_stmt = _statements_for_path(CYPHER_DIR / "roles/role_can_do.cypher")[0]
         queries = [dict(r) for r in s.run(q_stmt, ruleset=run["ruleset"], dataset=run["dataset"], roleId=roleId)]
         provided = [q["id"] for q in queries]
-        r_stmt = split_statements((CYPHER_DIR / "roles/role_sod_rules.cypher").read_text(encoding="utf-8"))[0]
+        r_stmt = _statements_for_path(CYPHER_DIR / "roles/role_sod_rules.cypher")[0]
         rules = [dict(r) for r in s.run(r_stmt, ruleset=run["ruleset"], providedIds=provided)]
         return {"role": roleId, "queries": queries, "sodRules": rules}
 
@@ -1643,7 +1825,7 @@ def run_cypher_path_capturing(session, path: Path, params: dict) -> list[list[di
     Konsistenzcheck-Dateien koennen mehrere ;-getrennte Statements haben (z. B. Zusammenfassung +
     Detailliste, s. sap_all.cypher); jedes Statement liefert ein eigenes Zeilen-Set."""
     return [[jsonable(dict(r)) for r in session.run(stmt, **params)]
-            for stmt in split_statements(path.read_text(encoding="utf-8"))]
+            for stmt in _statements_for_path(path)]
 
 
 class ConsistencyRunReq(BaseModel):
@@ -1721,7 +1903,7 @@ def consistency_root_cause(checkId: str, req: ConsistencyRootCauseReq):
         raise HTTPException(500, f"Root-Cause-Cypher fuer '{checkId}' fehlt: {rc_file}")
     with driver.session() as s:
         as_of = _dataset_asof(s, req.dataset)
-        stmt = split_statements(path.read_text(encoding="utf-8"))[0]
+        stmt = _statements_for_path(path)[0]
         rows = [jsonable(dict(r)) for r in s.run(stmt, dataset=req.dataset, asOf=as_of, user=req.user)]
     by_befund: dict[str, dict] = {}
     for r in rows:
@@ -1758,7 +1940,7 @@ def consistency_graph(checkId: str, req: ConsistencyGraphReq):
         raise HTTPException(500, f"Graph-Cypher fuer '{checkId}' fehlt: {graph_file}")
     with driver.session() as s:
         as_of = _dataset_asof(s, req.dataset)
-        stmt = split_statements(path.read_text(encoding="utf-8"))[0]
+        stmt = _statements_for_path(path)[0]
         rows = [jsonable(dict(r)) for r in s.run(stmt, dataset=req.dataset, asOf=as_of)]
     nodes: dict[str, dict] = {}
     edges: dict[str, dict] = {}
@@ -2255,9 +2437,12 @@ def admin_list_queries(ruleset: str):
     """Alle Queries eines Rulesets (Vendor + Overlay effektiv gemerged) fuer das Query
     Management; 'custom' markiert eigene Edits/abgeleitete Queries."""
     merged, custom_ids = _merged_queries(ruleset)
+    crit_ranks = _criticality_rank_map()
+    crit_labels = _criticality_label_map()
     return [{"id": qid, "description": q.get("description", ""),
              "shortDescription": q.get("shortDescription", ""), "criticality": q.get("criticality"),
-             "criticalityRank": q.get("criticalityRank", 0),
+             "criticalityLabel": crit_labels.get(q.get("criticality") or ""),
+             "criticalityRank": crit_ranks.get(q.get("criticality") or "", q.get("criticalityRank", 0)),
              "module": q.get("module"), "queryType": q.get("queryType"),
              "disregardTcode": bool(q.get("disregardTcode", False)),
              "riskType": q.get("riskType"), "riskLevel": q.get("riskLevel"), "riskStatus": q.get("riskStatus"),
@@ -2318,6 +2503,9 @@ def admin_update_query(ruleset: str, queryId: str, req: QueryEditReq):
     merged, _ = _merged_queries(ruleset)
     if queryId not in merged:
         raise HTTPException(404, f"Query '{queryId}' nicht gefunden")
+    _validate_catalog_criticality(req.criticality, "criticality")
+    _validate_catalog_criticality(req.datenschutz, "datenschutz")
+    _validate_catalog_criticality(req.riskLevel, "riskLevel")
     current = merged[queryId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
@@ -2365,6 +2553,9 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     merged, _ = _merged_queries(ruleset)
     if req.newId in merged:
         raise HTTPException(409, f"Query-ID '{req.newId}' existiert bereits")
+    _validate_catalog_criticality(req.criticality, "criticality")
+    _validate_catalog_criticality(req.datenschutz, "datenschutz")
+    _validate_catalog_criticality(req.riskLevel, "riskLevel")
     src = merged.get(req.fromId)
     if not src:
         raise HTTPException(404, f"Quell-Query '{req.fromId}' nicht gefunden")
@@ -2457,9 +2648,13 @@ def admin_list_sodrules(ruleset: str):
     speist die clientseitige bidirektionale Einzelfilter<->SoD-Verknuepfung der Katalog-Auswahl
     (Assistent Schritt Scoping / Admin-Seite "Scope")."""
     merged, custom_ids = _merged_sodrules(ruleset)
+    crit_ranks = _criticality_rank_map()
+    crit_labels = _criticality_label_map()
     return [{"id": rid, "description": r.get("description", ""),
              "shortDescription": r.get("shortDescription", ""), "criticality": r.get("criticality"),
-             "criticalityRank": r.get("criticalityRank", 0), "clauses": r.get("clauses", []),
+             "criticalityLabel": crit_labels.get(r.get("criticality") or ""),
+             "criticalityRank": crit_ranks.get(r.get("criticality") or "", r.get("criticalityRank", 0)),
+             "clauses": r.get("clauses", []),
              "reasonCode": r.get("reasonCode"),
              "riskType": r.get("riskType"), "riskLevel": r.get("riskLevel"), "riskStatus": r.get("riskStatus"),
              "custom": rid in custom_ids}
@@ -2507,6 +2702,8 @@ def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
     merged, _ = _merged_sodrules(ruleset)
     if ruleId not in merged:
         raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
+    _validate_catalog_criticality(req.criticality, "criticality")
+    _validate_catalog_criticality(req.riskLevel, "riskLevel")
     current = merged[ruleId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
@@ -2564,6 +2761,38 @@ class ScopeProfileCreateReq(ScopeProfileEditReq):
 def _scope_profile_nonempty(req: ScopeProfileEditReq) -> None:
     if not req.queryIds and not req.sodRuleIds:
         raise HTTPException(400, "mindestens ein Einzelfilter oder eine SoD-Regel erforderlich")
+
+
+class CriticalityLevelReq(BaseModel):
+    id: str
+    label: str
+    rank: int
+    color: str | None = None
+    kriScore: float | None = None
+
+
+class CriticalityCatalogReq(BaseModel):
+    criticalities: list[CriticalityLevelReq]
+
+
+@app.get("/admin/masterdata/criticalities")
+def admin_get_criticalities():
+    """Liefert den konfigurierbaren Kritikalitaetskatalog (Stufe/Farbe/Rang/KRI-Score)."""
+    return {"criticalities": _load_criticalities()}
+
+
+@app.put("/admin/masterdata/criticalities")
+def admin_update_criticalities(req: CriticalityCatalogReq):
+    """Aktualisiert den Kritikalitaetskatalog in config/masterdata.json.
+
+    Schreibt nur den Katalog selbst; bestehende Query-/SoD-Werte bleiben unveraendert und muessen
+    weiterhin auf eine der konfigurierten IDs zeigen."""
+    normalized = _normalize_criticalities([x.model_dump() for x in req.criticalities])
+    _ensure_masterdata_file().write_text(
+        json.dumps({"criticalities": normalized}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return {"saved": len(normalized), "criticalities": normalized}
 
 
 @app.get("/admin/rulesets/{ruleset}/scopes")

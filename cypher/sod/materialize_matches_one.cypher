@@ -2,7 +2,8 @@
 // Koerper 1:1 aus dem frueheren apoc.periodic.iterate-Batch-Statement uebernommen, nur das
 // bisher implizite `q` (aus der Batch-Zeile) wird jetzt explizit ueber $qid gebunden. Eine
 // solche Einheit = ein Fortschrittsschritt in _run_phase().
-// Parameter: $ruleset, $dataset, $asOf, $runId, $orgMode, $orgFilters, $qid.
+// Parameter: $ruleset, $dataset, $asOf, $runId, $orgMode, $orgFilters, $qid,
+//            $userTypes (Liste Labels; [] = alle), $excludeLocked (bool).
 MATCH (q:Query {ruleset:$ruleset, id:$qid})
 MATCH (of:OrgField {dataset:$dataset})
 WITH q, collect(of.field) AS orgFields
@@ -12,6 +13,26 @@ WITH q, orgFields, reqs, apoc.coll.toSet([r IN reqs | r.object]) AS objects,
      q.tcodes AS tcodes, q.disregardTcode AS disregard
 MATCH (u:User {dataset:$dataset})
 WHERE
+  // 9.3-Perf: User-Scope frueh anwenden (statt erst spaeter in evaluate), damit materialize
+  // weniger Kandidaten traversieren muss.
+  (size($userTypes)=0 OR any(t IN $userTypes WHERE t IN labels(u)))
+  AND (NOT $excludeLocked OR NOT ('Locked' IN labels(u)))
+  AND
+  // 9.3-Perf: billiger Vorfilter ueber das erste benoetigte Objekt reduziert die Menge der User,
+  // fuer die die komplette all(obj IN objects ...)-Pruefung ausgefuehrt wird.
+  (size(objects)=0 OR EXISTS {
+    MATCH (u)-[asg:ASSIGNED_TO|HAS_PROFILE]->()-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(:Authorization {dataset:$dataset, object:objects[0]})
+    WHERE (type(asg)='HAS_PROFILE' OR ((asg.validFrom IS NULL OR asg.validFrom<=$asOf) AND (asg.validTo IS NULL OR $asOf<=asg.validTo)))
+  })
+  AND
+  // 9.3-Perf: wenn die Query einen echten TCode-Check braucht, frueh auf Kandidaten mit
+  // irgendeiner S_TCODE-Belegung begrenzen (die exakte TCode-Pruefung bleibt unveraendert unten).
+  ( disregard OR size(tcodes)=0 OR '*' IN tcodes OR EXISTS {
+    MATCH (u)-[asg:ASSIGNED_TO|HAS_PROFILE]->()-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(t:Authorization {dataset:$dataset, object:'S_TCODE'})
+    WHERE (type(asg)='HAS_PROFILE' OR ((asg.validFrom IS NULL OR asg.validFrom<=$asOf) AND (asg.validTo IS NULL OR $asOf<=asg.validTo)))
+      AND apoc.any.property(t,'f_TCD') IS NOT NULL
+  })
+  AND
   all(obj IN objects WHERE
     EXISTS {
       MATCH (u)-[asg:ASSIGNED_TO|HAS_PROFILE]->()-[:CONTAINS|HAS_PROFILE*0..4]->()-[:HAS_AUTH]->(a:Authorization {dataset:$dataset, object:obj})

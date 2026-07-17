@@ -126,6 +126,11 @@
   .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--muted);
     border-top-color:var(--accent); border-radius:50%; animation:s .7s linear infinite; vertical-align:-1px; }
   @keyframes s { to { transform:rotate(360deg); } }
+  .jump-highlight { animation:mdFlash 1.2s ease-out; }
+  @keyframes mdFlash {
+    0% { box-shadow:0 0 0 0 rgba(76,139,245,.55); }
+    100% { box-shadow:0 0 0 18px rgba(76,139,245,0); }
+  }
 </style>
 </head>
 <body>
@@ -171,7 +176,7 @@
   <div class="cols">
     <div>
       <h2>Filterset</h2>
-      <div class="filterbox">
+      <div class="filterbox" id="masterdataBox">
         <label for="amRuleset">Ruleset</label>
         <select id="amRuleset"></select>
         <label>Modus</label>
@@ -209,6 +214,21 @@
         </div>
       </div>
 
+      <h2 id="masterdata">Masterdata</h2>
+      <div class="filterbox">
+        <div class="hint">Kritikalit&auml;tskatalog (Stufe, Rang, Farbe, KRI-Score) f&uuml;r
+          Query-/SoD-Dropdowns und Validierung.</div>
+        <table class="auftable" id="mdCritTable" style="margin-top:8px">
+          <thead><tr><th>ID</th><th>Label</th><th>Rang</th><th>Farbe</th><th>KRI</th><th></th></tr></thead>
+          <tbody id="mdCritBody"></tbody>
+        </table>
+        <div class="row" style="margin-top:8px">
+          <div><button class="ghost" id="mdCritAdd" style="width:100%">+ Stufe</button></div>
+          <div><button class="ghost" id="mdCritReload" style="width:100%">Neu laden</button></div>
+          <div><button class="primary" id="mdCritSave" style="width:100%">Masterdata speichern</button></div>
+        </div>
+      </div>
+
       <h2>Geplant</h2>
       <div class="filterbox">
         <button class="ghost" disabled title="kommt sp&auml;ter" style="width:100%">Neues Filterset importieren</button>
@@ -236,14 +256,10 @@
             <div><label for="amCriticality">Kritikalit&auml;t</label>
               <select id="amCriticality" disabled>
                 <option value="">&ndash;</option>
-                <option value="very-critical">very critical</option><option value="critical">critical</option>
-                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="amDatenschutz">Datenschutz</label>
               <select id="amDatenschutz" disabled>
                 <option value="">&ndash;</option>
-                <option value="very-critical">very critical</option><option value="critical">critical</option>
-                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="amModule">Modul</label><input id="amModule" disabled /></div>
           </div>
@@ -279,8 +295,6 @@
             <div><label for="amRiskLevel">Risikostufe</label>
               <select id="amRiskLevel" disabled>
                 <option value="">&ndash;</option>
-                <option value="very-critical">very critical</option><option value="critical">critical</option>
-                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="amRiskStatus">Status</label>
               <select id="amRiskStatus" disabled>
@@ -322,8 +336,6 @@
             <div><label for="srCriticality">Kritikalit&auml;t</label>
               <select id="srCriticality" disabled>
                 <option value="">&ndash;</option>
-                <option value="very-critical">very critical</option><option value="critical">critical</option>
-                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="srReasonCode">Reason-Code</label><input id="srReasonCode" disabled /></div>
           </div>
@@ -353,8 +365,6 @@
             <div><label for="srRiskLevel">Risikostufe</label>
               <select id="srRiskLevel" disabled>
                 <option value="">&ndash;</option>
-                <option value="very-critical">very critical</option><option value="critical">critical</option>
-                <option value="high">high</option><option value="medium">medium</option><option value="low">low</option>
               </select></div>
             <div><label for="srRiskStatus">Status</label>
               <select id="srRiskStatus" disabled>
@@ -406,6 +416,8 @@ function setStatus(html, isErr) {
 let queries = [], selectedId = null, dirty = false, editMode = false;
 let sodRules = [], selectedSodId = null;
 let mode = 'query';
+let critLevels = [];
+let masterCritLevels = [];
 // Formular ist per Default read-only (disabled, s. HTML) -- verhindert versehentliches "dirty"
 // setzen durch bloszes Anschauen; "Bearbeiten" schaltet erst explizit frei (Nutzerfeedback:
 // staendiges "Ungespeicherte Aenderungen verwerfen?" beim Durchklicken war verwirrend).
@@ -435,9 +447,74 @@ async function loadRulesets() {
   await loadAll();
 }
 
+async function loadCriticalities() {
+  const payload = await api('/admin/masterdata/criticalities');
+  critLevels = (payload.criticalities || []).slice().sort((a, b) => (b.rank - a.rank) || a.id.localeCompare(b.id));
+  masterCritLevels = critLevels.map(x => ({ ...x }));
+  fillFixedSelect('amCriticality', critLevels);
+  fillFixedSelect('amDatenschutz', critLevels);
+  fillFixedSelect('amRiskLevel', critLevels);
+  fillFixedSelect('srCriticality', critLevels);
+  fillFixedSelect('srRiskLevel', critLevels);
+  fillFixedSelect('amFilterCriticality', critLevels, true);
+  fillFixedSelect('srFilterCriticality', critLevels, true);
+  renderCriticalityMasterTable();
+}
+
+function renderCriticalityMasterTable() {
+  const body = $('mdCritBody');
+  body.innerHTML = '';
+  if (!masterCritLevels.length) {
+    body.innerHTML = '<tr><td colspan="6" class="muted">keine Stufen</td></tr>';
+    return;
+  }
+  masterCritLevels
+    .slice()
+    .sort((a, b) => ((Number(b.rank) || 0) - (Number(a.rank) || 0)) || (a.id || '').localeCompare(b.id || ''))
+    .forEach((lvl, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = ''
+        + `<td><input data-k="id" data-i="${idx}" value="${escapeHtml(lvl.id || '')}" /></td>`
+        + `<td><input data-k="label" data-i="${idx}" value="${escapeHtml(lvl.label || '')}" /></td>`
+        + `<td><input type="number" min="1" step="1" data-k="rank" data-i="${idx}" value="${escapeHtml(String(lvl.rank ?? ''))}" /></td>`
+        + `<td><input data-k="color" data-i="${idx}" value="${escapeHtml(lvl.color || '')}" placeholder="#RRGGBB" /></td>`
+        + `<td><input type="number" step="1" data-k="kriScore" data-i="${idx}" value="${escapeHtml(lvl.kriScore == null ? '' : String(lvl.kriScore))}" /></td>`
+        + `<td><button class="ghost" data-del="${idx}" style="width:auto;padding:4px 8px">x</button></td>`;
+      body.appendChild(tr);
+    });
+  body.querySelectorAll('input[data-k]').forEach(inp => inp.addEventListener('input', () => {
+    const i = Number(inp.dataset.i);
+    const k = inp.dataset.k;
+    const v = inp.value;
+    if (k === 'rank') masterCritLevels[i][k] = v === '' ? '' : Number(v);
+    else if (k === 'kriScore') masterCritLevels[i][k] = v === '' ? null : Number(v);
+    else masterCritLevels[i][k] = v;
+  }));
+  body.querySelectorAll('button[data-del]').forEach(btn => btn.addEventListener('click', () => {
+    const i = Number(btn.dataset.del);
+    masterCritLevels.splice(i, 1);
+    renderCriticalityMasterTable();
+  }));
+}
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+}
+
+function normalizeMasterCriticalitiesForSave() {
+  return masterCritLevels.map(r => ({
+    id: String(r.id || '').trim(),
+    label: String(r.label || '').trim(),
+    rank: Number(r.rank),
+    color: String(r.color || '').trim() || null,
+    kriScore: (r.kriScore == null || r.kriScore === '' || Number.isNaN(Number(r.kriScore))) ? null : Number(r.kriScore),
+  }));
+}
+
 /* Beide Listen werden bei jedem Ruleset-Wechsel geladen (nicht erst bei Moduswechsel) — die
    Queries werden ausserdem im SoD-Aufbau-Tab gebraucht (Klausel-Anzeige -> Query-Bezeichnung). */
 async function loadAll() {
+  await loadCriticalities();
   await loadQueries();
   await loadSodRules();
 }
@@ -446,7 +523,6 @@ async function loadQueries() {
   const rs = $('amRuleset').value; if (!rs) return;
   queries = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries');
   fillFilterSelect('amFilterModule', queries.map(q => q.module));
-  fillFilterSelect('amFilterCriticality', queries.map(q => q.criticality));
   fillFilterSelect('amFilterQueryType', queries.map(q => q.queryType));
   renderQueryList();
 }
@@ -479,6 +555,47 @@ function fillFilterSelect(id, values) {
   uniq.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; sel.appendChild(o); });
   if (uniq.includes(cur)) sel.value = cur;
 }
+
+function fillFixedSelect(id, levels, allOption) {
+  const sel = $(id);
+  const cur = sel.value;
+  sel.innerHTML = allOption ? '<option value="">– alle –</option>' : '<option value="">&ndash;</option>';
+  levels.forEach(l => {
+    const o = document.createElement('option');
+    o.value = l.id;
+    o.textContent = l.label || l.id;
+    sel.appendChild(o);
+  });
+  if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
+
+$('mdCritAdd').addEventListener('click', () => {
+  masterCritLevels.push({ id: '', label: '', rank: 1, color: '', kriScore: null });
+  renderCriticalityMasterTable();
+});
+
+$('mdCritReload').addEventListener('click', async () => {
+  await loadCriticalities();
+  setStatus(`${doneTag} Masterdata neu geladen.`);
+});
+
+$('mdCritSave').addEventListener('click', async () => {
+  setStatus('<span class="spin"></span> Masterdata speichern&hellip;');
+  try {
+    const payload = { criticalities: normalizeMasterCriticalitiesForSave() };
+    await api('/admin/masterdata/criticalities', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    await loadAll();
+    if (selectedId) await selectQuery(selectedId);
+    if (selectedSodId) await selectSodRule(selectedSodId);
+    setStatus(`${doneTag} Masterdata gespeichert.`);
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+});
 
 /* Suche unterstuetzt '*' als Platzhalter (z. B. "BC-SEC*"); ohne '*' = einfache Teilstring-Suche. */
 function matchesSearch(q, term) {
@@ -517,7 +634,8 @@ function renderQueryList() {
     const li = document.createElement('li');
     li.className = q.id === selectedId ? 'active' : '';
     const name = q.shortDescription || q.description || '';
-    li.innerHTML = `<div class="li-head"><span><b>${q.id}</b>${q.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}</span>${riskBadgesHtml(q, true)}</div><small>${name}</small>`;
+    const crit = q.criticalityLabel ? ` <span class="muted">(${q.criticalityLabel})</span>` : '';
+    li.innerHTML = `<div class="li-head"><span><b>${q.id}</b>${q.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}</span>${riskBadgesHtml(q, true)}</div><small>${name}${crit}</small>`;
     li.onclick = () => selectQuery(q.id);
     ul.appendChild(li);
   });
@@ -576,7 +694,6 @@ function renderAufbau(q) {
 async function loadSodRules() {
   const rs = $('amRuleset').value; if (!rs) return;
   sodRules = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules');
-  fillFilterSelect('srFilterCriticality', sodRules.map(r => r.criticality));
   renderSodList();
 }
 
@@ -590,7 +707,8 @@ function renderSodList() {
     const li = document.createElement('li');
     li.className = r.id === selectedSodId ? 'active' : '';
     const name = r.shortDescription || r.description || '';
-    li.innerHTML = `<div class="li-head"><span><b>${r.id}</b>${r.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}</span>${riskBadgesHtml(r, true)}</div><small>${name}</small>`;
+    const crit = r.criticalityLabel ? ` <span class="muted">(${r.criticalityLabel})</span>` : '';
+    li.innerHTML = `<div class="li-head"><span><b>${r.id}</b>${r.custom ? ' <span class="custom-badge">&#9679; eigen</span>' : ''}</span>${riskBadgesHtml(r, true)}</div><small>${name}${crit}</small>`;
     li.onclick = () => selectSodRule(r.id);
     ul.appendChild(li);
   });
@@ -776,7 +894,19 @@ function wireTabs(containerId) {
 wireTabs('amDetail');
 wireTabs('srDetail');
 
+function jumpToHashTarget() {
+  if (window.location.hash !== '#masterdata') return;
+  const target = $('masterdataBox') || $('masterdata');
+  if (!target) return;
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  target.classList.add('jump-highlight');
+  setTimeout(() => target.classList.remove('jump-highlight'), 1300);
+}
+
+window.addEventListener('hashchange', jumpToHashTarget);
+
 loadRulesets().then(applyMode).catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+setTimeout(jumpToHashTarget, 0);
 </script>
 </body>
 </html>

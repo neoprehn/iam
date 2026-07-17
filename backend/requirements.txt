@@ -4,3 +4,4 @@ neo4j==5.27.0
 python-multipart==0.0.20
 fpdf2
 openpyxl
+bandit

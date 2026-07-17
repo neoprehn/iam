@@ -1,0 +1,39 @@
+{
+  "criticalities": [
+    {
+      "id": "very-critical",
+      "label": "very critical",
+      "rank": 5,
+      "color": "#ff5c5c",
+      "kriScore": 100
+    },
+    {
+      "id": "critical",
+      "label": "critical",
+      "rank": 4,
+      "color": "#ff7a66",
+      "kriScore": 80
+    },
+    {
+      "id": "high",
+      "label": "high",
+      "rank": 3,
+      "color": "#ffa552",
+      "kriScore": 60
+    },
+    {
+      "id": "medium",
+      "label": "medium",
+      "rank": 2,
+      "color": "#f5c451",
+      "kriScore": 40
+    },
+    {
+      "id": "low",
+      "label": "low",
+      "rank": 1,
+      "color": "#7bd690",
+      "kriScore": 20
+    }
+  ]
+}
