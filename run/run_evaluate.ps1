@@ -86,6 +86,18 @@ $utp = $cfg.userTypeProfiles | Where-Object { $_.name -eq $UserTypeProfile } | S
 if (-not $utp) { throw "userTypeProfile '$UserTypeProfile' unbekannt." }
 $userTypes = @($utp.userTypes)
 $excludeLocked = [bool]$utp.excludeLocked
+# BEKANNTE LUECKE (ROADMAP 9.3, verschachtelte Org-Abfragen): $cfg wird oben roh aus
+# analysis_profiles.json/.custom.json eingelesen, OHNE die Normalisierung, die die App-Endpunkte
+# ueber backend/app.py:_normalize_org_filter() anwenden (Legacy-Filter {op,values}/{op:'RANGE',
+# from,to} -> 2-Ebenen-Baum {op,children:[...]}). ConvertTo-Cypher (s. u.) serialisiert beliebig
+# verschachtelte Objekte/Arrays generisch, d. h. sowohl die neue Baumform als auch bereits
+# migrierte Vendor-Profile funktionieren hier automatisch. Nur Custom-Profile, die noch in der
+# ALTEN Form auf der Platte liegen (vor diesem Feature ueber den Admin-Editor gespeichert und seither
+# nicht erneut gespeichert), wuerden hier unnormalisiert an ein Cypher gehen, das nur noch die
+# Baumform versteht -- Ergebnis: der Filter "verschwindet" fail-closed (kein Treffer statt falscher
+# Treffer), bis das Profil einmal ueber den Editor neu gespeichert wird. Der App-Pfad ist laut
+# ROADMAP-ARCHIV die massgebliche Variante; dieser Host-Runner-Randfall wird hier bewusst nur
+# dokumentiert, nicht behoben.
 $op = $cfg.profiles | Where-Object { $_.name -eq $OrgProfile } | Select-Object -First 1
 if (-not $op) { throw "OrgProfile '$OrgProfile' unbekannt." }
 $orgFilters = if ($op.org.mode -eq 'filtered') { $op.org.filters } else { [pscustomobject]@{} }

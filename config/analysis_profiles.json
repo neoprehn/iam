@@ -22,7 +22,10 @@
       "description": "Beispiel: Org-Scope BUKRS muss 1000 UND 2000 abdecken (beide).",
       "org": {
         "mode": "filtered",
-        "filters": { "BUKRS": { "op": "AND", "values": ["1000", "2000"] } }
+        "filters": { "BUKRS": { "op": "AND", "children": [
+          { "type": "value", "value": "1000" },
+          { "type": "value", "value": "2000" }
+        ] } }
       }
     },
     {
@@ -30,7 +33,10 @@
       "description": "Beispiel: Org-Scope BUKRS = 1000 ODER 4000 (irgendeines davon).",
       "org": {
         "mode": "filtered",
-        "filters": { "BUKRS": { "op": "OR", "values": ["1000", "4000"] } }
+        "filters": { "BUKRS": { "op": "OR", "children": [
+          { "type": "value", "value": "1000" },
+          { "type": "value", "value": "4000" }
+        ] } }
       }
     },
     {
@@ -38,7 +44,23 @@
       "description": "Beispiel: Org-Scope BUKRS im Bereich 1000-5000 (als ODER ueber das Intervall).",
       "org": {
         "mode": "filtered",
-        "filters": { "BUKRS": { "op": "RANGE", "from": "1000", "to": "5000" } }
+        "filters": { "BUKRS": { "op": "OR", "children": [
+          { "type": "range", "from": "1000", "to": "5000" }
+        ] } }
+      }
+    },
+    {
+      "name": "bukrs-verschachtelt-beispiel",
+      "description": "Beispiel fuer verschachtelte Org-Abfragen (ROADMAP 9.3): BUKRS = (1000 UND 2000) ODER 3000.",
+      "org": {
+        "mode": "filtered",
+        "filters": { "BUKRS": { "op": "OR", "children": [
+          { "type": "group", "op": "AND", "children": [
+            { "type": "value", "value": "1000" },
+            { "type": "value", "value": "2000" }
+          ] },
+          { "type": "value", "value": "3000" }
+        ] } }
       }
     }
   ],
@@ -71,7 +93,7 @@
     "asOf": "Stichtag (Neo4j-date) — Rollen-Gueltigkeit + Sleeping; auf das Snapshot-Datum setzen.",
     "userTypes": "Liste Subtyp-Labels (userTypeProfiles); [] = alle.",
     "sleepDays": "Sleeping-Schwelle in Tagen (sleeping.sleepDays).",
-    "orgFilters": "Map je Org-Feld {op: AND|OR|RANGE, values/from/to}; {} = alle Org-Felder 'egal' (Default). Quelle = profiles[].org.filters. ACHTUNG: org-pflichtige (abgeleitete) Rollen tragen Platzhalter ($BUKRS); deren Aufloesung ueber AGR_1252 (Role.org_$<Feld>) ist noch offen."
+    "orgFilters": "Map je Org-Feld, 2-Ebenen-Kriterienbaum {op: AND|OR, children:[Leaf|Gruppe]} (ROADMAP 9.3); {} = alle Org-Felder 'egal' (Default). Quelle = profiles[].org.filters. ACHTUNG: org-pflichtige (abgeleitete) Rollen tragen Platzhalter ($BUKRS); deren Aufloesung ueber AGR_1252 (Role.org_$<Feld>) ist noch offen."
   },
   "_scopeSelectors": {
     "modules": "Liste von module-Werten (CSI-Vokabular); leer = alle.",
@@ -84,11 +106,14 @@
   "_orgModes": {
     "ignoreOrg": "Org-Felder nicht einschraenken (Standardauswertung); ALLE Queries des Rulesets laufen.",
     "wildcardOnly": "NUR Queries, die ueberhaupt ein Org-Feld referenzieren, laufen; davon nur Auths, deren Org-Feld echtes '*'/Vollbereich ist (AE-06). Queries ohne Org-Feld-Bezug werden nicht ausgewertet/angezeigt.",
-    "filtered": "NUR Queries, die mindestens eines der hier gelisteten Org-Felder referenzieren, laufen; je Feld eine Bedingung mit op AND|OR|RANGE. Queries ohne Bezug zu einem gelisteten Feld werden nicht ausgewertet/angezeigt."
+    "filtered": "NUR Queries, die mindestens eines der hier gelisteten Org-Felder referenzieren, laufen; je Feld ein 2-Ebenen-Kriterienbaum (s. _filterTree). Queries ohne Bezug zu einem gelisteten Feld werden nicht ausgewertet/angezeigt."
   },
-  "_filterOps": {
-    "AND": "Auth-Wertemenge muss ALLE values abdecken (nach AE-06; '*' deckt alles).",
-    "OR": "Auth deckt MINDESTENS einen der values ab.",
-    "RANGE": "Auth deckt mindestens einen Wert im Intervall [from,to] ab (ODER ueber den Bereich)."
+  "_filterTree": {
+    "_note": "Je Org-Feld EIN Baum mit max. 2 Ebenen (ROADMAP 9.3): {op:'AND'|'OR', children:[...]} auf Top-Level, ein Kind ist entweder ein Leaf oder eine Gruppe (die selbst wieder nur Leafs enthaelt -- keine Gruppe-in-Gruppe). '*'/Vollbereich am Auth-Wert deckt jeden Baum ab (AE-06), unabhaengig von der Struktur.",
+    "op": "Kombinator ueber children: AND (alle muessen erfuellt sein) | OR (mindestens eines).",
+    "children.value": "Leaf: { type:'value', value }.",
+    "children.range": "Leaf: { type:'range', from, to } (ODER ueber das Intervall).",
+    "children.group": "Gruppe: { type:'group', op:'AND'|'OR', children:[Leaf,...] } -- eigener Kombinator ueber ihre Leafs.",
+    "_legacy": "Aeltere Profile im Format {op:'AND'|'OR', values:[...]} bzw. {op:'RANGE', from, to} werden von backend/app.py:_normalize_org_filter() beim Lesen automatisch in diese Baumform uebersetzt (nie auf Platte zurueckgeschrieben)."
   }
 }

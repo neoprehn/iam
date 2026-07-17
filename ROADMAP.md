@@ -178,11 +178,45 @@ jetzt dran.**
   „Org-Vergleich"-Button in der Aktiv-Filter-Leiste (nur bei Batch-Lauf + genau einer aktiven
   Query/Regel sichtbar) öffnet einen sortierbaren Vergleichsdialog mit Sprung in die gefilterte
   Trefferliste der gewählten Variante. [Archiv](ROADMAP-ARCHIV.md#93-can-do-nach-org-2026-07-16).
-- [ ] **Verschachtelte Org-Abfragen** — heute je Org-Feld genau **ein** Operator (`AND`/`OR`/`RANGE`)
-  über eine flache Werteliste (`materialize_matches_one.cypher`, `$orgFilters[feld].op/.values`).
-  Gewünscht: boolesche Verschachtelung wie **„(1000 & 2000) OR 3000"** je Feld. Braucht (a) einen
-  Ausdrucks-/Baum-Editor in der Varianten-UI und (b) eine rekursive Auswertung im Cypher statt des
-  flachen `op`.
+- [x] **Verschachtelte Org-Abfragen** (2026-07-17) — je Org-Feld statt einem flachen Operator jetzt
+  ein **2-Ebenen-Kriterienbaum** `{op:'AND'|'OR', children:[...]}`: ein Kind ist ein Leaf
+  (`{type:'value',value}`/`{type:'range',from,to}`) oder eine Gruppe (`{type:'group',
+  op:'AND'|'OR', children:[Leaf,...]}` — bewusst nur eine Ebene tief, keine Gruppe-in-Gruppe,
+  Nutzer-Entscheidung nach AskUserQuestion). Deckt Ausdrücke wie **„(1000 UND 2000) ODER 3000"**
+  ab. **UI:** visueller Gruppen-Baum (Buttons „+ Werte"/„+ Bereich"/„+ Gruppe", eigener AND/OR-
+  Umschalter je Gruppe **und** Top-Level) statt Text-/Ausdrucksparser — ebenfalls Nutzer-Entscheidung,
+  damit das Backend keinen Parser für Klammerausdrücke braucht und die UI die 2-Ebenen-Grenze
+  strukturell erzwingt (kein „+ Gruppe"-Knopf innerhalb einer Gruppe).
+  - **Cypher** (`cypher/sod/materialize_matches_one.cypher`, `cypher/checks/query_match.cypher`,
+    synchron gehalten): keine echte Rekursion nötig, da Tiefe fest auf 2 begrenzt ist —
+    verschachtelte `all()`/`any()`-Listcomprehensions je Ebene. `'*'`-Wildcard (AE-06) bleibt
+    unverändert außerhalb des Baums und deckt jeden Filter ab. `materialize_matches_candidates.cypher`
+    (nutzt nur `keys($orgFilters)`) und `evaluate_sod_init.cypher` (reine JSON-Protokollierung)
+    unberührt.
+  - **Backend** (`backend/app.py`): neue Pydantic-Modelle `OrgNodeReq`/`OrgCriterionReq` (rekursiv,
+    mit `_validate_org_node()` gegen Gruppe-in-Gruppe/leere Gruppen/leere Leafs), `_org_filters_from_criteria()`
+    baut den Baum. **Rückwärtskompatibel:** `_normalize_org_filter()` übersetzt alte flache Profile
+    (`{op,values}`/`{op:'RANGE',from,to}`) beim Lesen (in `profiles()`) automatisch in die neue Form —
+    nie auf Platte zurückgeschrieben, bestehende Custom-Profile (`analysis_profiles.custom.json`,
+    gitignored) brechen dadurch nicht.
+  - **Vendor-Beispiele** (`config/analysis_profiles.json`) auf die neue Form migriert + neues Beispiel
+    `bukrs-verschachtelt-beispiel` ergänzt.
+  - **Host-Runner** (`run/run_evaluate.ps1`): bekannte, bewusst in Kauf genommene Lücke dokumentiert
+    (Kommentarblock vor der Org-Profil-Auflösung) — liest `analysis_profiles.custom.json` roh ohne
+    die Backend-Normalisierung; nur bereits existierende, noch nicht über den Editor neu gespeicherte
+    Alt-Profile wären betroffen (fail-closed: Filter verschwindet, keine falschen Treffer), heilt sich
+    durch einmaliges Neu-Speichern selbst. `ConvertTo-Cypher` selbst ist generisch und serialisiert
+    die neue Baumform bereits korrekt.
+  - **Verifiziert** gegen den laufenden Container: eigenes Ad-hoc-Cypher-Skript direkt gegen reale
+    Authorization-Knoten (AND/OR/RANGE/verschachtelte Gruppe je mit passenden und nicht-passenden
+    Werte-Kombinationen aus echten Daten, inkl. Wildcard-Bypass) bestätigt korrektes Verhalten;
+    REST-Roundtrip (POST/GET/DELETE `/admin/org-profiles`) bestätigt verlustfreie Serialisierung
+    inkl. `rangeFrom/rangeTo` ↔ `from/to`-Übersetzung; Validierung lehnt Gruppe-in-Gruppe und leere
+    Gruppen mit 400 ab; bestehendes Custom-Profil (`BURKS2000`, altes Flachformat) kommt über `GET`
+    automatisch normalisiert zurück. Playwright bestätigt: verschachteltes Beispielprofil rendert
+    Gruppe+Leafs, UI erzwingt die 2-Ebenen-Grenze (kein „+ Gruppe" innerhalb einer Gruppe),
+    Client-Validierung blockt leere Gruppen vor dem Speichern, Speichern-Roundtrip funktioniert.
+    Testartefakte (Ad-hoc-Cypher-Datei im Container, Test-Org-Profile) danach entfernt.
 - [x] **Feldübergreifende Semantik in der UI ausweisen** (2026-07-16) — *mehrere* Org-Felder (z. B.
   BUKRS **und** Verkaufsorg) werden mit **UND** verknüpft (bestätigt: `all(obj IN objects …)` in
   `materialize_matches_one.cypher`; die Wahl AND/OR/RANGE gilt nur **innerhalb** eines Feldes).

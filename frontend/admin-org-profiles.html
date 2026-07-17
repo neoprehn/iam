@@ -83,6 +83,20 @@
     background:var(--bg); }
   .criterion.full { grid-column:1 / -1; }
   .criterion .top { display:flex; justify-content:space-between; align-items:baseline; }
+  /* Verschachtelte Org-Kriterien (ROADMAP 9.3): max. 2 Ebenen -- eine Gruppe (.org-group) enthaelt
+     nur Leafs (.leaf-row), keine weitere Gruppe. */
+  .org-children { display:flex; flex-direction:column; gap:6px; margin:8px 0; }
+  .leaf-row { display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 9px;
+    font-size:12.5px; }
+  .org-group { border:1px solid var(--accent); border-left:3px solid var(--accent); border-radius:6px;
+    padding:8px 10px; background:rgba(76,139,245,.06); }
+  .org-group .top-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .org-group .lbl-sm { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+  .add-row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:6px; }
+  .add-row select { width:auto; min-width:120px; }
+  .add-row input { width:auto; min-width:90px; }
+  .add-row .ghost { width:auto; padding:5px 10px; font-size:12px; }
   .field-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .icon-btn { background:transparent; border:1px solid var(--line); color:var(--muted);
     border-radius:5px; width:22px; height:22px; line-height:1; cursor:pointer; font-size:12px;
@@ -178,7 +192,7 @@
             </div>
           </div>
           <input type="file" id="opImportFile" accept="application/json" style="display:none" />
-          <div class="hint" id="opAndHint" style="display:none;margin-bottom:8px">Mehrere Org-Felder werden immer mit <b>UND</b> verkn&uuml;pft &mdash; der Operator je Kriterium (UND/ODER/Bereich) gilt nur innerhalb des jeweiligen Felds.</div>
+          <div class="hint" id="opAndHint" style="display:none;margin-bottom:8px">Mehrere Org-Felder werden immer mit <b>UND</b> verkn&uuml;pft &mdash; die Verkn&uuml;pfung je Kriterium gilt nur innerhalb des jeweiligen Felds. Innerhalb eines Felds k&ouml;nnen Bedingungen und Gruppen mit UND/ODER frei kombiniert werden (max. 2 Ebenen, keine Gruppe-in-Gruppe).</div>
           <div id="criteriaList"></div>
           <button class="ghost" id="opAddCriterionBtn" type="button" style="width:100%">+ Kriterium hinzuf&uuml;gen</button>
 
@@ -215,7 +229,13 @@ function setStatus(html, isErr) {
 let profiles = [], selectedName = null, isNew = false, dirty = false;
 let orgFields = [];
 const valueCache = {};   // field -> string[] (gecacht pro Dataset-Auswahl)
-let criteria = [];        // [{field, op, values, rangeFrom, rangeTo}]
+// criteria: [{field, op:'AND'|'OR', children:[node,...]}] -- 2-Ebenen-Kriterienbaum je Org-Feld
+// (ROADMAP 9.3). node (Leaf) = {type:'value', value} | {type:'range', from, to}; node (Gruppe) =
+// {type:'group', op:'AND'|'OR', children:[Leaf,...]} -- Gruppen enthalten bewusst NUR Leafs
+// (keine Gruppe-in-Gruppe), das UI bietet innerhalb einer Gruppe deshalb keinen "+ Gruppe"-Knopf.
+// Internes State-Format = Server-Antwortformat 1:1 (from/to); nur beim Senden an POST/PUT wird auf
+// rangeFrom/rangeTo umbenannt (s. nodeToRequestNode), weil OrgNodeReq diese Feldnamen erwartet.
+let criteria = [];
 
 function setDirty(v) {
   dirty = v;
@@ -267,15 +287,30 @@ function renderList() {
   });
 }
 
-function criterionToFilter(c) {
-  return c.op === 'RANGE' ? { op: 'RANGE', from: c.rangeFrom, to: c.rangeTo }
-                          : { op: c.op, values: c.values || [] };
+function cloneNode(n) {
+  if (n.type === 'group') return { type: 'group', op: n.op || 'AND', children: (n.children || []).map(cloneNode) };
+  if (n.type === 'range') return { type: 'range', from: n.from || '', to: n.to || '' };
+  return { type: 'value', value: n.value || '' };
+}
+
+function nodeToRequestNode(n) {
+  if (n.type === 'group') return { type: 'group', op: n.op, children: n.children.map(nodeToRequestNode) };
+  if (n.type === 'range') return { type: 'range', rangeFrom: n.from || null, rangeTo: n.to || null };
+  return { type: 'value', value: n.value || null };
+}
+
+function criterionToRequest(c) {
+  return { field: c.field, op: c.op, children: (c.children || []).map(nodeToRequestNode) };
 }
 
 function filtersToCriteria(filters) {
   return Object.entries(filters || {}).map(([field, f]) => ({
-    field, op: f.op, values: f.values || [], rangeFrom: f.from || '', rangeTo: f.to || '',
+    field, op: f.op || 'OR', children: (f.children || []).map(cloneNode),
   }));
+}
+
+function leafLabel(n) {
+  return n.type === 'range' ? `Bereich: ${n.from || '–'}…${n.to || '–'}` : (n.value || '(leer)');
 }
 
 async function selectProfile(name) {
@@ -328,13 +363,55 @@ $('opNewBtn').onclick = newProfile;
 
 async function addCriterion() {
   const field = orgFields[0] || '';
-  criteria.push({ field, op: 'AND', values: [], rangeFrom: '', rangeTo: '' });
+  criteria.push({ field, op: 'AND', children: [] });
   setDirty(true);
   renderCriteria();          // sofort anzeigen ("lädt…"), dann mit den geladenen Werten ersetzen
   await valuesForField(field);
   renderCriteria();
 }
 $('opAddCriterionBtn').onclick = addCriterion;
+
+// Leaf-Zeile (Wert/Bereich) -- gi=null: Leaf haengt direkt am Kriterium (data-li = Index in
+// c.children); gi=Zahl: Leaf haengt in der Gruppe an Index gi (data-li = Index in group.children).
+function renderLeafRow(n, i, gi, li) {
+  const attrs = gi === null ? `data-i="${i}" data-li="${li}"` : `data-i="${i}" data-gi="${gi}" data-li="${li}"`;
+  return `<div class="leaf-row"><span>${leafLabel(n)}</span>
+    <button type="button" class="icon-btn leafRemove" ${attrs} title="Entfernen">&#10005;</button></div>`;
+}
+
+// "+ Werte"/"+ Bereich"-Zeile, wiederverwendet fuer das Kriterium (gi=null) UND fuer eine Gruppe
+// darin (gi=Gruppenindex) -- "+ Gruppe" gibt es nur auf Kriterien-Ebene (2-Ebenen-Grenze).
+function addRowHtml(i, gi, vals) {
+  if (!vals.length) return '';
+  const giAttr = gi === null ? '' : ` data-gi="${gi}"`;
+  return `<div class="add-row" data-i="${i}"${giAttr}>
+    <select class="orgValueAdd" multiple size="4">
+      ${vals.map(v => `<option value="${v}">${v}</option>`).join('')}
+    </select>
+    <button type="button" class="ghost addValuesBtn">+ Werte</button>
+    <select class="orgFromAdd"><option value="">von…</option>${vals.map(v => `<option value="${v}">${v}</option>`).join('')}</select>
+    <select class="orgToAdd"><option value="">bis…</option>${vals.map(v => `<option value="${v}">${v}</option>`).join('')}</select>
+    <button type="button" class="ghost addRangeBtn">+ Bereich</button>
+    ${gi === null ? '<button type="button" class="ghost addGroupBtn">+ Gruppe</button>' : ''}
+  </div>`;
+}
+
+function renderGroupBox(g, i, ci, vals) {
+  return `<div class="org-group">
+    <div class="top-row">
+      <div><span class="lbl-sm">Gruppe</span> <select class="groupOp" data-i="${i}" data-ci="${ci}">
+        <option value="AND" ${g.op === 'AND' ? 'selected' : ''}>UND (alle)</option>
+        <option value="OR" ${g.op === 'OR' ? 'selected' : ''}>ODER (mind. eines)</option>
+      </select></div>
+      <button type="button" class="icon-btn groupRemove" data-i="${i}" data-ci="${ci}" title="Gruppe entfernen">&#10005;</button>
+    </div>
+    <div class="org-children">
+      ${g.children.length ? g.children.map((lf, li) => renderLeafRow(lf, i, ci, li)).join('')
+        : '<div class="hint">Noch keine Bedingung in dieser Gruppe.</div>'}
+    </div>
+    ${addRowHtml(i, ci, vals)}
+  </div>`;
+}
 
 function renderCriteria() {
   const box = $('criteriaList'); box.innerHTML = '';
@@ -356,50 +433,66 @@ function renderCriteria() {
         <div><label>Org-Feld</label><select class="critField" data-i="${i}">
           ${orgFields.map(f => `<option value="${f}" ${f === c.field ? 'selected' : ''}>${f}</option>`).join('')}
         </select></div>
-        <div><label>Operator</label><select class="critOp" data-i="${i}">
-          <option value="AND" ${c.op === 'AND' ? 'selected' : ''}>UND (alle Werte)</option>
-          <option value="OR" ${c.op === 'OR' ? 'selected' : ''}>ODER (mind. einer)</option>
-          <option value="RANGE" ${c.op === 'RANGE' ? 'selected' : ''}>Bereich (von/bis)</option>
+        <div><label>Verkn&uuml;pfung</label><select class="critTopOp" data-i="${i}">
+          <option value="AND" ${c.op === 'AND' ? 'selected' : ''}>UND (alle)</option>
+          <option value="OR" ${c.op === 'OR' ? 'selected' : ''}>ODER (mind. eines)</option>
         </select></div>
       </div>
-      ${!vals.length ? valuesHint : c.op === 'RANGE' ? `
-      <div class="row">
-        <div><label>von</label><select class="critFrom" data-i="${i}">
-          <option value="">–</option>${vals.map(v => `<option value="${v}" ${v === c.rangeFrom ? 'selected' : ''}>${v}</option>`).join('')}
-        </select></div>
-        <div><label>bis</label><select class="critTo" data-i="${i}">
-          <option value="">–</option>${vals.map(v => `<option value="${v}" ${v === c.rangeTo ? 'selected' : ''}>${v}</option>`).join('')}
-        </select></div>
-      </div>` : `
-      <label>Werte <span class="muted">(Mehrfachauswahl)</span></label>
-      <select class="critValues" data-i="${i}" multiple size="6">
-        ${vals.map(v => `<option value="${v}" ${(c.values || []).includes(v) ? 'selected' : ''}>${v}</option>`).join('')}
-      </select>`}
+      ${!loaded || !vals.length ? valuesHint : ''}
+      <div class="org-children">
+        ${c.children.length ? c.children.map((child, ci) => child.type === 'group'
+            ? renderGroupBox(child, i, ci, vals) : renderLeafRow(child, i, null, ci)).join('')
+          : '<div class="hint">Noch keine Bedingung — unten Werte/Bereich/Gruppe hinzuf&uuml;gen.</div>'}
+      </div>
+      ${addRowHtml(i, null, vals)}
       <div class="top" style="margin-top:8px"><span></span>
-        <button type="button" class="ghost critRemove" data-i="${i}">Entfernen</button></div>`;
+        <button type="button" class="ghost critRemove" data-i="${i}">Kriterium entfernen</button></div>`;
     box.appendChild(div);
   });
   box.querySelectorAll('.critField').forEach(sel => sel.addEventListener('change', async e => {
     const i = +e.target.dataset.i;
-    criteria[i].field = e.target.value; criteria[i].values = []; criteria[i].rangeFrom = ''; criteria[i].rangeTo = '';
+    criteria[i].field = e.target.value; criteria[i].children = [];
     await valuesForField(criteria[i].field);
     renderCriteria(); setDirty(true);
   }));
-  box.querySelectorAll('.critOp').forEach(sel => sel.addEventListener('change', e => {
-    const i = +e.target.dataset.i;
-    criteria[i].op = e.target.value;
+  box.querySelectorAll('.critTopOp').forEach(sel => sel.addEventListener('change', e => {
+    criteria[+e.target.dataset.i].op = e.target.value; setDirty(true);
+  }));
+  box.querySelectorAll('.groupOp').forEach(sel => sel.addEventListener('change', e => {
+    const i = +e.target.dataset.i, ci = +e.target.dataset.ci;
+    criteria[i].children[ci].op = e.target.value; setDirty(true);
+  }));
+  box.querySelectorAll('.groupRemove').forEach(btn => btn.addEventListener('click', e => {
+    const i = +e.target.dataset.i, ci = +e.target.dataset.ci;
+    criteria[i].children.splice(ci, 1);
     renderCriteria(); setDirty(true);
   }));
-  box.querySelectorAll('.critValues').forEach(sel => sel.addEventListener('change', e => {
-    const i = +e.target.dataset.i;
-    criteria[i].values = [...e.target.selectedOptions].map(o => o.value);
-    setDirty(true);
+  box.querySelectorAll('.leafRemove').forEach(btn => btn.addEventListener('click', e => {
+    const i = +e.target.dataset.i, li = +e.target.dataset.li;
+    if (e.target.dataset.gi !== undefined) criteria[i].children[+e.target.dataset.gi].children.splice(li, 1);
+    else criteria[i].children.splice(li, 1);
+    renderCriteria(); setDirty(true);
   }));
-  box.querySelectorAll('.critFrom').forEach(sel => sel.addEventListener('change', e => {
-    criteria[+e.target.dataset.i].rangeFrom = e.target.value; setDirty(true);
+  box.querySelectorAll('.addValuesBtn').forEach(btn => btn.addEventListener('click', e => {
+    const row = e.target.closest('.add-row'); const i = +row.dataset.i;
+    const target = row.dataset.gi !== undefined ? criteria[i].children[+row.dataset.gi].children : criteria[i].children;
+    const sel = row.querySelector('.orgValueAdd');
+    const existing = new Set(target.filter(n => n.type === 'value').map(n => n.value));
+    [...sel.selectedOptions].forEach(o => { if (!existing.has(o.value)) target.push({ type: 'value', value: o.value }); });
+    renderCriteria(); setDirty(true);
   }));
-  box.querySelectorAll('.critTo').forEach(sel => sel.addEventListener('change', e => {
-    criteria[+e.target.dataset.i].rangeTo = e.target.value; setDirty(true);
+  box.querySelectorAll('.addRangeBtn').forEach(btn => btn.addEventListener('click', e => {
+    const row = e.target.closest('.add-row'); const i = +row.dataset.i;
+    const target = row.dataset.gi !== undefined ? criteria[i].children[+row.dataset.gi].children : criteria[i].children;
+    const from = row.querySelector('.orgFromAdd').value, to = row.querySelector('.orgToAdd').value;
+    if (!from || !to) { setStatus('<b>Fehler:</b> von/bis auswählen.', true); return; }
+    target.push({ type: 'range', from, to });
+    renderCriteria(); setDirty(true);
+  }));
+  box.querySelectorAll('.addGroupBtn').forEach(btn => btn.addEventListener('click', e => {
+    const row = e.target.closest('.add-row'); const i = +row.dataset.i;
+    criteria[i].children.push({ type: 'group', op: 'AND', children: [] });
+    renderCriteria(); setDirty(true);
   }));
   box.querySelectorAll('.critRemove').forEach(btn => btn.addEventListener('click', e => {
     criteria.splice(+e.target.dataset.i, 1);
@@ -417,16 +510,26 @@ $('opDescExpandBtn').onclick = () => {
 };
 
 // Import/Export der Org-Kriterien als JSON-Datei (ROADMAP 9.3 "Importformat fuer neue
-// Varianten") -- gleiche Struktur wie formPayload().criteria, damit eine exportierte Datei ohne
-// Anpassung wieder importierbar ist. Rein clientseitig (kein Endpunkt noetig): fuellt nur das
-// criteria-Array, gespeichert wird weiterhin ueber den bestehenden Speichern-Knopf.
+// Varianten") -- Export schreibt direkt den internen 2-Ebenen-Kriterienbaum (== Server-
+// Antwortformat), Import akzeptiert sowohl diese neue Form als auch alte, VOR der Verschachtelung
+// exportierte flache Dateien ({field,op:'AND'|'OR'|'RANGE',values,rangeFrom,rangeTo}) --
+// normalizeImportedCriterion() uebersetzt Legacy-Eintraege beim Laden, analog zu
+// backend/app.py:_normalize_org_filter(). Rein clientseitig (kein Endpunkt noetig): fuellt nur
+// das criteria-Array, gespeichert wird weiterhin ueber den bestehenden Speichern-Knopf.
+function normalizeImportedCriterion(c) {
+  if (!c || typeof c.field !== 'string') throw new Error('Ungültiges Kriterium: ' + JSON.stringify(c));
+  if (Array.isArray(c.children)) {
+    if (!['AND', 'OR'].includes(c.op)) throw new Error('Ungültiger Operator: ' + JSON.stringify(c));
+    return { field: c.field, op: c.op, children: c.children.map(cloneNode) };
+  }
+  if (c.op === 'RANGE') {
+    return { field: c.field, op: 'OR', children: [{ type: 'range', from: c.rangeFrom || '', to: c.rangeTo || '' }] };
+  }
+  if (!['AND', 'OR'].includes(c.op)) throw new Error('Ungültiger Operator: ' + JSON.stringify(c));
+  return { field: c.field, op: c.op, children: (c.values || []).map(v => ({ type: 'value', value: v })) };
+}
 $('opExportBtn').onclick = () => {
-  const blob = new Blob([JSON.stringify(criteria.map(c => ({
-    field: c.field, op: c.op,
-    values: c.op === 'RANGE' ? null : (c.values || []),
-    rangeFrom: c.op === 'RANGE' ? c.rangeFrom : null,
-    rangeTo: c.op === 'RANGE' ? c.rangeTo : null,
-  })), null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(criteria, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = (selectedName || 'org-kriterien') + '.json';
@@ -439,15 +542,7 @@ $('opImportFile').addEventListener('change', async e => {
   try {
     const parsed = JSON.parse(await file.text());
     if (!Array.isArray(parsed)) throw new Error('Datei muss ein JSON-Array von Kriterien sein.');
-    const imported = [];
-    for (const c of parsed) {
-      if (!c || typeof c.field !== 'string' || !['AND', 'OR', 'RANGE'].includes(c.op)) {
-        throw new Error('Ungültiges Kriterium: ' + JSON.stringify(c));
-      }
-      imported.push({ field: c.field, op: c.op, values: c.values || [],
-                       rangeFrom: c.rangeFrom || '', rangeTo: c.rangeTo || '' });
-    }
-    criteria = imported;
+    criteria = parsed.map(normalizeImportedCriterion);
     setDirty(true);
     await Promise.all(criteria.map(c => valuesForField(c.field)));
     renderCriteria();
@@ -464,17 +559,14 @@ $('opName').addEventListener('input', () => {
 function formPayload() {
   return {
     description: $('opDescription').value.trim() || null,
-    criteria: criteria.map(c => ({
-      field: c.field, op: c.op,
-      values: c.op === 'RANGE' ? null : (c.values || []),
-      rangeFrom: c.op === 'RANGE' ? c.rangeFrom : null,
-      rangeTo: c.op === 'RANGE' ? c.rangeTo : null,
-    })),
+    criteria: criteria.map(criterionToRequest),
   };
 }
 
 async function saveCurrent() {
   if (!criteria.length) { setStatus('<b>Fehler:</b> mindestens ein Org-Kriterium erforderlich.', true); return; }
+  const invalid = criteria.some(c => !c.children.length || c.children.some(n => n.type === 'group' && !n.children.length));
+  if (invalid) { setStatus('<b>Fehler:</b> jedes Kriterium/jede Gruppe braucht mindestens eine Bedingung.', true); return; }
   setStatus('<span class="spin"></span> Speichern&hellip;');
   try {
     if (isNew) {

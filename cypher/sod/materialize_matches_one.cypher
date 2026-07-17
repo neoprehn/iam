@@ -23,20 +23,65 @@ WHERE
                   CASE $orgMode
                     WHEN 'wildcardOnly' THEN
                       apoc.any.property(a,'f_'+r.field) IS NOT NULL AND '*' IN apoc.any.property(a,'f_'+r.field)
+                    // --- Org-Feld je Feld boolesch verschachtelt (ROADMAP 9.3): $orgFilters[feld] =
+                    // {op:'AND'|'OR', children:[node,...]}. Ein node ist entweder ein Leaf
+                    // ({type:'value',value} / {type:'range',from,to}) oder eine Gruppe
+                    // ({type:'group', op:'AND'|'OR', children:[Leaf,...]}) -- Gruppen enthalten laut
+                    // Backend-Validierung (_validate_org_node) ausschliesslich Leafs, keine
+                    // Gruppe-in-Gruppe (bewusste 2-Ebenen-Grenze). Legacy-Profile ({op,values}/
+                    // {op:'RANGE',from,to}) werden von _normalize_org_filter() vor dem Lauf bereits
+                    // in diese Form gebracht -- hier kommt immer schon die Baumform an.
                     WHEN 'filtered' THEN
                       CASE WHEN $orgFilters[r.field] IS NULL THEN true
                         ELSE apoc.any.property(a,'f_'+r.field) IS NOT NULL
                              AND ( '*' IN apoc.any.property(a,'f_'+r.field)
                                    OR CASE $orgFilters[r.field].op
-                                        WHEN 'AND' THEN all(v IN $orgFilters[r.field].values WHERE
-                                               v IN apoc.any.property(a,'f_'+r.field)
-                                               OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1]))
-                                        WHEN 'OR' THEN any(v IN $orgFilters[r.field].values WHERE
-                                               v IN apoc.any.property(a,'f_'+r.field)
-                                               OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=v AND v<=split(rg,'..')[1]))
-                                        WHEN 'RANGE' THEN any(x IN apoc.any.property(a,'f_'+r.field) WHERE
-                                               (NOT x CONTAINS '..' AND $orgFilters[r.field].from<=x AND x<=$orgFilters[r.field].to)
-                                               OR (x CONTAINS '..' AND split(x,'..')[0]<=$orgFilters[r.field].to AND $orgFilters[r.field].from<=split(x,'..')[1]))
+                                        WHEN 'AND' THEN all(child IN $orgFilters[r.field].children WHERE
+                                          CASE WHEN child.type='group' THEN
+                                            CASE child.op
+                                              WHEN 'AND' THEN all(lf IN child.children WHERE
+                                                    (lf.type='value' AND (lf.value IN apoc.any.property(a,'f_'+r.field)
+                                                          OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=lf.value AND lf.value<=split(rg,'..')[1])))
+                                                    OR (lf.type='range' AND any(v IN apoc.any.property(a,'f_'+r.field) WHERE
+                                                          (NOT v CONTAINS '..' AND lf.from<=v AND v<=lf.to)
+                                                          OR (v CONTAINS '..' AND split(v,'..')[0]<=lf.to AND lf.from<=split(v,'..')[1]))))
+                                              WHEN 'OR' THEN any(lf IN child.children WHERE
+                                                    (lf.type='value' AND (lf.value IN apoc.any.property(a,'f_'+r.field)
+                                                          OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=lf.value AND lf.value<=split(rg,'..')[1])))
+                                                    OR (lf.type='range' AND any(v IN apoc.any.property(a,'f_'+r.field) WHERE
+                                                          (NOT v CONTAINS '..' AND lf.from<=v AND v<=lf.to)
+                                                          OR (v CONTAINS '..' AND split(v,'..')[0]<=lf.to AND lf.from<=split(v,'..')[1]))))
+                                              ELSE false END
+                                          ELSE
+                                            (child.type='value' AND (child.value IN apoc.any.property(a,'f_'+r.field)
+                                                  OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=child.value AND child.value<=split(rg,'..')[1])))
+                                            OR (child.type='range' AND any(v IN apoc.any.property(a,'f_'+r.field) WHERE
+                                                  (NOT v CONTAINS '..' AND child.from<=v AND v<=child.to)
+                                                  OR (v CONTAINS '..' AND split(v,'..')[0]<=child.to AND child.from<=split(v,'..')[1])))
+                                          END)
+                                        WHEN 'OR' THEN any(child IN $orgFilters[r.field].children WHERE
+                                          CASE WHEN child.type='group' THEN
+                                            CASE child.op
+                                              WHEN 'AND' THEN all(lf IN child.children WHERE
+                                                    (lf.type='value' AND (lf.value IN apoc.any.property(a,'f_'+r.field)
+                                                          OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=lf.value AND lf.value<=split(rg,'..')[1])))
+                                                    OR (lf.type='range' AND any(v IN apoc.any.property(a,'f_'+r.field) WHERE
+                                                          (NOT v CONTAINS '..' AND lf.from<=v AND v<=lf.to)
+                                                          OR (v CONTAINS '..' AND split(v,'..')[0]<=lf.to AND lf.from<=split(v,'..')[1]))))
+                                              WHEN 'OR' THEN any(lf IN child.children WHERE
+                                                    (lf.type='value' AND (lf.value IN apoc.any.property(a,'f_'+r.field)
+                                                          OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=lf.value AND lf.value<=split(rg,'..')[1])))
+                                                    OR (lf.type='range' AND any(v IN apoc.any.property(a,'f_'+r.field) WHERE
+                                                          (NOT v CONTAINS '..' AND lf.from<=v AND v<=lf.to)
+                                                          OR (v CONTAINS '..' AND split(v,'..')[0]<=lf.to AND lf.from<=split(v,'..')[1]))))
+                                              ELSE false END
+                                          ELSE
+                                            (child.type='value' AND (child.value IN apoc.any.property(a,'f_'+r.field)
+                                                  OR any(rg IN apoc.any.property(a,'f_'+r.field) WHERE rg CONTAINS '..' AND split(rg,'..')[0]<=child.value AND child.value<=split(rg,'..')[1])))
+                                            OR (child.type='range' AND any(v IN apoc.any.property(a,'f_'+r.field) WHERE
+                                                  (NOT v CONTAINS '..' AND child.from<=v AND v<=child.to)
+                                                  OR (v CONTAINS '..' AND split(v,'..')[0]<=child.to AND child.from<=split(v,'..')[1])))
+                                          END)
                                         ELSE false END )
                       END
                     ELSE true

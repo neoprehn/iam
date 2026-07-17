@@ -28,15 +28,35 @@ werden **zur Laufzeit** gebunden (das System wechselt, das Ruleset bleibt).
 | --- | --- |
 | `ignoreOrg` | **Standard** — Org-Felder unbeschränkt. „Kann der User die Funktion überhaupt?" |
 | `wildcardOnly` | nur **übergreifende** Berechtigungen — Org-Feld trägt echtes `*`/Vollbereich (AE-06). |
-| `filtered` | je Org-Feld eine Bedingung (`filters`), siehe Operatoren. Nicht gelistete Org-Felder bleiben unbeschränkt. |
+| `filtered` | je Org-Feld ein 2-Ebenen-Kriterienbaum (`filters`), siehe unten. Nicht gelistete Org-Felder bleiben unbeschränkt. |
 
-## Filter-Operatoren (`filtered`)
+## Filter-Kriterienbaum (`filtered`, ROADMAP 9.3)
 
-| `op` | Bedeutung | Beispiel |
+Je Org-Feld ein Baum mit **maximal 2 Ebenen**: `{op:'AND'|'OR', children:[...]}` auf Top-Level —
+ein Kind ist entweder ein **Leaf** oder eine **Gruppe** (die selbst wieder nur Leafs enthält, keine
+Gruppe-in-Gruppe). Damit sind Ausdrücke wie **„(1000 UND 2000) ODER 3000"** je Feld möglich.
+
+| Knotentyp | Form | Bedeutung |
 | --- | --- | --- |
-| `AND` | Auth muss **alle** `values` abdecken | `BUKRS` = 1000 **und** 2000 |
-| `OR` | Auth deckt **mindestens einen** `values` ab | `BUKRS` = 1000 **oder** 4000 |
-| `RANGE` | Auth deckt einen Wert im Intervall `[from,to]` ab (ODER über den Bereich) | `BUKRS` 1000–5000 |
+| Leaf „Wert" | `{type:'value', value}` | Auth deckt genau diesen Wert ab. |
+| Leaf „Bereich" | `{type:'range', from, to}` | Auth deckt einen Wert im Intervall `[from,to]` ab (ODER über den Bereich). |
+| Gruppe | `{type:'group', op:'AND'\|'OR', children:[Leaf,...]}` | Kombinator über ihre eigenen Leafs. |
+
+Top-Level-`op` kombiniert seine `children` (Leafs und/oder Gruppen gemischt) mit `AND` (alle
+müssen erfüllt sein) oder `OR` (mindestens eines). Beispiel „(1000 UND 2000) ODER 3000":
+
+```json
+{ "op": "OR", "children": [
+  { "type": "group", "op": "AND", "children": [
+    { "type": "value", "value": "1000" }, { "type": "value", "value": "2000" }
+  ] },
+  { "type": "value", "value": "3000" }
+] }
+```
+
+Ältere Profile im flachen Format (`{op:'AND'|'OR', values:[...]}` bzw. `{op:'RANGE', from, to}`)
+werden beim Lesen automatisch in diese Baumform übersetzt (`backend/app.py:_normalize_org_filter()`),
+nie auf Platte zurückgeschrieben — bestehende Profile brechen dadurch nicht.
 
 ## Wichtig
 

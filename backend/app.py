@@ -102,6 +102,9 @@ def profiles() -> dict:
     vendor_names = {p["name"] for p in cfg["profiles"]}
     custom = _load_json_list(ORG_PROFILES_CUSTOM_PATH)
     cfg["profiles"] = cfg["profiles"] + [p for p in custom if p["name"] not in vendor_names]
+    for p in cfg["profiles"]:
+        if p.get("org", {}).get("mode") == "filtered":
+            p["org"]["filters"] = {k: _normalize_org_filter(v) for k, v in p["org"]["filters"].items()}
     return cfg
 
 
@@ -1421,12 +1424,22 @@ def profiles_meta():
 # in einem globalen Overlay (analysis_profiles.custom.json), das profiles() zusaetzlich einliest
 # (s. oben). "standard"/"uebergreifend" sind die zwei garantierten Basis-Varianten und bewusst
 # geschuetzt (nicht editierbar/loeschbar) — PROTECTED_ORG_PROFILES.
+class OrgNodeReq(BaseModel):
+    """Knoten im 2-Ebenen-Kriterienbaum eines Org-Felds. type='value'/'range' = Leaf;
+    type='group' = Gruppe (deren children duerfen selbst NUR value/range sein, keine
+    Gruppe-in-Gruppe -- das ist die bewusste 2-Ebenen-Grenze, s. ROADMAP 9.3)."""
+    type: str                          # "value" | "range" | "group"
+    op: str | None = None              # nur type=="group": "AND" | "OR"
+    value: str | None = None           # nur type=="value"
+    rangeFrom: str | None = None       # nur type=="range"
+    rangeTo: str | None = None         # nur type=="range"
+    children: list["OrgNodeReq"] = []  # nur type=="group"
+
+
 class OrgCriterionReq(BaseModel):
     field: str
-    op: str                      # AND | OR | RANGE
-    values: list[str] | None = None
-    rangeFrom: str | None = None
-    rangeTo: str | None = None
+    op: str                            # Top-Level-Kombinator ueber children: AND | OR
+    children: list[OrgNodeReq] = []    # gemischt: value/range-Leafs und/oder group-Knoten
 
 
 class OrgProfileEditReq(BaseModel):
@@ -1439,14 +1452,59 @@ class OrgProfileCreateReq(OrgProfileEditReq):
     name: str
 
 
+def _validate_org_node(n: OrgNodeReq, *, allow_group: bool, field: str) -> None:
+    if n.type == "group":
+        if not allow_group:
+            raise HTTPException(400, f"Feld '{field}': Gruppe-in-Gruppe nicht erlaubt (max. 2 Ebenen)")
+        if n.op not in ("AND", "OR"):
+            raise HTTPException(400, f"Feld '{field}': Gruppe braucht op AND/OR")
+        if not n.children:
+            raise HTTPException(400, f"Feld '{field}': leere Gruppe nicht erlaubt")
+        for c in n.children:
+            _validate_org_node(c, allow_group=False, field=field)
+    elif n.type == "value":
+        if not n.value:
+            raise HTTPException(400, f"Feld '{field}': Bedingung ohne Wert")
+    elif n.type == "range":
+        if not n.rangeFrom or not n.rangeTo:
+            raise HTTPException(400, f"Feld '{field}': Bereich ohne von/bis")
+    else:
+        raise HTTPException(400, f"Feld '{field}': unbekannter Knotentyp '{n.type}'")
+
+
+def _node_to_filter(n: OrgNodeReq) -> dict:
+    if n.type == "group":
+        return {"type": "group", "op": n.op, "children": [_node_to_filter(c) for c in n.children]}
+    if n.type == "range":
+        return {"type": "range", "from": n.rangeFrom, "to": n.rangeTo}
+    return {"type": "value", "value": n.value}
+
+
 def _org_filters_from_criteria(criteria: list[OrgCriterionReq]) -> dict:
     filters: dict = {}
     for c in criteria:
-        if c.op == "RANGE":
-            filters[c.field] = {"op": "RANGE", "from": c.rangeFrom, "to": c.rangeTo}
-        else:
-            filters[c.field] = {"op": c.op, "values": c.values or []}
+        if c.op not in ("AND", "OR"):
+            raise HTTPException(400, f"Feld '{c.field}': Operator muss AND/OR sein")
+        if not c.children:
+            raise HTTPException(400, f"Feld '{c.field}': mindestens eine Bedingung/Gruppe erforderlich")
+        for n in c.children:
+            _validate_org_node(n, allow_group=True, field=c.field)
+        filters[c.field] = {"op": c.op, "children": [_node_to_filter(n) for n in c.children]}
     return filters
+
+
+def _normalize_org_filter(f: dict) -> dict:
+    """Legacy-Form {op:'AND'|'OR', values:[...]} / {op:'RANGE', from, to} -> neue Baumform
+    {op, children:[...]}. Bereits neue Eintraege (haben schon 'children') werden unveraendert
+    durchgereicht (idempotent). Wird nur beim Lesen angewandt, NIE auf Platte zurueckgeschrieben --
+    analysis_profiles.custom.json bleibt in der Form, in der sie zuletzt gespeichert wurde, bis der
+    Admin das Profil einmal ueber den Editor erneut speichert."""
+    if "children" in f:
+        return f
+    if f.get("op") == "RANGE":
+        return {"op": "OR", "children": [{"type": "range", "from": f.get("from"), "to": f.get("to")}]}
+    return {"op": f.get("op", "OR"),
+            "children": [{"type": "value", "value": v} for v in f.get("values", [])]}
 
 
 @app.get("/admin/org-profiles")

@@ -9,8 +9,9 @@
 //                  "uebergreifend"-Frage zu stellen) UND nur wenn der Auth-Wert dort echtes '*'
 //                  traegt (Vollbereich).
 //   filtered    -> nur Queries, die eines der in $orgFilters gewaehlten Org-Felder referenzieren
-//                  (z. B. nur Queries mit BUKRS, wenn die Variante auf BUKRS filtert); je Feld
-//                  eine Bedingung {op: AND|OR|RANGE, values/from/to}.
+//                  (z. B. nur Queries mit BUKRS, wenn die Variante auf BUKRS filtert); je Feld ein
+//                  2-Ebenen-Kriterienbaum {op:'AND'|'OR', children:[...]} (ROADMAP 9.3) -- hier nur
+//                  ueber keys($orgFilters) relevant, die Baumstruktur selbst wird nicht ausgewertet.
 // Diese Vorauswahl auf org-relevante Queries wirkt sich automatisch auch auf evaluate_sod aus:
 // eine Klausel, deren Kandidaten-Queries alle nicht org-relevant sind, bekommt fuer diesen Lauf
 // gar keine MATCHES-Kante -> die Regel kann unter dieser Variante nicht verletzt werden ("nur

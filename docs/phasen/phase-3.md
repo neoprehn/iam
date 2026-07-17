@@ -58,7 +58,7 @@ von `apoc.periodic.iterate` (Neo4j-intern) zu einer Python-Schleife (`_run_phase
 | `asOf` | **Stichtag** (Neo4j-`date`) — Rollen-Gültigkeit **und** Sleeping | **auf das Snapshot-Datum setzen, nicht „heute"** |
 | `userTypes` | Nutzertyp-Filter (Subtyp-Labels) | `[]` = alle · `['Dialog','Service']` (A/S) · `['Dialog']` |
 | `sleepDays` | Sleeping-Schwelle in Tagen | `180` (frei wählbar) |
-| `orgFilters` | Org-BO-Einschränkung je Feld | `{}` = alle „egal" (wie `*`) · `{BUKRS:{op:'OR',values:['1000','4000']}}` |
+| `orgFilters` | Org-BO-Einschränkung je Feld, 2-Ebenen-Kriterienbaum (ROADMAP 9.3) | `{}` = alle „egal" (wie `*`) · `{BUKRS:{op:'OR',children:[{type:'group',op:'AND',children:[{type:'value',value:'1000'},{type:'value',value:'2000'}]},{type:'value',value:'3000'}]}}` = „(1000 UND 2000) ODER 3000" |
 
 Benannte Profile dazu in `config/analysis_profiles.json` (Org-Modi, Scope-Selektoren,
 Nutzertyp-Profile, Sleeping) — ein Lauf bindet Profile statt einzelne Flags.
@@ -73,8 +73,14 @@ aber sinnlos) und befristete Rollen-Zuordnungen werden falsch bewertet. Stichtag
 
 - **Default „egal"** (`orgFilters = {}`): Org-Felder schränken nicht ein — „kann der User die
   Funktion überhaupt".
-- **`filtered`** (`op` = `AND`/`OR`/`RANGE`): der Auth-Wert des Org-Felds muss den Filter
-  abdecken (`*`/Bereiche zählen, AE-06).
+- **`filtered`**: der Auth-Wert des Org-Felds muss den Filter abdecken (`*`/Bereiche zählen,
+  AE-06). Je Feld ein **2-Ebenen-Kriterienbaum** (`{op:'AND'|'OR', children:[...]}`): ein Kind ist
+  entweder ein Leaf (`{type:'value',value}`/`{type:'range',from,to}`) oder eine Gruppe
+  (`{type:'group', op:'AND'|'OR', children:[Leaf,...]}` — bewusst nur eine Ebene tief, keine
+  Gruppe-in-Gruppe). Damit sind Ausdrücke wie „(1000 UND 2000) ODER 3000" je Feld möglich. Ältere
+  Profile im flachen Format (`{op:'AND'|'OR', values:[...]}`/`{op:'RANGE', from, to}`) werden beim
+  Lesen automatisch in diese Baumform übersetzt (`backend/app.py:_normalize_org_filter()`), nie auf
+  Platte zurückgeschrieben.
 - :::{admonition} Offen: Org-Level-Platzhalter
   :class: warning
   Org-pflichtige (abgeleitete) Rollen tragen im Auth-Feld einen **Platzhalter** (`$BUKRS`); die
