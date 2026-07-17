@@ -167,234 +167,44 @@ jetzt dran.**
   bei reinem Risiko-Edit trotzdem vollgeschrieben, Einzelfilter-Wurzelknoten fälschlich rot
   eingefärbt, Kantenlabel „ODER" → „CONTAINS").
   [Archiv](ROADMAP-ARCHIV.md#92-fancy-cytoscapejs-frontend--neodash-ablösung-komplett-2026-07-16).
+- **Security-Basischeck Backend (2026-07-17)** — automatischer Sicherheits-Guardrail als Test
+  umgesetzt: AST-Prüfung auf riskante Muster (u. a. `eval`/`exec`, `os.system`,
+  `subprocess(..., shell=True)`, unsichere Deserialisierung) plus Bandit-Scan mit
+  `backend/bandit.yaml`. **Weiterer Ausbau (z. B. zusätzliche Tools/strengere Policies)
+  ist bewusst nach hinten verschoben.**
 
-#### 9.3 Org-Varianten & „Can-Do nach Org" — Ausbau, UX, Performance  ← als Nächstes
-- [x] **„Can-Do nach Org"** (2026-07-16, Rest von „Zwei Auswertungsarten"): „wer kann *Funktion* in
-  *Buchungskreis X*" — Einzelfilter + `orgFilters` auf BUKRS/WERKS/EKORG/…. **Entschieden
-  (2026-07-11):** über den bestehenden Org-Varianten-Mechanismus (eigener `(:Run)` je Kombination),
-  **kein** Live-Post-hoc-Filter. Umgesetzt: neues `batchId`-Feld am Run-Knoten gruppiert die
-  Geschwister-Läufe eines Varianten-Batches (`POST /runs/batch`); neuer Endpunkt
-  `GET /runs/{runId}/org-compare?query=|rule=` liefert die betroffene User-Zahl je Org-Variante;
-  „Org-Vergleich"-Button in der Aktiv-Filter-Leiste (nur bei Batch-Lauf + genau einer aktiven
-  Query/Regel sichtbar) öffnet einen sortierbaren Vergleichsdialog mit Sprung in die gefilterte
-  Trefferliste der gewählten Variante. [Archiv](ROADMAP-ARCHIV.md#93-can-do-nach-org-2026-07-16).
-- [x] **Verschachtelte Org-Abfragen** (2026-07-17) — je Org-Feld statt einem flachen Operator jetzt
-  ein **2-Ebenen-Kriterienbaum** `{op:'AND'|'OR', children:[...]}`: ein Kind ist ein Leaf
-  (`{type:'value',value}`/`{type:'range',from,to}`) oder eine Gruppe (`{type:'group',
-  op:'AND'|'OR', children:[Leaf,...]}` — bewusst nur eine Ebene tief, keine Gruppe-in-Gruppe,
-  Nutzer-Entscheidung nach AskUserQuestion). Deckt Ausdrücke wie **„(1000 UND 2000) ODER 3000"**
-  ab. **UI:** visueller Gruppen-Baum (Buttons „+ Werte"/„+ Bereich"/„+ Gruppe", eigener AND/OR-
-  Umschalter je Gruppe **und** Top-Level) statt Text-/Ausdrucksparser — ebenfalls Nutzer-Entscheidung,
-  damit das Backend keinen Parser für Klammerausdrücke braucht und die UI die 2-Ebenen-Grenze
-  strukturell erzwingt (kein „+ Gruppe"-Knopf innerhalb einer Gruppe).
-  - **Cypher** (`cypher/sod/materialize_matches_one.cypher`, `cypher/checks/query_match.cypher`,
-    synchron gehalten): keine echte Rekursion nötig, da Tiefe fest auf 2 begrenzt ist —
-    verschachtelte `all()`/`any()`-Listcomprehensions je Ebene. `'*'`-Wildcard (AE-06) bleibt
-    unverändert außerhalb des Baums und deckt jeden Filter ab. `materialize_matches_candidates.cypher`
-    (nutzt nur `keys($orgFilters)`) und `evaluate_sod_init.cypher` (reine JSON-Protokollierung)
-    unberührt.
-  - **Backend** (`backend/app.py`): neue Pydantic-Modelle `OrgNodeReq`/`OrgCriterionReq` (rekursiv,
-    mit `_validate_org_node()` gegen Gruppe-in-Gruppe/leere Gruppen/leere Leafs), `_org_filters_from_criteria()`
-    baut den Baum. **Rückwärtskompatibel:** `_normalize_org_filter()` übersetzt alte flache Profile
-    (`{op,values}`/`{op:'RANGE',from,to}`) beim Lesen (in `profiles()`) automatisch in die neue Form —
-    nie auf Platte zurückgeschrieben, bestehende Custom-Profile (`analysis_profiles.custom.json`,
-    gitignored) brechen dadurch nicht.
-  - **Vendor-Beispiele** (`config/analysis_profiles.json`) auf die neue Form migriert + neues Beispiel
-    `bukrs-verschachtelt-beispiel` ergänzt.
-  - **Host-Runner** (`run/run_evaluate.ps1`): bekannte, bewusst in Kauf genommene Lücke dokumentiert
-    (Kommentarblock vor der Org-Profil-Auflösung) — liest `analysis_profiles.custom.json` roh ohne
-    die Backend-Normalisierung; nur bereits existierende, noch nicht über den Editor neu gespeicherte
-    Alt-Profile wären betroffen (fail-closed: Filter verschwindet, keine falschen Treffer), heilt sich
-    durch einmaliges Neu-Speichern selbst. `ConvertTo-Cypher` selbst ist generisch und serialisiert
-    die neue Baumform bereits korrekt.
-  - **Verifiziert** gegen den laufenden Container: eigenes Ad-hoc-Cypher-Skript direkt gegen reale
-    Authorization-Knoten (AND/OR/RANGE/verschachtelte Gruppe je mit passenden und nicht-passenden
-    Werte-Kombinationen aus echten Daten, inkl. Wildcard-Bypass) bestätigt korrektes Verhalten;
-    REST-Roundtrip (POST/GET/DELETE `/admin/org-profiles`) bestätigt verlustfreie Serialisierung
-    inkl. `rangeFrom/rangeTo` ↔ `from/to`-Übersetzung; Validierung lehnt Gruppe-in-Gruppe und leere
-    Gruppen mit 400 ab; bestehendes Custom-Profil (`BURKS2000`, altes Flachformat) kommt über `GET`
-    automatisch normalisiert zurück. Playwright bestätigt: verschachteltes Beispielprofil rendert
-    Gruppe+Leafs, UI erzwingt die 2-Ebenen-Grenze (kein „+ Gruppe" innerhalb einer Gruppe),
-    Client-Validierung blockt leere Gruppen vor dem Speichern, Speichern-Roundtrip funktioniert.
-    Testartefakte (Ad-hoc-Cypher-Datei im Container, Test-Org-Profile) danach entfernt.
-- [x] **Feldübergreifende Semantik in der UI ausweisen** (2026-07-16) — *mehrere* Org-Felder (z. B.
-  BUKRS **und** Verkaufsorg) werden mit **UND** verknüpft (bestätigt: `all(obj IN objects …)` in
-  `materialize_matches_one.cypher`; die Wahl AND/OR/RANGE gilt nur **innerhalb** eines Feldes).
-  Hinweistext „alle Felder = UND" im Org-Varianten-Editor ergänzt (nur ab 2 Kriterien sichtbar).
-- [x] **Beschreibungsfeld 2-zeilig + Vergrößern** (2026-07-16) — `#opDescription` im
-  Org-Varianten-Editor jetzt Textarea (2 Zeilen) mit Vergrößern-Knopf.
-- [x] **Responsive Kriterien-Layout bei der Varianten-Erstellung** (2026-07-16) — CSS-Grid (2 Spalten),
-  generische Regel „letztes Kriterium spannt volle Breite bei ungerader Anzahl" deckt 1/3/5…
-  automatisch ab, gerade Anzahlen (2/4/…) füllen sich von selbst sauber.
-- [x] **Importformat für neue Varianten** (2026-07-16) — Kriterien als JSON-Datei export-/importierbar
-  (clientseitig, gleiche Struktur wie beim Speichern; kein neuer Endpunkt nötig) im
-  Org-Varianten-Editor.
-- [ ] **Performance des Varianten-Aufbaus untersuchen** — Ursache: jede Variante ist ein **eigener, voll
-  materialisierter Lauf** (MATCHES über alle User × Queries je Variante). Ansätze: gemeinsame
-  Kandidaten-Vorfilterung über Varianten hinweg, Wiederverwendung der org-unabhängigen MATCHES-Basis,
-  Parallelität/Checkpoint-Throttling (analog Evidenz-Perf).
-- **Erledigt:** Variantenname/-beschreibung nachträglich editierbar — sowohl je Lauf (`PATCH` auf den
-  `(:Run)`-Knoten) als auch im **Org-Varianten-Editor** (Umbenennen eigener Profile via
-  `PUT /admin/org-profiles/{name}` mit `newName`; Kollisions-/Schutz-Prüfung, geschützte Basis-Varianten
-  bleiben gesperrt).
+#### 9.3 Org-Varianten & „Can-Do nach Org" — abgeschlossen (2026-07-17)
+- [x] Umsetzung vollständig abgeschlossen (Org-Varianten-Batch, Org-Vergleich, verschachtelte
+  Org-Kriterien, UI/UX-Verbesserungen, Import/Export von Varianten, Editierbarkeit von Namen/
+  Beschreibungen).
+- [x] Detailnachweis in [ROADMAP-ARCHIV.md](ROADMAP-ARCHIV.md#93-can-do-nach-org-2026-07-16).
+- [ ] **Follow-up Performance Variantenaufbau** — die Laufzeit bei vielen Varianten weiter
+  optimieren (z. B. gemeinsame Vorfilterung/Wiederverwendung org-unabhängiger Zwischenergebnisse).
+
 #### 9.4 Masterdata-Verwaltung (Admin)
-Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns, die
-Kritikalitäts-Badges an Einzelfilter/SoD und den Reason-Code (9.6).
-- [x] **Risiko-Metadaten (riskType/riskLevel/riskStatus) im Query-/SoD-Editor** (2026-07-15, aus einem
-  Nutzerfund heraus vorgezogen): Beim Sichten von `rules/CSI_Ruleset/risks.json` fiel auf, dass diese
-  Datei zwar dokumentiert (`rules/SCHEMA.md`: „CSI-nativ: Risiko-Objekte, je SoD-Regel verknüpft") und
-  über `sod_rules.json.risks[]`/`alias` mit den SoD-Regeln verknüpft ist (440 von 455 CSI-SoD-Regeln
-  haben einen Treffer), aber **nirgends geladen/verwendet** wurde — `criticality`/`criticalityRank`
-  bleiben bei CSI deshalb bewusst `null` (keine native SoD-Schwere, s. `rules/SCHEMA.md`), aber die
-  Risiko-Einschätzung selbst (eine **andere** Dimension: deckt ein Control das inhärente Risiko
-  ausreichend? — Kritikalität materialisiert sich erst, wenn mindestens ein User den Treffer hat) lag
-  ungenutzt in der JSON. Alle 440 Einträge hatten zudem identische Werte
-  (`Detection risk`/`Extreme`/`Not mitigated`) — ein nie befülltes Vendor-Template, kein echtes
-  Assessment; genau dafür sind die neuen Dropdowns gedacht.
-  - **Datenfluss:** `risks.json` (optional, nur CSI/CSI_BI) wird beim Ruleset-Laden zusätzlich als
-    Erstbefüllung auf die `SoDRule`-Graphknoten geschrieben (`cypher/ruleset/load_ruleset.cypher`,
-    `coalesce` — Overlay-Edit gewinnt immer) **und** parallel als Datei-Merge-Ebene in
-    `_merged_sodrules()` (`backend/app.py`) — der Query-/SoD-Editor liest Metadaten nämlich direkt aus
-    den JSON-Dateien (Vendor + `sod_rules.custom.json`-Overlay), nie aus dem Graphen; ohne die zweite
-    Ebene wäre die Seed-Befüllung im Editor unsichtbar geblieben (beim ersten Testlauf genau so
-    aufgefallen: Graph korrekt befüllt, Editor zeigte trotzdem nichts).
-  - **Umfang bewusst getrennt von Kritikalität** (Nutzer-Entscheidung): kein automatisches Ableiten von
-    `criticality` aus `riskLevel`, um nicht pauschal alle CSI-Regeln als „Extreme" erscheinen zu
-    lassen, bevor eine echte Bewertung stattgefunden hat.
-  - **Ruleset-Scope:** universelle, fest hinterlegte Wertelisten (`riskLevel` seit 2026-07-15 auf die
-    Kritikalitäts-Namenskonvention umgestellt: `very-critical/critical/high/medium/low`, s. u.;
-    `Detection risk/Inherent risk/Internal control risk`, `Not assessed/Not mitigated/Partly
-    mitigated/Mitigated`) für **alle** Rulesets gleich (Nutzer-Entscheidung) — nicht aus
-    `legends.json` gelesen (das hätte KPMG_R3 ausgeschlossen, dessen `legends.json` diese Schlüssel
-    nicht führt).
-  - **UI:** Dropdown je Feld im „Risiko"-Tab (Query- **und** SoD-Editor, `frontend/admin.html`,
-    IDs `amRiskType`/`amRiskLevel`/`amRiskStatus` bzw. `srRiskType`/…), Speichern über denselben
-    Overlay-Mechanismus wie Kritikalität/Risiko/Controls. Anzeigemodus: farbige, rund umrandete
-    Badges (`.badge.risklevel-*`/`.risktype-*`/`.riskstatus-*`, `color-mix()` aus den
-    Theme-Variablen) in der Query-/SoD-Listen-Zeile.
-  - Mit Playwright gegen den laufenden Container verifiziert (Seed-Werte in Liste+Dropdown, Edit
-    überschreibt nur das geänderte Feld, Query-Seite bleibt leer mangels Vendor-Quelle). Test-Overlay-
-    Einträge danach wieder entfernt (`sod_rules.custom.json` zurück auf `[]`, Test-Lauf gelöscht).
-- [ ] **Risikokatalog inhaltlich befüllen** (2026-07-15, damit der Punkt oben nicht bei der reinen
-  Editierbarkeit stehen bleibt): weiterhin offen für alle Query-Risiken in allen drei Rulesets
-  sowie für KPMG_R3s SoD-Risiken (aktuell durchweg leere Platzhalter, s. u.) — CSI/CSI_BIs 440
-  SoD-Risiken haben dagegen inzwischen echten, differenzierten Inhalt (s. u., war vorher totes
-  Datum). Nutzer will für den Rest dieselbe Recherche/Formulierung per Claude Chat nutzen.
-  **Wichtige Einschränkung (Vertrauensgrenze gilt auch außerhalb dieses Tools):** `riskType`/
-  `riskLevel` beschreiben die Art des Risikos selbst (generisches Audit-/GRC-Fachwissen, unabhängig
-  vom Mandanten) — dafür unproblematisch. `riskStatus` (mitigiert/nicht) hängt dagegen von der
-  **tatsächlichen Kontrollumgebung dieses Mandanten** ab und darf nicht aus mandantenspezifischen
-  Angaben in einem Cloud-Chat hergeleitet werden — gehört eher zu „Interview-Ergebnisse einarbeiten"
-  (9.6), nicht zu einer generischen Recherche. Bei den vielen Einträgen eher eine
-  **Bewertungsrubrik** erarbeiten (Kriterien je riskType/riskLevel) und selbst konsistent anwenden,
-  statt einzeln pro Regel nachzufragen ohne Kontext.
-  - **KPMG_R3 nachgezogen** (2026-07-15, Nutzerfrage „warum hat KPMG_R3 kein risks.json"): der
-    Seed-Mechanismus ist generisch (prüft nur, ob `rules/<Ruleset>/risks.json` existiert), nicht
-    CSI-spezifisch verdrahtet — für KPMG_R3 (nur 22 SoD-Regeln, 604 Queries, deutlich kleiner als
-    CSI) jetzt ebenfalls angelegt. `riskLevel` **direkt aus der bei KPMG bereits vorhandenen
-    `criticality` 1:1 übernommen** (identische 5-Stufen-Skala, s. Umbenennung unten) — nur als
-    Startwert gedacht, `riskType`/`riskStatus` bewusst leer für die manuelle Verfeinerung im Editor.
-    Verifiziert: 22/22 SoD-Regeln bzw. 604/604 Queries mit `riskLevel`, bestehende
-    `shortDescription`-Werte bei allen 600 vorher schon befüllten Queries unverändert. (Wo dieser
-    Startwert inzwischen abgelegt ist, hat sich seither geändert — s. nächster Punkt.)
-  - **`risks.json` zur gemeinsamen Datei für SoD- UND Query-Risiken vereinheitlicht** (2026-07-15,
-    Nutzerfrage „wird das auch für Query-Risiken in risks.json gespeichert? Wenn ja, initial
-    anlegen"): erster Ansatz war eine neue, separate `query_risks.json` je Ruleset (analog zu
-    `risks.json`, aber für Queries) — der Nutzer widersprach dem bewusst: **eine** Datei für beide,
-    Unterscheidung über den vorhandenen Schlüssel (`alias` bei SoD, `query` bei Queries), damit
-    Filterset-Overlay (`queries.custom.json`/`sod_rules.custom.json`) und Risiko-Stammdaten sauber
-    getrennt bleiben (Controls-Beschreibung soll später analog in eine eigene `controls.json`
-    wandern, noch nicht umgesetzt). Dabei fiel auf: die **bestehende** `risks.json` (CSI/CSI_BI,
-    440 SoD-Einträge) hatte neben `riskType`/`riskLevel`/`riskStatus` zwei bislang **nie geladene**
-    Freitextfelder (`risk` = Kurztitel, `description` = Langtext) mit echtem, je Regel
-    unterschiedlichem Inhalt (440 bzw. 246 distinkte Werte) — totes Vendor-Datum aus Auftrag 5.
-    Auf Nutzerentscheid werden beide Felder jetzt zu einem Freitext kombiniert (`"<risk>:
-    <description>"`) und füllen erstmals das editierbare `risk`-Feld der SoD-Regel — für 440
-    CSI-Regeln erscheint dadurch sofort eine echte Risikobeschreibung im Editor, ganz ohne
-    zusätzliche Recherche. Neu ergänzt: 733/735/604 leere Query-Platzhalter-Einträge
-    (CSI_Ruleset/CSI_BI/KPMG_R3), KPMG_R3s `riskLevel`-Startwert dabei aus `queries.custom.json`
-    HERAUS in die neue Struktur verschoben (dort blieb nur noch `{query, shortDescription}` stehen —
-    konsistent mit der Trennung Filterset/Risiko). Cypher-Coalesce (`load_ruleset.cypher`) und
-    Python-Merge (`_merged_queries()`/`_merged_sodrules()`, `backend/app.py`) beide entsprechend
-    angepasst; Overlay-Edit gewinnt weiterhin immer. Mit Playwright verifiziert: CSI-SoD-Editor
-    zeigt jetzt die kombinierte Risikobeschreibung im Freitextfeld, KPMG_R3s `riskLevel` unverändert
-    sichtbar (nur die Quelle hat gewechselt), CSI-Query-Editor weiterhin leer (kein Inhalt
-    vorhanden), keine Testartefakte zurückgeblieben.
-  - **Speicherziel korrigiert — Risiko-Felder gehen jetzt auch beim Editieren nach `risks.json`**
-    (2026-07-15, sofort im Anschluss, Nutzer testete direkt und fragte „warum wird der Wert immer
-    noch in die custom geschrieben und nicht in risk?"): der Punkt oben hatte nur die
-    **Erstbefüllung** (Lesen) korrigiert — `admin_update_query()`/`admin_update_sodrule()`
-    schrieben beim Speichern weiterhin **alle** Formularfelder inkl. `riskType`/`riskLevel`/
-    `riskStatus`/`risk` in `queries.custom.json`/`sod_rules.custom.json` (Ursache: der Editor sendet
-    bei jedem „Speichern" grundsätzlich den kompletten Formularstand, nicht nur das geänderte Feld —
-    das gilt unverändert für alle Filterset-Felder, war aber für die vier Risiko-Felder nicht
-    gewünscht). Fix: neue Funktion `_save_ruleset_risk()` (`backend/app.py`) schreibt genau diese
-    vier Felder direkt in `risks.json` (Eintrag über `query`/`alias` gefunden oder neu angelegt);
-    `admin_update_query()`/`admin_update_sodrule()`/`admin_derive_query()` trennen jetzt Filterset-
-    von Risiko-Feldern, bevor sie schreiben — Filterset weiterhin ins Overlay, Risiko immer nach
-    `risks.json`. Nebeneffekt: ein leerer Test-PUT (`{}`) legt jetzt in **keiner** der beiden Dateien
-    mehr einen Stub-Eintrag an (vorher ein wiederkehrendes Testartefakt-Ärgernis). Mit Playwright
-    verifiziert: Risiko-Freitext-Edit über die UI landet ausschließlich in `risks.json`, ein
-    zeitgleicher Filterset-Edit (z. B. Modul) weiterhin ausschließlich im Overlay, keine
-    Überschneidung mehr.
-- [x] **Datenschutz-Feld + riskLevel-Umbenennung + Badge-Reposition** (2026-07-15, Folgeauftrag direkt
-  im Anschluss an die Risiko-Metadaten oben): beim Sichten eines Einzelfilters fielen dem Nutzer drei
-  Dinge auf.
-  - **Neues Feld „Datenschutz"** in den Query-Stammdaten (zwischen Kritikalität und Modul,
-    `frontend/admin.html` `#amDatenschutz`), gleiche 5-stufige Skala wie Kritikalität. Vorbefüllt aus
-    dem bisher **toten** Vendor-Rohfeld `gdprClassification` (L/M/H/C/V, s. `legends.json`) — analog
-    zum `risks.json`-Fund oben war auch dieses Feld seit jeher in den Rohdaten vorhanden (CSI: 368×
-    `C`, 363× `L`; KPMG_R3: durchgehend leer), aber nirgends geladen. Normalisierung + Coalesce-Logik
-    an **beiden** bekannten Stellen verdrahtet (`_merged_queries()` in `backend/app.py` **und**
-    `cypher/ruleset/load_ruleset.cypher`) — dieselbe Lehre wie beim `risks.json`-Fund: nur die
-    Python-Merge-Ebene ist für den Editor zwingend nötig, die Cypher-Ebene hält den Graphen trotzdem
-    konsistent. Nur für Queries (SoD hat kein Modul-Feld und keine Vendor-Datenschutz-Quelle).
-  - **riskLevel konsequent umbenannt** (`Extreme/High/Medium/Low` → `very-critical/critical/high/
-    medium/low`, identisch zur Kritikalitäts-Konvention): Dropdown-Optionen (Query- **und**
-    SoD-Editor), CSS-Klassen (`.badge.risklevel-*`, jetzt mit den exakten `CRIT_COLOR`-Hex-Werten aus
-    `frontend/index.html` für echte Farbkonsistenz statt Theme-Variablen), JS-Mapping
-    (`RISK_LEVEL_CLASS`/`RISK_LEVEL_LABEL`) sowie **alle bereits gesetzten Daten** migriert:
-    `rules/CSI_Ruleset/risks.json` + `rules/CSI_BI/risks.json` (je 440 Einträge, alle `Extreme` →
-    `very-critical`), `rules/KPMG_R3/risks.json` (17 `Extreme`/5 `High` → `very-critical`/`high`) und
-    `rules/KPMG_R3/queries.custom.json` (604 Einträge — da die neue Skala jetzt 1:1 der Kritikalität
-    entspricht, keine Kollaps-Logik mehr nötig: `riskLevel` direkt aus der Vendor-`criticality` der
-    jeweiligen Query kopiert statt wie zuvor auf 4 Stufen verdichtet). Sorgfalt wie beim ursprünglichen
-    KPMG-Seed: die 600 echten `shortDescription`-Werte in `queries.custom.json` per Skript verifiziert
-    unverändert (byte-identisch vor/nach der Migration).
-  - **Risiko-Badge in der Listenzeile an die Kopfzeile verschoben** (oben rechts neben der ID, statt
-    darunter) und verkleinert (`.badge-sm`, neue `.li-head`-Flex-Zeile, `riskBadgesHtml(item, compact)`
-    mit kompaktem Modus) — betrifft Query- und SoD-Liste gleichermaßen.
-  - Mit Playwright gegen den laufenden Container verifiziert: Feldposition, umbenannte
-    Dropdown-Werte (Query+SoD), Badge-Layout/-Farbe per Screenshot, Speichern-Persistenz-Roundtrip
-    für Datenschutz (Testwert danach wieder aus dem Overlay entfernt). Migrierte API-Werte gegen die
-    erwarteten Zähler geprüft (z. B. CSI: 368 `critical`/363 `low`; KPMG_R3 `riskLevel` == `criticality`
-    für alle 604 Queries).
-- [ ] **Kritikalitäts-Stammdaten** — Stufen + Farben (aktuelle Farbwahl beibehalten) für Einzelfilter
-  und SoD, Stufenlogik editier-/erweiterbar; zusätzlich ein **versteckter KRI-Score** je Stufe
-  mitführen (später für Heatmap-Gewichtung).
-  - [ ] **Kritikalität prominent an Einzelfilter/SoD** (aus 9.1, 2026-07-12 verschoben — Farben/
-    Stufen kommen erst aus den Stammdaten hier): dieselbe farbige Badge-Logik wie bei den Findings
-    (Farbwahl beibehalten) auch in Katalog/Auswahl/Ergebniszeilen der Einzelfilter und SoD-Regeln.
-- [ ] **Reason-Code-Stammdaten (SoD)** — Reason Code als Prozess führen: `PtP_C` → Code `PtP`,
-  Beschreibung „Purchase to Pay". Im SoD-Filter steht die Kritikalität bereits vorn; der Reason-Code
-  wird durch den Prozessnamen ersetzt/angereichert.
-- [ ] **Modul-Stammdaten** — aktuelle SAP-Module aus den Filtern übernehmen, editier-/erweiterbar.
-- [ ] **Querytyp-Stammdaten** — aktuelle Querytypen übernehmen, editier-/erweiterbar.
-- [ ] **Dropdowns statt Freitext** — Kritikalität/Modul/Querytyp/Reason-Code im Query-/SoD-Management
-  aus den Stammdaten wählbar (soweit noch nicht umgesetzt).
-- [ ] **Neuen SoD-Filter anlegen** — der Overlay-Mechanismus erlaubt heute nur das *Bearbeiten*
-  bestehender Regeln (`sod_rules.custom.json`); das *Neuanlegen* einer SoD-Regel (Klausel-/CNF-Struktur)
-  über die UI fehlt.
-- [ ] **Authorizations/TCodes im Editor bearbeitbar** (v2) — bisher nur 1:1-Kopie beim Ableiten/Anzeige
-  im Aufbau-Tab, keine UI für die verschachtelten Objekt/Feld/Werte-Listen.
-- [ ] **USOBT-gestützter Query-Builder** (v2) — neue Queries per Auswahl Transaktion → Berechtigungsobjekt
-  statt Freitext; USOBT/USOBX als eigener, vom Dataset getrennter Graph-Layer (stabil je
-  Berechtigungskonzept, bei Bedarf gegen das aktuelle Set abgleichen/neu laden).
-- [ ] **Query → System-Typ-Zuordnung** (v2) — Stammdatenblatt, welche Query zu welchem Quellsystem-Typ
-  gehört (R/3, S/4HANA, künftig weitere) — Vorstufe system-übergreifender/-spezifischer Rulesets, ohne
-  das Datenmodell zu verzweigen.
-- [ ] **Filterset-/Konnektor-Import weitere Systeme** (v2) — perspektivisch S/4HANA, Azure AD/Entra,
-  Microsoft Dynamics, Salesforce (je System ein eigenes Ruleset, Datenmodell bleibt gleich).
+Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns,
+Badges an Einzelfilter/SoD und den Reason-Code (9.6).
+
+Bereits erledigt (Details im Archiv/Commits): Risiko-Metadaten im Editor inkl. `risks.json`-
+Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitung.
+
+- [ ] **Risikokatalog inhaltlich befüllen** — offene Pflege für Query-Risiken (alle Rulesets) und
+  KPMG_R3-SoD-Risiken; `riskType`/`riskLevel` generisch, `riskStatus` mandantenbezogen nur aus
+  lokal validierter Kontrollumgebung.
+- [ ] **Kritikalitäts-Stammdaten** — Stufen/Farben editierbar machen und optional KRI-Score je Stufe
+  mitführen.
+- [ ] **Kritikalität prominent an Einzelfilter/SoD** — Badge-Logik aus Findings in Katalog,
+  Auswahl und Ergebniszeilen übernehmen.
+- [ ] **Reason-Code-Stammdaten (SoD)** — Prozesscode + Prozessbezeichnung als Masterdata.
+- [ ] **Modul-Stammdaten** — bestehende SAP-Module übernehmen und pflegbar machen.
+- [ ] **Querytyp-Stammdaten** — bestehende Querytypen übernehmen und pflegbar machen.
+- [ ] **Dropdowns statt Freitext** — Kritikalität/Modul/Querytyp/Reason-Code in Query-/SoD-Management.
+- [ ] **Neuen SoD-Filter anlegen** — UI für Neuanlage (Klausel-/CNF-Struktur) ergänzen.
+- [ ] **Authorizations/TCodes im Editor bearbeitbar (v2)** — verschachtelte Objekt/Feld/Wert-Listen.
+- [ ] **USOBT-gestützter Query-Builder (v2)** — Transaktion → Berechtigungsobjekt statt Freitext.
+- [ ] **Query → System-Typ-Zuordnung (v2)** — Zuordnung zu R/3, S/4HANA usw. als Stammdatenblatt.
+- [ ] **Filterset-/Konnektor-Import weitere Systeme (v2)** — S/4HANA, Azure AD/Entra,
+  Microsoft Dynamics, Salesforce.
 
 #### 9.5 Threat Modeling (Reiter an Einzelfilter/SoD)
 - [ ] **Threat-Modeling-Reiter** an Einzelfilter und SoD-Regel — grafisch zeigen, wie eine Berechtigung
@@ -544,6 +354,9 @@ Nutzungsdaten verfügbar ist, rückt die Phase wieder nach vorne.
 ### Phase X — Backlog (zurückgestellt)
 Sinnvoll, aber nicht auf dem kritischen Pfad.
 
+- [ ] **Security-Checks weiter ausbauen** (z. B. weitere SAST-Regeln/Tools wie Semgrep,
+  feinere Policy-Schwellen und CI-Härtung) — bewusst nach hinten verschoben; Basischeck
+  (AST + Bandit) ist vorhanden.
 - [ ] **CSI-Rulesets CNF-zerlegen** (`clauses` in `sod_rules.json` für `csi`/`csi_bi`), damit die SoD-Auswertung auch über die CSI-Kataloge läuft. *(KPMG ist scharf; die Mechanik ist generisch.)*
 - [ ] **Kritische TCodes/Objekte taggen** (`:Critical`) — **Ansatz offen**: Kritikalität steckt bereits im Ruleset; ob ein zusätzliches, ruleset-unabhängiges Tagging nötig ist, ist vor dem Bau zu entscheiden.
 - [ ] **AE-08 — Pfad-Gültigkeitsschnittmenge** bei verschachtelten Sammelrollen sauber prüfen (Datumsprädikat auf jede Kante des Pfades).
