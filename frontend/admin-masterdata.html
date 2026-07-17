@@ -173,7 +173,6 @@
         <a href="#sec-module">Modul-Stammdaten</a>
         <a href="#sec-qtype">Querytyp-Stammdaten</a>
         <a href="#sec-dropdowns">Dropdowns statt Freitext</a>
-        <a href="#sec-newsod">Neuen SoD-Filter anlegen</a>
         <a href="#sec-auth">Authorizations/TCodes im Editor (v2)</a>
         <a href="#sec-usobt">USOBT-gestuetzter Query-Builder (v2)</a>
         <a href="#sec-systemtype">Query -> System-Typ-Zuordnung (v2)</a>
@@ -259,11 +258,6 @@
       <article class="sectionbox" id="sec-dropdowns">
         <div class="sectionhead"><h2>Dropdowns statt Freitext</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
         <div class="hint">Das ist keine eigene Stammdatenfunktion, sondern die Nutzung der Stammdaten im Query Management. Stand: fuer Kritikalitaet, Modul, Querytyp und Reason-Code umgesetzt.</div>
-      </article>
-
-      <article class="sectionbox" id="sec-newsod">
-        <div class="sectionhead"><h2>Neuen SoD-Filter anlegen</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Derzeit nur Bearbeitung bestehender Regeln; Neuanlage inkl. Klausel-/CNF-Editor folgt separat.</div>
       </article>
 
       <article class="sectionbox" id="sec-auth">
@@ -820,7 +814,12 @@ document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', e =
 
 document.querySelectorAll('.sectionbox .sectionhead').forEach(h => h.addEventListener('click', () => {
   const box = h.closest('.sectionbox');
-  if (box && box.id && box.id !== activeSectionId) setActiveSection(box.id);
+  if (!box || !box.id) return;
+  if (box.id === activeSectionId) {
+    setActiveSection('', true);
+    return;
+  }
+  setActiveSection(box.id);
 }));
 
 loadAll().then(() => { setEditMode(false); setActiveSection(activeSectionId, true); }).catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));

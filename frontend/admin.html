@@ -333,9 +333,14 @@
         </div>
 
         <div class="tabpanel" id="tab-sraufbau">
-          <div class="hint">Nur Anzeige &mdash; Klausel-Struktur (CNF): jede Klausel braucht
-            mindestens eine erf&uuml;llte Query, alle Klauseln zusammen sind UND-verkn&uuml;pft.</div>
+          <div class="hint">Klausel-Struktur (CNF): jede Klausel braucht mindestens eine erf&uuml;llte
+            Query, alle Klauseln zusammen sind UND-verkn&uuml;pft. Im Modus „Aendern" kann die
+            Struktur direkt bearbeitet werden.</div>
           <div id="srClauses" style="margin-top:10px"></div>
+          <label for="srClausesEditor" style="margin-top:12px">SoD-Klauseln bearbeiten <span class="muted">(eine Klausel je Zeile, Query-IDs mit | trennen)</span></label>
+          <textarea id="srClausesEditor" disabled placeholder="Beispiel:
+Z_CUST_CHANGE | Z_CUST_DISPLAY
+Z_ROLE_ADMIN"></textarea>
         </div>
 
         <div class="tabpanel" id="tab-srrisiko" hidden>
@@ -411,7 +416,7 @@ const QUERY_EDIT_FIELDS = ['amShortDescription', 'amDescription', 'amCriticality
   'amModule', 'amQueryType', 'amDisregardTcode', 'amRiskType', 'amRiskLevel', 'amRiskStatus',
   'amRisk', 'amControls'];
 const SOD_EDIT_FIELDS = ['srShortDescription', 'srDescription', 'srCriticality', 'srRiskType',
-  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls'];
+  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls', 'srClausesEditor'];
 function setEditMode(v) {
   editMode = v;
   QUERY_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
@@ -686,6 +691,7 @@ async function selectSodRule(id) {
   $('srRiskStatus').value = r.riskStatus || '';
   $('srRisk').value = r.risk || '';
   $('srControls').value = r.controls || '';
+  $('srClausesEditor').value = clausesToEditorText(r.clauses || []);
   renderSodAufbau(r);
   setEditMode(false);
 }
@@ -716,12 +722,29 @@ function renderSodAufbau(r) {
     + (varsHtml ? `<table class="auftable"><thead><tr><th>Variable</th><th>Query</th></tr></thead><tbody>${varsHtml}</tbody></table>` : '');
 }
 
+function clausesToEditorText(clauses) {
+  return (clauses || []).map(c => (c || []).join(' | ')).join('\n');
+}
+
+function parseSodClausesEditor() {
+  const lines = $('srClausesEditor').value
+    .split(/\r?\n/)
+    .map(x => x.trim())
+    .filter(Boolean);
+  return lines.map(line => {
+    const ids = line.split('|').map(x => x.trim()).filter(Boolean);
+    if (!ids.length) throw new Error('Jede Klausel braucht mindestens eine Query-ID.');
+    return ids;
+  });
+}
+
 function formSodFields() {
   return {
     shortDescription: $('srShortDescription').value.trim() || null,
     description: $('srDescription').value.trim() || null,
     criticality: $('srCriticality').value || null,
     reasonCode: $('srReasonCode').value || null,
+    clauses: parseSodClausesEditor(),
     risk: $('srRisk').value.trim() || null,
     controls: $('srControls').value.trim() || null,
     riskType: $('srRiskType').value || null,
@@ -735,17 +758,19 @@ async function saveSodCurrent() {
   const rs = $('amRuleset').value;
   setStatus('<span class="spin"></span> Speichern&hellip;');
   try {
+    const payload = formSodFields();
     await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/' + encodeURIComponent(selectedSodId),
-      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formSodFields()) });
+      { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     setStatus(`${doneTag} SoD-Regel <b>${selectedSodId}</b> gespeichert.`);
     await loadSodRules();
     await selectSodRule(selectedSodId);
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus('<b>Fehler:</b> ' + (err.detail || err.message || JSON.stringify(err)), true);
   }
 }
 ['srShortDescription', 'srDescription', 'srRisk', 'srControls']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
+$('srClausesEditor').addEventListener('input', () => setDirty(true));
 ['srCriticality', 'srRiskType', 'srRiskLevel', 'srRiskStatus']
   .forEach(id => $(id).addEventListener('change', () => setDirty(true)));
 

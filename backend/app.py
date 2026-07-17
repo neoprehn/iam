@@ -2749,11 +2749,30 @@ class SodRuleEditReq(BaseModel):
     shortDescription: str | None = None
     criticality: str | None = None
     reasonCode: str | None = None
+    clauses: list[list[str]] | None = None
     risk: str | None = None
     controls: str | None = None
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
+
+
+def _normalize_sod_clauses(clauses: list[list[str]]) -> list[list[str]]:
+    """Normalisiert CNF-Klauseln aus dem SoD-Editor: trimmt Query-IDs, entfernt Leerwerte,
+    dedupliziert innerhalb einer Klausel und erzwingt mind. einen Eintrag pro Klausel."""
+    normalized: list[list[str]] = []
+    for i, clause in enumerate(clauses, start=1):
+        cleaned = [str(qid).strip() for qid in (clause or []) if str(qid).strip()]
+        if not cleaned:
+            raise HTTPException(400, f"Klausel {i} ist leer")
+        seen: set[str] = set()
+        deduped: list[str] = []
+        for qid in cleaned:
+            if qid not in seen:
+                seen.add(qid)
+                deduped.append(qid)
+        normalized.append(deduped)
+    return normalized
 
 
 @app.put("/admin/rulesets/{ruleset}/sodrules/{ruleId}")
@@ -2771,8 +2790,17 @@ def admin_update_sodrule(ruleset: str, ruleId: str, req: SodRuleEditReq):
     _validate_catalog_criticality(req.criticality, "criticality")
     _validate_catalog_criticality(req.riskLevel, "riskLevel")
     _validate_catalog_named(req.reasonCode, "reasonCode", "reasonCodes")
+    norm_clauses = None if req.clauses is None else _normalize_sod_clauses(req.clauses)
+    known_queries = set(_merged_queries(ruleset)[0].keys()) if norm_clauses is not None else set()
+    if norm_clauses is not None:
+        for i, clause in enumerate(norm_clauses, start=1):
+            unknown = [qid for qid in clause if qid not in known_queries]
+            if unknown:
+                raise HTTPException(400, f"Klausel {i} enthaelt unbekannte Query-IDs: {', '.join(unknown)}")
     current = merged[ruleId]
     fields = {k: v for k, v in req.model_dump().items() if v is not None}
+    if norm_clauses is not None:
+        fields["clauses"] = norm_clauses
     risk_fields = {k: v for k, v in fields.items() if k in _RISK_FIELDS}
     filterset_fields = {k: v for k, v in fields.items() if k not in _RISK_FIELDS and current.get(k) != v}
     if filterset_fields:
