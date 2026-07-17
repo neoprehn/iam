@@ -354,10 +354,11 @@
 
         <div class="tabpanel" id="tab-sraufbau">
           <div class="hint">Klausel-Struktur (CNF): jede Klausel braucht mindestens eine erf&uuml;llte
-            Query, alle Klauseln zusammen sind UND-verkn&uuml;pft. Im Modus „Aendern" kann die
-            Struktur direkt bearbeitet werden.</div>
-          <div id="srClauses" style="margin-top:10px"></div>
-          <div class="sod-builder">
+            Query, alle Klauseln zusammen sind UND-verkn&uuml;pft.</div>
+          <div id="srAufbauViewBlock" style="margin-top:10px">
+            <div id="srClauses"></div>
+          </div>
+          <div class="sod-builder" id="srAufbauEditBlock" style="display:none">
             <label for="srExprBuilder" style="margin-top:4px">Schritt 1: SoD-Logik zusammenklicken</label>
             <div id="srExprBuilder"></div>
             <div class="sod-preview"><b>Vorschau:</b> <span id="srFormulaPreview" class="muted">-</span></div>
@@ -368,7 +369,7 @@ Q1 | Q2
 Q3
 Q4 | Q5"></textarea>
             <div class="row">
-              <div><button class="ghost" id="srApplyFormulaBtn" style="width:100%" disabled>Text in Builder &uuml;bernehmen</button></div>
+              <div><button class="ghost" id="srApplyFormulaBtn" style="width:100%" disabled>Text in visuelle Logik &uuml;bernehmen</button></div>
               <div><button class="ghost" id="srTestBtn" style="width:100%">SoD testen</button></div>
             </div>
             <div id="srTestResult" class="hint"></div>
@@ -459,9 +460,19 @@ function setEditMode(v) {
   $('cmdEdit').disabled = v;
   $('amCancelBtn').disabled = !v; $('srCancelBtn').disabled = !v; $('cmdCancel').disabled = !v;
   if (sodExprTree) renderSodExprBuilder();
+  updateSodAufbauMode();
   if (!v) setDirty(false);
 }
 function isQueryMode() { return mode === 'query'; }
+
+function updateSodAufbauMode() {
+  const view = $('srAufbauViewBlock');
+  const edit = $('srAufbauEditBlock');
+  if (!view || !edit) return;
+  const showBase = !isQueryMode() && !!selectedSodId;
+  view.style.display = showBase && !editMode ? '' : 'none';
+  edit.style.display = showBase && editMode ? '' : 'none';
+}
 
 async function loadRulesets() {
   const meta = await api('/profiles');
@@ -535,6 +546,7 @@ function applyMode() {
   $('amDetail').style.display = q && selectedId ? '' : 'none';
   $('srEmpty').style.display = !q && !selectedSodId ? '' : 'none';
   $('srDetail').style.display = !q && selectedSodId ? '' : 'none';
+  updateSodAufbauMode();
 }
 document.querySelectorAll('#modePills .pill').forEach(b => b.addEventListener('click', () => {
   mode = b.dataset.mode;
@@ -733,6 +745,7 @@ async function selectSodRule(id) {
   renderSodExprBuilder();
   renderSodAufbau(r);
   setEditMode(false);
+  updateSodAufbauMode();
 }
 
 /* Query-Bezeichnung fuer die Klausel-/Variablen-Anzeige — nutzt die bereits geladene Query-Liste
