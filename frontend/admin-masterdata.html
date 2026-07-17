@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Masterdata Management - IAM</title>
+<style>
+  :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
+          --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
+  html[data-theme="light"] { --bg:#f5f7fa; --panel:#ffffff; --line:#d7dee6; --fg:#1b232c;
+          --muted:#5b6b7a; --accent:#2f6fe0; --crit:#c0392b; --ok:#1f7a37; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+  a { color:#8ab4f8; }
+  a:visited { color:#9fc2ff; }
+  html[data-theme="light"] a { color:#2f6fe0; }
+  html[data-theme="light"] a:visited { color:#2f6fe0; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 22px; background:linear-gradient(110deg,#141d2b 0%,#0f1419 60%);
+    border-bottom:1px solid var(--line); }
+  html[data-theme="light"] header { background:linear-gradient(110deg,#eef2f7 0%,#ffffff 60%); }
+  .brand { display:flex; align-items:center; gap:13px; }
+  .brand .mark { width:38px; height:38px; border-radius:9px; flex:none;
+    background:linear-gradient(135deg,var(--accent),#7b5cf5); display:flex; align-items:center;
+    justify-content:center; font-weight:800; font-size:17px; color:#fff; }
+  .brand .title { font-size:18px; font-weight:700; line-height:1.15; }
+  .brand .title b { color:var(--accent); }
+  .brand .tag { color:var(--muted); font-size:12px; margin-top:1px; }
+  .bctx { display:flex; align-items:center; gap:8px; }
+  .chip { font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    border-radius:20px; padding:3px 11px; white-space:nowrap; }
+
+  .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
+    background:var(--panel); margin-top:8px; overflow-x:auto; }
+  .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
+    border-right:1px solid var(--line); }
+  .group:last-child { border-right:0; }
+  .group .cmds { display:flex; gap:6px; }
+  .group .lbl { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-top:5px; }
+  .cmd { display:flex; flex-direction:column; align-items:center; gap:3px; min-width:64px;
+    padding:7px 10px; background:transparent; color:var(--fg); border:1px solid transparent;
+    border-radius:7px; font:inherit; font-size:12px; cursor:pointer; white-space:nowrap; text-decoration:none; }
+  .cmd:hover { background:rgba(76,139,245,.12); border-color:var(--line); }
+  .cmd .ico { font-size:18px; line-height:1; }
+
+  #status { display:none; margin:10px 20px 0; padding:9px 12px; border-radius:7px;
+    border:1px solid var(--line); background:var(--panel); }
+  #status.err { border-color:var(--crit); color:#ffb3b5; }
+
+  main { padding:16px 20px 28px; }
+  .layout { display:grid; grid-template-columns:280px 1fr; gap:18px; align-items:start; }
+  .navbox, .sectionbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 10px; }
+  .navbox h2, .sectionbox h2 { margin-top:0; }
+  .toc a { display:block; padding:6px 8px; border-radius:6px; color:var(--fg); text-decoration:none; font-size:13px; }
+  .toc a:hover { background:rgba(76,139,245,.10); }
+  .muted { color:var(--muted); }
+  .hint { color:var(--muted); font-size:12px; }
+
+  .sectionbox { margin-bottom:14px; }
+  .sectionhead { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+  .sectionhead { cursor:pointer; }
+  .section-right {
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-right::after {
+    content:'\25B8';
+    color:var(--muted);
+    font-size:13px;
+    transition:transform .16s ease,color .16s ease;
+    transform-origin:45% 55%;
+  }
+  .sectionbox.active .section-right::after {
+    transform:rotate(90deg);
+    color:var(--accent);
+  }
+  .sectionbox:not(.active) > :not(.sectionhead) { display:none; }
+  .state { font-size:11px; border:1px solid var(--line); border-radius:999px; padding:2px 9px; color:var(--muted); }
+  .state.ok { color:var(--ok); border-color:var(--ok); }
+  .state.wip { color:#f5c451; border-color:#f5c451; }
+
+  input, select { width:100%; padding:7px 9px; background:var(--bg); color:var(--fg);
+    border:1px solid var(--line); border-radius:6px; font:inherit; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; }
+  .row { display:flex; gap:10px; }
+  .row > div { flex:1; }
+  button.primary { padding:9px 14px; background:var(--accent); color:#fff; border:0; border-radius:6px; font:inherit; cursor:pointer; }
+  button.ghost { padding:9px 14px; background:transparent; border:1px solid var(--line); color:var(--fg); border-radius:6px; font:inherit; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .badge { display:inline-block; font-size:11px; border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin:2px 4px 2px 0; color:var(--muted); }
+  .badge.key { font-family:ui-monospace,Consolas,monospace; color:var(--fg); }
+  .modehint { font-size:12px; color:var(--muted); }
+  .color-inline { display:flex; gap:6px; align-items:center; }
+  .color-inline > .hex-wrap { flex:1; }
+  .color-picker {
+    width:44px;
+    height:32px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:0;
+    background:transparent;
+    cursor:pointer;
+    opacity:1;
+  }
+  .color-picker:disabled { cursor:default; opacity:.85; }
+  .color-picker::-webkit-color-swatch-wrapper { padding:0; }
+  .color-picker::-webkit-color-swatch { border:none; border-radius:7px; }
+  .color-picker::-moz-color-swatch { border:none; border-radius:7px; }
+  .kpi { display:grid; grid-template-columns:repeat(4,minmax(110px,1fr)); gap:8px; margin:8px 0; }
+  .kpi > div { border:1px solid var(--line); border-radius:6px; padding:8px; }
+  .kpi b { display:block; font-size:18px; }
+  .kpi span { color:var(--muted); font-size:11px; }
+
+  @media (max-width: 980px) {
+    .layout { grid-template-columns:1fr; }
+    .kpi { grid-template-columns:repeat(2,minmax(110px,1fr)); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark">IAM</div>
+    <div>
+      <div class="title"><b>IAM</b> - Masterdata Management</div>
+      <div class="tag">Eigene Seite fuer Einstellungen gemaess Roadmap 9.4</div>
+    </div>
+  </div>
+  <div class="bctx">
+    <button class="chip" id="themeToggle" style="cursor:pointer">Theme</button>
+  </div>
+</header>
+
+<nav class="ribbon">
+  <div class="group">
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
+    <div class="lbl">Anzeige</div>
+  </div>
+  <div class="group">
+    <div class="cmds">
+      <button class="cmd" id="cmdEdit"><span class="ico">&#9998;</span>Aendern</button>
+      <button class="cmd" id="cmdSaveTop" disabled><span class="ico">&#128190;</span>Speichern</button>
+      <button class="cmd" id="cmdCancelTop" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+    </div>
+    <div class="lbl">Bearbeiten</div>
+  </div>
+  <div class="group">
+    <div class="cmds"><a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a></div>
+    <div class="lbl">Admin</div>
+  </div>
+  <div class="group">
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
+    <div class="lbl">Zurueck</div>
+  </div>
+</nav>
+
+<div id="status"></div>
+
+<main>
+  <div class="layout">
+    <aside class="navbox">
+      <h2>Masterdata</h2>
+      <div class="toc">
+        <a href="#sec-risk">Risikokatalog inhaltlich befuellen</a>
+        <a href="#sec-criticality">Kritikalit&auml;ts-Stammdaten</a>
+        <a href="#sec-prominent">Kritikalitaet prominent an Einzelfilter/SoD</a>
+        <a href="#sec-reason">Reason-Code-Stammdaten (SoD)</a>
+        <a href="#sec-module">Modul-Stammdaten</a>
+        <a href="#sec-qtype">Querytyp-Stammdaten</a>
+        <a href="#sec-dropdowns">Dropdowns statt Freitext</a>
+        <a href="#sec-newsod">Neuen SoD-Filter anlegen</a>
+        <a href="#sec-auth">Authorizations/TCodes im Editor (v2)</a>
+        <a href="#sec-usobt">USOBT-gestuetzter Query-Builder (v2)</a>
+        <a href="#sec-systemtype">Query -> System-Typ-Zuordnung (v2)</a>
+        <a href="#sec-connectors">Filterset-/Konnektor-Import weitere Systeme (v2)</a>
+      </div>
+      <div class="hint" style="margin-top:10px">Die Seite strukturiert alle 9.4-Themen zentral.
+        Aktuell funktionsfaehig: Kritikalitaetskatalog, Risikoabdeckung-Statistik,
+        Katalogvorschau fuer Module/Querytypen/Reason-Codes.</div>
+      <div class="hint" style="margin-top:6px">Wichtig: Masterdata (z. B. Kritikalitaetsstufen)
+        gelten global ueber alle Filtersets/Rulesets und werden zentral referenziert.</div>
+      <div class="modehint" id="modeHint" style="margin-top:8px">Modus: Anzeige (oben erst auf Aendern klicken)</div>
+    </aside>
+
+    <section>
+      <article class="sectionbox active" id="sec-risk">
+        <div class="sectionhead"><h2>Risikokatalog inhaltlich befuellen</h2><span class="section-right"><span class="state wip">in Arbeit</span></span></div>
+        <div class="hint">Status je Ruleset fuer Query-/SoD-Risiko-Felder (risk/riskType/riskLevel/riskStatus).</div>
+        <div class="row" style="margin:8px 0 4px;max-width:340px">
+          <div><label for="rulesetSelect">Filterset</label><select id="rulesetSelect"></select></div>
+        </div>
+        <div id="riskCoverage"></div>
+      </article>
+
+      <article class="sectionbox" id="sec-criticality">
+        <div class="sectionhead"><h2>Kritikalit&auml;ts-Stammdaten</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
+        <div class="hint">Stufen, Labels, Rang, Farbe und KRI-Score. Interne IDs sind technische Schluessel,
+          werden automatisch berechnet und sind nicht direkt editierbar.</div>
+        <table style="margin-top:8px">
+          <thead><tr><th>ID</th><th>Label</th><th>Rang</th><th>Farbe</th><th>KRI</th><th></th></tr></thead>
+          <tbody id="critBody"></tbody>
+        </table>
+        <div class="row" style="margin-top:8px">
+          <div><button class="ghost" id="critAdd" style="width:100%">+ Stufe</button></div>
+          <div><button class="ghost" id="critReload" style="width:100%">Neu laden</button></div>
+          <div><button class="primary" id="critSave" style="width:100%" disabled>Speichern</button></div>
+        </div>
+      </article>
+
+      <article class="sectionbox" id="sec-prominent">
+        <div class="sectionhead"><h2>Kritikalitaet prominent an Einzelfilter/SoD</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">UI-Badge-Politur in Katalog/Auswahl/Ergebniszeilen. Technische Basis (Katalog) ist vorhanden.</div>
+      </article>
+
+      <article class="sectionbox" id="sec-reason">
+        <div class="sectionhead"><h2>Reason-Code-Stammdaten (SoD)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Aktuell erkannte Reason-Codes aus Regeln (Vorschau):</div>
+        <div id="reasonPreview"></div>
+      </article>
+
+      <article class="sectionbox" id="sec-module">
+        <div class="sectionhead"><h2>Modul-Stammdaten</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Aktuell verwendete Module (Vorschau):</div>
+        <div id="modulePreview"></div>
+      </article>
+
+      <article class="sectionbox" id="sec-qtype">
+        <div class="sectionhead"><h2>Querytyp-Stammdaten</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Aktuell verwendete Querytypen (Vorschau):</div>
+        <div id="queryTypePreview"></div>
+      </article>
+
+      <article class="sectionbox" id="sec-dropdowns">
+        <div class="sectionhead"><h2>Dropdowns statt Freitext</h2><span class="section-right"><span class="state wip">teilweise</span></span></div>
+        <div class="hint">Umgesetzt: Kritikalitaet/Datenschutz/RiskLevel ueber zentralen Katalog. Offen: Modul, Querytyp, Reason-Code.</div>
+      </article>
+
+      <article class="sectionbox" id="sec-newsod">
+        <div class="sectionhead"><h2>Neuen SoD-Filter anlegen</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Derzeit nur Bearbeitung bestehender Regeln; Neuanlage inkl. Klausel-/CNF-Editor folgt separat.</div>
+      </article>
+
+      <article class="sectionbox" id="sec-auth">
+        <div class="sectionhead"><h2>Authorizations/TCodes im Editor (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Der Aufbau-Tab ist noch read-only. Bearbeitungs-UI fuer verschachtelte Objekt/Feld/Wert-Listen steht aus.</div>
+      </article>
+
+      <article class="sectionbox" id="sec-usobt">
+        <div class="sectionhead"><h2>USOBT-gestuetzter Query-Builder (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Geplant: Query-Erstellung per Transaktion -> Berechtigungsobjekt statt Freitext.</div>
+      </article>
+
+      <article class="sectionbox" id="sec-systemtype">
+        <div class="sectionhead"><h2>Query -> System-Typ-Zuordnung (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Geplant: Stammdatenblatt fuer Zuordnung zu R/3, S/4HANA und weiteren Quellsystemen.</div>
+      </article>
+
+      <article class="sectionbox" id="sec-connectors">
+        <div class="sectionhead"><h2>Filterset-/Konnektor-Import weitere Systeme (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
+        <div class="hint">Geplant: S/4HANA, Azure AD/Entra, Microsoft Dynamics, Salesforce.</div>
+      </article>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
+
+function setStatus(html, isErr) {
+  const st = $('status');
+  st.style.display = 'block';
+  st.className = isErr ? 'err' : '';
+  st.innerHTML = html;
+}
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  $('themeToggle').textContent = t === 'light' ? 'Hell' : 'Dunkel';
+}
+applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
+$('themeToggle').onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
+};
+
+let criticalities = [];
+let rulesetStats = [];
+let editMode = false;
+let dirty = false;
+let rulesetDetails = [];
+let selectedRuleset = '';
+let activeSectionId = 'sec-risk';
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>'\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+}
+
+function toInternalId(label) {
+  const raw = String(label || '').trim().toLowerCase()
+    .replace(/[\u00e4]/g, 'ae').replace(/[\u00f6]/g, 'oe').replace(/[\u00fc]/g, 'ue').replace(/[\u00df]/g, 'ss')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return raw || 'level';
+}
+
+function normalizedHexColor(value) {
+  const v = String(value || '').trim();
+  return /^#[0-9A-Fa-f]{6}$/.test(v) ? v : '#7bd690';
+}
+
+function computedCriticalities(rows) {
+  const used = new Set();
+  return rows.map(r => {
+    const existing = String(r.id || '').trim();
+    const base = (r._new || !existing) ? toInternalId(r.label) : existing;
+    let id = base;
+    let n = 2;
+    while (used.has(id)) {
+      id = `${base}-${n++}`;
+    }
+    used.add(id);
+    return { ...r, _id: id };
+  });
+}
+
+function setEditMode(v) {
+  editMode = v;
+  $('cmdEdit').disabled = v;
+  $('cmdSaveTop').disabled = !v;
+  $('cmdCancelTop').disabled = !v;
+  $('critAdd').disabled = !v;
+  $('critSave').disabled = !v;
+  $('modeHint').textContent = v ? 'Modus: Aendern' : 'Modus: Anzeige';
+  if (!v) setDirty(false);
+  renderCriticalityTable();
+}
+
+function setActiveSection(sectionId, keepScroll) {
+  activeSectionId = sectionId;
+  document.querySelectorAll('.sectionbox').forEach(box => {
+    box.classList.toggle('active', box.id === sectionId);
+  });
+  document.querySelectorAll('.toc a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + sectionId);
+  });
+  if (!keepScroll) {
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function setDirty(v) {
+  dirty = v;
+  const canSave = editMode && dirty;
+  $('cmdSaveTop').disabled = !canSave;
+  $('critSave').disabled = !canSave;
+}
+
+window.addEventListener('beforeunload', e => {
+  if (!dirty) return;
+  e.preventDefault();
+  e.returnValue = '';
+});
+
+function renderBadges(elId, values) {
+  const el = $(elId);
+  const uniq = [...new Set((values || []).filter(Boolean))].sort();
+  if (!uniq.length) {
+    el.innerHTML = '<span class="muted">keine Werte</span>';
+    return;
+  }
+  el.innerHTML = uniq.map(v => `<span class="badge">${esc(v)}</span>`).join('');
+}
+
+function renderCriticalityTable() {
+  const body = $('critBody');
+  body.innerHTML = '';
+  const rows = computedCriticalities(criticalities);
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="6" class="muted">keine Stufen</td></tr>';
+    return;
+  }
+  rows
+    .slice()
+    .sort((a, b) => (Number(b.rank || 0) - Number(a.rank || 0)) || String(a._id).localeCompare(String(b._id)))
+    .forEach((lvl, idx) => {
+      const tr = document.createElement('tr');
+      const hex = normalizedHexColor(lvl.color);
+      tr.innerHTML = ''
+        + `<td><span class="badge key" title="Interner, referenzierbarer Schluessel (automatisch berechnet)">${esc(lvl._id)}</span></td>`
+        + `<td><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="label" value="${esc(lvl.label)}" style="color:${hex};font-weight:600" title="Anzeigefarbe entspricht dem Farbwert" /></td>`
+        + `<td><input ${editMode ? '' : 'disabled'} type="number" min="1" step="1" data-i="${idx}" data-k="rank" value="${esc(lvl.rank)}" /></td>`
+        + `<td><div class="color-inline"><input class="color-picker" type="color" data-i="${idx}" data-k="colorPicker" value="${hex}" title="Farbe waehlen" /><div class="hex-wrap"><input ${editMode ? '' : 'disabled'} data-i="${idx}" data-k="color" value="${esc(hex)}" placeholder="#RRGGBB" /></div></div></td>`
+        + `<td><input ${editMode ? '' : 'disabled'} type="number" step="1" data-i="${idx}" data-k="kriScore" value="${esc(lvl.kriScore == null ? '' : lvl.kriScore)}" /></td>`
+        + `<td>${editMode ? `<button class="ghost" data-del="${idx}" style="width:auto;padding:4px 8px">x</button>` : '<span class="muted">-</span>'}</td>`;
+      body.appendChild(tr);
+    });
+
+  const onCellInput = inp => {
+    if (!editMode) return;
+    const i = Number(inp.dataset.i);
+    const k = inp.dataset.k;
+    const v = inp.value;
+    if (k === 'rank') criticalities[i][k] = v === '' ? '' : Number(v);
+    else if (k === 'kriScore') criticalities[i][k] = v === '' ? null : Number(v);
+    else if (k === 'colorPicker') {
+      criticalities[i].color = normalizedHexColor(v);
+      renderCriticalityTable();
+      setDirty(true);
+      return;
+    } else if (k === 'color') {
+      criticalities[i].color = v;
+    } else criticalities[i][k] = v;
+    setDirty(true);
+  };
+  body.querySelectorAll('input[data-k]').forEach(inp => {
+    if (inp.dataset.k === 'colorPicker') {
+      inp.addEventListener('pointerdown', () => {
+        if (!editMode) {
+          setEditMode(true);
+          setStatus('Bearbeitungsmodus aktiv.');
+        }
+      });
+    }
+    inp.addEventListener('input', () => onCellInput(inp));
+    if (inp.dataset.k === 'colorPicker') inp.addEventListener('change', () => onCellInput(inp));
+  });
+
+  body.querySelectorAll('button[data-del]').forEach(btn => btn.addEventListener('click', () => {
+    const i = Number(btn.dataset.del);
+    criticalities.splice(i, 1);
+    setDirty(true);
+    renderCriticalityTable();
+  }));
+}
+
+function normalizeCriticalitiesForSave() {
+  return computedCriticalities(criticalities).map(c => ({
+    id: String(c._id || '').trim(),
+    label: String(c.label || '').trim(),
+    rank: Number(c.rank),
+    color: String(c.color || '').trim() || null,
+    kriScore: c.kriScore == null || c.kriScore === '' || Number.isNaN(Number(c.kriScore)) ? null : Number(c.kriScore),
+  }));
+}
+
+function renderRiskCoverage() {
+  const wrap = $('riskCoverage');
+  const stats = rulesetStats.filter(s => s.ruleset === selectedRuleset);
+  if (!stats.length) {
+    wrap.innerHTML = '<div class="muted">kein Filterset ausgewählt</div>';
+    return;
+  }
+  wrap.innerHTML = stats.map(s => {
+    const qPct = s.queryTotal ? Math.round((s.queryRiskFilled / s.queryTotal) * 100) : 0;
+    const rPct = s.sodTotal ? Math.round((s.sodRiskFilled / s.sodTotal) * 100) : 0;
+    return ''
+      + `<div style="border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px">`
+      + `<b>${esc(s.ruleset)}</b>`
+      + `<div class="kpi">`
+      + `<div><b>${s.queryRiskFilled}/${s.queryTotal}</b><span>Query risk befuellt (${qPct}%)</span></div>`
+      + `<div><b>${s.sodRiskFilled}/${s.sodTotal}</b><span>SoD risk befuellt (${rPct}%)</span></div>`
+      + `<div><b>${s.queryLevelFilled}/${s.queryTotal}</b><span>Query riskLevel</span></div>`
+      + `<div><b>${s.sodLevelFilled}/${s.sodTotal}</b><span>SoD riskLevel</span></div>`
+      + `</div>`
+      + `<a href="/admin.html" style="font-size:12px">Im Query Management bearbeiten</a>`
+      + `</div>`;
+  }).join('');
+}
+
+function renderRulesetSelect() {
+  const sel = $('rulesetSelect');
+  const prev = sel.value || selectedRuleset;
+  sel.innerHTML = '';
+  rulesetDetails.map(x => x.id).sort().forEach(id => {
+    const o = document.createElement('option');
+    o.value = id;
+    o.textContent = id;
+    sel.appendChild(o);
+  });
+  if (!sel.options.length) {
+    const o = document.createElement('option');
+    o.value = '';
+    o.textContent = 'kein Filterset verfügbar';
+    sel.appendChild(o);
+    sel.disabled = true;
+    selectedRuleset = '';
+    return;
+  }
+  sel.disabled = false;
+  sel.value = [...sel.options].some(o => o.value === prev) ? prev : sel.options[0].value;
+  selectedRuleset = sel.value;
+}
+
+function detailsBySelectedRuleset() {
+  return rulesetDetails.filter(x => x.id === selectedRuleset);
+}
+
+async function loadAll() {
+  const [critPayload, profile] = await Promise.all([
+    api('/admin/masterdata/criticalities'),
+    api('/profiles'),
+  ]);
+  criticalities = (critPayload.criticalities || []).map(x => ({ ...x, _new: false }));
+  renderCriticalityTable();
+
+  const rs = (profile.rulesets || []).map(r => r.id);
+  const details = await Promise.all(rs.map(async id => {
+    const [queries, sodRules] = await Promise.all([
+      api('/admin/rulesets/' + encodeURIComponent(id) + '/queries'),
+      api('/admin/rulesets/' + encodeURIComponent(id) + '/sodrules'),
+    ]);
+    return { id, queries, sodRules };
+  }));
+
+  rulesetDetails = details;
+  renderRulesetSelect();
+  const picked = detailsBySelectedRuleset();
+  const allQueries = picked.flatMap(d => d.queries || []);
+  const allSods = picked.flatMap(d => d.sodRules || []);
+  renderBadges('modulePreview', allQueries.map(q => q.module));
+  renderBadges('queryTypePreview', allQueries.map(q => q.queryType));
+  renderBadges('reasonPreview', allSods.map(r => r.reasonCode));
+
+  rulesetStats = details.map(d => {
+    const queries = d.queries || [];
+    const sods = d.sodRules || [];
+    return {
+      ruleset: d.id,
+      queryTotal: queries.length,
+      queryRiskFilled: queries.filter(x => (x.risk || '').trim() !== '').length,
+      queryLevelFilled: queries.filter(x => (x.riskLevel || '').trim() !== '').length,
+      sodTotal: sods.length,
+      sodRiskFilled: sods.filter(x => (x.risk || '').trim() !== '').length,
+      sodLevelFilled: sods.filter(x => (x.riskLevel || '').trim() !== '').length,
+    };
+  });
+  renderRiskCoverage();
+}
+
+$('critAdd').onclick = () => {
+  if (!editMode) return;
+  criticalities.push({ id: '', label: '', rank: 1, color: '', kriScore: null, _new: true });
+  setDirty(true);
+  renderCriticalityTable();
+};
+
+$('critReload').onclick = async () => {
+  if (dirty && !confirm('Ungespeicherte Aenderungen verwerfen?')) return;
+  await loadAll();
+  setEditMode(false);
+  setStatus('Masterdata neu geladen.');
+};
+
+async function saveCriticalities() {
+  if (!editMode) return;
+  setStatus('Masterdata wird gespeichert ...');
+  try {
+    await api('/admin/masterdata/criticalities', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ criticalities: normalizeCriticalitiesForSave() }),
+    });
+    await loadAll();
+    setEditMode(false);
+    setDirty(false);
+    setStatus('Masterdata gespeichert.');
+  } catch (err) {
+    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+  }
+}
+$('critSave').onclick = saveCriticalities;
+$('cmdSaveTop').onclick = saveCriticalities;
+$('cmdEdit').onclick = () => {
+  setEditMode(true);
+  setDirty(false);
+  setStatus('Bearbeitungsmodus aktiv. IDs werden intern automatisch berechnet.');
+};
+$('cmdCancelTop').onclick = async () => {
+  if (dirty && !confirm('Ungespeicherte Aenderungen verwerfen?')) return;
+  await loadAll();
+  setEditMode(false);
+  setDirty(false);
+  setStatus('Aenderungen verworfen.');
+};
+$('cmdRefresh').onclick = async () => {
+  if (dirty && !confirm('Ungespeicherte Aenderungen verwerfen?')) return;
+  await loadAll();
+  setEditMode(false);
+  setStatus('Aktualisiert.');
+};
+
+$('rulesetSelect').addEventListener('change', () => {
+  selectedRuleset = $('rulesetSelect').value || '';
+  const picked = detailsBySelectedRuleset();
+  const allQueries = picked.flatMap(d => d.queries || []);
+  const allSods = picked.flatMap(d => d.sodRules || []);
+  renderBadges('modulePreview', allQueries.map(q => q.module));
+  renderBadges('queryTypePreview', allQueries.map(q => q.queryType));
+  renderBadges('reasonPreview', allSods.map(r => r.reasonCode));
+  renderRiskCoverage();
+});
+
+document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  const id = (a.getAttribute('href') || '').replace('#', '');
+  if (id) setActiveSection(id);
+}));
+
+document.querySelectorAll('.sectionbox .sectionhead').forEach(h => h.addEventListener('click', () => {
+  const box = h.closest('.sectionbox');
+  if (box && box.id && box.id !== activeSectionId) setActiveSection(box.id);
+}));
+
+loadAll().then(() => { setEditMode(false); setActiveSection(activeSectionId, true); }).catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+</script>
+</body>
+</html>

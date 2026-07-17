@@ -365,7 +365,6 @@
         <span class="ico">&#128202;</span>Ergebnisse<span class="caret">&#9662;</span></button>
     </div><div class="lbl">3 &middot; Ergebnisse</div>
     <div class="cmds dropdown">
-      <button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button>
       <button class="cmd" id="cmdExplain" disabled><span class="ico">&#128270;</span>Evidenz</button>
       <button class="cmd" id="cmdExport" disabled><span class="ico">&#128202;</span>Export CSV</button>
       <button class="cmd" id="cmdQuerySummary" disabled><span class="ico">&#128269;</span>Einzelberechtigungen</button>
@@ -401,6 +400,7 @@
     </div><div class="lbl">7 &middot; Admin</div>
     <div class="cmds dropdown">
       <a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a>
+      <a class="cmd" href="/admin-masterdata.html"><span class="ico">&#128221;</span>Masterdata</a>
       <a class="cmd" href="/admin-org-profiles.html"><span class="ico">&#127757;</span>Org-Varianten</a>
       <a class="cmd" href="/admin-scopes.html"><span class="ico">&#127919;</span>Scope</a>
       <button class="cmd" id="cmdErrorLog"><span class="ico">&#128220;</span>Fehlerprotokoll</button>
@@ -1250,7 +1250,7 @@ $('cmdImport').onclick = () => { openDlg('dlg-import'); checkImportState($('impD
 $('cmdRun').onclick = () => { titleAutoFilled = true; refreshRunTitleDefault(); refreshRunAsOfDisplay(); loadScopeProfilesForRunDialog(); openDlg('dlg-run'); checkRunState($('runDataset').value); };
 $('cmdBackup').onclick = () => { openDlg('dlg-backup'); refreshImportFilesInfo(); };
 $('cmdManage').onclick = () => openDlg('dlg-manage');
-$('cmdRefresh').onclick = () => refreshAll();
+if ($('cmdRefresh')) $('cmdRefresh').onclick = () => refreshAll();
 // Export exportiert immer genau die gerade sichtbare Ansicht -- Tabelle -> CSV, "Ansicht"
 // (Rollen-Detail/Root-Cause, keine flache Tabelle) -> PDF (Browser-Druckdialog, "Als PDF
 // speichern"). Style.display der Ansichts-Container entscheidet, welcher Fall vorliegt (dieselbe
