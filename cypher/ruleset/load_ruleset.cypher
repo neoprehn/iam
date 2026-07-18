@@ -91,6 +91,7 @@ MATCH (rule:SoDRule {key: $ruleset + '|' + rk.alias})
 SET rule.riskType = coalesce(rule.riskType, rk.riskType),
     rule.riskLevel = coalesce(rule.riskLevel, rk.riskLevel),
     rule.riskStatus = coalesce(rule.riskStatus, rk.riskStatus),
+    rule.source = coalesce(rule.source, rk.source),
     rule.risk = coalesce(rule.risk,
       CASE WHEN trim(coalesce(rk.risk,'')) <> '' AND trim(coalesce(rk.description,'')) <> ''
              THEN rk.risk + ': ' + rk.description
@@ -103,6 +104,7 @@ MATCH (query:Query {key: $ruleset + '|' + rk.query})
 SET query.riskType = coalesce(query.riskType, rk.riskType),
     query.riskLevel = coalesce(query.riskLevel, rk.riskLevel),
     query.riskStatus = coalesce(query.riskStatus, rk.riskStatus),
+    query.source = coalesce(query.source, rk.source),
     query.risk = coalesce(query.risk,
       CASE WHEN trim(coalesce(rk.risk,'')) <> '' AND trim(coalesce(rk.description,'')) <> ''
              THEN rk.risk + ': ' + rk.description
