@@ -431,7 +431,8 @@ darunter drei **Tabs**:
 - **Aufbau** — Transaktionen und Berechtigungsobjekte der Query, **nur Anzeige** (Bearbeitung
   folgt sp&auml;ter).
 - **Risiko** — Risikoart/-stufe/-status (Dropdowns), Freitext zum potenziellen Risiko dieser
-  Berechtigung sowie **Quellen** (Freitext für Internetquellen/Referenzen, eine je Zeile).
+  Berechtigung, **Threat-Walkthrough** (Schritt-für-Schritt-Angriffspfad für die Threat-Analyse)
+  sowie **Quellen** (Internetquellen/Referenzen, eine URL je Zeile).
 - **Controls** — Freitext: mitigierende Ma&szlig;nahmen.
 
 Unten links: eine **neue Query aus der gew&auml;hlten ableiten** (Berechtigungen/TCodes 1:1

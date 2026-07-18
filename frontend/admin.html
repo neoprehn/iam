@@ -313,6 +313,8 @@
           </div>
           <label for="amRisk" style="margin-top:14px">Potenzielles Risiko</label>
           <textarea id="amRisk" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
+          <label for="amThreat" style="margin-top:14px">Threat-Walkthrough</label>
+          <textarea id="amThreat" placeholder="Schritt-f&uuml;r-Schritt-Angriffspfad (Threat-Analyse)&hellip;" disabled></textarea>
           <label for="amSource" style="margin-top:14px">Quellen</label>
           <textarea id="amSource" placeholder="Internetquellen/Referenzen, eine je Zeile&hellip;" disabled></textarea>
         </div>
@@ -402,6 +404,8 @@ Q4 | Q5"></textarea>
           </div>
           <label for="srRisk" style="margin-top:14px">Potenzielles Risiko</label>
           <textarea id="srRisk" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
+          <label for="srThreat" style="margin-top:14px">Threat-Walkthrough</label>
+          <textarea id="srThreat" placeholder="Schritt-f&uuml;r-Schritt-Angriffspfad (Threat-Analyse)&hellip;" disabled></textarea>
           <label for="srSource" style="margin-top:14px">Quellen</label>
           <textarea id="srSource" placeholder="Internetquellen/Referenzen, eine je Zeile&hellip;" disabled></textarea>
         </div>
@@ -454,9 +458,9 @@ const SOD_MAX_DEPTH = 3;
 // staendiges "Ungespeicherte Aenderungen verwerfen?" beim Durchklicken war verwirrend).
 const QUERY_EDIT_FIELDS = ['amShortDescription', 'amDescription', 'amCriticality', 'amDatenschutz',
   'amModule', 'amQueryType', 'amDisregardTcode', 'amRiskType', 'amRiskLevel', 'amRiskStatus',
-  'amRisk', 'amControls', 'amSource'];
+  'amRisk', 'amControls', 'amThreat', 'amSource'];
 const SOD_EDIT_FIELDS = ['srShortDescription', 'srDescription', 'srCriticality', 'srRiskType',
-  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls', 'srSource', 'srClausesEditor', 'srApplyFormulaBtn'];
+  'srRiskLevel', 'srRiskStatus', 'srReasonCode', 'srRisk', 'srControls', 'srThreat', 'srSource', 'srClausesEditor', 'srApplyFormulaBtn'];
 function setEditMode(v) {
   editMode = v;
   QUERY_EDIT_FIELDS.forEach(id => { $(id).disabled = !v; });
@@ -680,7 +684,8 @@ async function selectQuery(id) {
   $('amRiskStatus').value = q.riskStatus || '';
   $('amRisk').value = q.risk || '';
   $('amControls').value = q.controls || '';
-  $('amSource').value = q.source || '';
+  $('amThreat').value = q.threatWalkthrough || '';
+  $('amSource').value = sourceToText(q.source);
   renderAufbau(q);
   setEditMode(false);
 }
@@ -745,7 +750,8 @@ async function selectSodRule(id) {
   $('srRiskStatus').value = r.riskStatus || '';
   $('srRisk').value = r.risk || '';
   $('srControls').value = r.controls || '';
-  $('srSource').value = r.source || '';
+  $('srThreat').value = r.threatWalkthrough || '';
+  $('srSource').value = sourceToText(r.source);
   sodExprTree = clausesToExprTree(r.clauses || []);
   $('srClausesEditor').value = clausesToEditorText(r.clauses || []);
   renderSodExprBuilder();
@@ -1016,6 +1022,15 @@ function getEffectiveSodClauses() {
   return fromBuilder;
 }
 
+// 'source' ist in risks.json eine Liste (eine Internetquelle je Eintrag); im Textfeld eine URL je
+// Zeile. Fuer die Anzeige zusammenfuegen, beim Speichern wieder in eine Liste zerlegen (leere
+// Zeilen verworfen). Aeltere Eintraege koennen source noch als String tragen -> tolerant lesen.
+function sourceToText(v) { return Array.isArray(v) ? v.join('\n') : (v || ''); }
+function textToSource(v) {
+  const arr = (v || '').split('\n').map(s => s.trim()).filter(Boolean);
+  return arr.length ? arr : null;
+}
+
 function formSodFields() {
   return {
     shortDescription: $('srShortDescription').value.trim() || null,
@@ -1028,7 +1043,8 @@ function formSodFields() {
     riskType: $('srRiskType').value || null,
     riskLevel: $('srRiskLevel').value || null,
     riskStatus: $('srRiskStatus').value || null,
-    source: $('srSource').value.trim() || null,
+    source: textToSource($('srSource').value),
+    threatWalkthrough: $('srThreat').value.trim() || null,
   };
 }
 
@@ -1068,7 +1084,7 @@ async function testSodCurrent() {
   }
 }
 
-['srShortDescription', 'srDescription', 'srRisk', 'srControls', 'srSource']
+['srShortDescription', 'srDescription', 'srRisk', 'srControls', 'srThreat', 'srSource']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
 $('srClausesEditor').addEventListener('input', () => setDirty(true));
 ['srCriticality', 'srRiskType', 'srRiskLevel', 'srRiskStatus']
@@ -1091,7 +1107,7 @@ function setDirty(v) {
   $('amDirtyChip').style.display = v ? '' : 'none';
   $('amSaveBtn').disabled = !v; $('srSaveBtn').disabled = !v; $('cmdSave').disabled = !v;
 }
-['amShortDescription', 'amDescription', 'amRisk', 'amControls', 'amSource']
+['amShortDescription', 'amDescription', 'amRisk', 'amControls', 'amThreat', 'amSource']
   .forEach(id => $(id).addEventListener('input', () => setDirty(true)));
 ['amCriticality', 'amDatenschutz', 'amModule', 'amQueryType', 'amRiskType', 'amRiskLevel', 'amRiskStatus', 'srReasonCode']
   .forEach(id => $(id).addEventListener('change', () => setDirty(true)));
@@ -1111,7 +1127,8 @@ function formFields() {
     riskType: $('amRiskType').value || null,
     riskLevel: $('amRiskLevel').value || null,
     riskStatus: $('amRiskStatus').value || null,
-    source: $('amSource').value.trim() || null,
+    source: textToSource($('amSource').value),
+    threatWalkthrough: $('amThreat').value.trim() || null,
   };
 }
 

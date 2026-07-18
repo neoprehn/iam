@@ -193,7 +193,7 @@ def _merged_queries(ruleset: str) -> tuple[dict[str, dict], set[str]]:
             combined = _combine_risk_text(rk.get("risk"), rk.get("description"))
             if combined is not None:
                 merged[qid]["risk"] = combined
-        for f in ("riskType", "riskLevel", "riskStatus", "source"):
+        for f in ("riskType", "riskLevel", "riskStatus", "source", "threatWalkthrough"):
             if merged[qid].get(f) is None:
                 merged[qid][f] = rk.get(f)
     custom_ids = set()
@@ -230,9 +230,10 @@ def _combine_risk_text(risk: str | None, description: str | None) -> str | None:
 # Die "Risiko"-Felder: werden NIE ins Filterset-Overlay (queries.custom.json/
 # sod_rules.custom.json) geschrieben, sondern direkt in risks.json (Nutzerentscheid 2026-07-15:
 # Filterset und Risiko sollen getrennte Dateien bleiben, auch beim Speichern -- nicht nur bei der
-# Erstbefuellung). 'source' (Freitext: Internetquellen/Referenzen, eine je Zeile) gehoert ebenfalls
-# in diese Gruppe (Nutzerentscheid 2026-07-18: als 'source'-Variable in risks.json ablegen).
-_RISK_FIELDS = ("riskType", "riskLevel", "riskStatus", "risk", "source")
+# Erstbefuellung). 'source' (Liste von Internetquellen/Referenzen, im Editor eine URL je Zeile) und
+# 'threatWalkthrough' (Freitext: Schritt-fuer-Schritt-Angriffspfad fuer die kuenftige Threat-
+# Analyse) gehoeren ebenfalls in diese Gruppe (Nutzerentscheid 2026-07-18: direkt in risks.json).
+_RISK_FIELDS = ("riskType", "riskLevel", "riskStatus", "risk", "source", "threatWalkthrough")
 
 
 def _save_ruleset_risk(ruleset: str, id_field: str, id_value: str, risk_fields: dict) -> None:
@@ -2544,7 +2545,8 @@ class QueryEditReq(BaseModel):
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
-    source: str | None = None
+    source: list[str] | None = None
+    threatWalkthrough: str | None = None
     datenschutz: str | None = None
 
 
@@ -2603,7 +2605,8 @@ class QueryDeriveReq(BaseModel):
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
-    source: str | None = None
+    source: list[str] | None = None
+    threatWalkthrough: str | None = None
     datenschutz: str | None = None
 
 
@@ -2693,7 +2696,7 @@ def _merged_sodrules(ruleset: str) -> tuple[dict[str, dict], set[str]]:
             combined = _combine_risk_text(rk.get("risk"), rk.get("description"))
             if combined is not None:
                 merged[rid]["risk"] = combined
-        for f in ("riskType", "riskLevel", "riskStatus", "source"):
+        for f in ("riskType", "riskLevel", "riskStatus", "source", "threatWalkthrough"):
             if merged[rid].get(f) is None:
                 merged[rid][f] = rk.get(f)
     custom_ids = set()
@@ -2758,7 +2761,8 @@ class SodRuleEditReq(BaseModel):
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
-    source: str | None = None
+    source: list[str] | None = None
+    threatWalkthrough: str | None = None
 
 
 class SodRuleCreateReq(BaseModel):
@@ -2774,7 +2778,8 @@ class SodRuleCreateReq(BaseModel):
     riskType: str | None = None
     riskLevel: str | None = None
     riskStatus: str | None = None
-    source: str | None = None
+    source: list[str] | None = None
+    threatWalkthrough: str | None = None
 
 
 class SodRuleTestReq(BaseModel):
