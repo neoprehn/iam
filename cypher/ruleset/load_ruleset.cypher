@@ -92,7 +92,7 @@ SET rule.riskType = coalesce(rule.riskType, rk.riskType),
     rule.riskLevel = coalesce(rule.riskLevel, rk.riskLevel),
     rule.riskStatus = coalesce(rule.riskStatus, rk.riskStatus),
     rule.source = coalesce(rule.source, rk.source),
-    rule.threatWalkthrough = coalesce(rule.threatWalkthrough, rk.threatWalkthrough),
+    rule.threat = coalesce(rule.threat, rk.threat),
     rule.risk = coalesce(rule.risk,
       CASE WHEN trim(coalesce(rk.risk,'')) <> '' AND trim(coalesce(rk.description,'')) <> ''
              THEN rk.risk + ': ' + rk.description
@@ -106,7 +106,7 @@ SET query.riskType = coalesce(query.riskType, rk.riskType),
     query.riskLevel = coalesce(query.riskLevel, rk.riskLevel),
     query.riskStatus = coalesce(query.riskStatus, rk.riskStatus),
     query.source = coalesce(query.source, rk.source),
-    query.threatWalkthrough = coalesce(query.threatWalkthrough, rk.threatWalkthrough),
+    query.threat = coalesce(query.threat, rk.threat),
     query.risk = coalesce(query.risk,
       CASE WHEN trim(coalesce(rk.risk,'')) <> '' AND trim(coalesce(rk.description,'')) <> ''
              THEN rk.risk + ': ' + rk.description

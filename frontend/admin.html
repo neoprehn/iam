@@ -684,7 +684,7 @@ async function selectQuery(id) {
   $('amRiskStatus').value = q.riskStatus || '';
   $('amRisk').value = q.risk || '';
   $('amControls').value = q.controls || '';
-  $('amThreat').value = q.threatWalkthrough || '';
+  $('amThreat').value = q.threat || '';
   $('amSource').value = sourceToText(q.source);
   renderAufbau(q);
   setEditMode(false);
@@ -750,7 +750,7 @@ async function selectSodRule(id) {
   $('srRiskStatus').value = r.riskStatus || '';
   $('srRisk').value = r.risk || '';
   $('srControls').value = r.controls || '';
-  $('srThreat').value = r.threatWalkthrough || '';
+  $('srThreat').value = r.threat || '';
   $('srSource').value = sourceToText(r.source);
   sodExprTree = clausesToExprTree(r.clauses || []);
   $('srClausesEditor').value = clausesToEditorText(r.clauses || []);
@@ -1044,7 +1044,7 @@ function formSodFields() {
     riskLevel: $('srRiskLevel').value || null,
     riskStatus: $('srRiskStatus').value || null,
     source: textToSource($('srSource').value),
-    threatWalkthrough: $('srThreat').value.trim() || null,
+    threat: $('srThreat').value.trim() || null,
   };
 }
 
@@ -1128,7 +1128,7 @@ function formFields() {
     riskLevel: $('amRiskLevel').value || null,
     riskStatus: $('amRiskStatus').value || null,
     source: textToSource($('amSource').value),
-    threatWalkthrough: $('amThreat').value.trim() || null,
+    threat: $('amThreat').value.trim() || null,
   };
 }
 

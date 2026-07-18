@@ -16,7 +16,7 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 | `sod_rules.custom.json` | optional | Overlay: eigene Metadaten-Edits an SoD-Regeln (Query Management, Modus „SoD") |
 | `ruleset.json` | ja | Metadaten + `combinationSemantics` |
 | `legends.json` | ja | Wertelegenden (queryTypes, Klassifizierung, Reason-Codes …) |
-| `risks.json` | optional | bei allen drei Rulesets vorhanden: Risiko-Objekte, **eine gemeinsame Datei für SoD- UND Query-Risiken** (Nutzerentscheid 2026-07-15 — keine getrennten Dateien). Jeder Eintrag trägt entweder `alias` (verknüpft mit `sodRule`) **oder** `query` (verknüpft mit `query`-ID), nie beides. Felder: `riskType`/`riskLevel`/`riskStatus` sowie `risk` (Kurztitel) sowie optional `description` (Langtext) sowie optional `source` (**Liste** von Internetquellen/Referenzen — im Editor eine URL je Zeile) sowie optional `threatWalkthrough` (Freitext, Schritt-für-Schritt-Angriffspfad für die künftige Threat-Analyse) — bei der Erstbefüllung werden `risk`+`description` zu **einem** Freitext-Wert kombiniert (`"<risk>: <description>"`, Nutzerentscheid: nichts verwerfen) und füllen das gleichnamige `risk`-Feld der Query/SoD-Regel; `riskType`/`riskLevel`/`riskStatus`/`source`/`threatWalkthrough` je 1:1. Overlay-Edit (`queries.custom.json`/`sod_rules.custom.json`) gewinnt danach immer, kein erzwungener Reset bei Re-Import. Bei CSI/CSI_BI historisch 440 SoD-Einträge mit echtem, differenziertem `risk`/`description`-Inhalt (CSI-nativ); alle Query-Einträge sowie KPMG_R3s SoD-Einträge aktuell nur als leeres Template (`riskType`/`riskStatus`/`risk`/`description` = `null`) angelegt — inhaltliche Befüllung steht noch aus (s. ROADMAP 9.4). KPMG_R3s Query-Einträge tragen bereits einen `riskLevel`-Startwert aus der vorhandenen `criticality` |
+| `risks.json` | optional | bei allen drei Rulesets vorhanden: Risiko-Objekte, **eine gemeinsame Datei für SoD- UND Query-Risiken** (Nutzerentscheid 2026-07-15 — keine getrennten Dateien). Jeder Eintrag trägt entweder `alias` (verknüpft mit `sodRule`) **oder** `query` (verknüpft mit `query`-ID), nie beides. Felder: `riskType`/`riskLevel`/`riskStatus` sowie `risk` (Kurztitel) sowie optional `description` (Langtext) sowie optional `source` (**Liste** von Internetquellen/Referenzen — im Editor eine URL je Zeile) sowie optional `threat` (Freitext, Schritt-für-Schritt-Angriffspfad für die künftige Threat-Analyse) — bei der Erstbefüllung werden `risk`+`description` zu **einem** Freitext-Wert kombiniert (`"<risk>: <description>"`, Nutzerentscheid: nichts verwerfen) und füllen das gleichnamige `risk`-Feld der Query/SoD-Regel; `riskType`/`riskLevel`/`riskStatus`/`source`/`threat` je 1:1. Overlay-Edit (`queries.custom.json`/`sod_rules.custom.json`) gewinnt danach immer, kein erzwungener Reset bei Re-Import. Bei CSI/CSI_BI historisch 440 SoD-Einträge mit echtem, differenziertem `risk`/`description`-Inhalt (CSI-nativ); alle Query-Einträge sowie KPMG_R3s SoD-Einträge aktuell nur als leeres Template (`riskType`/`riskStatus`/`risk`/`description` = `null`) angelegt — inhaltliche Befüllung steht noch aus (s. ROADMAP 9.4). KPMG_R3s Query-Einträge tragen bereits einen `riskLevel`-Startwert aus der vorhandenen `criticality` |
 
 ## Kern-Felder (über ALLE Rulesets identisch — der Loader baut hierauf)
 
@@ -43,7 +43,7 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
 - `source` (**Liste** str, **optional**) — Internetquellen/Referenzen zum Risiko (im Editor eine
   URL je Zeile, in `risks.json` als JSON-Array), gepflegt über das Query Management („Risiko"-Tab).
   Wie die übrigen Risiko-Felder ausschließlich in `risks.json` gespeichert (nicht im Overlay).
-- `threatWalkthrough` (str, **optional**) — Freitext: Schritt-für-Schritt-Angriffspfad (Grundlage
+- `threat` (str, **optional**) — Freitext: Schritt-für-Schritt-Angriffspfad (Grundlage
   für die künftige Threat-Analyse), ebenfalls nur in `risks.json`, Pflege im „Risiko"-Tab.
 
 **SoD-Regel** (`sod_rules.json[]`):
@@ -61,7 +61,7 @@ Aktuelle Rulesets: `kpmg_r3` (R/3), `csi` (ECC/R3), `csi_bi` (BI/BW).
   immer.
 - `source` (**Liste** str, **optional**) — Internetquellen/Referenzen zum Risiko (im Editor eine
   URL je Zeile, in `risks.json` als JSON-Array), analog zu Query ausschließlich in `risks.json`.
-- `threatWalkthrough` (str, **optional**) — Freitext: Schritt-für-Schritt-Angriffspfad, analog zu
+- `threat` (str, **optional**) — Freitext: Schritt-für-Schritt-Angriffspfad, analog zu
   Query ausschließlich in `risks.json`.
 
 **Overlay (`sod_rules.custom.json`, optional, analog zu `queries.custom.json`):** Metadaten-Edits
