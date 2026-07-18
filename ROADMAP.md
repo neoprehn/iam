@@ -4,6 +4,9 @@
 **Repository:** `neoprehn/iam`.
 **Zielplattform:** Windows (Container-only über Docker Desktop / WSL2 — siehe „Windows-Spezifika").
 
+**Abgrenzung:** Diese Datei steuert den aktuellen v1-Ausbau. Spätere Themen sind in
+[`ROADMAP-V2.md`](ROADMAP-V2.md) ausgelagert und werden erst nach bewusstem Startsignal umgesetzt.
+
 **Stand:** Die App ist unter `http://localhost:8000/` lauffähig: **Import (Ordner/ZIP, mit
 Abbrechen/Resume), geführte Auswertung (Assistent-Stepper), Auswertung (inkl. Fortschritt/Resume je
 Query/Regel/Akteur, Evidenz, Org-Varianten, interaktive Drill-downs), Konsistenzchecks +
@@ -204,37 +207,18 @@ Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitu
 - [~] **Dropdowns statt Freitext** — **Kritikalität umgesetzt** (inkl. Datenschutz/RiskLevel auf
   denselben Stufenkatalog), **Modul/Querytyp/Reason-Code noch offen**.
 - [ ] **Neuen SoD-Filter anlegen** — UI für Neuanlage (Klausel-/CNF-Struktur) ergänzen.
-- [ ] **Sprache** — Deutsch/Englisch Umschalter - mehrsprachigkeit.
-- [ ] **Authorizations/TCodes im Editor bearbeitbar (v2)** — verschachtelte Objekt/Feld/Wert-Listen.
-- [ ] **USOBT-gestützter Query-Builder (v2)** — Transaktion → Berechtigungsobjekt statt Freitext.
-- [ ] **Query → System-Typ-Zuordnung (v2)** — Zuordnung zu R/3, S/4HANA usw. als Stammdatenblatt.
-- [ ] **Filterset-/Konnektor-Import weitere Systeme (v2)** — S/4HANA, Azure AD/Entra,
-  Microsoft Dynamics, Salesforce.
+- **Ausgelagert nach V2:** Mehrsprachigkeit, bearbeitbare Authorizations/TCodes,
+  USOBT-gestützter Query-Builder, System-Typ-Zuordnung und Konnektoren für weitere Systeme stehen
+  in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege).
 
-#### 9.5 Threat Modeling (Reiter an Einzelfilter/SoD)
-- [ ] **Threat-Modeling-Reiter** an Einzelfilter und SoD-Regel — grafisch zeigen, wie eine Berechtigung
-  über einen Threat-Vector durch einen Threat-Actor ausgenutzt werden kann.
-  **Empfehlung Methodik (2026-07-12):** primär **graphbasierter Attack Tree**, weil (a) die
-  SoD-Verletzungslogik selbst schon ein AND/OR-Baum ist (Regel = AND über Klauseln, Klausel = OR über
-  Queries, Query = AND über Objekte, Objekt = OR über erfüllende Rollen/Profile) → **dieselbe
-  Baum-/Cytoscape-Komponente** wie Root-Cause/9.1 nutzbar; (b) traversierbar und wiederverwendbar über
-  mehrere Queries/Regeln, anders als Freitext. **STRIDE** zusätzlich als *Klassifikations-Overlay* je
-  Knoten (Bedrohungskategorie); **PASTA** als vollständiger 7-Stufen-Prozess ist für diesen fokussierten
-  Zweck zu schwergewichtig. Vor dem Bau: Schema festlegen (an Fault-/Attack-Tree anlehnen), Editor-UX
-  skizzieren, publizierte Neo4j-/GitHub-Attack-Tree-Ansätze sichten.
-- **Datenablage:** heute ist `risk` (Query **und** SoD) ein einzelnes Freitextfeld im Overlay
-  (coalesce-Merge in `load_ruleset.cypher`). Der Threat-Baum wird ein **eigenes JSON-Schema** (AND/OR,
-  Knoten = Bedrohungsschritt/Voraussetzung, optional Wahrscheinlichkeit/Impact/Gegenmaßnahme je Knoten)
-  im selben git-getrackten Overlay-Mechanismus — nicht in den Freitext gequetscht.
+#### 9.5 Threat Modeling (ausgelagert nach V2)
+Threat Modeling wird in v1 nicht begonnen. Der vollständige Übergabestand steht in
+[`ROADMAP-V2.md`](ROADMAP-V2.md#phase-2--threat-modeling).
 
-#### 9.6 Export, System-/Mandant-Vergleich, Interview-Ergebnisse
-- [ ] **System/Mandant-Vergleich** — „neuer Stand/Mandant" **oder** „Vergleich zu bestehendem":
-  Vergleichs-Abfragen über zwei `dataset` (neue/entfallene Konflikte, Delta je Regel/User).
-- [ ] **Interview-Ergebnisse einarbeiten** — pro Finding/Feld einen **Reason Code** (aus den Masterdata,
-  9.4) plus **Begründung** hinterlegen (z. B. „Replace/Debug bei drei Personen"). Persistiert und im
-  **Folgejahres-Dataset wieder anziehbar** (Wiedervorlage/Delta beim neuen Import) — Grundlage für den
-  Jahresvergleich. Autor/Datum mitführen; **keine Mandantendaten ins Repo** (Ablage in der lokalen DB,
-  nicht git-getrackt).
+#### 9.6 Export
+System-/Mandant-Vergleich, Interview-Ergebnisse und weitere V2-Exportsichten sind ausgelagert nach
+[`ROADMAP-V2.md`](ROADMAP-V2.md#phase-3--vergleich-interview-ergebnisse-und-erweiterte-exporte).
+
 - [x] **Nativer `.xlsx`-Export der Ergebnisse-Übersicht** (2026-07-15, vorgezogen auf Nutzerwunsch) —
   CSV der Findings/Matches war bereits erledigt (s. o.); jetzt zusätzlich ein Format-Dialog beim
   Export der Einzelfilter-/SoD-**Übersicht** (`GET /queries/summary/export`,
@@ -269,10 +253,8 @@ Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitu
     der App verfügbar für die übersprungenen Mega-Queries.
   - Generierte Profile (PFCG-Artefakt einer Rolle) standardmäßig ausgeblendet, deckungsgleich mit
     dem Root-Cause-Default `rcTechMode='hide'` — sonst taucht dieselbe Berechtigung doppelt auf.
-  - **Offen (zurückgestellt):** weitere Sichten (Top-Regeln, Matrix); ob der Import-Evidenz-Report
-    (heute PDF/CSV) ebenfalls ein natives Excel bekommt und beide Reports gebündelt werden, ist noch
-    nicht entschieden; Business-Objects (BOs)/Berechtigungsobjekt-Feldwerte selbst (nicht nur der
-    Objektname) sind noch nicht mit ausgegeben, falls das noch gewünscht wird.
+  - **Ausgelagert nach V2:** weitere Sichten (Top-Regeln, Matrix), nativer Excel-Export für
+    Import-Evidenz, gebündelte Reports und Business-Objects/Feldwerte im Detail-Export.
 - **Nebenbei behobener Bug (2026-07-15):** Drill-down auf eine Regel/Query aus der Übersicht
   (`jumpToRuleFilter`/`jumpToQueryFilter`) bzw. „← zurück" (`goBackFilter`) zeigte manchmal nicht
   die gefilterte Liste, sondern sprang auf einen älteren Filterzustand zurück (z. B. bei „Replace/
@@ -288,19 +270,9 @@ Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitu
 - [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusst) — lokal/Container; Auth-Schicht
   (SSO/OIDC am Ingress) erst bei zentralem Mehrbenutzerbetrieb (siehe Phase 10).
 
-#### 9.8 Neuer SAP-Extraktor (Can-Do + Did-Do + Konsistenzchecks)
-Angepasster Extraktor, der die Quelltabellen/-spalten **genau im hier benötigten Zuschnitt** zieht —
-inkl. der Spalten für alle Konsistenzchecks und (vorbereitend) Did-Do.
-- [ ] **Datenanforderungen erheben** — je (1) Can-Do, (2) Did-Do, (3) Konsistenzchecks die benötigten
-  Tabellen/Spalten zusammentragen.
-- [ ] **RTD-Kapitel** — Datenanforderungen dokumentieren (Nachvollziehbarkeit, Dokumentations-DoD).
-- [ ] **Extraktor überarbeiten/neu schreiben** — liegt unter `data/extractors` (darf gepusht werden).
-- [ ] **Config konsolidieren** — `config/Download Data CSI.xls` + `config/required_tables.json`
-  zusammenführen; je Tabelle die Felder (inkl. Did-Do) in die JSON aufnehmen. **Vorab:** `Download Data
-  CSI.xls` inhaltlich sichten (untracked, Herkunft unklar) und sicherstellen, dass **keine
-  Mandantendaten** enthalten sind, bevor etwas committet wird (Vertrauensgrenze).
-- **Abhängigkeit:** die **Did-Do-Spalten** hängen an Phase 8 (blockiert — kein STAD/ST03N-Auszug); die
-  **Can-Do-/Konsistenzcheck**-Anteile und die Config-Konsolidierung können **jetzt** starten.
+#### 9.8 Neuer SAP-Extraktor (ausgelagert nach V2)
+Der neue Extraktor, Config-Konsolidierung und Did-Do-Vorbereitung werden in v1 nicht begonnen. Der
+vollständige Übergabestand steht in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-4--neuer-extraktor-und-did-do).
 
 **DoD (Phase 9):** Eine transportable App, in der Import, parametrierte Auswertung, Vergleich, Anzeige,
 Export und Backup/Restore ohne JSON-Pflege bedienbar sind — lokal, ohne dass Mandantendaten die Umgebung
@@ -321,11 +293,8 @@ verlassen.
   1:1 bestätigt). Community Edition kann keine einzelne Datenbank pausieren (`STOP DATABASE`
   ist Enterprise-only) — daher immer der ganze `neo4j`-Container kurz gestoppt. Noch offen: als
   RTD-Seite dokumentieren statt nur Chat-Verlauf.
-- [ ] **Mandantendaten zwischen zwei eigenen Arbeitsgeräten synchron halten** (Heim-Rechner + mobiler
-  Laptop, Zugfahrten-Entwicklung) — aktuell zurückgestellt/unnötig, da Datenstand meist nur an einem
-  Gerät gebraucht wird. Bei Bedarf: derselbe `neo4j-admin dump`/`load`-Mechanismus wie oben, nur
-  wiederkehrend statt einmalig; Transport weiterhin verschlüsselt/persönlich (USB), nie über
-  Cloud-Sync/Git.
+- **Ausgelagert nach V2:** regelmäßige Mandantendaten-Synchronisierung zwischen eigenen Arbeitsgeräten
+  steht in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-6--betrieb-verteilung-und-security-ausbau).
 
 **Deployment-Optionen.** Verteilungseinheit ist heute **Docker Compose** (lokal, ein Befehl). Der Stack
 ist **Kubernetes-fähig** (interner, abgesicherter Cluster):
@@ -338,35 +307,9 @@ ist **Kubernetes-fähig** (interner, abgesicherter Cluster):
 
 ---
 
-### Phase 8 — Did-Do (Nutzung aus STAD/ST03N) — **blockiert, hinter Phase 10 verschoben**
-**Blockiert (2026-07-11):** Dem Mandanten liegt aktuell **kein STAD/ST03N-Auszug** (Nutzungsdaten)
-vor — ohne dieses Dataset ist an dieser Phase nichts umsetzbar. Deshalb bewusst hinter Phase 10
-zurückgestellt (statt wie zuvor nur „zuletzt, aber vor Verteilung"): sobald ein Extrakt mit
-Nutzungsdaten verfügbar ist, rückt die Phase wieder nach vorne.
-
-**Ziel:** Nutzungssicht und Can-Do×Did-Do-Matrix.
-
-- [ ] Extraktionsweg festlegen: ST03N-Aggregate (`SWNC_COLLECTOR_GET_AGGREGATES`) als Einstieg; bei Bedarf Roh-STAD; für Forensik SAL/`CDHDR`.
-- [ ] `EXECUTED`-Kanten (User→Transaction) mit `count`/`firstSeen`/`lastSeen`/`taskType`/`asOf`/`runId` in die Snapshot-Schicht.
-- [ ] Matrix-Abfragen: ungenutzte Berechtigungen (Least-Privilege), materialisierte SoD (Did-Do auf beiden Konfliktseiten).
-- [ ] Caveats dokumentieren: Aufbewahrungsfenster, selten-aber-vital, indirekte Aufrufe, kein Audit-Log (AE-13), S/4-Fiori/OData.
-- [ ] **Datenschutz/Mitbestimmung** (§ 87 BetrVG): Pseudonymisierung der User-ID; Klartext nur im begründeten Einzelfall.
-
-**DoD:** Matrix-Auswertung lauffähig; ungenutzte kritische Berechtigungen und materialisierte SoD-Konflikte werden ausgewiesen.
-
----
-
-### Phase X — Backlog (zurückgestellt)
-Sinnvoll, aber nicht auf dem kritischen Pfad.
-
-- [ ] **Security-Checks weiter ausbauen** (z. B. weitere SAST-Regeln/Tools wie Semgrep,
-  feinere Policy-Schwellen und CI-Härtung) — bewusst nach hinten verschoben; Basischeck
-  (AST + Bandit) ist vorhanden.
-- [ ] **CSI-Rulesets CNF-zerlegen** (`clauses` in `sod_rules.json` für `csi`/`csi_bi`), damit die SoD-Auswertung auch über die CSI-Kataloge läuft. *(KPMG ist scharf; die Mechanik ist generisch.)*
-- [ ] **Kritische TCodes/Objekte taggen** (`:Critical`) — **Ansatz offen**: Kritikalität steckt bereits im Ruleset; ob ein zusätzliches, ruleset-unabhängiges Tagging nötig ist, ist vor dem Bau zu entscheiden.
-- [ ] **AE-08 — Pfad-Gültigkeitsschnittmenge** bei verschachtelten Sammelrollen sauber prüfen (Datumsprädikat auf jede Kante des Pfades).
-- [ ] **Modell-Erweiterungen bei Bedarf:** `AuthField`/`ObjectClass`/`OrgValue`-Pivot, `Service`/`FioriTile` (S/4) — als `V004__…`.
-- [ ] **Runner-`.sh`-Varianten** (Linux/macOS) — optional; die App-Endpunkte sind die plattformunabhängige Variante.
+### Phase 8 / Backlog — ausgelagert nach V2
+Did-Do, neuer Extraktor, Security-Ausbau, CSI-CNF, technische Modell-Erweiterungen und sonstige
+Backlog-Themen stehen gesammelt in [`ROADMAP-V2.md`](ROADMAP-V2.md). In v1 werden sie nicht begonnen.
 
 ---
 
@@ -439,14 +382,15 @@ Die Speicherstruktur der Berechtigungen ist identisch (`AGR_1251`, `USR02`, `UST
 - Neue Objekte/Transaktionen (z. B. `BP` statt `XD01`/`XK01`) → ändert Werte im Regelkatalog, nicht die Tabellenstruktur.
 - **SACF/SLDW** (schaltbare Prüfungen) bei S/4-Vollständigkeit beachten.
 
+Die konkrete S/4-/Fiori-Erweiterung ist V2-Thema: [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-5--s4hana-und-weitere-zielsysteme).
+
 ---
 
 ## Offene Punkte / Annahmen
 
 - Verfügbarkeit/Format der SAP-Extrakte (SE16/Reports) je Mandant.
 - Umfang Org-Ebenen-Pivot (ob `OrgValue`-Knoten benötigt werden).
-- S/4-Scope: ob die Fiori/OData-Ebene Teil des aktuellen Auftrags ist.
-- Datenschutz-/Mitbestimmungsabstimmung für die Did-Do-Auswertung beim Mandanten.
+- S/4-Scope und Datenschutz-/Mitbestimmungsabstimmung für Did-Do sind in V2 ausgelagert.
 
 ---
 
