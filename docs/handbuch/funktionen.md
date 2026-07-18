@@ -445,10 +445,11 @@ Kritikalit&auml;t, Reason-Code), darunter drei **Tabs**:
   der Tab ersatzweise den rohen Ausdruck (`expression`) und die Variablen-Zuordnung.
 - **Risiko** / **Controls** — wie beim Einzelfilter, eigene Freitext-Felder je SoD-Regel.
 
-SoD-Regeln haben **kein „Ableiten"** (keine UI f&uuml;r neue/abgeleitete Regeln) — nur
-Metadaten-Edits an bestehenden Regeln. Speichern/Abbrechen (Ribbon **oder** Detailbereich) sowie
-„Overlay sichern" (Ribbon **Backup**) wirken im jeweils aktiven Modus auf den passenden Overlay
-(`queries.custom.json` bzw. `sod_rules.custom.json`).
+Unten links kann eine **neue SoD-Regel aus der gew&auml;hlten Regel abgeleitet** werden. Die App
+&uuml;bernimmt Stammdaten, Risiko und Klauseln aus dem rechten Bereich, legt die neue Regel unter der
+angegebenen SoD-ID an und speichert sie im Overlay. Speichern/Abbrechen (Ribbon **oder**
+Detailbereich) sowie „Overlay sichern" (Ribbon **Backup**) wirken im jeweils aktiven Modus auf den
+passenden Overlay (`queries.custom.json` bzw. `sod_rules.custom.json`).
 
 &Auml;nderungen schreiben **nie** in die Vendor-Datei (`queries.json`), sondern in ein separates
 Overlay (`queries.custom.json`) je Ruleset — Vendor-Updates &uuml;berschreiben eigene Anpassungen

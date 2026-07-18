@@ -201,12 +201,20 @@ Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitu
   (keine hart codierten Stufen mehr).
 - [ ] **Kritikalität prominent an Einzelfilter/SoD** — Badge-Logik aus Findings in Katalog,
   Auswahl und Ergebniszeilen übernehmen.
-- [ ] **Reason-Code-Stammdaten (SoD)** — Prozesscode + Prozessbezeichnung als Masterdata.
-- [ ] **Modul-Stammdaten** — bestehende SAP-Module übernehmen und pflegbar machen.
-- [ ] **Querytyp-Stammdaten** — bestehende Querytypen übernehmen und pflegbar machen.
-- [~] **Dropdowns statt Freitext** — **Kritikalität umgesetzt** (inkl. Datenschutz/RiskLevel auf
-  denselben Stufenkatalog), **Modul/Querytyp/Reason-Code noch offen**.
-- [ ] **Neuen SoD-Filter anlegen** — UI für Neuanlage (Klausel-/CNF-Struktur) ergänzen.
+- [x] **Reason-Code-Stammdaten (SoD)** (2026-07-18) — Prozesscode + Prozessbezeichnung als
+  Masterdata umgesetzt: `GET|PUT /admin/masterdata/reason-codes`, Pflege auf der Masterdata-Seite
+  und Dropdown im SoD-Editor.
+- [x] **Modul-Stammdaten** (2026-07-18) — bestehende SAP-Module als zentraler Katalog pflegbar:
+  `GET|PUT /admin/masterdata/modules`, Pflege auf der Masterdata-Seite und Dropdown im Query-Editor.
+- [x] **Querytyp-Stammdaten** (2026-07-18) — Querytypen inkl. Beschreibung als zentraler Katalog
+  pflegbar: `GET|PUT /admin/masterdata/query-types`, Pflege auf der Masterdata-Seite und Dropdown
+  im Query-Editor.
+- [x] **Dropdowns statt Freitext** (2026-07-18) — umgesetzt für Kritikalität inkl.
+  Datenschutz/RiskLevel, Modul, Querytyp und Reason-Code; Validierung erfolgt gegen die zentralen
+  Masterdata-Kataloge.
+- [x] **Neuen SoD-Filter anlegen** (2026-07-18) — neue SoD-Regeln als Ableitung bestehender Regeln
+  anlegen, Klausel-/CNF-Struktur über visuellen Builder bzw. Texteditor pflegen, testen und als
+  Overlay (`sod_rules.custom.json`/`risks.json`) persistieren.
 - **Ausgelagert nach V2:** Mehrsprachigkeit, bearbeitbare Authorizations/TCodes,
   USOBT-gestützter Query-Builder, System-Typ-Zuordnung und Konnektoren für weitere Systeme stehen
   in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege).
