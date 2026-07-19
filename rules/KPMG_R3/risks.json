@@ -6,6 +6,11 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Benutzerverwaltung (Anlegen/Ändern von Benutzern) und der Vergabe von Rollen/Profilen. Wer beide Funktionen in einer Hand hält, kann Benutzer eigenständig einrichten und zugleich mit weitreichenden Berechtigungen ausstatten — ohne ein zweites Kontrollorgan. Damit lässt sich das Vier-Augen-Prinzip der Berechtigungsvergabe vollständig aushebeln: Selbstprivilegierung, Einrichtung von Backdoor-/Testkonten mit hohen Rechten und unkontrollierte Rechteerweiterung Dritter werden möglich. Dies untergräbt das gesamte Berechtigungs- und IKS-Konzept und ist Ausgangspunkt für nahezu jeden weiteren Missbrauch (Integrität/Vertraulichkeit, Fraud).",
     "threat": "(1) Täter legt in SU01 einen unauffälligen (Service-)Benutzer an oder wählt einen bestehenden. (2) Über PFCG/SU01 weist er diesem Benutzer eine kritische Rolle bzw. ein weitreichendes Profil (bis SAP_ALL) zu. (3) Mit dem so ausgestatteten Konto — oder dem eigenen — führt er die eigentliche missbräuchliche Handlung aus. (4) Anschließend wird die Zuweisung zurückgenommen und das Konto gesperrt/gelöscht, um die Spur zu verwischen.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-sap/identity-and-access-management-authorization-assignment-part-3-2/ba-p/13564974",
+      "https://onapsis.com/blog/sap-access-risk-management/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -16,6 +21,12 @@
     "riskStatus": null,
     "risk": "Kombination aus Anwendungsentwicklung (ABAP-/Funktionsbaustein-Entwicklung), dem Setzen der Mandantenänderbarkeit (SCC4/T000) und der System-Änderbarkeit (SE06/SE03). In dieser Konstellation kann eine Person das System bzw. den Mandanten selbst auf „änderbar“ schalten und anschließend eigenen Code einbringen — unter Umgehung des Transportwesens und jeder Entwicklungs-/Freigabetrennung. Damit lassen sich Programme mit Hintertüren, manipulativer Logik oder Kontrollumgehungen direkt im Produktivsystem aktivieren, ohne Vier-Augen-Prinzip und ohne nachvollziehbaren Transportweg (Integrität/Nachvollziehbarkeit, GoB).",
     "threat": "(1) Täter öffnet über SCC4 den Mandanten und über SE06/SE03 die Systemänderbarkeit. (2) In SE38/SE37 entwickelt/ändert er ein Programm oder einen Baustein mit manipulativer Funktion (z. B. verdeckte Buchung, Berechtigungshintertür). (3) Der Code wird direkt aktiviert — ohne Transport und Freigabe. (4) Nach Ausführung werden Code und Änderbarkeitseinstellungen zurückgestellt, sodass kein regulärer Änderungsnachweis existiert.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd",
+      "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/describing-system-change-options-and-client-change-options-1",
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "SAP-Hinweis 3523636 (SAL-Events EU1/EU2 bei SE06/SCC4)"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -26,6 +37,11 @@
     "riskStatus": null,
     "risk": "Vereint das Öffnen der System-Änderbarkeit (SE06/SE03), die Mandantenpflege (SCC4) und die uneingeschränkte Tabellenpflege (SE16/SM30). Eine Person kann Mandant/System änderbar schalten und danach beliebige Tabelleninhalte — inkl. Customizing, Kontroll- und Stammdaten — direkt manipulieren, ohne Anwendungslogik, Transportweg oder Funktionstrennung. Das erlaubt tiefgreifende, schwer erkennbare Eingriffe in Systemverhalten und Datenbestand (Integrität/Nachvollziehbarkeit).",
     "threat": "(1) Täter setzt Mandant (SCC4) und System (SE06) auf änderbar. (2) Über SE16N/SM30 ändert er direkt kontroll- oder buchungsrelevante Tabelleneinträge (z. B. Customizing einer Prüfung, Schwellenwerte, Statusfelder). (3) Die fachliche Anwendung übernimmt die manipulierten Werte. (4) Einstellungen werden zurückgesetzt; die Direktänderung ist ohne Belegspur kaum nachvollziehbar.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/describing-system-change-options-and-client-change-options-1",
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -36,6 +52,10 @@
     "riskStatus": null,
     "risk": "Beschreibt das Einschleusen von Transporten über Umwege: Mit Dateizugriff auf Applikationsserver-Ebene (CG3Y/CG3Z), Kenntnis der Verzeichnisstruktur (AL11) und Transportmanagement-Rechten (STMS-Administration bzw. TP-Import) kann eine Person Transportdateien (Cofiles/Data-Files) selbst im Transportverzeichnis platzieren und importieren — am regulären Freigabe- und Transportprozess vorbei. Damit lassen sich beliebige Objekte/Änderungen ins (Produktiv-)System bringen, ohne die vorgesehene Trennung von Entwicklung, Freigabe und Transport (Integrität/Nachvollziehbarkeit).",
     "threat": "(1) Täter erzeugt/beschafft eine präparierte Transportdatei. (2) Über AL11 lokalisiert er das Transportverzeichnis, per CG3Z lädt er Cofile/Data-File dorthin hoch. (3) In STMS wird der Transport dem Import-Puffer hinzugefügt und importiert. (4) Die eingeschleusten Objekte sind aktiv, ohne dass ein regulärer, freigegebener Transportweg durchlaufen wurde.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -46,6 +66,10 @@
     "riskStatus": null,
     "risk": "Funktionstrennungskonflikt zwischen Anlage von Sachkontenstammdaten und Buchung auf Sachkonten. Wer Konten anlegen und zugleich bebuchen kann, kann Konten mit gezielt gewählten Eigenschaften (z. B. Abstimmkennzeichen, Steuerkategorie) einrichten und darauf buchen, ohne unabhängige Kontrolle der Kontenanlage. Das erleichtert Fehlbuchungen, das Verstecken von Beträgen auf eigens angelegten Konten und die Umgehung von Kontenfreigaben (Integrität, Fraud-relevant im Rechnungswesen).",
     "threat": "(1) Täter legt in FS00 ein Sachkonto mit passenden Eigenschaften an (z. B. Aufwands-/Verrechnungskonto ohne enge Kontrolle). (2) Über FB01/FB50 bucht er Beträge auf/über dieses Konto. (3) Mangels unabhängiger Kontenanlage-Kontrolle bleibt die zweckgerichtete Einrichtung unbemerkt. (4) Beträge werden so verschoben/verschleiert.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -56,6 +80,11 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen dem Öffnen/Schließen von Buchungsperioden (OB52) und dem Buchen auf Sachkonten. Wer beides kann, kann geschlossene (Vor-)Perioden gezielt wieder öffnen, nachträglich buchen und wieder schließen — und damit Periodenabgrenzung und Abschlusskontrollen aushebeln. Das ermöglicht die Manipulation bereits abgeschlossener Zeiträume und gefährdet Periodengerechtigkeit und Verlässlichkeit des Abschlusses (Integrität, GoB, Bilanzmanipulation).",
     "threat": "(1) Täter öffnet über OB52 eine bereits geschlossene Buchungsperiode. (2) Über FB01/FB50 bucht er nachträglich in diese Periode (z. B. ergebnis-/bilanzwirksam). (3) Die Periode wird wieder geschlossen. (4) Der Abschluss wirkt unverändert, obwohl er nachträglich manipuliert wurde.",
+    "source": [
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://learning.sap.com/courses/customizing-core-settings-in-financial-accounting-in-sap-s4hana/managing-posting-periods",
+      "SAP-Hinweis 2251160 (Berechtigungen RFOB5200/Buchungsperioden)"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -66,6 +95,10 @@
     "riskStatus": null,
     "risk": "Konflikt bei der Pflege der beiden Sichten desselben Geschäftspartners: Vertriebssicht (Kundenstamm, VD01/02) und Buchhaltungssicht (Debitorenstamm, FD01/02). Wer beide Sichten allein pflegen kann, kann einen (auch fiktiven) Kunden vollständig ohne Mitwirkung eines zweiten Bereichs anlegen/ändern — inkl. steuerungsrelevanter Felder wie Zahlungsbedingungen, Bankdaten oder Preisfindungsmerkmale. Das umgeht die organisatorische Trennung Vertrieb/Buchhaltung und ermöglicht Stammdatenmanipulationen als Basis für Betrug (Integrität, Fraud im Order-to-Cash).",
     "threat": "(1) Täter legt in VD01/FD01 einen (fiktiven oder manipulierten) Debitor vollständig an. (2) Er hinterlegt vorteilhafte Zahlungs-/Bankdaten. (3) Über den weiteren OtC-Prozess (Auftrag, Auslieferung) werden Leistungen an diesen Debitor abgewickelt. (4) Ohne Vier-Augen-Kontrolle der Stammdaten bleibt die Manipulation unentdeckt.",
+    "source": [
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -76,6 +109,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Debitorenstammpflege und Auftragserfassung. Wer Debitoren pflegen und Aufträge anlegen/ändern kann, kann Konditionen, Kreditdaten oder Bankverbindungen des Kunden anpassen und im selben Zug Aufträge dazu erfassen — ohne unabhängige Stammdatenkontrolle. Das ermöglicht z. B. das Anlegen von Aufträgen für manipulierte Debitoren oder das Ausnutzen selbst gesetzter Konditionen (Integrität, Fraud OtC).",
     "threat": "(1) Täter passt in FD02 Stammdaten eines Debitors an (z. B. Zahlungsbedingungen, kreditrelevante Felder). (2) In VA01 erfasst er einen Auftrag, der von genau diesen Stammdaten profitiert. (3) Der Auftrag durchläuft den Prozess auf Basis der manipulierten Stammdaten. (4) Keine unabhängige Prüfung der Stammdatenänderung erfolgt.",
+    "source": [
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -86,6 +123,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Auftragserfassung und Warenausgangs-/Auslieferungsbuchung. Wer beide Schritte allein ausführen kann, kann einen Auftrag anlegen und die zugehörige Warenausgangsbuchung selbst vornehmen — ohne physische/organisatorische Trennung von Vertrieb und Versand/Lager. Das ermöglicht das Ausliefern von Waren ohne wirksame Gegenkontrolle, inkl. Warenausgang an fiktive/eigene Empfänger (Integrität/Vermögensschutz, Fraud).",
     "threat": "(1) Täter legt in VA01 einen Auftrag an (ggf. für einen manipulierten Debitor). (2) In VL02N bucht er den Warenausgang/die Auslieferung selbst. (3) Die Ware verlässt das Lager ohne unabhängige Versandkontrolle. (4) Bestands- und Forderungslage bleiben systemisch konsistent, während real Vermögen abfließt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://xiting.com/en/sap-knowledge/segregation-of-duties/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -96,6 +137,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Auftragserfassung und Pflege des Kreditmanagements (FD32). Wer Kreditlimits setzen und zugleich Aufträge erfassen kann, kann das Kreditlimit eines Kunden selbst erhöhen und darauf gestützt Aufträge über die eigentlich zulässige Grenze hinaus anlegen — ohne unabhängige Kreditkontrolle. Das untergräbt das Kreditrisikomanagement und kann zu uneinbringlichen Forderungen führen (Integrität/finanzielle Steuerung, Fraud).",
     "threat": "(1) Täter erhöht in FD32 das Kreditlimit des (ggf. bonitätsschwachen) Kunden. (2) In VA01 erfasst er Aufträge, die ohne die Erhöhung an der Kreditprüfung gescheitert wären. (3) Die Aufträge werden freigegeben und beliefert. (4) Das erhöhte Ausfallrisiko bleibt ohne unabhängige Kreditentscheidung bestehen.",
+    "source": [
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/new-access-risks-new-sod-matrix-how-s-4hana-changes-the-approach-to/ba-p/14298296",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -106,6 +151,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Debitorenstammpflege und Anlage von Bonus-/Rabattabsprachen. Wer beides kann, kann einem (ggf. selbst eingerichteten) Debitor günstige Bonusvereinbarungen zuordnen, ohne unabhängige Kontrolle. Das ermöglicht ungerechtfertigte Bonus-/Rückvergütungsansprüche zugunsten bestimmter Kunden (Integrität, Fraud/finanzieller Nachteil).",
     "threat": "(1) Täter pflegt/erstellt in FD02/FD01 den Debitor. (2) In VB01 legt er eine vorteilhafte Bonusabsprache für diesen Debitor an. (3) Im weiteren Prozess entstehen daraus (ungerechtfertigte) Bonusansprüche. (4) Ohne Trennung von Stammdaten und Konditionsanlage bleibt dies unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://xiting.com/en/sap-knowledge/segregation-of-duties/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -116,6 +165,10 @@
     "riskStatus": null,
     "risk": "Erweitert OCX_0005 um die Bonusabrechnung (VB(7)): Eine Person kann Debitorenstamm pflegen sowie Bonusabsprachen anlegen und/oder abrechnen. Damit wird der komplette Bonusprozess von der Stammdaten- über die Absprache- bis zur Abrechnungsseite ohne Funktionstrennung beherrscht — ideale Konstellation für die Auszahlung ungerechtfertigter Boni an gesteuerte Debitoren (Integrität, Fraud mit direkter Zahlungswirkung).",
     "threat": "(1) Täter richtet/pflegt den Debitor (FD01/02). (2) Er legt in VB01 eine Bonusabsprache an. (3) Über VB(7) rechnet er den Bonus selbst ab. (4) Die (ungerechtfertigte) Bonuszahlung/-gutschrift wird ausgelöst, ohne dass ein zweiter Bereich Absprache oder Abrechnung kontrolliert.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://xiting.com/en/sap-knowledge/segregation-of-duties/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -126,6 +179,11 @@
     "riskStatus": null,
     "risk": "Konflikt bei der Pflege der beiden Sichten desselben Lieferanten/Kreditors: Einkaufssicht (MK01/02) und Buchhaltungssicht (FK01/02). Wer beide allein pflegen kann, kann einen (auch fiktiven) Lieferanten vollständig anlegen/ändern — inkl. Bankverbindung und Zahlungsbedingungen — ohne Mitwirkung eines zweiten Bereichs. Das ist die klassische Grundlage für Kreditorenbetrug (fiktive Lieferanten, umgeleitete Zahlungen) und umgeht die Trennung Einkauf/Buchhaltung (Integrität, Fraud im Purchase-to-Pay).",
     "threat": "(1) Täter legt in MK01/FK01 einen fiktiven Lieferanten vollständig an. (2) Er hinterlegt eine von ihm kontrollierte Bankverbindung. (3) Über den P2P-Prozess (Bestellung/Rechnung/Zahllauf) werden Zahlungen an diesen Kreditor ausgelöst. (4) Ohne Vier-Augen-Prüfung der Stammdaten fließt Geld an das hinterlegte Konto.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://onapsis.com/blog/sap-access-risk-management/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -136,6 +194,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Bedarfsanforderung (BANF, ME51N) und Bestellung (ME21N). Wer beides kann, kann Bedarf selbst anfordern und die daraus resultierende Bestellung selbst auslösen — ohne die vorgesehene Trennung von Bedarfsträger und Einkauf und ohne unabhängige Bedarfsprüfung. Das ermöglicht die Beschaffung nicht benötigter oder überteuerter Leistungen bzw. Bestellungen an gesteuerte Lieferanten (Integrität, Fraud/Verschwendung).",
     "threat": "(1) Täter legt in ME51N eine BANF für eine (nicht wirklich benötigte) Leistung an. (2) In ME21N wandelt er die BANF selbst in eine Bestellung an einen gewünschten Lieferanten um. (3) Es fehlt jede unabhängige Bedarfs-/Bestellkontrolle. (4) Die Beschaffung läuft auf Basis eines selbst erzeugten Bedarfs.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://xiting.com/en/sap-knowledge/segregation-of-duties/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -146,6 +208,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Kreditorenstammpflege und Bestellwesen. Wer Kreditoren pflegen und Bestellungen anlegen/ändern kann, kann Lieferantenstammdaten (z. B. Bank/Konditionen) anpassen und im selben Zug Bestellungen dazu auslösen — ohne unabhängige Stammdatenkontrolle. Das ermöglicht Bestellungen an manipulierte/eigene Kreditoren als Vorstufe späterer Zahlungen (Integrität, Fraud P2P).",
     "threat": "(1) Täter pflegt/erstellt in FK01/02 den Kreditor. (2) In ME21N/ME22N legt/ändert er Bestellungen an diesen Kreditor. (3) Bestellungen bilden die Grundlage für spätere Rechnungs- und Zahlungsschritte. (4) Ohne Stammdaten-Gegenkontrolle bleibt die Steuerung des Empfängers unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://onapsis.com/blog/sap-access-risk-management/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (high) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -156,6 +222,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Kreditorenstammpflege und Rechnungserfassung. Wer Kreditoren pflegen und Eingangsrechnungen erfassen kann, kann Bankverbindung/Konditionen setzen und darauf Rechnungen buchen — ohne unabhängige Kontrolle. Das erlaubt das Erfassen fiktiver oder überhöhter Rechnungen zugunsten eines gesteuerten Kreditors, direkt zahlungswirksam (Integrität, Fraud P2P).",
     "threat": "(1) Täter pflegt in FK02 die Bankverbindung eines Kreditors. (2) In MIRO erfasst er eine (fiktive/überhöhte) Eingangsrechnung ohne oder mit manipuliertem Bestellbezug. (3) Die Rechnung geht in den Zahlungslauf. (4) Ohne Trennung von Stammdaten und Rechnungserfassung fließt Geld an die hinterlegte Bankverbindung.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://onapsis.com/blog/sap-access-risk-management/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -166,6 +236,11 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Bestellwesen und Rechnungserfassung. Wer beides kann, beherrscht zwei zentrale Schritte des 3-Way-Match (Bestellung, Rechnung) ohne Funktionstrennung. Er kann Bestellungen passend zu selbst erfassten Rechnungen anlegen/ändern und so die Rechnungsprüfung aushebeln — Grundlage für fingierte oder überhöhte Zahlungen (Integrität, Fraud P2P).",
     "threat": "(1) Täter legt in ME21N eine Bestellung mit passenden Mengen/Preisen an. (2) In MIRO erfasst er die dazu passende (überhöhte/fiktive) Rechnung. (3) Der Abgleich Bestellung–Rechnung geht auf, weil beide aus einer Hand stammen. (4) Die Rechnung wird zur Zahlung freigegeben.",
+    "source": [
+      "https://www.doxis.com/en/blog/goods-receipt-checks",
+      "https://ramp.com/blog/sap-3-way-match",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -176,6 +251,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Rechnungserfassung und Zahllauf (F110). Wer Rechnungen erfassen und den Zahllauf starten kann, kann eine (fiktive/überhöhte) Verbindlichkeit selbst anlegen und unmittelbar zur Auszahlung bringen — ohne unabhängige Zahlungsfreigabe. Das ist eine der unmittelbar zahlungswirksamsten SoD-Verletzungen im P2P (Integrität/Vermögensschutz, Fraud).",
     "threat": "(1) Täter erfasst in MIRO eine (fingierte) Eingangsrechnung. (2) Über F110 startet er den Zahllauf, der diese Verbindlichkeit einschließt. (3) Die Zahlung wird ausgeführt. (4) Ohne unabhängige Freigabe des Zahllaufs fließt Geld unmittelbar ab.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://onapsis.com/blog/sap-access-risk-management/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -186,6 +265,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Bestellwesen und Wareneingangsbuchung. Wer bestellen und den Wareneingang buchen kann, kann einen Wareneingang zu einer Bestellung vortäuschen, obwohl keine (vollständige) Lieferung erfolgt ist — und so den 3-Way-Match manipulieren. Das ermöglicht die Bezahlung nicht gelieferter Ware (Integrität/Vermögensschutz, Fraud).",
     "threat": "(1) Täter legt in ME21N eine Bestellung an. (2) In MIGO bucht er den Wareneingang (BWART 101), ohne dass real (vollständig) geliefert wurde. (3) Der fingierte Wareneingang ermöglicht die spätere Rechnungsfreigabe im Abgleich. (4) Es wird für nicht erhaltene Ware gezahlt.",
+    "source": [
+      "https://www.doxis.com/en/blog/goods-receipt-checks",
+      "https://ramp.com/blog/sap-3-way-match"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -196,6 +279,11 @@
     "riskStatus": null,
     "risk": "Kumuliert drei zentrale P2P-Schritte in einer Hand: Kreditorenstammpflege, Bestellung und Wareneingangsbuchung. Eine Person kann einen (fiktiven) Lieferanten anlegen, dazu bestellen und den Wareneingang selbst buchen — der Großteil des Beschaffungsprozesses läuft ohne jede Funktionstrennung. In Kombination mit der Rechnungsprüfung ist der komplette 3-Way-Match kompromittierbar; bereits diese Dreierkombination ermöglicht die Vortäuschung realer Beschaffung (Integrität/Vermögensschutz, schwerwiegender Fraud).",
     "threat": "(1) Täter legt in FK01/MK01 einen kontrollierten Kreditor an. (2) In ME21N bestellt er bei diesem Kreditor. (3) In MIGO bucht er den Wareneingang (101) ohne reale Lieferung. (4) Lieferant, Bestellung und Wareneingang sind konsistent vorgetäuscht — die Grundlage für eine anschließende (unberechtigte) Zahlung ist gelegt.",
+    "source": [
+      "https://www.doxis.com/en/blog/goods-receipt-checks",
+      "https://ramp.com/blog/sap-3-way-match",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -206,6 +294,11 @@
     "riskStatus": null,
     "risk": "Vereint nahezu den gesamten P2P-Prozess in einer Hand: Kreditorenstamm, Bestellung, Wareneingang und Rechnungserfassung/-prüfung. Eine Person kann einen fiktiven Beschaffungsvorgang durchgängig konsistent erzeugen — Lieferant, Bestellung, Wareneingang und Rechnung passen zueinander, weil alles aus einer Hand stammt. Der 3-Way-Match ist damit vollständig ausgehebelt; nur der Zahllauf trennt noch von der Auszahlung. Höchstes Fraud-Risiko im Purchase-to-Pay (Integrität/Vermögensschutz).",
     "threat": "(1) Täter legt Kreditor (FK01) und Bestellung (ME21N) an. (2) Er bucht den Wareneingang (MIGO 101) ohne reale Lieferung. (3) In MIRO erfasst er die passende Rechnung — der 3-Way-Match geht auf. (4) Die Verbindlichkeit steht zahlungsbereit im System; ein regulärer Zahllauf würde sie ausgleichen.",
+    "source": [
+      "https://www.doxis.com/en/blog/goods-receipt-checks",
+      "https://ramp.com/blog/sap-3-way-match",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -216,6 +309,10 @@
     "riskStatus": null,
     "risk": "Konflikt zwischen Kreditorenstammpflege und Zahllauf (F110). Wer die Bankverbindung eines Kreditors ändern und den Zahllauf starten kann, kann Zahlungen an eine selbst hinterlegte Bankverbindung umleiten — ohne unabhängige Kontrolle von Stammdaten und Zahlung. Das ist eine besonders direkte, unmittelbar zahlungswirksame Betrugskonstellation (Integrität/Vermögensschutz, Fraud).",
     "threat": "(1) Täter ändert in FK02 die Bankverbindung eines (real bebuchten) Kreditors auf ein eigenes Konto. (2) Über F110 startet er den Zahllauf. (3) Offene Verbindlichkeiten des Kreditors werden auf das hinterlegte Konto ausgezahlt. (4) Optional wird die Bankverbindung anschließend zurückgeändert, um die Umleitung zu verschleiern.",
+    "source": [
+      "https://onapsis.com/blog/sap-access-risk-management/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ],
     "description": "",
     "comment": "riskLevel abgeleitet aus vorhandener Kritikalitaet (very-critical) -- Ausgangspunkt, bitte fachlich pruefen/verfeinern."
   },
@@ -239,7 +336,12 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "Kombination aus Report-Ausführung (S_PROGRAM, SUBMIT) und Löschberechtigung für Änderungsbelege (S_SCD0, Aktivität 06) erlaubt das gezielte Entfernen von Änderungsbelegen (CDHDR/CDPOS) über Löschreports. Änderungsbelege sind das zentrale Nachweismittel für „wer hat was wann geändert“ an Stamm- und Bewegungsdaten. Ihr Löschen zerstört Nachvollziehbarkeit und Revisionssicherheit, ermöglicht die Verschleierung vorheriger Manipulationen und untergräbt die Beweiskraft für IKS, Wirtschaftsprüfung und Forensik (GoBD-relevant).",
-    "threat": "(1) Innentäter nimmt eine betrügerische Änderung vor (z. B. Bankverbindung eines Lieferanten), die einen Änderungsbeleg erzeugt. (2) Über SA38/SE38 wird ein Report zum Löschen/Reorganisieren von Änderungsbelegen gestartet. (3) Der belastende Beleg wird selektiv entfernt. (4) Eine spätere Prüfung findet keinen Hinweis auf die ursprüngliche Änderung — die Spur ist getilgt."
+    "threat": "(1) Innentäter nimmt eine betrügerische Änderung vor (z. B. Bankverbindung eines Lieferanten), die einen Änderungsbeleg erzeugt. (2) Über SA38/SE38 wird ein Report zum Löschen/Reorganisieren von Änderungsbelegen gestartet. (3) Der belastende Beleg wird selektiv entfernt. (4) Eine spätere Prüfung findet keinen Hinweis auf die ursprüngliche Änderung — die Spur ist getilgt.",
+    "source": [
+      "https://help.sap.com/doc/saphelp_ewm900/9.0/en-US/48/d802e9f63a3e49e10000000a421937/content.htm?no_cache=true",
+      "https://itsiti.com/sd_changedocument_reorg-deleting-change-documents-for-deleted-sales-documents/",
+      "SAP-Hinweis/KBA 3345005 (CHANGEDOCU_DEL, S_SCD0 Akt. 06)"
+    ]
   },
   {
     "query": "1002_BC-SEC",
@@ -247,7 +349,11 @@
     "riskLevel": "high",
     "riskStatus": null,
     "risk": "Über SCDO lässt sich die Definition der Änderungsprotokollierung pflegen — also festlegen, für welche Tabellen/Felder Änderungen überhaupt aufgezeichnet werden. Wird diese Definition manipuliert (Protokollierung deaktiviert/eingeschränkt), erfolgen künftige Datenänderungen ohne Änderungsbeleg. Die Nachvollziehbarkeit wird damit präventiv ausgehebelt — anders als beim Löschen bestehender Belege bleibt die Manipulation von vornherein unprotokolliert (Integrität/Nachvollziehbarkeit).",
-    "threat": "(1) Täter identifiziert das Änderungsbelegobjekt der Zieldaten (z. B. Kreditorenstamm). (2) In SCDO wird die Protokollierung für die relevanten Felder deaktiviert. (3) Anschließend werden die Daten manipuliert — es entsteht kein Beleg. (4) Optional wird die Definition zurückgestellt, um Unauffälligkeit zu wahren."
+    "threat": "(1) Täter identifiziert das Änderungsbelegobjekt der Zieldaten (z. B. Kreditorenstamm). (2) In SCDO wird die Protokollierung für die relevanten Felder deaktiviert. (3) Anschließend werden die Daten manipuliert — es entsteht kein Beleg. (4) Optional wird die Definition zurückgestellt, um Unauffälligkeit zu wahren.",
+    "source": [
+      "https://help.sap.com/doc/saphelp_ewm900/9.0/en-US/48/d802e9f63a3e49e10000000a421937/content.htm?no_cache=true",
+      "https://community.sap.com/t5/enterprise-resource-planning-q-a/cu62-no-authorization-to-delete-change-documents/qaq-p/14036914"
+    ]
   },
   {
     "query": "1003_BC-SEC",
@@ -255,7 +361,11 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "Erlaubt das Ändern des aktuellen Nummernstands beliebiger Nummernkreisobjekte (NROBJ = *). Belegnummern können zurückgesetzt oder vorgezogen werden — mit der Folge von Nummernkreisüberschneidungen, doppelten Nummern und provozierten Lücken. Da die lückenlose, eindeutige Belegnummerierung Kern der Ordnungsmäßigkeit (GoB/GoBD) ist, gefährdet dies Belegintegrität und Vollständigkeit und kann fehlende oder nachträglich eingefügte Belege verschleiern.",
-    "threat": "(1) Täter entfernt/fälscht einen Beleg → Lücke in der Nummernfolge. (2) In SNRO/SNUM wird der Nummernstand so zurückgesetzt, dass die Folge wieder lückenlos erscheint bzw. eine Nummer erneut vergeben wird. (3) Die Vollständigkeitskontrolle schlägt nicht an. (4) Alternativ wird durch Vorziehen des Stands Platz für nachträglich eingefügte Belege geschaffen."
+    "threat": "(1) Täter entfernt/fälscht einen Beleg → Lücke in der Nummernfolge. (2) In SNRO/SNUM wird der Nummernstand so zurückgesetzt, dass die Folge wieder lückenlos erscheint bzw. eine Nummer erneut vergeben wird. (3) Die Vollständigkeitskontrolle schlägt nicht an. (4) Alternativ wird durch Vorziehen des Stands Platz für nachträglich eingefügte Belege geschaffen.",
+    "source": [
+      "https://blogs.sap.com/2015/05/29/number-ranges-things-to-keep-in-mind/",
+      "https://community.sap.com/t5/enterprise-resource-planning-q-a/is-it-possible-to-change-or-edit-the-existing-number-range/qaq-p/9480078"
+    ]
   },
   {
     "query": "1004_BC-SEC",
@@ -263,7 +373,11 @@
     "riskLevel": "high",
     "riskStatus": null,
     "risk": "Anlegen, Ändern und Löschen von Nummernkreis-Intervallen greift strukturell in die Belegnummernvergabe ein. Verschobene, überlappende oder gelöschte Intervalle zerstören Eindeutigkeit und Lückenlosigkeit und beeinträchtigen Vollständigkeit und Nachvollziehbarkeit von Geschäftsvorfällen. Gegenüber der reinen Nummernstandsänderung ist der Eingriff dauerhafter (Integrität/Vollständigkeit).",
-    "threat": "(1) Täter legt ein überlappendes/externes Intervall an oder verschiebt Grenzen. (2) Belege werden außerhalb der erwarteten Systematik oder mit kollidierenden Nummern gebucht. (3) Zuordnung und Vollständigkeitskontrolle werden erschwert; eingeschleuste Belege fallen weniger auf."
+    "threat": "(1) Täter legt ein überlappendes/externes Intervall an oder verschiebt Grenzen. (2) Belege werden außerhalb der erwarteten Systematik oder mit kollidierenden Nummern gebucht. (3) Zuordnung und Vollständigkeitskontrolle werden erschwert; eingeschleuste Belege fallen weniger auf.",
+    "source": [
+      "https://blogs.sap.com/2015/05/29/number-ranges-things-to-keep-in-mind/",
+      "https://www.saptechnicalguru.com/number-ranges/"
+    ]
   },
   {
     "query": "1005_BC-SEC",
@@ -271,7 +385,11 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "OKC3 (S_ADMI_FCD = RSET) erlaubt das Zurücksetzen/Löschen von CO-Ist-Bewegungsdaten. Bereits gebuchte Kosten- und Leistungsdaten können unwiederbringlich entfernt werden. Das verfälscht Kostenstellen-/Auftragsergebnisse, kann die FI-CO-Abstimmung zerstören und beseitigt die Nachvollziehbarkeit gebuchter Vorgänge — mit Wirkung auf Berichterstattung und Unternehmenssteuerung (Integrität/Vollständigkeit).",
-    "threat": "(1) Täter selektiert in OKC3 die Ist-Bewegungsdaten eines Kostenobjekts. (2) Die Daten werden zurückgesetzt/gelöscht. (3) Kostenauswertungen bzw. die FI-CO-Abstimmung weichen ab; die ursprünglichen Buchungen sind nicht mehr rekonstruierbar. (4) Fehlbuchungen oder Verrechnungsmanipulationen werden so nachträglich kaschiert."
+    "threat": "(1) Täter selektiert in OKC3 die Ist-Bewegungsdaten eines Kostenobjekts. (2) Die Daten werden zurückgesetzt/gelöscht. (3) Kostenauswertungen bzw. die FI-CO-Abstimmung weichen ab; die ursprünglichen Buchungen sind nicht mehr rekonstruierbar. (4) Fehlbuchungen oder Verrechnungsmanipulationen werden so nachträglich kaschiert.",
+    "source": [
+      "https://community.sap.com/t5/enterprise-resource-planning-q-a/archiving-deleting-the-cost-center-line-items/qaq-p/1427655",
+      "https://www.tcodesearch.com/sap-tcodes/OKC3"
+    ]
   },
   {
     "query": "1006_BC-SEC",
@@ -279,7 +397,12 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "Direktes Starten beliebiger ABAP-Reports unter Umgehung der transaktionsgebundenen Berechtigungssteuerung; über P_GROUP = * ist praktisch jeder Report einer Gruppe ausführbar. Reports können sensible Daten auslesen, Massenläufe anstoßen und — je nach Programm — Daten verändern oder Systemfunktionen auslösen. Da viele Reports selbst keine ausreichende Berechtigungsprüfung enthalten, entsteht ein weitreichendes, schwer eingrenzbares Zugriffs- und Verarbeitungsrisiko (Vertraulichkeit/Integrität).",
-    "threat": "(1) Täter identifiziert einen Report ohne eigene Berechtigungsprüfung, der Zieldaten liest/ändert. (2) Über SA38 wird er direkt ausgeführt — die schützende Transaktionsberechtigung ist umgangen. (3) Daten werden extrahiert bzw. ein datenverändernder Report angestoßen. (4) Die Nutzung erscheint als reguläre Reportausführung und ist ohne Detailanalyse unauffällig."
+    "threat": "(1) Täter identifiziert einen Report ohne eigene Berechtigungsprüfung, der Zieldaten liest/ändert. (2) Über SA38 wird er direkt ausgeführt — die schützende Transaktionsberechtigung ist umgangen. (3) Daten werden extrahiert bzw. ein datenverändernder Report angestoßen. (4) Die Nutzung erscheint als reguläre Reportausführung und ist ohne Detailanalyse unauffällig.",
+    "source": [
+      "https://xiting.com/en/the-difference-between-s_program-and-s_prognam-and-the-use-of-parameter-transactions/",
+      "https://sast-solutions.com/blog-en/2016/10/26/how-to-reliably-prevent-the-execution-of-sap-reports/",
+      "https://community.sap.com/t5/application-development-and-automation-discussions/please-help-on-sa38/td-p/7058329"
+    ]
   },
   {
     "query": "1007_BC-SEC",
@@ -287,7 +410,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "Wie 1006, jedoch inkl. Programmen ohne zugeordnete Berechtigungsgruppe (P_GROUP = $). Damit ist nahezu jeder im System vorhandene Report startbar — auch technische, undokumentierte oder eigenentwickelte Programme ohne Gruppensteuerung. Das Ausführungsrisiko ist maximal ausgeprägt, da gerade ungruppierte Reports häufig ohne fachliche Schutzmechanismen ausgeliefert werden (Vertraulichkeit/Integrität).",
-    "threat": "(1) Täter sucht gezielt ungruppierte oder Custom-Reports (Z*/Y*) mit privilegierter Funktionalität. (2) Ausführung über SA38 ohne begrenzende Berechtigungsgruppe. (3) Über einen solchen Report werden Daten gelesen/geändert oder administrative Aktionen ausgelöst, für die keine reguläre Transaktionsberechtigung besteht."
+    "threat": "(1) Täter sucht gezielt ungruppierte oder Custom-Reports (Z*/Y*) mit privilegierter Funktionalität. (2) Ausführung über SA38 ohne begrenzende Berechtigungsgruppe. (3) Über einen solchen Report werden Daten gelesen/geändert oder administrative Aktionen ausgelöst, für die keine reguläre Transaktionsberechtigung besteht.",
+    "source": [
+      "https://xiting.com/en/the-difference-between-s_program-and-s_prognam-and-the-use-of-parameter-transactions/",
+      "https://sast-solutions.com/blog-en/2016/10/26/how-to-reliably-prevent-the-execution-of-sap-reports/"
+    ]
   },
   {
     "query": "1008_BC-SEC",
@@ -295,7 +422,11 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "Erlaubt das direkte Ausführen (Testen) von Funktionsbausteinen über SE37. Bausteine kapseln elementare Systemfunktionen — u. a. RFC-fähige, Update- oder tabellenändernde — und werden außerhalb ihres regulären Aufrufkontexts und der zugehörigen Anwendungsprüfungen ausgeführt. Dadurch lassen sich Daten lesen/verändern und Prüf-/Freigabelogik umgehen. Das Missbrauchspotenzial ist hoch, da einzelne Standardbausteine sehr mächtig sind (Integrität/Vertraulichkeit).",
-    "threat": "(1) Täter identifiziert einen mächtigen Baustein (Tabelleninhalte ändern, Berechtigungen erzeugen, sensible Daten lesen). (2) In SE37 wird er im Einzeltest mit passenden Importparametern ausgeführt. (3) Die Aktion läuft ohne die umgebenden Anwendungs- und Berechtigungsprüfungen. (4) Ergebnis: unautorisierte Datenänderung/-lesung außerhalb jeder fachlichen Kontrolle."
+    "threat": "(1) Täter identifiziert einen mächtigen Baustein (Tabelleninhalte ändern, Berechtigungen erzeugen, sensible Daten lesen). (2) In SE37 wird er im Einzeltest mit passenden Importparametern ausgeführt. (3) Die Aktion läuft ohne die umgebenden Anwendungs- und Berechtigungsprüfungen. (4) Ergebnis: unautorisierte Datenänderung/-lesung außerhalb jeder fachlichen Kontrolle.",
+    "source": [
+      "https://community.sap.com/t5/application-development-and-automation-discussions/se38-authorization/td-p/12600508",
+      "SAP-Hinweis 13202 (Entwickler/SE-Transaktionen nicht an Endanwender)"
+    ]
   },
   {
     "query": "1009_BC-SEC",
@@ -303,7 +434,12 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "Über SM49/SM69 lassen sich externe OS-Kommandos definieren und ausführen. Mit uneingeschränkten Werten (Command/Host/OpSystem = *) und Administrationsrecht (S_RZL_ADM, Aktivität 01) sind beliebige OS-Befehle mit den Rechten des SAP-Systembenutzers (<sid>adm) auf Applikationsserver-Ebene möglich. Das ermöglicht den Ausbruch aus der SAP-Anwendungsschicht: Zugriff aufs Dateisystem, Lesen/Ändern von Konfigurations- und DB-Dateien, Starten beliebiger Prozesse — bis zur vollständigen Kompromittierung von Server und SAP-Installation (alle Schutzziele).",
-    "threat": "(1) Täter legt in SM69 ein externes Kommando an bzw. nutzt eines mit freien Parametern. (2) In SM49 wird es mit den Rechten von <sid>adm ausgeführt. (3) Über OS-Zugriff werden DB-/Trace-Dateien gelesen, Skripte platziert oder OS-Benutzer/-Rechte verändert. (4) Der Angreifer etabliert Persistenz (Backdoor/Cronjob) und unterläuft die SAP-Sicherheit dauerhaft von unterhalb der Anwendungsschicht."
+    "threat": "(1) Täter legt in SM69 ein externes Kommando an bzw. nutzt eines mit freien Parametern. (2) In SM49 wird es mit den Rechten von <sid>adm ausgeführt. (3) Über OS-Zugriff werden DB-/Trace-Dateien gelesen, Skripte platziert oder OS-Benutzer/-Rechte verändert. (4) Der Angreifer etabliert Persistenz (Backdoor/Cronjob) und unterläuft die SAP-Sicherheit dauerhaft von unterhalb der Anwendungsschicht.",
+    "source": [
+      "https://help.sap.com/saphelp_nw70ehp2/helpdata/en/0a/0a2e69ef6211d3a6510000e835363f/content.htm?no_cache=true",
+      "https://securitybridge.com/blog/sap-vulnerability-type-os-command-injection/",
+      "https://playbook.securitysilverbacks.com/SAP_ABAP_Platform/known_attack_vectors/os_command_execution/"
+    ]
   },
   {
     "query": "1010_BC-SEC",
@@ -311,7 +447,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "Die Administration des Security Audit Logs (SM19) erlaubt das Konfigurieren der Sicherheitsprotokollierung — welche Ereignisse, Benutzer und Mandanten aufgezeichnet werden. Filter können deaktiviert oder so eng gesetzt werden, dass sicherheitsrelevante Aktivitäten nicht mehr erfasst werden. Damit lässt sich die zentrale Detektions- und Nachweisquelle des Systems gezielt blind schalten; Angriffe und Missbrauch bleiben unbemerkt und die spätere Beweisführung wird unmöglich (Nachvollziehbarkeit/Detektion).",
-    "threat": "(1) Angreifer verschafft sich SM19-Berechtigung. (2) Vor der eigentlichen Tat werden die SAL-Filter für den eigenen Benutzer/Mandanten deaktiviert oder auf unkritische Ereignisse reduziert. (3) Die missbräuchlichen Aktionen (z. B. Berechtigungsvergabe, Datenzugriff) werden nicht protokolliert. (4) Danach wird die ursprüngliche Filterkonfiguration wiederhergestellt, sodass die Lücke unauffällig bleibt."
+    "threat": "(1) Angreifer verschafft sich SM19-Berechtigung. (2) Vor der eigentlichen Tat werden die SAL-Filter für den eigenen Benutzer/Mandanten deaktiviert oder auf unkritische Ereignisse reduziert. (3) Die missbräuchlichen Aktionen (z. B. Berechtigungsvergabe, Datenzugriff) werden nicht protokolliert. (4) Danach wird die ursprüngliche Filterkonfiguration wiederhergestellt, sodass die Lücke unauffällig bleibt.",
+    "source": [
+      "https://help.sap.com/docs/ABAP_PLATFORM_NEW/025d1fb2f02c42c097f04f45df09106a/74406e80420e483fba6107bbc56718af.html",
+      "https://www.aglea.com/en/blog/sap-security-audit-log-configuration"
+    ]
   },
   {
     "query": "1011_BC-SEC",
@@ -319,7 +459,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "SM18 erlaubt das Löschen/Reorganisieren der Security-Audit-Log-Dateien. Bereits aufgezeichnete sicherheitsrelevante Ereignisse können nachträglich entfernt werden. Anders als beim präventiven Blindschalten (SM19) wird hier die vorhandene Beweisspur getilgt — forensische Nachvollziehbarkeit und die Manipulationssicherheit der Protokolle werden unterlaufen (Nachvollziehbarkeit).",
-    "threat": "(1) Innentäter führt eine protokollierte, missbräuchliche Aktion aus. (2) Über SM18 werden die SAL-Protokolle des betreffenden Zeitraums gelöscht. (3) Die belastenden Einträge sind entfernt; eine spätere Auswertung findet keine Spur. (4) Regelmäßiges Löschen kann zudem als vermeintliche „Housekeeping“-Routine getarnt werden."
+    "threat": "(1) Innentäter führt eine protokollierte, missbräuchliche Aktion aus. (2) Über SM18 werden die SAL-Protokolle des betreffenden Zeitraums gelöscht. (3) Die belastenden Einträge sind entfernt; eine spätere Auswertung findet keine Spur. (4) Regelmäßiges Löschen kann zudem als vermeintliche „Housekeeping“-Routine getarnt werden.",
+    "source": [
+      "https://www.daniel-berlin.de/security/sap-sec/protection-of-the-security-audit-log-against-deletion/",
+      "https://www.aglea.com/en/blog/sap-security-audit-log-configuration"
+    ]
   },
   {
     "query": "1012_BC-SEC",
@@ -327,7 +471,12 @@
     "riskLevel": "high",
     "riskStatus": null,
     "risk": "Generische Tabellenanzeige (SE16/SE16N/SM30 u. a.) mit uneingeschränkter Tabellen-Berechtigungsgruppe (DICBERCLS = *) erlaubt lesenden Zugriff auf nahezu alle Tabelleninhalte unter Umgehung anwendungsseitiger Sichtbarkeits- und Selektionsbeschränkungen. Damit sind vertrauliche Stamm- und Bewegungsdaten — inkl. personenbezogener (DSGVO-relevant) und geschäftskritischer Informationen — direkt einsehbar (Vertraulichkeit).",
-    "threat": "(1) Täter öffnet SE16N und wählt eine sensible Tabelle (z. B. Personaldaten, Bankverbindungen, Konditionen). (2) Ohne Einschränkung durch die Berechtigungsgruppe wird der Tabelleninhalt angezeigt. (3) Die Daten werden gesichtet und ggf. exportiert. (4) Der Zugriff umgeht die fachlichen Transaktionen, die solche Daten normalerweise nur eingeschränkt anzeigen."
+    "threat": "(1) Täter öffnet SE16N und wählt eine sensible Tabelle (z. B. Personaldaten, Bankverbindungen, Konditionen). (2) Ohne Einschränkung durch die Berechtigungsgruppe wird der Tabelleninhalt angezeigt. (3) Die Daten werden gesichtet und ggf. exportiert. (4) Der Zugriff umgeht die fachlichen Transaktionen, die solche Daten normalerweise nur eingeschränkt anzeigen.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/",
+      "https://community.sap.com/t5/application-development-discussions/risks-of-se16/td-p/4087374"
+    ]
   },
   {
     "query": "1013_BC-SEC",
@@ -335,7 +484,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "Anzeige von Tabellen der Berechtigungsgruppe „SC“. Auch bei auf eine Gruppe eingegrenztem Zugriff können hierüber je nach Gruppenzuordnung sicherheits-/systemnahe bzw. sensible Tabelleninhalte eingesehen werden. Das Risiko ist gegenüber der uneingeschränkten Anzeige (1012) reduziert, bleibt für die Vertraulichkeit aber relevant.",
-    "threat": "(1) Täter ruft SE16 für eine Tabelle der Gruppe SC auf. (2) Sofern die Tabelle dieser Gruppe zugeordnet ist, wird der Inhalt angezeigt. (3) Enthaltene sensible Konfigurations-/Systemdaten werden gesichtet und für weitere Angriffe (Kenntnis von Einstellungen) genutzt."
+    "threat": "(1) Täter ruft SE16 für eine Tabelle der Gruppe SC auf. (2) Sofern die Tabelle dieser Gruppe zugeordnet ist, wird der Inhalt angezeigt. (3) Enthaltene sensible Konfigurations-/Systemdaten werden gesichtet und für weitere Angriffe (Kenntnis von Einstellungen) genutzt.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "1014_BC-SEC",
@@ -343,7 +496,11 @@
     "riskLevel": "medium",
     "riskStatus": null,
     "risk": "Das Anlegen/Pflegen von QuickViews (SQVI) ermöglicht eigene Ad-hoc-Auswertungen inkl. Joins über mehrere Tabellen. In Verbindung mit der lesenden Tabellenanzeige lassen sich Daten tabellenübergreifend zusammenführen. Risiko der unautorisierten Informationsaggregation: einzeln unkritische Daten ergeben kombiniert ein sensibles Gesamtbild (Vertraulichkeit).",
-    "threat": "(1) Täter erstellt in SQVI einen QuickView, der z. B. Personalstammdaten mit Organisations-/Vergütungsdaten verknüpft. (2) Der QuickView wird ausgeführt. (3) Es entsteht eine aggregierte Auswertung jenseits der regulären Einzelsicht der Transaktionen. (4) Die Auswertung wird exportiert."
+    "threat": "(1) Täter erstellt in SQVI einen QuickView, der z. B. Personalstammdaten mit Organisations-/Vergütungsdaten verknüpft. (2) Der QuickView wird ausgeführt. (3) Es entsteht eine aggregierte Auswertung jenseits der regulären Einzelsicht der Transaktionen. (4) Die Auswertung wird exportiert.",
+    "source": [
+      "https://www.aglea.com/en/blog/sap-query-security-0",
+      "https://www.sapsecuritypages.com/sap-query-security-a-simple-case-study/"
+    ]
   },
   {
     "query": "1015_BC-SEC",
@@ -351,7 +508,11 @@
     "riskLevel": "medium",
     "riskStatus": null,
     "risk": "Ausführen/Anzeigen vorhandener QuickViews. Abhängig von der Datenbasis der jeweiligen Auswertung können Daten eingesehen werden, die über die reguläre Transaktionssteuerung hinausgehen. Geringeres Risiko als die Pflege (1014), da keine neuen Auswertungen definiert werden — hängt aber vom Inhalt der bestehenden QuickViews ab (Vertraulichkeit).",
-    "threat": "(1) Täter ruft einen bestehenden QuickView mit sensibler Datenbasis auf. (2) Die Auswertung wird angezeigt. (3) Enthaltene vertrauliche Daten werden gesichtet/exportiert, ohne dass der Täter die zugrunde liegenden Tabellen direkt öffnen musste."
+    "threat": "(1) Täter ruft einen bestehenden QuickView mit sensibler Datenbasis auf. (2) Die Auswertung wird angezeigt. (3) Enthaltene vertrauliche Daten werden gesichtet/exportiert, ohne dass der Täter die zugrunde liegenden Tabellen direkt öffnen musste.",
+    "source": [
+      "https://www.aglea.com/en/blog/sap-query-security-0",
+      "https://community.sap.com/t5/application-development-and-automation-discussions/sq01-authorization/td-p/6982986"
+    ]
   },
   {
     "query": "1016_BC-SEC",
@@ -359,7 +520,11 @@
     "riskLevel": "medium",
     "riskStatus": null,
     "risk": "Die Export-/Download-Funktion (S_GUI, Aktivität 61) erlaubt das Herunterladen angezeigter Listen/Daten auf den lokalen Arbeitsplatz (z. B. via %pc). Vertrauliche bzw. personenbezogene Daten können das System unkontrolliert verlassen. Da der Download an vielen Stellen der GUI verfügbar ist, ist der Kontrollpunkt breit gestreut — klassisches Datenabfluss-/DLP-Risiko (Vertraulichkeit).",
-    "threat": "(1) Täter zeigt in einer beliebigen Transaktion sensible Daten an (Liste, Report, Tabellenanzeige). (2) Über die Downloadfunktion (%pc) werden die Daten als lokale Datei (Excel/CSV) gespeichert. (3) Die Datei verlässt das kontrollierte System und kann beliebig weitergegeben werden. (4) Auf Anwendungsebene bleibt der Abfluss weitgehend unsichtbar."
+    "threat": "(1) Täter zeigt in einer beliebigen Transaktion sensible Daten an (Liste, Report, Tabellenanzeige). (2) Über die Downloadfunktion (%pc) werden die Daten als lokale Datei (Excel/CSV) gespeichert. (3) Die Datei verlässt das kontrollierte System und kann beliebig weitergegeben werden. (4) Auf Anwendungsebene bleibt der Abfluss weitgehend unsichtbar.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd",
+      "https://community.sap.com/t5/application-development-discussions/risks-of-se16/td-p/4087374"
+    ]
   },
   {
     "query": "1017_BC-SEC",
@@ -367,7 +532,12 @@
     "riskLevel": "high",
     "riskStatus": null,
     "risk": "Datei-Download (CG3Y) und -Upload (CG3Z) auf Ebene des Applikationsservers mit uneingeschränktem Datei- und Programmbezug (FILENAME/PROGRAM = *). Ermöglicht lesenden und schreibenden Zugriff auf beliebige Dateien im Server-Dateisystem. Damit sind unautorisierter Datenabfluss (Download sensibler Serverdateien) und das Einschleusen/Manipulieren von Dateien (Upload) möglich — Vertraulichkeit und Integrität bis in die OS-Schicht.",
-    "threat": "(1) Täter lädt per CG3Y eine sensible Datei vom Applikationsserver (Schnittstellen-/Exportdatei, Konfiguration) auf den Arbeitsplatz. (2) Alternativ lädt er per CG3Z eine präparierte Datei in ein von Batch/Schnittstellen verarbeitetes Verzeichnis. (3) Die eingeschleuste Datei wird nachgelagert verarbeitet oder überschreibt legitime Daten. (4) Der Vorgang läuft unterhalb der fachlichen Anwendungslogik ab."
+    "threat": "(1) Täter lädt per CG3Y eine sensible Datei vom Applikationsserver (Schnittstellen-/Exportdatei, Konfiguration) auf den Arbeitsplatz. (2) Alternativ lädt er per CG3Z eine präparierte Datei in ein von Batch/Schnittstellen verarbeitetes Verzeichnis. (3) Die eingeschleuste Datei wird nachgelagert verarbeitet oder überschreibt legitime Daten. (4) Der Vorgang läuft unterhalb der fachlichen Anwendungslogik ab.",
+    "source": [
+      "https://playbook.securitysilverbacks.com/SAP_ABAP_Platform/_objects/cg3z/",
+      "https://www.erplingo.com/sap-transaction-code/en/CG3Z",
+      "https://itsiti.com/upload-download-files-from-os-level-within-sapgui/"
+    ]
   },
   {
     "query": "1100_BC-DEV",
@@ -375,7 +545,12 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "Änderungen am Data Dictionary auf Tabellenebene (SE11) erlauben Anlegen, Ändern, Aktivieren und Löschen von Tabellendefinitionen. Strukturelle Eingriffe (Felder, Datentypen, Schlüssel) wirken auf das gesamte Datenmodell und alle darauf aufsetzenden Programme. Fehlerhafte/missbräuchliche Änderungen können Datenverlust, Inkonsistenzen, Aktivierungsfehler und die Umgehung fachlicher Prüfungen verursachen (Integrität/Verfügbarkeit).",
-    "threat": "(1) Täter ändert in SE11 die Definition einer produktiv genutzten Tabelle (Feld entfernen/umtypisieren oder Prüfbedingung ändern). (2) Nach Aktivierung passt die Struktur nicht mehr zu vorhandenen Daten/Programmen. (3) Es kommt zu Datenverlust oder Laufzeitfehlern; alternativ läuft eine fachliche Kontrolle künftig ins Leere. (4) Ohne Transportkontext ist der Eingriff schwer nachzuvollziehen."
+    "threat": "(1) Täter ändert in SE11 die Definition einer produktiv genutzten Tabelle (Feld entfernen/umtypisieren oder Prüfbedingung ändern). (2) Nach Aktivierung passt die Struktur nicht mehr zu vorhandenen Daten/Programmen. (3) Es kommt zu Datenverlust oder Laufzeitfehlern; alternativ läuft eine fachliche Kontrolle künftig ins Leere. (4) Ohne Transportkontext ist der Eingriff schwer nachzuvollziehen.",
+    "source": [
+      "https://www.linkedin.com/posts/msgupthap_sap-se14-databaseutility-activity-7379789259668410368--SOV",
+      "http://sapabapbytes.blogspot.com/2011/10/se14-database-utility-tool.html",
+      "SAP-Hinweis 13202 (Entwickler/SE-Transaktionen nicht an Endanwender)"
+    ]
   },
   {
     "query": "1101_BC-DEV",
@@ -383,7 +558,12 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "Über die Datenbank-Utility (SE14) werden Datenbankobjekte direkt auf DB-Ebene angelegt, angepasst oder gelöscht (Aktivität 40/41). Solche Eingriffe umgehen die reguläre DDIC-Aktivierungslogik und wirken unmittelbar auf die physische Datenhaltung. Folgen können irreversibler Datenverlust, Inkonsistenzen zwischen DDIC und Datenbank sowie Systeminstabilität sein (Integrität/Verfügbarkeit).",
-    "threat": "(1) Täter ruft SE14 für eine kritische Tabelle auf. (2) Über „Datenbankobjekt löschen/anpassen“ (Aktivität 41) wird die physische Tabelle gelöscht oder umgebaut. (3) Daten sind verloren bzw. DDIC und Datenbank sind inkonsistent. (4) Zugreifende Anwendungen fallen aus — potenziell produktionskritischer Ausfall."
+    "threat": "(1) Täter ruft SE14 für eine kritische Tabelle auf. (2) Über „Datenbankobjekt löschen/anpassen“ (Aktivität 41) wird die physische Tabelle gelöscht oder umgebaut. (3) Daten sind verloren bzw. DDIC und Datenbank sind inkonsistent. (4) Zugreifende Anwendungen fallen aus — potenziell produktionskritischer Ausfall.",
+    "source": [
+      "https://www.linkedin.com/posts/msgupthap_sap-se14-databaseutility-activity-7379789259668410368--SOV",
+      "http://sapabapbytes.blogspot.com/2011/10/se14-database-utility-tool.html",
+      "https://www.tcodesearch.com/sap-tcodes/SE14/resources"
+    ]
   },
   {
     "query": "1102_BC-DEV",
@@ -391,7 +571,12 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "(a) Die Berechtigung erlaubt das Anlegen, Ändern und Löschen beliebiger ABAP-Programme (S_DEVELOP, OBJTYPE PROG, OBJNAME/P_GROUP = *) über SE38. Eine Person kann damit eigenen oder veränderten Code einbringen, der mit den Rechten des ausführenden Nutzers und ohne fachliche Berechtigungsprüfung läuft. (b) Betroffen sind Integrität und Nachvollziehbarkeit sowie — da Programmänderungen eine zentrale IT-General-Control (Program Change) sind — mittelbar sämtliche Rechnungslegungs-Assertions (Vollständigkeit, Genauigkeit, Existenz), weil manipulierter Code Buchungen erzeugen, unterdrücken oder verfälschen kann. In Produktivsystemen umgeht direkte Entwicklung zudem das Transport- und Freigabewesen und damit die Trennung von Entwicklung und Produktion. (c) Prozess-/Fraud-Bezug: Über eingeschleusten Code lassen sich verdeckte Buchungen, Berechtigungshintertüren, Datenexfiltration oder das gezielte Aushebeln von Kontrollen realisieren; ohne Transportbeleg ist die Änderung schwer nachzuweisen. Das Risiko ist sehr kritisch und betrifft die Verlässlichkeit des gesamten Systems.",
-    "threat": "(1) Täter öffnet in SE38 ein produktiv genutztes Programm oder legt ein neues an. (2) Er baut manipulative Logik ein (z. B. Buchung auf ein eigenes Konto, Umgehung einer AUTHORITY-CHECK-Prüfung). (3) Das Programm wird aktiviert und im Rahmen eines regulären Ablaufs oder manuell ausgeführt. (4) Nach Wirkung wird der Code zurückgebaut; ohne Transport-/Versionsbeleg bleibt die Manipulation weitgehend unsichtbar."
+    "threat": "(1) Täter öffnet in SE38 ein produktiv genutztes Programm oder legt ein neues an. (2) Er baut manipulative Logik ein (z. B. Buchung auf ein eigenes Konto, Umgehung einer AUTHORITY-CHECK-Prüfung). (3) Das Programm wird aktiviert und im Rahmen eines regulären Ablaufs oder manuell ausgeführt. (4) Nach Wirkung wird der Code zurückgebaut; ohne Transport-/Versionsbeleg bleibt die Manipulation weitgehend unsichtbar.",
+    "source": [
+      "https://sast-solutions.com/blog-en/2016/10/26/how-to-reliably-prevent-the-execution-of-sap-reports/",
+      "https://xiting.com/en/the-difference-between-s_program-and-s_prognam-and-the-use-of-parameter-transactions/",
+      "SAP-Hinweis 13202 (Entwickler/SE-Transaktionen nicht an Endanwender)"
+    ]
   },
   {
     "query": "1103_BC-DEV",
@@ -399,7 +584,11 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt das Anlegen, Ändern und Löschen von Funktionsgruppen und -bausteinen (OBJTYPE FUGR/FUNC) über SE37. Funktionsbausteine sind wiederverwendbare, oft RFC-fähige oder Update-relevante Codeeinheiten, die von zahlreichen Programmen und Schnittstellen aufgerufen werden. (b) Eine Manipulation wirkt daher breit und trifft Integrität und Nachvollziehbarkeit sowie — als Program-Change-ITGC — mittelbar alle Assertions, da ein veränderter Baustein an vielen Stellen falsche oder unterdrückte Ergebnisse liefern kann; RFC-fähige Bausteine erweitern die Angriffsfläche zusätzlich auf angebundene Systeme. (c) Prozess-/Fraud-Bezug: Über einen präparierten Baustein lassen sich Buchungs- oder Kontrolllogik zentral verändern, Hintertüren für Berechtigungen schaffen oder Daten abgreifen — mit potenziell systemweiter Wirkung und schwerer Nachweisbarkeit. Das Risiko ist sehr kritisch.",
-    "threat": "(1) Täter ändert in SE37 einen breit genutzten Funktionsbaustein oder legt einen neuen mit manipulativer Funktion an. (2) Der Baustein wird aktiviert und von regulären Programmen/Schnittstellen aufgerufen. (3) Bei jedem Aufruf wirkt die manipulierte Logik (z. B. verändertes Prüfergebnis, verdeckte Nebenbuchung). (4) Der Baustein wird später zurückgesetzt; die breite Streuung erschwert die Zuordnung der Auswirkungen."
+    "threat": "(1) Täter ändert in SE37 einen breit genutzten Funktionsbaustein oder legt einen neuen mit manipulativer Funktion an. (2) Der Baustein wird aktiviert und von regulären Programmen/Schnittstellen aufgerufen. (3) Bei jedem Aufruf wirkt die manipulierte Logik (z. B. verändertes Prüfergebnis, verdeckte Nebenbuchung). (4) Der Baustein wird später zurückgesetzt; die breite Streuung erschwert die Zuordnung der Auswirkungen.",
+    "source": [
+      "https://community.sap.com/t5/application-development-and-automation-discussions/se38-authorization/td-p/12600508",
+      "SAP-Hinweis 13202 (Entwickler/SE-Transaktionen nicht an Endanwender)"
+    ]
   },
   {
     "query": "1104_BC-DEV",
@@ -407,7 +596,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Gewährt Zugriff auf das Repository-Informationssystem (SE15/SE84) und den Object Navigator (SE80) mit Anlege-/Änderungs-/Löschaktivitäten (01/02/06). Damit lässt sich die gesamte Entwicklungs- und Objektlandschaft analysieren — Programme, Tabellen, Verwendungsnachweise, Where-Used-Beziehungen — und über SE80 auch bearbeiten. (b) Der lesende Teil ist vor allem ein Vertraulichkeits- und Aufklärungsrisiko (Kenntnis von Strukturen, Namenskonventionen, sensiblen Objekten); in Verbindung mit den enthaltenen Änderungsaktivitäten sind auch Integrität und die Program-Change-Kontrolle betroffen. Die Analysefähigkeit senkt die Hürde für gezielte Angriffe auf konkrete Objekte erheblich. (c) Prozess-/Fraud-Bezug: Ein Täter identifiziert über den Verwendungsnachweis genau die Programme/Bausteine/Tabellen, an denen eine Manipulation die gewünschte buchungs- oder kontrollrelevante Wirkung entfaltet, und bereitet so weitergehende Eingriffe (vgl. 1102/1103) zielgerichtet vor. Das Risiko ist kritisch.",
-    "threat": "(1) Täter durchsucht über SE84/SE15 das Repository nach buchungs- oder kontrollrelevanten Objekten. (2) Per Verwendungsnachweis bestimmt er das wirksamste Ziel für eine Manipulation. (3) Über SE80 sichtet/bearbeitet er das Objekt bzw. bereitet die Änderung vor. (4) Die gewonnene Kenntnis wird für einen gezielten Eingriff (Code-/Tabellenänderung) genutzt."
+    "threat": "(1) Täter durchsucht über SE84/SE15 das Repository nach buchungs- oder kontrollrelevanten Objekten. (2) Per Verwendungsnachweis bestimmt er das wirksamste Ziel für eine Manipulation. (3) Über SE80 sichtet/bearbeitet er das Objekt bzw. bereitet die Änderung vor. (4) Die gewonnene Kenntnis wird für einen gezielten Eingriff (Code-/Tabellenänderung) genutzt.",
+    "source": [
+      "https://sast-solutions.com/blog-en/2016/10/26/how-to-reliably-prevent-the-execution-of-sap-reports/",
+      "SAP-Hinweis 13202 (Entwickler/SE-Transaktionen nicht an Endanwender)"
+    ]
   },
   {
     "query": "1105_BC-DEV",
@@ -415,7 +608,10 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Ermöglicht die Nutzung der (e)CATT/CATT-Testwerkzeuge (SCAT/SCEM/SCPM) mit weit gefassten Entwicklungsrechten (S_DEVELOP mit OBJTYPE/OBJNAME/DEVCLASS = *). Diese Werkzeuge zeichnen Transaktionsabläufe auf und spielen sie automatisiert — auch massenhaft — wieder ab. (b) Da damit reguläre Dialog- und Plausibilitätskontrollen umgangen und Massendatenänderungen automatisiert werden können, sind Integrität und Nachvollziehbarkeit betroffen sowie — bei buchungsrelevanten Abläufen — die Assertions Genauigkeit und Vollständigkeit; die breiten S_DEVELOP-Werte erhöhen die Reichweite zusätzlich. (c) Prozess-/Fraud-Bezug: Über ein aufgezeichnetes Skript lassen sich zahlreiche manipulierte Buchungen, Stammdaten- oder Statusänderungen automatisiert und schwer nachvollziehbar durchführen; die Skriptausführung verschleiert die einzelne fachliche Aktion. Das Risiko ist kritisch.",
-    "threat": "(1) Täter zeichnet in SCAT/eCATT einen Transaktionsablauf mit der gewünschten (manipulativen) Aktion auf. (2) Er parametrisiert das Skript für viele Datensätze. (3) Das Skript wird ausgeführt und ändert massenhaft Daten unter Umgehung interaktiver Kontrollen. (4) Skript/Protokoll werden entfernt; die Vielzahl gleichartiger Änderungen erschwert die Aufklärung."
+    "threat": "(1) Täter zeichnet in SCAT/eCATT einen Transaktionsablauf mit der gewünschten (manipulativen) Aktion auf. (2) Er parametrisiert das Skript für viele Datensätze. (3) Das Skript wird ausgeführt und ändert massenhaft Daten unter Umgehung interaktiver Kontrollen. (4) Skript/Protokoll werden entfernt; die Vielzahl gleichartiger Änderungen erschwert die Aufklärung.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1106_BC-DEV",
@@ -423,7 +619,12 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt das Pflegen von SAP-Query-Objekten: InfoSets (SQ02), Benutzergruppen (SQ03) und Queries (SQ01) mit Änderungs-/Übersetzungsaktivitäten (02/23). Über InfoSets lassen sich Tabellen und logische Datenbanken verknüpfen und beliebige Felder für Auswertungen bereitstellen. (b) Dadurch können Daten tabellenübergreifend zusammengeführt und ausgewertet werden, was primär die Vertraulichkeit betrifft; da InfoSets die Datenbasis nachgelagerter Auswertungen definieren, besteht mittelbar auch ein Integritäts-/Nachvollziehbarkeitsbezug hinsichtlich der bereitgestellten Sichten, verstärkt durch Kombination mit lesendem Tabellenzugriff. (c) Prozess-/Fraud-Bezug: Ein Täter baut sich eine Auswertung, die einzeln geschützte Informationen (z. B. Personal-, Konditions- oder Bankdaten) verknüpft aggregiert, und umgeht so die fachlich getrennten Sichten — als Vorbereitung von Missbrauch oder zur unautorisierten Informationsbeschaffung. Das Risiko ist kritisch.",
-    "threat": "(1) Täter legt in SQ02 ein InfoSet an, das sensible Tabellen verknüpft. (2) In SQ01 erstellt er eine Query mit den gewünschten Feldern/Selektionen. (3) Die Query wird ausgeführt und liefert eine aggregierte, sonst nicht verfügbare Sicht. (4) Das Ergebnis wird exportiert; InfoSet/Query verbleiben unauffällig oder werden gelöscht."
+    "threat": "(1) Täter legt in SQ02 ein InfoSet an, das sensible Tabellen verknüpft. (2) In SQ01 erstellt er eine Query mit den gewünschten Feldern/Selektionen. (3) Die Query wird ausgeführt und liefert eine aggregierte, sonst nicht verfügbare Sicht. (4) Das Ergebnis wird exportiert; InfoSet/Query verbleiben unauffällig oder werden gelöscht.",
+    "source": [
+      "https://www.aglea.com/en/blog/sap-query-security-0",
+      "https://www.sapsecuritypages.com/sap-query-security-a-simple-case-study/",
+      "https://community.sap.com/t5/application-development-and-automation-discussions/sq01-authorization/td-p/6982986"
+    ]
   },
   {
     "query": "1107_BC-DEV",
@@ -431,7 +632,11 @@
     "riskLevel": "very-critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt die direkte Pflege (Ändern, Aktivität 02) von Tabellen ohne zugeordnete Berechtigungsgruppe (DICBERCLS = $) über SE16N/SM30. Tabelleninhalte werden unmittelbar geändert — unter Umgehung der Anwendungslogik, ihrer Plausibilitäts- und Berechtigungsprüfungen und ohne die üblichen fachlichen Belege. (b) Betroffen sind Integrität und Nachvollziehbarkeit; bei buchungs-, customizing- oder kontrollrelevanten Tabellen sind zudem die Assertions Genauigkeit, Vollständigkeit und Bewertung unmittelbar gefährdet. Gerade ungruppierte Tabellen ($) sind häufig technischer/kontrollnaher Natur und besonders sensibel. (c) Prozess-/Fraud-Bezug: Ein Täter kann Statusfelder, Beträge, Kontrollkennzeichen oder Customizing direkt setzen und so Geschäftsvorfälle vortäuschen, Sperren aufheben oder Prüfungen deaktivieren, ohne dass ein Änderungsbeleg entsteht. Das Risiko ist sehr kritisch.",
-    "threat": "(1) Täter öffnet in SE16N/SM30 eine kontroll- oder buchungsrelevante Tabelle ohne Berechtigungsgruppe. (2) Er ändert gezielt Feldwerte (z. B. Freigabe-/Sperrkennzeichen, Betrag, Status). (3) Die Anwendung verhält sich anschließend gemäß den manipulierten Werten. (4) Da die Direktänderung keinen fachlichen Beleg erzeugt, bleibt der Eingriff ohne dedizierte Tabellenprotokollierung unentdeckt."
+    "threat": "(1) Täter öffnet in SE16N/SM30 eine kontroll- oder buchungsrelevante Tabelle ohne Berechtigungsgruppe. (2) Er ändert gezielt Feldwerte (z. B. Freigabe-/Sperrkennzeichen, Betrag, Status). (3) Die Anwendung verhält sich anschließend gemäß den manipulierten Werten. (4) Da die Direktänderung keinen fachlichen Beleg erzeugt, bleibt der Eingriff ohne dedizierte Tabellenprotokollierung unentdeckt.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "1108_BC-DEV",
@@ -439,7 +644,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt zusätzlich zur Tabellenänderung (S_TABU_DIS 02, DICBERCLS = *) die Pflege mandantenübergreifender (cross-client) Tabellen (S_TABU_CLI, CLIIDMAINT = X). Änderungen wirken nicht nur im aktuellen, sondern in allen Mandanten des Systems gleichzeitig. (b) Damit sind Integrität und Nachvollziehbarkeit systemweit betroffen; da mandantenübergreifendes Customizing auch sicherheits- und kontrollrelevante Einstellungen umfasst, sind mittelbar sämtliche Assertions über alle Mandanten hinweg gefährdet. Der Wirkungsradius ist deutlich größer als bei mandantenabhängiger Tabellenpflege. (c) Prozess-/Fraud-Bezug: Über die Manipulation mandantenübergreifender Steuerungstabellen lassen sich systemweite Kontroll-/Sicherheitsparameter oder zentrale Customizing-Werte verändern und Kontrollen in Produktion und weiteren Mandanten gleichzeitig aushebeln. Das Risiko ist kritisch.",
-    "threat": "(1) Täter identifiziert eine mandantenübergreifende Steuerungstabelle. (2) Über S_TABU_CLI/SE16N ändert er deren Inhalt. (3) Die Änderung wirkt sofort in allen Mandanten (inkl. Produktion). (4) Kontrollen oder Einstellungen sind systemweit ausgehebelt, während der Ursprung schwer einzugrenzen ist."
+    "threat": "(1) Täter identifiziert eine mandantenübergreifende Steuerungstabelle. (2) Über S_TABU_CLI/SE16N ändert er deren Inhalt. (3) Die Änderung wirkt sofort in allen Mandanten (inkl. Produktion). (4) Kontrollen oder Einstellungen sind systemweit ausgehebelt, während der Ursprung schwer einzugrenzen ist.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "1109_BC-DEV",
@@ -447,7 +656,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt die direkte Änderung (Aktivität 02) von Tabellen der Berechtigungsgruppe „SS“ (system-/basisnahe Tabellen) über SE16N/SM30. Diese Tabellen steuern häufig technisches Systemverhalten, Basis-Konfiguration und sicherheitsnahe Parameter. (b) Direkte Eingriffe umgehen Anwendungslogik und Belegwesen und gefährden Integrität, Verfügbarkeit und Nachvollziehbarkeit; da fehlerhafte Basis-Einstellungen das Systemverhalten insgesamt beeinflussen, besteht über die IT-General-Controls ein mittelbarer Bezug zu allen Assertions. Aufgrund der Systemnähe können Änderungen auch Stabilität und Sicherheit unmittelbar beeinträchtigen. (c) Prozess-/Fraud-Bezug: Über die Manipulation basisnaher Tabellen lassen sich Kontroll-/Sicherheitsmechanismen (z. B. Protokollierung, Prüfeinstellungen) schwächen und so weitergehender Missbrauch vorbereiten oder verschleiern. Das Risiko ist kritisch.",
-    "threat": "(1) Täter öffnet in SE16N eine Tabelle der Gruppe SS. (2) Er ändert einen system-/sicherheitsrelevanten Parameter (z. B. eine Steuer-/Kontrolleinstellung). (3) Das System verhält sich entsprechend der Manipulation (z. B. reduzierte Kontrolle). (4) Die Direktänderung bleibt ohne dedizierte Protokollierung schwer nachweisbar."
+    "threat": "(1) Täter öffnet in SE16N eine Tabelle der Gruppe SS. (2) Er ändert einen system-/sicherheitsrelevanten Parameter (z. B. eine Steuer-/Kontrolleinstellung). (3) Das System verhält sich entsprechend der Manipulation (z. B. reduzierte Kontrolle). (4) Die Direktänderung bleibt ohne dedizierte Protokollierung schwer nachweisbar.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "1110_BC-DEV",
@@ -455,7 +668,11 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt die direkte Pflege (Aktivität 02) von Tabellen jeder Berechtigungsgruppe (DICBERCLS = *) über SE16N/SM30. Es besteht Schreibzugriff auf praktisch alle mandantenabhängigen Tabellen — Stamm-, Bewegungs- und Customizing-Daten — unter Umgehung der Anwendungslogik. (b) Betroffen sind Integrität und Nachvollziehbarkeit; bei rechnungslegungsrelevanten Tabellen sind Genauigkeit, Vollständigkeit, Existenz und Bewertung unmittelbar gefährdet. Die uneingeschränkte Gruppe hebt die eigentlich vorgesehene Feinsteuerung des Tabellenzugriffs vollständig auf. (c) Prozess-/Fraud-Bezug: Ein Täter kann buchungs- oder kontrollrelevante Tabelleninhalte direkt setzen (Beträge, Status, Kennzeichen) und so Geschäftsvorfälle fingieren oder verändern, ohne fachlichen Beleg. Das Risiko ist kritisch und in der Wirkung nahe an der uneingeschränkten Tabellenänderung (vgl. 1107).",
-    "threat": "(1) Täter wählt in SE16N eine beliebige rechnungslegungsrelevante Tabelle. (2) Er ändert Feldwerte gezielt (z. B. offene Position ausbuchen, Status auf „freigegeben“). (3) Nachgelagerte Prozesse übernehmen die manipulierten Werte. (4) Mangels Änderungsbeleg bleibt der Eingriff ohne Tabellenprotokoll unentdeckt."
+    "threat": "(1) Täter wählt in SE16N eine beliebige rechnungslegungsrelevante Tabelle. (2) Er ändert Feldwerte gezielt (z. B. offene Position ausbuchen, Status auf „freigegeben“). (3) Nachgelagerte Prozesse übernehmen die manipulierten Werte. (4) Mangels Änderungsbeleg bleibt der Eingriff ohne Tabellenprotokoll unentdeckt.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "1111_BC-DEV",
@@ -463,7 +680,12 @@
     "riskLevel": "critical",
     "riskStatus": null,
     "risk": "(a) Erlaubt das Ändern der System- und Objektänderbarkeit (SE06/SE03) über die CTS-Administrationsfunktionen (S_CTS_ADMI = INIT/SYSC/TABL). Das (Produktiv-)System bzw. einzelne Objektklassen können von „nicht änderbar“ auf „änderbar“ gesetzt werden. (b) Das öffnet die Tür für direkte Änderungen an Repository und Customizing außerhalb des Transportwesens und untergräbt Program-Change- und Transport-Kontrolle (ITGC) sowie Integrität und Nachvollziehbarkeit; mittelbar sind alle Assertions betroffen, weil anschließend unkontrollierte Änderungen möglich werden. Für sich ist die Einstellung ein „Enabler“, der andere kritische Eingriffe erst ermöglicht. (c) Prozess-/Fraud-Bezug: In Kombination mit Entwicklungs- oder Tabellenrechten (vgl. BCX_0002/0003) erlaubt das Öffnen der Änderbarkeit das Einbringen von manipulativem Code oder Customizing direkt in Produktion, ohne Freigabe und Transportbeleg. Das Risiko ist kritisch.",
-    "threat": "(1) Täter setzt über SE06/SE03 die System-/Objektänderbarkeit auf „änderbar“. (2) Er nimmt direkte Änderungen an Programmen, Objekten oder Customizing vor (ohne Transport). (3) Die Änderungen werden produktiv wirksam. (4) Anschließend wird die Änderbarkeit zurückgesetzt, sodass die Umgehung des Transportwesens unauffällig bleibt."
+    "threat": "(1) Täter setzt über SE06/SE03 die System-/Objektänderbarkeit auf „änderbar“. (2) Er nimmt direkte Änderungen an Programmen, Objekten oder Customizing vor (ohne Transport). (3) Die Änderungen werden produktiv wirksam. (4) Anschließend wird die Änderbarkeit zurückgesetzt, sodass die Umgehung des Transportwesens unauffällig bleibt.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/describing-system-change-options-and-client-change-options-1",
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1112_BC-DEV",

@@ -247,5 +247,12 @@
       "id": "SYS_V",
       "label": "SYS_V"
     }
-  ]
+  ],
+  "ui": {
+    "defaultLanguage": "de",
+    "languages": [
+      "de",
+      "en"
+    ]
+  }
 }

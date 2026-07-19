@@ -145,8 +145,9 @@ Die folgenden offenen Ausbauten wurden am **2026-07-12** mit den handschriftlich
 `ideen.md` zusammengeführt und in thematische Arbeitspakete **9.1–9.8** gegliedert.
 **Reihenfolge (Nutzer-Steuerung):** zunächst **9.1 + 9.2** (Interaktive Ergebnisse / Graph-Frontend),
 danach **9.3 ff.** in gelisteter Folge; die geplanten Phasen 10/8/X schließen sich an.
-**9.1 und 9.2 sind seit 2026-07-16 abgeschlossen** (s. „Kürzlich erledigt" + Archiv) — **9.3 ist
-jetzt dran.**
+**9.1–9.3 und 9.6 sind abgeschlossen; 9.5/9.7/9.8 sind nach V2 ausgelagert** (s. „Kürzlich
+erledigt" + Archiv) — **aktiv ist 9.4 (Risikokatalog inhaltlich befüllen), das inkrementell
+Schritt für Schritt befüllt wird (s. `new_chat_rule.md`).**
 
 #### Kürzlich erledigt (Kontext, Details im Archiv)
 - **Geführte Auswertung** — Assistent-Stepper, Katalog-Auswahl, zwei Auswertungsarten, persistente
@@ -181,8 +182,9 @@ jetzt dran.**
   Org-Kriterien, UI/UX-Verbesserungen, Import/Export von Varianten, Editierbarkeit von Namen/
   Beschreibungen).
 - [x] Detailnachweis in [ROADMAP-ARCHIV.md](ROADMAP-ARCHIV.md#93-can-do-nach-org-2026-07-16).
-- [ ] **Follow-up Performance Variantenaufbau** — die Laufzeit bei vielen Varianten weiter
-  optimieren (z. B. gemeinsame Vorfilterung/Wiederverwendung org-unabhängiger Zwischenergebnisse).
+- **Ausgelagert nach V2:** die Performance-Optimierung des Variantenaufbaus (Laufzeit bei vielen
+  Org-Varianten, gemeinsame Vorfilterung/Wiederverwendung org-unabhängiger Zwischenergebnisse) steht
+  in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-8--technischer-backlog).
 
 #### 9.4 Masterdata-Verwaltung (Admin)
 Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns,
@@ -223,9 +225,10 @@ Konsolidierung, Datenschutz-Feld, `riskLevel`-Harmonisierung, Badge-Überarbeitu
 Threat Modeling wird in v1 nicht begonnen. Der vollständige Übergabestand steht in
 [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-2--threat-modeling).
 
-#### 9.6 Export
+#### 9.6 Export — abgeschlossen (2026-07-19)
 System-/Mandant-Vergleich, Interview-Ergebnisse und weitere V2-Exportsichten sind ausgelagert nach
 [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-3--vergleich-interview-ergebnisse-und-erweiterte-exporte).
+Der in v1 vorgezogene Teil (nativer XLSX-/CSV-Export der Ergebnis-Übersicht) ist abgeschlossen:
 
 - [x] **Nativer `.xlsx`-Export der Ergebnisse-Übersicht** (2026-07-15, vorgezogen auf Nutzerwunsch) —
   CSV der Findings/Matches war bereits erledigt (s. o.); jetzt zusätzlich ein Format-Dialog beim
@@ -274,9 +277,11 @@ System-/Mandant-Vergleich, Interview-Ergebnisse und weitere V2-Exportsichten sin
   mit Parameter, die drei Aufrufer unterdrücken den internen Auto-Apply und rufen `applyFilters()`
   danach selbst genau einmal auf.
 
-#### 9.7 Betrieb
-- [ ] **Kein eigenes Benutzer-/Berechtigungskonzept** (bewusst) — lokal/Container; Auth-Schicht
-  (SSO/OIDC am Ingress) erst bei zentralem Mehrbenutzerbetrieb (siehe Phase 10).
+#### 9.7 Betrieb & Mehrbenutzer (ausgelagert nach V2)
+Das (bewusst fehlende) eigene Benutzer-/Berechtigungskonzept ist ein reines Mehrbenutzer-/
+Zentralbetrieb-Thema: lokal/Container braucht es keinen Auth-Layer. Der vollständige Übergabestand
+(Auslöser, SSO/OIDC am Ingress, App-Rollen, Mandantentrennung, Audit) steht in
+[`ROADMAP-V2.md`](ROADMAP-V2.md#phase-7--mehrbenutzerbetrieb-und-zentrale-authentifizierung).
 
 #### 9.8 Neuer SAP-Extraktor (ausgelagert nach V2)
 Der neue Extraktor, Config-Konsolidierung und Did-Do-Vorbereitung werden in v1 nicht begonnen. Der

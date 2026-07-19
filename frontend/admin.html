@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Query Management — IAM</title>
+<script src="/i18n.js"></script>
 <style>
   :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
           --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
@@ -148,35 +149,36 @@
     <div class="mark">IAM</div>
     <div>
       <div class="title"><b>IAM</b> &middot; Query Management</div>
-      <div class="tag">Einzelfilter editieren &middot; vendor-getrennt (Overlay)</div>
+      <div class="tag" data-i18n="admin.subtitle">Einzelfilter editieren &middot; vendor-getrennt (Overlay)</div>
     </div>
   </div>
   <div class="bctx">
-    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
-    <span class="chip" id="amDirtyChip" style="display:none">&#9679; ungespeichert</span>
+    <button class="chip" id="langToggle" style="cursor:pointer">DE</button>
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769;</button>
+    <span class="chip" id="amDirtyChip" style="display:none" data-i18n="admin.dirty">&#9679; ungespeichert</span>
   </div>
 </header>
 
 <nav class="ribbon">
   <div class="group">
-    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
-    <div class="lbl">Anzeige</div>
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span><span data-i18n="admin.ribbon.refresh">Aktualisieren</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.refreshGrp">Anzeige</div>
   </div>
   <div class="group">
     <div class="cmds">
-      <button class="cmd" id="cmdEdit"><span class="ico">&#9998;</span>Aendern</button>
-      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
-      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+      <button class="cmd" id="cmdEdit"><span class="ico">&#9998;</span><span data-i18n="admin.ribbon.edit">Ändern</span></button>
+      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span><span data-i18n="admin.ribbon.save">Speichern</span></button>
+      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span><span data-i18n="admin.ribbon.cancel">Abbrechen</span></button>
     </div>
-    <div class="lbl">Bearbeiten</div>
+    <div class="lbl" data-i18n="admin.ribbon.editGrp">Bearbeiten</div>
   </div>
   <div class="group">
-    <div class="cmds"><button class="cmd" id="cmdDownloadOverlay"><span class="ico">&#8595;</span>Overlay sichern</button></div>
-    <div class="lbl">Backup</div>
+    <div class="cmds"><button class="cmd" id="cmdDownloadOverlay"><span class="ico">&#8595;</span><span data-i18n="admin.ribbon.downloadOverlay">Overlay sichern</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.downloadGrp">Backup</div>
   </div>
   <div class="group">
-    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
-    <div class="lbl">Zur&uuml;ck</div>
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span><span data-i18n="admin.ribbon.back">Zur Auswertung</span></a></div>
+    <div class="lbl" data-i18n="admin.ribbon.backGrp">Zur&uuml;ck</div>
   </div>
 </nav>
 
@@ -185,27 +187,27 @@
 <main>
   <div class="cols">
     <div>
-      <h2>Filterset</h2>
+      <h2 data-i18n="admin.filter.heading">Filterset</h2>
       <div class="filterbox" id="masterdataBox">
-        <label for="amRuleset">Ruleset</label>
+        <label for="amRuleset" data-i18n="admin.filter.rulesetLabel">Ruleset</label>
         <select id="amRuleset"></select>
-        <label>Modus</label>
+        <label data-i18n="admin.filter.modeLabel">Modus</label>
         <div class="pillgroup" id="modePills">
-          <button type="button" class="pill active" data-mode="query">Einzelfilter</button>
-          <button type="button" class="pill" data-mode="sod">SoD</button>
+          <button type="button" class="pill active" data-mode="query" data-i18n="admin.filter.modeQuery">Einzelfilter</button>
+          <button type="button" class="pill" data-mode="sod" data-i18n="admin.filter.modeSod">SoD</button>
         </div>
-        <label for="amSearch">Suche <span class="muted">(z.&nbsp;B. „BC-SEC*")</span></label>
-        <input id="amSearch" placeholder="ID oder Bezeichnung&hellip;" />
+        <label for="amSearch"><span data-i18n="admin.filter.searchLabel">Suche</span> <span class="muted" data-i18n="admin.filter.searchHint">(z.&nbsp;B. &bdquo;BC-SEC*&ldquo;)</span></label>
+        <input id="amSearch" data-i18n-attr="placeholder:admin.filter.searchPlaceholder" placeholder="ID oder Bezeichnung&hellip;" />
         <div id="queryFilterRow">
           <div class="row">
-            <div><label for="amFilterModule">Modul</label><select id="amFilterModule"></select></div>
-            <div><label for="amFilterCriticality">Kritikalit&auml;t</label><select id="amFilterCriticality"></select></div>
+            <div><label for="amFilterModule" data-i18n="admin.filter.moduleLabel">Modul</label><select id="amFilterModule"></select></div>
+            <div><label for="amFilterCriticality" data-i18n="admin.filter.critLabel">Kritikalit&auml;t</label><select id="amFilterCriticality"></select></div>
           </div>
-          <label for="amFilterQueryType">Query-Typ</label>
+          <label for="amFilterQueryType" data-i18n="admin.filter.typeLabel">Query-Typ</label>
           <select id="amFilterQueryType"></select>
         </div>
         <div id="sodFilterRow" style="display:none">
-          <label for="srFilterCriticality">Kritikalit&auml;t</label>
+          <label for="srFilterCriticality" data-i18n="admin.filter.critLabel">Kritikalit&auml;t</label>
           <select id="srFilterCriticality"></select>
         </div>
       </div>
@@ -214,95 +216,95 @@
       <ul class="runs" id="srSodList" style="display:none"></ul>
 
       <div id="deriveSection">
-        <h2>Neu ableiten</h2>
+        <h2 data-i18n="admin.derive.heading">Neu ableiten</h2>
         <div class="filterbox">
-          <div class="hint">Kopiert die links gew&auml;hlte Query (Berechtigungen/TCodes 1:1) unter
+          <div class="hint" data-i18n="admin.derive.hint">Kopiert die links gew&auml;hlte Query (Berechtigungen/TCodes 1:1) unter
             neuer ID &mdash; Metadaten rechts vorher anpassen, sie werden mit &uuml;bernommen.</div>
-          <label for="amNewId">Neue Query-ID</label>
-          <input id="amNewId" placeholder="z. B. BC_EIGENE_01" />
-          <button class="ghost" id="amDeriveBtn" style="width:100%;margin-top:8px">Ableiten &amp; &uuml;bernehmen</button>
+          <label for="amNewId" data-i18n="admin.derive.newIdLabel">Neue Query-ID</label>
+          <input id="amNewId" data-i18n-attr="placeholder:admin.derive.newIdPlaceholder" placeholder="z. B. BC_EIGENE_01" />
+          <button class="ghost" id="amDeriveBtn" style="width:100%;margin-top:8px" data-i18n="admin.derive.btn">Ableiten &amp; &uuml;bernehmen</button>
         </div>
       </div>
 
       <div id="sodCreateSection" style="display:none">
-        <h2>Neue SoD-Regel</h2>
+        <h2 data-i18n="admin.sodCreate.heading">Neue SoD-Regel</h2>
         <div class="filterbox">
-          <div class="hint">Legt eine neue SoD-Regel als Ableitung der links gew&auml;hlten Regel an.
+          <div class="hint" data-i18n="admin.sodCreate.hint">Legt eine neue SoD-Regel als Ableitung der links gew&auml;hlten Regel an.
             Stammdaten, Risiko und Klauseln aus dem rechten Bereich werden &uuml;bernommen.</div>
-          <label for="srNewId">Neue SoD-ID</label>
-          <input id="srNewId" placeholder="z. B. BCX_9001" />
-          <button class="ghost" id="srCreateBtn" style="width:100%;margin-top:8px">Neu anlegen &amp; &uuml;bernehmen</button>
+          <label for="srNewId" data-i18n="admin.sodCreate.newIdLabel">Neue SoD-ID</label>
+          <input id="srNewId" data-i18n-attr="placeholder:admin.sodCreate.newIdPlaceholder" placeholder="z. B. BCX_9001" />
+          <button class="ghost" id="srCreateBtn" style="width:100%;margin-top:8px" data-i18n="admin.sodCreate.btn">Neu anlegen &amp; &uuml;bernehmen</button>
         </div>
       </div>
 
-      <h2>Geplant</h2>
+      <h2 data-i18n="admin.planned.heading">Geplant</h2>
       <div class="filterbox">
-        <button class="ghost" disabled title="kommt sp&auml;ter" style="width:100%">Neues Filterset importieren</button>
-        <div class="hint" style="margin-top:8px">Weitere Filtersets/Konnektoren perspektivisch: SAP&nbsp;S/4HANA,
+        <button class="ghost" disabled title="kommt sp&auml;ter" style="width:100%" data-i18n="admin.planned.importBtn">Neues Filterset importieren</button>
+        <div class="hint" style="margin-top:8px" data-i18n="admin.planned.hint1">Weitere Filtersets/Konnektoren perspektivisch: SAP&nbsp;S/4HANA,
           Azure&nbsp;AD&nbsp;/&nbsp;Entra, Microsoft&nbsp;Dynamics, Salesforce &hellip; &mdash; die App ist
           pro System ein eigenes Ruleset; das Datenmodell bleibt gleich.</div>
-        <div class="hint" style="margin-top:8px">Kein eigenes Benutzer-/Berechtigungskonzept: die App
+        <div class="hint" style="margin-top:8px" data-i18n="admin.planned.hint2">Kein eigenes Benutzer-/Berechtigungskonzept: die App
           l&auml;uft lokal bzw. wird als Container verteilt (Zugriff &uuml;ber die Umgebung abgesichert).</div>
       </div>
     </div>
 
     <div>
-      <div id="amEmpty" class="empty">Links eine Query w&auml;hlen.</div>
+      <div id="amEmpty" class="empty" data-i18n="admin.emptyQuery">Links eine Query w&auml;hlen.</div>
       <div id="amDetail" style="display:none">
         <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
           <span id="amTitle"></span>
           <span class="badge" id="amBadge"></span>
         </h2>
         <div id="tab-meta">
-          <label for="amShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
+          <label for="amShortDescription"><span data-i18n="admin.meta.shortDescLabel">Kurzbezeichnung</span> <span class="muted" data-i18n="admin.meta.shortDescHint">(wird in den Filtern angezeigt)</span></label>
           <input id="amShortDescription" disabled />
-          <label for="amDescription">Langbezeichnung</label>
+          <label for="amDescription" data-i18n="admin.meta.descLabel">Langbezeichnung</label>
           <input id="amDescription" disabled />
           <div class="row">
-            <div><label for="amCriticality">Kritikalit&auml;t</label>
+            <div><label for="amCriticality" data-i18n="admin.meta.critLabel">Kritikalit&auml;t</label>
               <select id="amCriticality" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="amDatenschutz">Datenschutz</label>
+            <div><label for="amDatenschutz" data-i18n="admin.meta.datenschutzLabel">Datenschutz</label>
               <select id="amDatenschutz" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="amModule">Modul</label><select id="amModule" disabled><option value="">&ndash;</option></select></div>
+            <div><label for="amModule" data-i18n="admin.meta.moduleLabel">Modul</label><select id="amModule" disabled><option value="">&ndash;</option></select></div>
           </div>
-          <label for="amQueryType">Query-Typ</label>
+          <label for="amQueryType" data-i18n="admin.meta.typeLabel">Query-Typ</label>
           <select id="amQueryType" disabled><option value="">&ndash;</option></select>
           <div class="check"><input type="checkbox" id="amDisregardTcode" disabled />
-            <label for="amDisregardTcode">TCode ignorieren (disregardTcode)</label></div>
+            <label for="amDisregardTcode" data-i18n="admin.meta.disregardTcode">TCode ignorieren (disregardTcode)</label></div>
         </div>
 
         <div class="tabs">
-          <button class="tab active" data-tab="aufbau">Aufbau</button>
-          <button class="tab" data-tab="risiko">Risiko</button>
-          <button class="tab" data-tab="controls">Controls</button>
+          <button class="tab active" data-tab="aufbau" data-i18n="admin.tab.aufbau">Aufbau</button>
+          <button class="tab" data-tab="risiko" data-i18n="admin.tab.risiko">Risiko</button>
+          <button class="tab" data-tab="controls" data-i18n="admin.tab.controls">Controls</button>
         </div>
 
         <div class="tabpanel" id="tab-aufbau">
-          <div class="hint">Nur Anzeige &mdash; Bearbeitung des Aufbaus folgt sp&auml;ter.</div>
-          <h2 style="margin-top:14px">Transaktionen</h2>
-          <table class="auftable" id="amTcodesTable"><thead><tr><th>TCode</th><th>Audit</th><th>STAD</th></tr></thead><tbody></tbody></table>
-          <h2>Berechtigungsobjekte</h2>
-          <table class="auftable" id="amAuthsTable"><thead><tr><th>Objekt</th><th>Feld</th><th>Verkn&uuml;pfung</th><th>Werte</th></tr></thead><tbody></tbody></table>
+          <div class="hint" data-i18n="admin.aufbau.hint">Nur Anzeige &mdash; Bearbeitung des Aufbaus folgt sp&auml;ter.</div>
+          <h2 style="margin-top:14px" data-i18n="admin.aufbau.transactions">Transaktionen</h2>
+          <table class="auftable" id="amTcodesTable"><thead><tr><th data-i18n="admin.aufbau.colTcode">TCode</th><th data-i18n="admin.aufbau.colAudit">Audit</th><th data-i18n="admin.aufbau.colStad">STAD</th></tr></thead><tbody></tbody></table>
+          <h2 data-i18n="admin.aufbau.authobjects">Berechtigungsobjekte</h2>
+          <table class="auftable" id="amAuthsTable"><thead><tr><th data-i18n="admin.aufbau.colObject">Objekt</th><th data-i18n="admin.aufbau.colField">Feld</th><th data-i18n="admin.aufbau.colLink">Verkn&uuml;pfung</th><th data-i18n="admin.aufbau.colValues">Werte</th></tr></thead><tbody></tbody></table>
         </div>
 
         <div class="tabpanel" id="tab-risiko" hidden>
           <div class="row">
-            <div><label for="amRiskType">Risikoart</label>
+            <div><label for="amRiskType" data-i18n="admin.risiko.typeLabel">Risikoart</label>
               <select id="amRiskType" disabled>
                 <option value="">&ndash;</option>
                 <option value="Detection risk">Detection risk</option>
                 <option value="Inherent risk">Inherent risk</option>
                 <option value="Internal control risk">Internal control risk</option>
               </select></div>
-            <div><label for="amRiskLevel">Risikostufe</label>
+            <div><label for="amRiskLevel" data-i18n="admin.risiko.levelLabel">Risikostufe</label>
               <select id="amRiskLevel" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="amRiskStatus">Status</label>
+            <div><label for="amRiskStatus" data-i18n="admin.risiko.statusLabel">Status</label>
               <select id="amRiskStatus" disabled>
                 <option value="">&ndash;</option>
                 <option value="Not assessed">Not assessed</option>
@@ -311,70 +313,70 @@
                 <option value="Mitigated">Mitigated</option>
               </select></div>
           </div>
-          <label for="amRisk" style="margin-top:14px">Potenzielles Risiko</label>
-          <textarea id="amRisk" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
-          <label for="amThreat" style="margin-top:14px">Threat-Walkthrough</label>
-          <textarea id="amThreat" placeholder="Schritt-f&uuml;r-Schritt-Angriffspfad (Threat-Analyse)&hellip;" disabled></textarea>
-          <label for="amSource" style="margin-top:14px">Quellen</label>
-          <textarea id="amSource" placeholder="Internetquellen/Referenzen, eine je Zeile&hellip;" disabled></textarea>
+          <label for="amRisk" style="margin-top:14px" data-i18n="admin.risiko.riskLabel">Potenzielles Risiko</label>
+          <textarea id="amRisk" data-i18n-attr="placeholder:admin.risiko.riskPlaceholder" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
+          <label for="amThreat" style="margin-top:14px" data-i18n="admin.risiko.threatLabel">Threat-Walkthrough</label>
+          <textarea id="amThreat" data-i18n-attr="placeholder:admin.risiko.threatPlaceholder" placeholder="Schritt-f&uuml;r-Schritt-Angriffspfad (Threat-Analyse)&hellip;" disabled></textarea>
+          <label for="amSource" style="margin-top:14px" data-i18n="admin.risiko.sourceLabel">Quellen</label>
+          <textarea id="amSource" data-i18n-attr="placeholder:admin.risiko.sourcePlaceholder" placeholder="Internetquellen/Referenzen, eine je Zeile&hellip;" disabled></textarea>
         </div>
 
         <div class="tabpanel" id="tab-controls" hidden>
-          <label for="amControls">Mitigierende Ma&szlig;nahmen</label>
-          <textarea id="amControls" placeholder="Beschreibung der Controls&hellip;" disabled></textarea>
+          <label for="amControls" data-i18n="admin.ctrlTab.label">Mitigierende Ma&szlig;nahmen</label>
+          <textarea id="amControls" data-i18n-attr="placeholder:admin.ctrlTab.placeholder" placeholder="Beschreibung der Controls&hellip;" disabled></textarea>
         </div>
 
         <div class="actions">
-          <button class="primary" id="amSaveBtn" disabled>Speichern</button>
-          <button class="ghost" id="amCancelBtn" disabled>Abbrechen</button>
+          <button class="primary" id="amSaveBtn" disabled data-i18n="admin.actions.save">Speichern</button>
+          <button class="ghost" id="amCancelBtn" disabled data-i18n="admin.actions.cancel">Abbrechen</button>
         </div>
       </div>
 
-      <div id="srEmpty" class="empty" style="display:none">Links eine SoD-Regel w&auml;hlen.</div>
+      <div id="srEmpty" class="empty" style="display:none" data-i18n="admin.emptySod">Links eine SoD-Regel w&auml;hlen.</div>
       <div id="srDetail" style="display:none">
         <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
           <span id="srTitle"></span>
           <span class="badge" id="srBadge"></span>
         </h2>
         <div id="tab-srmeta">
-          <label for="srShortDescription">Kurzbezeichnung <span class="muted">(wird in den Filtern angezeigt)</span></label>
+          <label for="srShortDescription"><span data-i18n="admin.meta.shortDescLabel">Kurzbezeichnung</span> <span class="muted" data-i18n="admin.meta.shortDescHint">(wird in den Filtern angezeigt)</span></label>
           <input id="srShortDescription" disabled />
-          <label for="srDescription">Langbezeichnung</label>
+          <label for="srDescription" data-i18n="admin.meta.descLabel">Langbezeichnung</label>
           <input id="srDescription" disabled />
           <div class="row">
-            <div><label for="srCriticality">Kritikalit&auml;t</label>
+            <div><label for="srCriticality" data-i18n="admin.meta.critLabel">Kritikalit&auml;t</label>
               <select id="srCriticality" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="srReasonCode">Reason-Code</label><select id="srReasonCode" disabled><option value="">&ndash;</option></select></div>
+            <div><label for="srReasonCode" data-i18n="admin.meta.reasonCodeLabel">Reason-Code</label><select id="srReasonCode" disabled><option value="">&ndash;</option></select></div>
           </div>
         </div>
 
         <div class="tabs">
-          <button class="tab active" data-tab="sraufbau">Aufbau</button>
-          <button class="tab" data-tab="srrisiko">Risiko</button>
-          <button class="tab" data-tab="srcontrols">Controls</button>
+          <button class="tab active" data-tab="sraufbau" data-i18n="admin.tab.aufbau">Aufbau</button>
+          <button class="tab" data-tab="srrisiko" data-i18n="admin.tab.risiko">Risiko</button>
+          <button class="tab" data-tab="srcontrols" data-i18n="admin.tab.controls">Controls</button>
         </div>
 
         <div class="tabpanel" id="tab-sraufbau">
-          <div class="hint">Klausel-Struktur (CNF): jede Klausel braucht mindestens eine erf&uuml;llte
+          <div class="hint" data-i18n="admin.sod.aufbauHint">Klausel-Struktur (CNF): jede Klausel braucht mindestens eine erf&uuml;llte
             Query, alle Klauseln zusammen sind UND-verkn&uuml;pft.</div>
           <div id="srAufbauViewBlock" style="margin-top:10px">
             <div id="srClauses"></div>
           </div>
           <div class="sod-builder" id="srAufbauEditBlock" style="display:none">
-            <label for="srExprBuilder" style="margin-top:4px">Schritt 1: SoD-Logik zusammenklicken</label>
+            <label for="srExprBuilder" style="margin-top:4px" data-i18n="admin.sod.step1Label">Schritt 1: SoD-Logik zusammenklicken</label>
             <div id="srExprBuilder"></div>
             <div class="sod-preview"><b>Vorschau:</b> <span id="srFormulaPreview" class="muted">-</span></div>
 
-            <label for="srClausesEditor">Schritt 2 (optional): Formel-/Klauseltext bearbeiten <span class="muted">(eine Klausel je Zeile, Query-IDs mit | trennen)</span></label>
-            <textarea id="srClausesEditor" disabled placeholder="Beispiel:
+            <label for="srClausesEditor"><span data-i18n="admin.sod.step2Label">Schritt 2 (optional): Formel-/Klauseltext bearbeiten</span> <span class="muted" data-i18n="admin.sod.step2Hint">(eine Klausel je Zeile, Query-IDs mit | trennen)</span></label>
+            <textarea id="srClausesEditor" disabled data-i18n-attr="placeholder:admin.sod.editorPlaceholder" placeholder="Beispiel:
 Q1 | Q2
 Q3
 Q4 | Q5"></textarea>
             <div class="row">
-              <div><button class="ghost" id="srApplyFormulaBtn" style="width:100%" disabled>Text in visuelle Logik &uuml;bernehmen</button></div>
-              <div><button class="ghost" id="srTestBtn" style="width:100%">SoD testen</button></div>
+              <div><button class="ghost" id="srApplyFormulaBtn" style="width:100%" disabled data-i18n="admin.sod.applyFormulaBtn">Text in visuelle Logik &uuml;bernehmen</button></div>
+              <div><button class="ghost" id="srTestBtn" style="width:100%" data-i18n="admin.sod.testBtn">SoD testen</button></div>
             </div>
             <div id="srTestResult" class="hint"></div>
           </div>
@@ -382,18 +384,18 @@ Q4 | Q5"></textarea>
 
         <div class="tabpanel" id="tab-srrisiko" hidden>
           <div class="row">
-            <div><label for="srRiskType">Risikoart</label>
+            <div><label for="srRiskType" data-i18n="admin.risiko.typeLabel">Risikoart</label>
               <select id="srRiskType" disabled>
                 <option value="">&ndash;</option>
                 <option value="Detection risk">Detection risk</option>
                 <option value="Inherent risk">Inherent risk</option>
                 <option value="Internal control risk">Internal control risk</option>
               </select></div>
-            <div><label for="srRiskLevel">Risikostufe</label>
+            <div><label for="srRiskLevel" data-i18n="admin.risiko.levelLabel">Risikostufe</label>
               <select id="srRiskLevel" disabled>
                 <option value="">&ndash;</option>
               </select></div>
-            <div><label for="srRiskStatus">Status</label>
+            <div><label for="srRiskStatus" data-i18n="admin.risiko.statusLabel">Status</label>
               <select id="srRiskStatus" disabled>
                 <option value="">&ndash;</option>
                 <option value="Not assessed">Not assessed</option>
@@ -402,22 +404,22 @@ Q4 | Q5"></textarea>
                 <option value="Mitigated">Mitigated</option>
               </select></div>
           </div>
-          <label for="srRisk" style="margin-top:14px">Potenzielles Risiko</label>
-          <textarea id="srRisk" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
-          <label for="srThreat" style="margin-top:14px">Threat-Walkthrough</label>
-          <textarea id="srThreat" placeholder="Schritt-f&uuml;r-Schritt-Angriffspfad (Threat-Analyse)&hellip;" disabled></textarea>
-          <label for="srSource" style="margin-top:14px">Quellen</label>
-          <textarea id="srSource" placeholder="Internetquellen/Referenzen, eine je Zeile&hellip;" disabled></textarea>
+          <label for="srRisk" style="margin-top:14px" data-i18n="admin.risiko.riskLabel">Potenzielles Risiko</label>
+          <textarea id="srRisk" data-i18n-attr="placeholder:admin.risiko.riskPlaceholder" placeholder="Beschreibung des Risikos&hellip;" disabled></textarea>
+          <label for="srThreat" style="margin-top:14px" data-i18n="admin.risiko.threatLabel">Threat-Walkthrough</label>
+          <textarea id="srThreat" data-i18n-attr="placeholder:admin.risiko.threatPlaceholder" placeholder="Schritt-f&uuml;r-Schritt-Angriffspfad (Threat-Analyse)&hellip;" disabled></textarea>
+          <label for="srSource" style="margin-top:14px" data-i18n="admin.risiko.sourceLabel">Quellen</label>
+          <textarea id="srSource" data-i18n-attr="placeholder:admin.risiko.sourcePlaceholder" placeholder="Internetquellen/Referenzen, eine je Zeile&hellip;" disabled></textarea>
         </div>
 
         <div class="tabpanel" id="tab-srcontrols" hidden>
-          <label for="srControls">Mitigierende Ma&szlig;nahmen</label>
-          <textarea id="srControls" placeholder="Beschreibung der Controls&hellip;" disabled></textarea>
+          <label for="srControls" data-i18n="admin.ctrlTab.label">Mitigierende Ma&szlig;nahmen</label>
+          <textarea id="srControls" data-i18n-attr="placeholder:admin.ctrlTab.placeholder" placeholder="Beschreibung der Controls&hellip;" disabled></textarea>
         </div>
 
         <div class="actions">
-          <button class="primary" id="srSaveBtn" disabled>Speichern</button>
-          <button class="ghost" id="srCancelBtn" disabled>Abbrechen</button>
+          <button class="primary" id="srSaveBtn" disabled data-i18n="admin.actions.save">Speichern</button>
+          <button class="ghost" id="srCancelBtn" disabled data-i18n="admin.actions.cancel">Abbrechen</button>
         </div>
       </div>
     </div>
@@ -431,13 +433,21 @@ const doneTag = '<span style="color:var(--ok)">&#10003;</span>';
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+  $('themeToggle').textContent = t === 'light' ? '\u2600\ufe0f' : '\ud83c\udf19';
 }
 applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
 $('themeToggle').onclick = () => {
   const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
   localStorage.setItem('theme', next); applyTheme(next);
 };
+
+function renderLangToggle() {
+  const el = $('langToggle'); if (!el) return;
+  el.textContent = (window.I18N && I18N.lang) ? I18N.lang.toUpperCase() : 'DE';
+}
+$('langToggle').onclick = () => { I18N.setLang(I18N.lang === 'de' ? 'en' : 'de'); };
+I18N.ready.then(() => { renderLangToggle(); I18N.applyTo(document.body); });
+I18N.onChange(() => { renderLangToggle(); I18N.applyTo(document.body); renderQueryList(); renderSodList(); });
 
 function setStatus(html, isErr) {
   const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
@@ -543,7 +553,7 @@ async function loadQueries() {
    Detail-Bloecke, ohne den Auswahlzustand des anderen Modus zu verwerfen. */
 function applyMode() {
   const q = isQueryMode();
-  $('listLabel').textContent = q ? 'Queries' : 'SoD-Regeln';
+  $('listLabel').textContent = q ? I18N.t('admin.list.queries') : I18N.t('admin.list.sodRules');
   $('amQueryList').style.display = q ? '' : 'none';
   $('srSodList').style.display = q ? 'none' : '';
   $('queryFilterRow').style.display = q ? '' : 'none';
@@ -644,7 +654,7 @@ function renderQueryList() {
   const ul = $('amQueryList'); ul.innerHTML = '';
   const filtered = queries.filter(q => matchesSearch(q, term)
     && (!mod || q.module === mod) && (!crit || q.criticality === crit) && (!qt || q.queryType === qt));
-  if (!filtered.length) { ul.innerHTML = '<li class="muted" style="cursor:default">keine Treffer</li>'; return; }
+  if (!filtered.length) { ul.innerHTML = `<li class="muted" style="cursor:default">${I18N.t('admin.list.noResults')}</li>`; return; }
   filtered.forEach(q => {
     const li = document.createElement('li');
     li.className = q.id === selectedId ? 'active' : '';
@@ -663,14 +673,14 @@ $('amSearch').addEventListener('input', () => isQueryMode() ? renderQueryList() 
 $('srFilterCriticality').addEventListener('change', renderSodList);
 
 async function selectQuery(id) {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('admin.js.unsavedConfirm'))) return;
   selectedId = id;
   const rs = $('amRuleset').value;
   const q = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/' + encodeURIComponent(id));
   renderQueryList();
   $('amEmpty').style.display = 'none'; $('amDetail').style.display = '';
   $('amTitle').textContent = `${q.query} ${q.shortDescription || q.description || ''}`;
-  $('amBadge').textContent = q.custom ? 'eigene Anpassung/Query' : 'Vendor-Original';
+  $('amBadge').textContent = q.custom ? I18N.t('admin.meta.customBadge') : I18N.t('admin.meta.vendorBadge');
   $('amBadge').classList.toggle('custom', !!q.custom);
   $('amShortDescription').value = q.shortDescription || '';
   $('amDescription').value = q.description || '';
@@ -694,17 +704,17 @@ function renderAufbau(q) {
   const tb = $('amTcodesTable').querySelector('tbody'); tb.innerHTML = '';
   (q.transactions || []).forEach(t => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${t.tcode}</td><td>${t.audit ? 'ja' : '–'}</td><td>${t.stad ? 'ja' : '–'}</td>`;
+    tr.innerHTML = `<td>${t.tcode}</td><td>${t.audit ? I18N.t('admin.aufbau.yes') : I18N.t('admin.aufbau.no')}</td><td>${t.stad ? I18N.t('admin.aufbau.yes') : I18N.t('admin.aufbau.no')}</td>`;
     tb.appendChild(tr);
   });
-  if (!(q.transactions || []).length) tb.innerHTML = '<tr><td colspan="3" class="muted">keine</td></tr>';
+  if (!(q.transactions || []).length) tb.innerHTML = `<tr><td colspan="3" class="muted">${I18N.t('admin.aufbau.none')}</td></tr>`;
   const ab = $('amAuthsTable').querySelector('tbody'); ab.innerHTML = '';
   (q.authorizations || []).forEach(a => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${a.object}</td><td>${a.field}</td><td>${a.andLogic ? 'UND' : 'ODER'}</td><td>${(a.values || []).join(', ')}</td>`;
+    tr.innerHTML = `<td>${a.object}</td><td>${a.field}</td><td>${a.andLogic ? I18N.t('admin.aufbau.and') : I18N.t('admin.aufbau.or')}</td><td>${(a.values || []).join(', ')}</td>`;
     ab.appendChild(tr);
   });
-  if (!(q.authorizations || []).length) ab.innerHTML = '<tr><td colspan="4" class="muted">keine</td></tr>';
+  if (!(q.authorizations || []).length) ab.innerHTML = `<tr><td colspan="4" class="muted">${I18N.t('admin.aufbau.none')}</td></tr>`;
 }
 
 /* --- SoD-Regel-Pflege (Modus "SoD") — analog zu den Query-Funktionen oben ----------------- */
@@ -719,7 +729,7 @@ function renderSodList() {
   const crit = $('srFilterCriticality').value;
   const ul = $('srSodList'); ul.innerHTML = '';
   const filtered = sodRules.filter(r => matchesSearch(r, term) && (!crit || r.criticality === crit));
-  if (!filtered.length) { ul.innerHTML = '<li class="muted" style="cursor:default">keine Treffer</li>'; return; }
+  if (!filtered.length) { ul.innerHTML = `<li class="muted" style="cursor:default">${I18N.t('admin.list.noResults')}</li>`; return; }
   filtered.forEach(r => {
     const li = document.createElement('li');
     li.className = r.id === selectedSodId ? 'active' : '';
@@ -732,14 +742,14 @@ function renderSodList() {
 }
 
 async function selectSodRule(id) {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('admin.js.unsavedConfirm'))) return;
   selectedSodId = id;
   const rs = $('amRuleset').value;
   const r = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/' + encodeURIComponent(id));
   renderSodList();
   $('srEmpty').style.display = 'none'; $('srDetail').style.display = '';
   $('srTitle').textContent = `${r.sodRule} ${r.shortDescription || r.description || ''}`;
-  $('srBadge').textContent = r.custom ? 'eigene Anpassung' : 'Vendor-Original';
+  $('srBadge').textContent = r.custom ? I18N.t('admin.meta.customSodBadge') : I18N.t('admin.meta.vendorBadge');
   $('srBadge').classList.toggle('custom', !!r.custom);
   $('srShortDescription').value = r.shortDescription || '';
   $('srDescription').value = r.description || '';
@@ -807,7 +817,7 @@ function getNodeByPath(path) {
   return n;
 }
 
-function opJoin(op) { return op === 'OR' ? ' ODER ' : ' UND '; }
+function opJoin(op) { return op === 'OR' ? I18N.t('admin.sod.orJoin') : I18N.t('admin.sod.andJoin'); }
 
 function exprToHuman(node) {
   if (!node) return '-';
@@ -820,7 +830,7 @@ function exprToHuman(node) {
 
 function clausesToClauseSummary(clauses) {
   if (!clauses.length) return '-';
-  return clauses.map((cl, i) => `Klausel ${i + 1}: ${cl.join(' ODER ')}`).join(' UND ');
+  return clauses.map((cl, i) => I18N.t('admin.sod.clauseSummary', { n: i + 1, ids: cl.join(I18N.t('admin.sod.orJoin')) })).join(I18N.t('admin.sod.andJoin'));
 }
 
 function mergeClause(a, b) {
@@ -836,14 +846,14 @@ function mergeClause(a, b) {
 }
 
 function exprToClauses(node) {
-  if (!node) throw new Error('Leere SoD-Logik.');
+  if (!node) throw new Error(I18N.t('admin.js.emptyLogicError'));
   if (node.type === 'leaf') {
     const v = String(node.qid || '').trim();
-    if (!v) throw new Error('Bitte alle Bedingungen mit Einzelfiltern belegen.');
+    if (!v) throw new Error(I18N.t('admin.js.emptyLeafError'));
     return [[v]];
   }
   const children = (node.children || []);
-  if (!children.length) throw new Error('Leere Gruppe in der SoD-Logik.');
+  if (!children.length) throw new Error(I18N.t('admin.js.emptyGroupError'));
   const childClauses = children.map(exprToClauses);
   if (node.op === 'AND') {
     return childClauses.flat();
@@ -855,14 +865,14 @@ function exprToClauses(node) {
     acc.forEach(c1 => next.forEach(c2 => merged.push(mergeClause(c1, c2))));
     acc = merged;
     if (acc.length > 128) {
-      throw new Error('Formel zu komplex nach ODER-Verteilung. Bitte weniger verschachteln.');
+      throw new Error(I18N.t('admin.js.exprTooComplex'));
     }
   }
   return acc;
 }
 
 function clauseOptionsHtml(selected) {
-  const opts = ['<option value="">-- Einzelfilter waehlen --</option>'];
+  const opts = [`<option value="">${I18N.t('admin.sod.chooseFilter')}</option>`];
   queries.slice().sort((a, b) => String(a.id).localeCompare(String(b.id))).forEach(q => {
     const label = `${q.id} — ${q.shortDescription || q.description || ''}`;
     const sel = q.id === selected ? ' selected' : '';
@@ -876,7 +886,7 @@ function renderExprNode(node, path, depth) {
     return ''
       + `<div class="sod-leaf">`
       + `<select data-sod-act="set-leaf" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>${clauseOptionsHtml(node.qid)}</select>`
-      + `${path.length ? `<button class="ghost sod-small" data-sod-act="remove" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>Entfernen</button>` : ''}`
+      + `${path.length ? `<button class="ghost sod-small" data-sod-act="remove" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>${I18N.t('admin.sod.removeBtn')}</button>` : ''}`
       + `</div>`;
   }
   const canNest = depth < SOD_MAX_DEPTH;
@@ -884,15 +894,15 @@ function renderExprNode(node, path, depth) {
   return ''
     + `<div class="sod-group">`
     + `<div class="sod-group-head">`
-    + `<span class="hint">Verkn&uuml;pfung</span>`
+    + `<span class="hint">${I18N.t('admin.sod.connLabel')}</span>`
     + `<select class="sod-op" data-sod-act="set-op" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>`
-    + `<option value="AND"${node.op === 'AND' ? ' selected' : ''}>UND</option>`
-    + `<option value="OR"${node.op === 'OR' ? ' selected' : ''}>ODER</option>`
+    + `<option value="AND"${node.op === 'AND' ? ' selected' : ''}>${I18N.t('admin.sod.andOp')}</option>`
+    + `<option value="OR"${node.op === 'OR' ? ' selected' : ''}>${I18N.t('admin.sod.orOp')}</option>`
     + `</select>`
-    + `<button class="ghost sod-small" data-sod-act="add-leaf" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>+ Bedingung</button>`
-    + `<button class="ghost sod-small" data-sod-act="add-group-and" data-path="${path.join('.')}" ${(!editMode || !canNest) ? 'disabled' : ''}>+ Gruppe UND</button>`
-    + `<button class="ghost sod-small" data-sod-act="add-group-or" data-path="${path.join('.')}" ${(!editMode || !canNest) ? 'disabled' : ''}>+ Gruppe ODER</button>`
-    + `${path.length ? `<button class="ghost sod-small" data-sod-act="remove" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>Gruppe entfernen</button>` : ''}`
+    + `<button class="ghost sod-small" data-sod-act="add-leaf" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>${I18N.t('admin.sod.addCondBtn')}</button>`
+    + `<button class="ghost sod-small" data-sod-act="add-group-and" data-path="${path.join('.')}" ${(!editMode || !canNest) ? 'disabled' : ''}>${I18N.t('admin.sod.addGroupAnd')}</button>`
+    + `<button class="ghost sod-small" data-sod-act="add-group-or" data-path="${path.join('.')}" ${(!editMode || !canNest) ? 'disabled' : ''}>${I18N.t('admin.sod.addGroupOr')}</button>`
+    + `${path.length ? `<button class="ghost sod-small" data-sod-act="remove" data-path="${path.join('.')}" ${editMode ? '' : 'disabled'}>${I18N.t('admin.sod.removeGroupBtn')}</button>` : ''}`
     + `</div>`
     + `<div class="sod-group-children">${childHtml}</div>`
     + `</div>`;
@@ -941,13 +951,13 @@ function renderSodExprBuilder() {
     }
 
     if (exprLeafCount(sodExprTree) > SOD_MAX_TERMS) {
-      setStatus(`Maximal ${SOD_MAX_TERMS} Bedingungen erlaubt.`, true);
+      setStatus(I18N.t('admin.js.maxTermsError', { n: SOD_MAX_TERMS }), true);
       sodExprTree = clausesToExprTree(parseSodClausesEditor());
       renderSodExprBuilder();
       return;
     }
     if (exprDepth(sodExprTree) > SOD_MAX_DEPTH) {
-      setStatus(`Maximale Verschachtelungstiefe ${SOD_MAX_DEPTH} erreicht.`, true);
+      setStatus(I18N.t('admin.js.maxDepthError', { n: SOD_MAX_DEPTH }), true);
       renderSodExprBuilder();
       return;
     }
@@ -979,17 +989,16 @@ function renderSodAufbau(r) {
   const clauses = r.clauses || [];
   if (clauses.length) {
     box.innerHTML = clauses.map((qids, i) =>
-      `<div class="filterbox" style="margin-bottom:10px"><b>Klausel ${i + 1}</b> <span class="muted">(mind. eine davon)</span>`
+      `<div class="filterbox" style="margin-bottom:10px"><b>${I18N.t('admin.sod.clauseLabel', { n: i + 1 })}</b> <span class="muted">${I18N.t('admin.sod.clauseAtLeastOne')}</span>`
       + `<ul style="margin:6px 0 0;padding-left:18px">${qids.map(qid => `<li>${queryLabel(qid)}</li>`).join('')}</ul></div>`
-    ).join('') + '<div class="hint">Alle Klauseln zusammen sind UND-verkn&uuml;pft — die Regel ist erst '
-      + 'verletzt, wenn jede Klausel mindestens eine gematchte Query enth&auml;lt.</div>';
+    ).join('') + `<div class="hint">${I18N.t('admin.sod.clauseAllAnd')}</div>`;
     return;
   }
   const varsHtml = Object.entries(r.variables || {})
     .map(([v, qid]) => `<tr><td>${v}</td><td>${queryLabel(qid)}</td></tr>`).join('');
-  box.innerHTML = '<div class="hint">Noch keine CNF-Klauseln hinterlegt (Ausdruck/Variablen zur Information):</div>'
+  box.innerHTML = `<div class="hint">${I18N.t('admin.sod.noClausesHint')}</div>`
     + `<p><code>${r.expression || ''}</code></p>`
-    + (varsHtml ? `<table class="auftable"><thead><tr><th>Variable</th><th>Query</th></tr></thead><tbody>${varsHtml}</tbody></table>` : '');
+    + (varsHtml ? `<table class="auftable"><thead><tr><th>${I18N.t('admin.sod.varColVar')}</th><th>${I18N.t('admin.sod.varColQuery')}</th></tr></thead><tbody>${varsHtml}</tbody></table>` : '');
 }
 
 function clausesToEditorText(clauses) {
@@ -1003,11 +1012,11 @@ function parseSodClausesEditor() {
     .filter(Boolean);
   const parsed = lines.map(line => {
     const ids = [...new Set(line.split('|').map(x => x.trim()).filter(Boolean))];
-    if (!ids.length) throw new Error('Jede Klausel braucht mindestens eine Query-ID.');
+    if (!ids.length) throw new Error(I18N.t('admin.js.clauseParseError'));
     return ids;
   });
   const terms = parsed.reduce((sum, cl) => sum + cl.length, 0);
-  if (terms > SOD_MAX_TERMS) throw new Error(`Maximal ${SOD_MAX_TERMS} Bedingungen erlaubt.`);
+  if (terms > SOD_MAX_TERMS) throw new Error(I18N.t('admin.js.maxTermsError', { n: SOD_MAX_TERMS }));
   return parsed;
 }
 
@@ -1051,23 +1060,23 @@ function formSodFields() {
 async function saveSodCurrent() {
   if (!selectedSodId) return;
   const rs = $('amRuleset').value;
-  setStatus('<span class="spin"></span> Speichern&hellip;');
+  setStatus(`<span class="spin"></span> ${I18N.t('admin.js.saving')}`);
   try {
     const payload = formSodFields();
     await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/' + encodeURIComponent(selectedSodId),
       { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    setStatus(`${doneTag} SoD-Regel <b>${selectedSodId}</b> gespeichert.`);
+    setStatus(`${doneTag} ` + I18N.t('admin.js.savedSod', { id: selectedSodId }));
     await loadSodRules();
     await selectSodRule(selectedSodId);
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || err.message || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || err.message || JSON.stringify(err)), true);
   }
 }
 
 async function testSodCurrent() {
   const rs = $('amRuleset').value;
   if (!rs) return;
-  $('srTestResult').innerHTML = '<span class="spin"></span> Test l&auml;uft&hellip;';
+  $('srTestResult').innerHTML = `<span class="spin"></span> ${I18N.t('admin.sod.testRunning')}`;
   try {
     const payload = { clauses: getEffectiveSodClauses() };
     const out = await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/test', {
@@ -1076,11 +1085,11 @@ async function testSodCurrent() {
       body: JSON.stringify(payload),
     });
     const sample = (out.sampleUsers || []).length
-      ? `<br><span class="muted">Beispiel-User: ${(out.sampleUsers || []).map(escapeHtml).join(', ')}</span>`
+      ? `<br><span class="muted">${I18N.t('admin.sod.testSample', { users: (out.sampleUsers || []).map(escapeHtml).join(', ') })}</span>`
       : '';
-    $('srTestResult').innerHTML = `Run <b>${escapeHtml(out.runId || '')}</b>, Dataset <b>${escapeHtml(out.dataset || '')}</b>: <b>${out.affectedUsers || 0}</b> betroffene User.${sample}`;
+    $('srTestResult').innerHTML = `Run <b>${escapeHtml(out.runId || '')}</b>, Dataset <b>${escapeHtml(out.dataset || '')}</b>: <b>${out.affectedUsers || 0}</b> ${I18N.t('admin.sod.testAffected', { n: '' }).replace('{n} ', '')}${sample}`;
   } catch (err) {
-    $('srTestResult').innerHTML = `<span style="color:var(--crit)"><b>Test fehlgeschlagen:</b> ${escapeHtml(err.detail || err.message || JSON.stringify(err))}</span>`;
+    $('srTestResult').innerHTML = `<span style="color:var(--crit)"><b>${I18N.t('admin.sod.testFailed')}</b> ${escapeHtml(err.detail || err.message || JSON.stringify(err))}</span>`;
   }
 }
 
@@ -1095,9 +1104,9 @@ $('srApplyFormulaBtn').addEventListener('click', () => {
     sodExprTree = clausesToExprTree(parseSodClausesEditor());
     renderSodExprBuilder();
     setDirty(true);
-    setStatus('Formeltext in den Builder &uuml;bernommen.');
+    setStatus(I18N.t('admin.js.formulaApplied'));
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.message || String(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.message || String(err)), true);
   }
 });
 $('srTestBtn').addEventListener('click', testSodCurrent);
@@ -1135,15 +1144,15 @@ function formFields() {
 async function saveQueryCurrent() {
   if (!selectedId) return;
   const rs = $('amRuleset').value;
-  setStatus('<span class="spin"></span> Speichern&hellip;');
+  setStatus(`<span class="spin"></span> ${I18N.t('admin.js.saving')}`);
   try {
     await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/' + encodeURIComponent(selectedId),
       { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formFields()) });
-    setStatus(`${doneTag} Query <b>${selectedId}</b> gespeichert.`);
+    setStatus(`${doneTag} ` + I18N.t('admin.js.savedQuery', { id: selectedId }));
     await loadQueries();
     await selectQuery(selectedId);
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 }
 
@@ -1162,17 +1171,17 @@ $('cmdCancel').onclick = cancelCurrent;
 $('amDeriveBtn').addEventListener('click', async () => {
   const rs = $('amRuleset').value, fromId = selectedId, newId = $('amNewId').value.trim();
   if (!rs || !fromId || !newId) return;
-  setStatus('<span class="spin"></span> Ableiten&hellip;');
+  setStatus(`<span class="spin"></span> ${I18N.t('admin.js.derivingQuery')}`);
   try {
     await api('/admin/rulesets/' + encodeURIComponent(rs) + '/queries/derive',
       { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newId, fromId, ...formFields() }) });
-    setStatus(`${doneTag} Query <b>${newId}</b> aus „${fromId}" abgeleitet.`);
+    setStatus(`${doneTag} ` + I18N.t('admin.js.derivedQuery', { newId, fromId }));
     $('amNewId').value = '';
     await loadQueries();
     await selectQuery(newId);
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 });
 
@@ -1182,10 +1191,10 @@ $('srCreateBtn').addEventListener('click', async () => {
   const newId = $('srNewId').value.trim();
   if (!rs || !newId) return;
   if (!fromId) {
-    setStatus('Bitte zuerst links eine SoD-Regel als Vorlage ausw&auml;hlen.', true);
+    setStatus(I18N.t('admin.sod.noTemplate'), true);
     return;
   }
-  setStatus('<span class="spin"></span> SoD-Regel anlegen&hellip;');
+  setStatus(`<span class="spin"></span> ${I18N.t('admin.js.creatingSod')}`);
   try {
     await api('/admin/rulesets/' + encodeURIComponent(rs) + '/sodrules/create', {
       method: 'POST',
@@ -1193,11 +1202,11 @@ $('srCreateBtn').addEventListener('click', async () => {
       body: JSON.stringify({ newId, fromId, ...formSodFields() }),
     });
     $('srNewId').value = '';
-    setStatus(`${doneTag} SoD-Regel <b>${newId}</b> angelegt.`);
+    setStatus(`${doneTag} ` + I18N.t('admin.js.createdSod', { id: newId }));
     await loadSodRules();
     await selectSodRule(newId);
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || err.message || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || err.message || JSON.stringify(err)), true);
   }
 });
 
@@ -1206,7 +1215,7 @@ $('cmdRefresh').onclick = async () => {
   await loadAll();
   if (keepQ) await selectQuery(keepQ);
   if (keepS) await selectSodRule(keepS);
-  setStatus(`${doneTag} aktualisiert.`);
+  setStatus(`${doneTag} ${I18N.t('admin.js.refreshed')}`);
 };
 $('cmdDownloadOverlay').onclick = () => {
   const rs = $('amRuleset').value; if (!rs) return;
@@ -1238,7 +1247,7 @@ function jumpToHashTarget() {
 
 window.addEventListener('hashchange', jumpToHashTarget);
 
-loadRulesets().then(applyMode).catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+loadRulesets().then(applyMode).catch(e => setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + JSON.stringify(e), true));
 setTimeout(jumpToHashTarget, 0);
 </script>
 </body>

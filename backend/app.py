@@ -1058,6 +1058,9 @@ _DEFAULT_CRITICALITIES = [
 
 _CATALOG_KEYS = ("modules", "queryTypes", "reasonCodes")
 
+_SUPPORTED_LANGUAGES = ("de", "en")
+_DEFAULT_UI = {"defaultLanguage": "de", "languages": list(_SUPPORTED_LANGUAGES)}
+
 
 def _ensure_masterdata_file() -> Path:
     if not MASTERDATA_PATH.is_file():
@@ -1068,6 +1071,7 @@ def _ensure_masterdata_file() -> Path:
                 "modules": [],
                 "queryTypes": [],
                 "reasonCodes": [],
+                "ui": dict(_DEFAULT_UI),
             }, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
@@ -1167,6 +1171,24 @@ def _load_named_catalog(key: str) -> list[dict]:
 
 def _catalog_id_set(key: str) -> set[str]:
     return {x["id"] for x in _load_named_catalog(key)}
+
+
+def _load_ui_config() -> dict:
+    """Liefert die Sprach-/UI-Vorgaben (Default-Sprache + verfuegbare Sprachen).
+
+    Robust gegen fehlende/unvollstaendige Angaben: unbekannte Sprachen werden verworfen,
+    fehlender oder ungueltiger Default faellt auf die erste verfuegbare Sprache zurueck."""
+    payload = _load_masterdata_payload()
+    raw = payload.get("ui") if isinstance(payload.get("ui"), dict) else {}
+    languages = [
+        str(x).strip() for x in (raw.get("languages") or []) if str(x).strip() in _SUPPORTED_LANGUAGES
+    ]
+    if not languages:
+        languages = list(_SUPPORTED_LANGUAGES)
+    default_language = str(raw.get("defaultLanguage") or "").strip()
+    if default_language not in languages:
+        default_language = languages[0]
+    return {"defaultLanguage": default_language, "languages": languages}
 
 
 def _criticality_rank_map() -> dict[str, int]:
@@ -3025,6 +3047,11 @@ class NamedCatalogReq(BaseModel):
     items: list[NamedCatalogItemReq]
 
 
+class UiConfigReq(BaseModel):
+    defaultLanguage: str
+    languages: list[str] | None = None
+
+
 @app.get("/admin/masterdata/criticalities")
 def admin_get_criticalities():
     """Liefert den konfigurierbaren Kritikalitaetskatalog (Stufe/Farbe/Rang/KRI-Score)."""
@@ -3090,6 +3117,32 @@ def admin_update_reason_codes_catalog(req: NamedCatalogReq):
     payload["reasonCodes"] = normalized
     _ensure_masterdata_file().write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return {"saved": len(normalized), "items": normalized}
+
+
+@app.get("/admin/masterdata/ui")
+def admin_get_ui_config():
+    """Liefert die Sprach-/UI-Vorgaben (Default-Sprache + verfuegbare Sprachen)."""
+    return _load_ui_config()
+
+
+@app.put("/admin/masterdata/ui")
+def admin_update_ui_config(req: UiConfigReq):
+    """Setzt die Default-Sprache der Installation. Die Uebersetzungstexte selbst liegen in
+    frontend/i18n/<lang>.json, nicht in den Stammdaten."""
+    languages = [
+        str(x).strip()
+        for x in (req.languages if req.languages else list(_SUPPORTED_LANGUAGES))
+        if str(x).strip() in _SUPPORTED_LANGUAGES
+    ]
+    if not languages:
+        raise HTTPException(400, "mindestens eine unterstuetzte Sprache erforderlich")
+    default_language = str(req.defaultLanguage or "").strip()
+    if default_language not in languages:
+        raise HTTPException(400, f"defaultLanguage '{default_language}' ist nicht in languages enthalten")
+    payload = _load_masterdata_payload()
+    payload["ui"] = {"defaultLanguage": default_language, "languages": languages}
+    _ensure_masterdata_file().write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return payload["ui"]
 
 
 @app.get("/admin/rulesets/{ruleset}/scopes")

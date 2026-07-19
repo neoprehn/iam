@@ -41,6 +41,25 @@ nachvollziehbar.
   Dynamics, Salesforce. Vor jedem neuen Konnektor erst Datenmodell, Vertrauensgrenze und
   Minimal-Extrakt definieren.
 - [ ] **Mehrsprachigkeit** — Deutsch/Englisch-Umschalter für UI-Texte, Kataloglabels und Reports.
+  - **Ansatz:** Leichtgewichtiges, key-basiertes i18n ohne Framework/Build-Step. Übersetzungen
+    liegen in `frontend/i18n/de.json` + `en.json` (flache Keys → Text, mit Platzhaltern wie
+    `{n}`). Statisches HTML wird über `data-i18n="key"`-Attribute beim Laden ersetzt;
+    JS-generierte Strings laufen über einen `t('key', {…})`-Helper statt fester Literale.
+    `<html lang>` wird aus der aktiven Sprache gesetzt (wirkt u. a. auf `localeCompare`).
+  - **Vorgabe-/Umschaltlogik:** Default-Sprache der Installation als Stammdatenblatt
+    (`config/masterdata.json` → Block `ui` mit `defaultLanguage` + verfügbare Sprachen, pflegbar
+    über die bestehende Masterdata-Seite und das `GET|PUT /admin/masterdata/*`-Muster). Ein
+    DE/EN-Toggle im Header überschreibt pro Sitzung und wird in `localStorage` gehalten. Die
+    Übersetzungstexte selbst gehören in die i18n-JSONs, nicht in die Stammdaten (Trennung:
+    Stammdaten = Konfiguration/Fachkatalog, i18n = Übersetzungen).
+  - **Backend/Reports:** Sprache als Parameter (`?lang=de|en`) an die Report-Endpunkte; ein
+    analoges kleines serverseitiges Dictionary für Fehlermeldungen und PDF/CSV-Beschriftungen.
+  - **Umsetzungsreihenfolge:** (1) Grundgerüst + Umschalter + Masterdata-Default, (2) statisches
+    HTML, (3) JS-Strings Datei für Datei (Brocken: `index.html`), (4) Backend-Meldungen + Reports.
+  - **Abgrenzung:** UI-Chrome (Labels/Menüs) zuerst. Katalog-**Fachtexte** (Query-Beschreibungen,
+    Risk-Texte; KPMG_R3 deutsch, CSI/CSI_BI englisch) sind ein separater, größerer Aufwand —
+    mehrsprachige Felder nur ergänzen, wo Übersetzungen existieren, sonst Fallback auf die
+    vorhandene Sprache. Nicht mit der UI-Übersetzung vermischen.
 
 **Übergangshinweis:** Query- und SoD-Overlays liegen heute git-getrackt unter den Rulesets
 (`queries.custom.json`, `sod_rules.custom.json`, `risks.json`, Scope-Profile). Mandantenspezifische
@@ -52,18 +71,35 @@ Interview-/Kontrollumgebungsdaten gehören in die lokale DB.
 ## Phase 2 — Threat Modeling
 
 **Ziel:** Einzelfilter und SoD-Regeln fachlich erklären: Wie kann eine Berechtigung durch einen
-Threat-Actor über einen Threat-Vector ausgenutzt werden?
+Threat-Actor über einen Threat-Vector ausgenutzt werden? Aus der reinen „diese Kombination ist
+riskant"-Aussage wird ein nachvollziehbarer Angriffspfad inkl. Gegenmaßnahmen.
 
-- [ ] **Threat-Modeling-Reiter** an Einzelfilter und SoD-Regel.
+**Anknüpfung an v1 (wichtig):** Das Risiko-Datenmodell trägt bereits die Felder `risk` (Kurztitel),
+`riskType`/`riskLevel`/`riskStatus`, `source` (Referenzen) und — als bewussten Vorläufer der
+Threat-Analyse — `threat` (Freitext, Schritt-für-Schritt-Angriffspfad) in `risks.json`. Dieses
+`threat`-Feld wird im Rahmen von 9.4 inhaltlich gepflegt und ist der **Seed**, den V2 zu einer
+strukturierten Threat-Modellierung formalisiert (Freitext → Attack-Tree-Knoten). Nichts davon wird
+verworfen.
+
+- [ ] **Threat-Modeling-Reiter** an Einzelfilter und SoD-Regel (neben den bestehenden Tabs
+  „Risiko"/„Controls"), gespeist aus `threat`/`source` und dem neuen Attack-Tree-Overlay.
+- [ ] **Threat-Actor-/Threat-Vector-Taxonomie** als Masterdata (analog Kritikalität/Reason-Code):
+  z. B. Innentäter mit Fachzugang, Administrator, externer Angreifer über ein kompromittiertes
+  Konto — je mit typischem Vorgehen. So bleiben Akteure/Vektoren katalogpflegbar statt Freitext.
 - [ ] **Graphbasierter Attack Tree** als primäre Methode: Die SoD-Logik ist bereits ein AND/OR-Baum
   (Regel = AND über Klauseln, Klausel = OR über Queries, Query = AND über Objekte, Objekt = OR über
-  erfüllende Rollen/Profile). Dadurch kann die vorhandene Baum-/Cytoscape-Erfahrung wiederverwendet
-  werden.
-- [ ] **STRIDE als Klassifikations-Overlay** je Knoten; PASTA bleibt vorerst zu schwergewichtig für
-  den fokussierten Use Case.
-- [ ] **Eigenes JSON-Schema** für Threat-Bäume im Overlay-Mechanismus, nicht im bestehenden
-  `risk`-Freitextfeld. Knoten sollten mindestens Typ, Beschreibung, AND/OR-Struktur und optional
-  Wahrscheinlichkeit, Impact und Gegenmaßnahme tragen.
+  erfüllende Rollen/Profile). Die vorhandene Baum-/Cytoscape-Erfahrung (9.1/9.2) wird
+  wiederverwendet; ein Angriffspfad ist eine Traversierung durch genau diesen Baum.
+- [ ] **STRIDE als Klassifikations-Overlay** je Knoten (Spoofing/Tampering/…); PASTA bleibt vorerst
+  zu schwergewichtig für den fokussierten Use Case.
+- [ ] **Eigenes JSON-Schema** für Threat-Bäume im Overlay-Mechanismus, **nicht** im bestehenden
+  `risk`-/`threat`-Freitextfeld. Knoten mindestens: Typ, Beschreibung, AND/OR-Struktur und optional
+  Wahrscheinlichkeit, Impact, verknüpfte Gegenmaßnahme (`controls`) und Referenz (`source`).
+- [ ] **Bewertung/Priorisierung** — je Pfad Likelihood × Impact (an die vorhandenen KRI-Scores der
+  Kritikalitäts-Masterdata anlehnen), damit Findings nicht nur „kritisch", sondern nach
+  Angriffswahrscheinlichkeit sortierbar werden.
+- [ ] **Report-Sicht** — Angriffspfad + Gegenmaßnahmen exportierbar (an die bestehenden PDF/CSV/
+  XLSX-Reports anschließen).
 - [ ] Vor dem Bau: Schema festlegen, Editor-UX skizzieren, publizierte Neo4j-/GitHub-Attack-Tree-
   Ansätze sichten.
 
@@ -74,8 +110,10 @@ Threat-Actor über einen Threat-Vector ausgenutzt werden?
 **Ziel:** Ergebnisse über Stände/Mandanten hinweg vergleichbar machen und fachliche Rückmeldungen
 aus Interviews wiederverwendbar speichern.
 
-- [ ] **System-/Mandant-/Jahresvergleich** — Vergleichs-Abfragen über zwei `dataset`:
-  neue/entfallene Konflikte, Delta je Regel/User, Delta je Query.
+- [ ] **Vergleich zweier Berechtigungskonzepte (System-/Mandant-/Jahresvergleich)** — ein `dataset`
+  ist der Extrakt genau *eines* Berechtigungskonzepts zu einem Stichtag; der Konzeptvergleich läuft
+  daher als Vergleichs-Abfrage über zwei `dataset` (z. B. altes vs. neues Konzept, zwei Systeme/
+  Mandanten, Vorjahr vs. Folgejahr): neue/entfallene Konflikte, Delta je Regel/User, Delta je Query.
 - [ ] **Interview-Ergebnisse einarbeiten** — pro Finding/Feld Reason Code aus den Masterdata plus
   Begründung hinterlegen, inklusive Autor/Datum.
 - [ ] **Wiedervorlage im Folgejahres-Dataset** — frühere Begründungen/Klassifikationen wieder
@@ -141,8 +179,6 @@ verwässern.
 
 - [ ] **Security-Checks weiter ausbauen** — z. B. zusätzliche SAST-Regeln/Tools wie Semgrep,
   feinere Policy-Schwellen und CI-Härtung. v1-Basis: AST-Guardrail + Bandit.
-- [ ] **Zentrales Benutzer-/Berechtigungskonzept nur bei Mehrbenutzerbetrieb** — lokal bewusst ohne
-  eigenes Auth-Konzept; bei zentralem Betrieb Auth-Schicht über SSO/OIDC am Ingress.
 - [ ] **Kubernetes/Helm konkretisieren** — Neo4j als StatefulSet mit PVC, Backend als Deployment,
   Secrets, NetworkPolicy, Ingress nur intern bzw. hinter Unternehmens-Auth.
 - [ ] **Mandantendaten zwischen eigenen Arbeitsgeräten synchron halten** — nur bei Bedarf über
@@ -152,7 +188,36 @@ verwässern.
 
 ---
 
-## Phase 7 — Technischer Backlog
+## Phase 7 — Mehrbenutzerbetrieb und zentrale Authentifizierung
+
+**Ziel:** Den in v1 bewusst fehlenden Auth-Layer erst dann einführen, wenn die App vom lokalen
+Einzelplatz zum zentral betriebenen Mehrbenutzer-Dienst wird — ohne die Vertrauensgrenze zu
+verwässern.
+
+**Ausgangslage (v1, bewusst):** Die App hat **kein eigenes Benutzer-/Berechtigungskonzept**. Sie
+läuft lokal bzw. als Container hinter der Vertrauensgrenze; Zugriffsschutz ist heute die lokale
+Umgebung selbst (kein offener Netzzugang). Für den Einzelplatzbetrieb ist das korrekt und soll nicht
+künstlich verkompliziert werden.
+
+- [ ] **Auslöser definieren** — erst bei zentralem/gemeinsamem Betrieb (mehrere Prüfer, geteilter
+  Server/Cluster) wird ein Auth-Layer nötig; für den Einzelplatz bleibt er bewusst aus.
+- [ ] **Authentifizierung am Ingress (SSO/OIDC)** — Anbindung an den Unternehmens-IdP (OIDC/SAML)
+  vor dem Backend; die App selbst verwaltet keine Passwörter. Baut auf die K8s-/Ingress-Arbeit aus
+  Phase 6 auf.
+- [ ] **Autorisierung/Rollen in der App** — mindestens Lesen vs. Pflege (Query-/SoD-/Masterdata-
+  Editor, Import, Clear/Reset); Mapping aus IdP-Gruppen. Vorab entscheiden, wie feingranular
+  (Dataset-/Mandantentrennung je Nutzer?).
+- [ ] **Mandantentrennung bei geteiltem Betrieb** — wie werden mehrere Mandanten-Datasets auf einem
+  gemeinsamen Server voneinander und gegen unbefugte Einsicht abgeschirmt (Berufsgeheimnis)?
+- [ ] **Audit/Nachvollziehbarkeit** — wer hat wann welchen Lauf/Edit/Export ausgelöst; relevant,
+  sobald mehrere Personen auf denselben Stand zugreifen.
+
+**Abgrenzung:** Reine Deployment-/Netz-Härtung (K8s, NetworkPolicy, Ingress-Betrieb) bleibt in
+Phase 6; hier geht es um das fachliche Benutzer-/Berechtigungskonzept der App selbst.
+
+---
+
+## Phase 8 — Technischer Backlog
 
 Sinnvoll, aber nicht Startvoraussetzung für V2.
 
