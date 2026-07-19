@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Masterdata Management - IAM</title>
+<title>Masterdata Management — IAM</title>
+<script src="/i18n.js"></script>
 <style>
   :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
           --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
@@ -127,35 +128,36 @@
   <div class="brand">
     <div class="mark">IAM</div>
     <div>
-      <div class="title"><b>IAM</b> - Masterdata Management</div>
-      <div class="tag">Eigene Seite fuer Einstellungen gemaess Roadmap 9.4</div>
+      <div class="title"><b>IAM</b> &middot; <span data-i18n="masterdata.nav.heading">Masterdata Management</span></div>
+      <div class="tag" data-i18n="masterdata.subtitle">Stammdaten &amp; Einstellungen</div>
     </div>
   </div>
   <div class="bctx">
-    <button class="chip" id="themeToggle" style="cursor:pointer">Theme</button>
+    <button class="chip" id="langToggle" style="cursor:pointer">DE</button>
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769;</button>
   </div>
 </header>
 
 <nav class="ribbon">
   <div class="group">
-    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
-    <div class="lbl">Anzeige</div>
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span><span data-i18n="admin.ribbon.refresh">Aktualisieren</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.refreshGrp">Anzeige</div>
   </div>
   <div class="group">
     <div class="cmds">
-      <button class="cmd" id="cmdEdit"><span class="ico">&#9998;</span>Aendern</button>
-      <button class="cmd" id="cmdSaveTop" disabled><span class="ico">&#128190;</span>Speichern</button>
-      <button class="cmd" id="cmdCancelTop" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+      <button class="cmd" id="cmdEdit"><span class="ico">&#9998;</span><span data-i18n="admin.ribbon.edit">Ändern</span></button>
+      <button class="cmd" id="cmdSaveTop" disabled><span class="ico">&#128190;</span><span data-i18n="admin.ribbon.save">Speichern</span></button>
+      <button class="cmd" id="cmdCancelTop" disabled><span class="ico">&#9099;</span><span data-i18n="admin.ribbon.cancel">Abbrechen</span></button>
     </div>
-    <div class="lbl">Bearbeiten</div>
+    <div class="lbl" data-i18n="admin.ribbon.editGrp">Bearbeiten</div>
   </div>
   <div class="group">
-    <div class="cmds"><a class="cmd" href="/admin.html"><span class="ico">&#9881;</span>Query Management</a></div>
-    <div class="lbl">Admin</div>
+    <div class="cmds"><a class="cmd" href="/admin.html"><span class="ico">&#9881;</span><span data-i18n="masterdata.ribbon.queryMgmt">Query Management</span></a></div>
+    <div class="lbl" data-i18n="masterdata.ribbon.adminGrp">Admin</div>
   </div>
   <div class="group">
-    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
-    <div class="lbl">Zurueck</div>
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span><span data-i18n="admin.ribbon.back">Zur Auswertung</span></a></div>
+    <div class="lbl" data-i18n="admin.ribbon.backGrp">Zur&uuml;ck</div>
   </div>
 </nav>
 
@@ -164,120 +166,120 @@
 <main>
   <div class="layout">
     <aside class="navbox">
-      <h2>Masterdata</h2>
+      <h2 data-i18n="masterdata.nav.heading">Masterdata</h2>
       <div class="toc">
-        <a href="#sec-risk">Risikokatalog inhaltlich befuellen</a>
-        <a href="#sec-criticality">Kritikalit&auml;ts-Stammdaten</a>
-        <a href="#sec-prominent">Kritikalitaet prominent an Einzelfilter/SoD</a>
-        <a href="#sec-reason">Reason-Code-Stammdaten (SoD)</a>
-        <a href="#sec-module">Modul-Stammdaten</a>
-        <a href="#sec-qtype">Querytyp-Stammdaten</a>
-        <a href="#sec-dropdowns">Dropdowns statt Freitext</a>
-        <a href="#sec-auth">Authorizations/TCodes im Editor (v2)</a>
-        <a href="#sec-usobt">USOBT-gestuetzter Query-Builder (v2)</a>
-        <a href="#sec-systemtype">Query -> System-Typ-Zuordnung (v2)</a>
-        <a href="#sec-connectors">Filterset-/Konnektor-Import weitere Systeme (v2)</a>
+        <a href="#sec-risk" data-i18n="masterdata.nav.risk">Risikokatalog inhaltlich befuellen</a>
+        <a href="#sec-criticality" data-i18n="masterdata.nav.criticality">Kritikalit&auml;ts-Stammdaten</a>
+        <a href="#sec-prominent" data-i18n="masterdata.nav.prominent">Kritikalitaet prominent an Einzelfilter/SoD</a>
+        <a href="#sec-reason" data-i18n="masterdata.nav.reason">Reason-Code-Stammdaten (SoD)</a>
+        <a href="#sec-module" data-i18n="masterdata.nav.module">Modul-Stammdaten</a>
+        <a href="#sec-qtype" data-i18n="masterdata.nav.qtype">Querytyp-Stammdaten</a>
+        <a href="#sec-dropdowns" data-i18n="masterdata.nav.dropdowns">Dropdowns statt Freitext</a>
+        <a href="#sec-auth" data-i18n="masterdata.nav.auth">Authorizations/TCodes im Editor (v2)</a>
+        <a href="#sec-usobt" data-i18n="masterdata.nav.usobt">USOBT-gestuetzter Query-Builder (v2)</a>
+        <a href="#sec-systemtype" data-i18n="masterdata.nav.systemtype">Query -&gt; System-Typ-Zuordnung (v2)</a>
+        <a href="#sec-connectors" data-i18n="masterdata.nav.connectors">Filterset-/Konnektor-Import weitere Systeme (v2)</a>
       </div>
-      <div class="hint" style="margin-top:10px">Die Seite strukturiert alle 9.4-Themen zentral.
+      <div class="hint" style="margin-top:10px" data-i18n="masterdata.nav.pageHint1">Die Seite strukturiert alle 9.4-Themen zentral.
         Aktuell funktionsfaehig: Kritikalitaetskatalog, Risikoabdeckung-Statistik,
         Pflege fuer Module/Querytypen/Reason-Codes.</div>
-      <div class="hint" style="margin-top:6px">Wichtig: Masterdata (z. B. Kritikalitaetsstufen)
+      <div class="hint" style="margin-top:6px" data-i18n="masterdata.nav.pageHint2">Wichtig: Masterdata (z. B. Kritikalitaetsstufen)
         gelten global ueber alle Filtersets/Rulesets und werden zentral referenziert.</div>
-      <div class="modehint" id="modeHint" style="margin-top:8px">Modus: Anzeige (oben erst auf Aendern klicken)</div>
+      <div class="modehint" id="modeHint" style="margin-top:8px" data-i18n="masterdata.nav.modeView">Modus: Anzeige (oben erst auf Aendern klicken)</div>
     </aside>
 
     <section>
       <article class="sectionbox active" id="sec-risk">
-        <div class="sectionhead"><h2>Risikokatalog inhaltlich befuellen</h2><span class="section-right"><span class="state wip">in Arbeit</span></span></div>
-        <div class="hint">Status je Ruleset fuer Query-/SoD-Risiko-Felder (risk/riskType/riskLevel/riskStatus).</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.riskHeading">Risikokatalog inhaltlich befuellen</h2><span class="section-right"><span class="state wip" data-i18n="masterdata.state.wip">in Arbeit</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.riskHint">Status je Ruleset fuer Query-/SoD-Risiko-Felder (risk/riskType/riskLevel/riskStatus).</div>
         <div class="row" style="margin:8px 0 4px;max-width:340px">
-          <div><label for="rulesetSelect">Filterset</label><select id="rulesetSelect"></select></div>
+          <div><label for="rulesetSelect" data-i18n="masterdata.sec.riskFiltersetLabel">Filterset</label><select id="rulesetSelect"></select></div>
         </div>
         <div id="riskCoverage"></div>
       </article>
 
       <article class="sectionbox" id="sec-criticality">
-        <div class="sectionhead"><h2>Kritikalit&auml;ts-Stammdaten</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
-        <div class="hint">Stufen, Labels, Rang, Farbe und KRI-Score. Interne IDs sind technische Schluessel,
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.critHeading">Kritikalit&auml;ts-Stammdaten</h2><span class="section-right"><span class="state ok" data-i18n="masterdata.state.active">aktiv</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.critHint">Stufen, Labels, Rang, Farbe und KRI-Score. Interne IDs sind technische Schluessel,
           werden automatisch berechnet und sind nicht direkt editierbar.</div>
         <table style="margin-top:8px">
-          <thead><tr><th>ID</th><th>Label</th><th>Rang</th><th>Farbe</th><th>KRI</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="masterdata.sec.colId">ID</th><th data-i18n="masterdata.sec.colLabel">Label</th><th data-i18n="masterdata.sec.colRank">Rang</th><th data-i18n="masterdata.sec.colColor">Farbe</th><th data-i18n="masterdata.sec.colKri">KRI</th><th></th></tr></thead>
           <tbody id="critBody"></tbody>
         </table>
         <div class="row" style="margin-top:8px">
-          <div><button class="ghost" id="critAdd" style="width:100%">+ Stufe</button></div>
-          <div><button class="ghost" id="critReload" style="width:100%">Neu laden</button></div>
-          <div><button class="primary" id="critSave" style="width:100%" disabled>Speichern</button></div>
+          <div><button class="ghost" id="critAdd" style="width:100%" data-i18n="masterdata.sec.addLevel">+ Stufe</button></div>
+          <div><button class="ghost" id="critReload" style="width:100%" data-i18n="masterdata.sec.reload">Neu laden</button></div>
+          <div><button class="primary" id="critSave" style="width:100%" disabled data-i18n="masterdata.sec.save">Speichern</button></div>
         </div>
       </article>
 
       <article class="sectionbox" id="sec-prominent">
-        <div class="sectionhead"><h2>Kritikalitaet prominent an Einzelfilter/SoD</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">UI-Badge-Politur in Katalog/Auswahl/Ergebniszeilen. Technische Basis (Katalog) ist vorhanden.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.prominentHeading">Kritikalitaet prominent an Einzelfilter/SoD</h2><span class="section-right"><span class="state wip" data-i18n="masterdata.state.open">offen</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.prominentHint">UI-Badge-Politur in Katalog/Auswahl/Ergebniszeilen. Technische Basis (Katalog) ist vorhanden.</div>
       </article>
 
       <article class="sectionbox" id="sec-reason">
-        <div class="sectionhead"><h2>Reason-Code-Stammdaten (SoD)</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
-        <div class="hint">Technische IDs + Label fuer SoD-Reason-Codes.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.reasonHeading">Reason-Code-Stammdaten (SoD)</h2><span class="section-right"><span class="state ok" data-i18n="masterdata.state.active">aktiv</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.reasonHint">Technische IDs + Label fuer SoD-Reason-Codes.</div>
         <table style="margin-top:8px">
-          <thead><tr><th>ID</th><th>Label</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="masterdata.sec.colId">ID</th><th data-i18n="masterdata.sec.colLabel">Label</th><th></th></tr></thead>
           <tbody id="reasonBody"></tbody>
         </table>
         <div class="row" style="margin-top:8px">
-          <div><button class="ghost" id="reasonAdd" style="width:100%">+ Reason-Code</button></div>
-          <div><button class="primary" id="reasonSave" style="width:100%" disabled>Speichern</button></div>
+          <div><button class="ghost" id="reasonAdd" style="width:100%" data-i18n="masterdata.sec.addReason">+ Reason-Code</button></div>
+          <div><button class="primary" id="reasonSave" style="width:100%" disabled data-i18n="masterdata.sec.save">Speichern</button></div>
         </div>
       </article>
 
       <article class="sectionbox" id="sec-module">
-        <div class="sectionhead"><h2>Modul-Stammdaten</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
-        <div class="hint">ID ist technisch und nicht direkt editierbar (wird aus dem Label gebildet).</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.moduleHeading">Modul-Stammdaten</h2><span class="section-right"><span class="state ok" data-i18n="masterdata.state.active">aktiv</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.moduleHint">ID ist technisch und nicht direkt editierbar (wird aus dem Label gebildet).</div>
         <table style="margin-top:8px">
-          <thead><tr><th>ID</th><th>Label</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="masterdata.sec.colId">ID</th><th data-i18n="masterdata.sec.colLabel">Label</th><th></th></tr></thead>
           <tbody id="moduleBody"></tbody>
         </table>
         <div class="row" style="margin-top:8px">
-          <div><button class="ghost" id="moduleAdd" style="width:100%">+ Modul</button></div>
-          <div><button class="primary" id="moduleSave" style="width:100%" disabled>Speichern</button></div>
+          <div><button class="ghost" id="moduleAdd" style="width:100%" data-i18n="masterdata.sec.addModule">+ Modul</button></div>
+          <div><button class="primary" id="moduleSave" style="width:100%" disabled data-i18n="masterdata.sec.save">Speichern</button></div>
         </div>
       </article>
 
       <article class="sectionbox" id="sec-qtype">
-        <div class="sectionhead"><h2>Querytyp-Stammdaten</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
-        <div class="hint">ID ist technisch und nicht direkt editierbar. Label wird ueber den Code gefuehrt; Beschreibung erlaeutert den Typ (z. B. AO = Audit Optional, JAP = Jahresabschluss).</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.qtypeHeading">Querytyp-Stammdaten</h2><span class="section-right"><span class="state ok" data-i18n="masterdata.state.active">aktiv</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.qtypeHint">ID ist technisch und nicht direkt editierbar. Label wird ueber den Code gefuehrt; Beschreibung erlaeutert den Typ (z. B. AO = Audit Optional, JAP = Jahresabschluss).</div>
         <table style="margin-top:8px">
-          <thead><tr><th>ID</th><th>Label</th><th>Beschreibung</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="masterdata.sec.colId">ID</th><th data-i18n="masterdata.sec.colLabel">Label</th><th data-i18n="masterdata.sec.colDesc">Beschreibung</th><th></th></tr></thead>
           <tbody id="queryTypeBody"></tbody>
         </table>
         <div class="row" style="margin-top:8px">
-          <div><button class="ghost" id="queryTypeAdd" style="width:100%">+ Querytyp</button></div>
-          <div><button class="primary" id="queryTypeSave" style="width:100%" disabled>Speichern</button></div>
+          <div><button class="ghost" id="queryTypeAdd" style="width:100%" data-i18n="masterdata.sec.addQtype">+ Querytyp</button></div>
+          <div><button class="primary" id="queryTypeSave" style="width:100%" disabled data-i18n="masterdata.sec.save">Speichern</button></div>
         </div>
       </article>
 
       <article class="sectionbox" id="sec-dropdowns">
-        <div class="sectionhead"><h2>Dropdowns statt Freitext</h2><span class="section-right"><span class="state ok">aktiv</span></span></div>
-        <div class="hint">Das ist keine eigene Stammdatenfunktion, sondern die Nutzung der Stammdaten im Query Management. Stand: fuer Kritikalitaet, Modul, Querytyp und Reason-Code umgesetzt.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.dropdownsHeading">Dropdowns statt Freitext</h2><span class="section-right"><span class="state ok" data-i18n="masterdata.state.active">aktiv</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.dropdownsHint">Das ist keine eigene Stammdatenfunktion, sondern die Nutzung der Stammdaten im Query Management. Stand: fuer Kritikalitaet, Modul, Querytyp und Reason-Code umgesetzt.</div>
       </article>
 
       <article class="sectionbox" id="sec-auth">
-        <div class="sectionhead"><h2>Authorizations/TCodes im Editor (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Der Aufbau-Tab ist noch read-only. Bearbeitungs-UI fuer verschachtelte Objekt/Feld/Wert-Listen steht aus.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.authHeading">Authorizations/TCodes im Editor (v2)</h2><span class="section-right"><span class="state wip" data-i18n="masterdata.state.open">offen</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.authHint">Der Aufbau-Tab ist noch read-only. Bearbeitungs-UI fuer verschachtelte Objekt/Feld/Wert-Listen steht aus.</div>
       </article>
 
       <article class="sectionbox" id="sec-usobt">
-        <div class="sectionhead"><h2>USOBT-gestuetzter Query-Builder (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Geplant: Query-Erstellung per Transaktion -> Berechtigungsobjekt statt Freitext.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.usobtHeading">USOBT-gestuetzter Query-Builder (v2)</h2><span class="section-right"><span class="state wip" data-i18n="masterdata.state.open">offen</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.usobtHint">Geplant: Query-Erstellung per Transaktion -&gt; Berechtigungsobjekt statt Freitext.</div>
       </article>
 
       <article class="sectionbox" id="sec-systemtype">
-        <div class="sectionhead"><h2>Query -> System-Typ-Zuordnung (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Geplant: Stammdatenblatt fuer Zuordnung zu R/3, S/4HANA und weiteren Quellsystemen.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.systemtypeHeading">Query -&gt; System-Typ-Zuordnung (v2)</h2><span class="section-right"><span class="state wip" data-i18n="masterdata.state.open">offen</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.systemtypeHint">Geplant: Stammdatenblatt fuer Zuordnung zu R/3, S/4HANA und weiteren Quellsystemen.</div>
       </article>
 
       <article class="sectionbox" id="sec-connectors">
-        <div class="sectionhead"><h2>Filterset-/Konnektor-Import weitere Systeme (v2)</h2><span class="section-right"><span class="state wip">offen</span></span></div>
-        <div class="hint">Geplant: S/4HANA, Azure AD/Entra, Microsoft Dynamics, Salesforce.</div>
+        <div class="sectionhead"><h2 data-i18n="masterdata.sec.connectorsHeading">Filterset-/Konnektor-Import weitere Systeme (v2)</h2><span class="section-right"><span class="state wip" data-i18n="masterdata.state.open">offen</span></span></div>
+        <div class="hint" data-i18n="masterdata.sec.connectorsHint">Geplant: S/4HANA, Azure AD/Entra, Microsoft Dynamics, Salesforce.</div>
       </article>
     </section>
   </div>
@@ -296,7 +298,7 @@ function setStatus(html, isErr) {
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  $('themeToggle').textContent = t === 'light' ? 'Hell' : 'Dunkel';
+  $('themeToggle').textContent = t === 'light' ? '\u2600\ufe0f' : '\ud83c\udf19';
 }
 applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
 $('themeToggle').onclick = () => {
@@ -304,6 +306,14 @@ $('themeToggle').onclick = () => {
   localStorage.setItem('theme', next);
   applyTheme(next);
 };
+
+function renderLangToggle() {
+  const el = $('langToggle'); if (!el) return;
+  el.textContent = (window.I18N && I18N.lang) ? I18N.lang.toUpperCase() : 'DE';
+}
+$('langToggle').onclick = () => { I18N.setLang(I18N.lang === 'de' ? 'en' : 'de'); };
+I18N.ready.then(() => { renderLangToggle(); I18N.applyTo(document.body); });
+I18N.onChange(() => { renderLangToggle(); I18N.applyTo(document.body); });
 
 let criticalities = [];
 let modulesCatalog = [];
@@ -365,7 +375,7 @@ function setEditMode(v) {
   $('moduleAdd').disabled = !v;
   $('queryTypeAdd').disabled = !v;
   $('reasonAdd').disabled = !v;
-  $('modeHint').textContent = v ? 'Modus: Aendern' : 'Modus: Anzeige';
+  $('modeHint').textContent = v ? I18N.t('masterdata.nav.modeEdit') : I18N.t('masterdata.nav.modeView');
   if (!v) setDirty(false);
   renderCriticalityTable();
   renderCatalogTables();
@@ -405,7 +415,7 @@ function renderBadges(elId, values) {
   const el = $(elId);
   const uniq = [...new Set((values || []).filter(Boolean))].sort();
   if (!uniq.length) {
-    el.innerHTML = '<span class="muted">keine Werte</span>';
+    el.innerHTML = `<span class="muted">${I18N.t('masterdata.js.noValues')}</span>`;
     return;
   }
   el.innerHTML = uniq.map(v => `<span class="badge">${esc(v)}</span>`).join('');
@@ -415,7 +425,7 @@ function renderReasonTable(rows) {
   const body = $('reasonBody');
   body.innerHTML = '';
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="3" class="muted">keine Werte</td></tr>';
+    body.innerHTML = `<tr><td colspan="3" class="muted">${I18N.t('masterdata.js.noValues')}</td></tr>`;
     return;
   }
   rows.forEach((row, idx) => {
@@ -473,8 +483,8 @@ function renderComputedNamedTable(bodyId, rows, mode) {
   const viewRows = mode === 'module' ? computedModuleCatalog(rows) : computedQueryTypeCatalog(rows);
   if (!viewRows.length) {
     body.innerHTML = mode === 'module'
-      ? '<tr><td colspan="3" class="muted">keine Werte</td></tr>'
-      : '<tr><td colspan="4" class="muted">keine Werte</td></tr>';
+      ? `<tr><td colspan="3" class="muted">${I18N.t('masterdata.js.noValues')}</td></tr>`
+      : `<tr><td colspan="4" class="muted">${I18N.t('masterdata.js.noValues')}</td></tr>`;
     return;
   }
   viewRows.forEach((row, idx) => {
@@ -543,7 +553,7 @@ function renderCriticalityTable() {
   body.innerHTML = '';
   const rows = computedCriticalities(criticalities);
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="6" class="muted">keine Stufen</td></tr>';
+    body.innerHTML = `<tr><td colspan="6" class="muted">${I18N.t('masterdata.js.noLevels')}</td></tr>`;
     return;
   }
   rows
@@ -584,7 +594,7 @@ function renderCriticalityTable() {
       inp.addEventListener('pointerdown', () => {
         if (!editMode) {
           setEditMode(true);
-          setStatus('Bearbeitungsmodus aktiv.');
+          setStatus(I18N.t('masterdata.js.editModeActive'));
         }
       });
     }
@@ -614,7 +624,7 @@ function renderRiskCoverage() {
   const wrap = $('riskCoverage');
   const stats = rulesetStats.filter(s => s.ruleset === selectedRuleset);
   if (!stats.length) {
-    wrap.innerHTML = '<div class="muted">kein Filterset ausgewählt</div>';
+    wrap.innerHTML = `<div class="muted">${I18N.t('masterdata.js.noRulesetSelected')}</div>`;
     return;
   }
   wrap.innerHTML = stats.map(s => {
@@ -624,12 +634,12 @@ function renderRiskCoverage() {
       + `<div style="border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px">`
       + `<b>${esc(s.ruleset)}</b>`
       + `<div class="kpi">`
-      + `<div><b>${s.queryRiskFilled}/${s.queryTotal}</b><span>Query risk befuellt (${qPct}%)</span></div>`
-      + `<div><b>${s.sodRiskFilled}/${s.sodTotal}</b><span>SoD risk befuellt (${rPct}%)</span></div>`
-      + `<div><b>${s.queryLevelFilled}/${s.queryTotal}</b><span>Query riskLevel</span></div>`
-      + `<div><b>${s.sodLevelFilled}/${s.sodTotal}</b><span>SoD riskLevel</span></div>`
+      + `<div><b>${s.queryRiskFilled}/${s.queryTotal}</b><span>${I18N.t('masterdata.js.queryRiskFilled', { pct: qPct })}</span></div>`
+      + `<div><b>${s.sodRiskFilled}/${s.sodTotal}</b><span>${I18N.t('masterdata.js.sodRiskFilled', { pct: rPct })}</span></div>`
+      + `<div><b>${s.queryLevelFilled}/${s.queryTotal}</b><span>${I18N.t('masterdata.js.queryRiskLevel')}</span></div>`
+      + `<div><b>${s.sodLevelFilled}/${s.sodTotal}</b><span>${I18N.t('masterdata.js.sodRiskLevel')}</span></div>`
       + `</div>`
-      + `<a href="/admin.html" style="font-size:12px">Im Query Management bearbeiten</a>`
+      + `<a href="/admin.html" style="font-size:12px">${I18N.t('masterdata.js.editInQueryMgmt')}</a>`
       + `</div>`;
   }).join('');
 }
@@ -647,7 +657,7 @@ function renderRulesetSelect() {
   if (!sel.options.length) {
     const o = document.createElement('option');
     o.value = '';
-    o.textContent = 'kein Filterset verfügbar';
+    o.textContent = I18N.t('masterdata.js.noRulesetAvailable');
     sel.appendChild(o);
     sel.disabled = true;
     selectedRuleset = '';
@@ -716,15 +726,15 @@ $('critAdd').onclick = () => {
 };
 
 $('critReload').onclick = async () => {
-  if (dirty && !confirm('Ungespeicherte Aenderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('masterdata.js.unsavedConfirm'))) return;
   await loadAll();
   setEditMode(false);
-  setStatus('Masterdata neu geladen.');
+  setStatus(I18N.t('masterdata.js.reloaded'));
 };
 
 async function saveCriticalities() {
   if (!editMode) return;
-  setStatus('Masterdata wird gespeichert ...');
+  setStatus(`<span class="spin"></span> ${I18N.t('masterdata.js.saving')}`);
   try {
     await api('/admin/masterdata/criticalities', {
       method: 'PUT',
@@ -734,9 +744,9 @@ async function saveCriticalities() {
     await loadAll();
     setEditMode(false);
     setDirty(false);
-    setStatus('Masterdata gespeichert.');
+    setStatus(I18N.t('masterdata.js.saved'));
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 }
 $('critSave').onclick = saveCriticalities;
@@ -744,20 +754,20 @@ $('cmdSaveTop').onclick = saveCriticalities;
 $('cmdEdit').onclick = () => {
   setEditMode(true);
   setDirty(false);
-  setStatus('Bearbeitungsmodus aktiv. IDs werden intern automatisch berechnet.');
+  setStatus(I18N.t('masterdata.js.editModeActiveDetail'));
 };
 $('cmdCancelTop').onclick = async () => {
-  if (dirty && !confirm('Ungespeicherte Aenderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('masterdata.js.unsavedConfirm'))) return;
   await loadAll();
   setEditMode(false);
   setDirty(false);
-  setStatus('Aenderungen verworfen.');
+  setStatus(I18N.t('masterdata.js.cancelled'));
 };
 $('cmdRefresh').onclick = async () => {
-  if (dirty && !confirm('Ungespeicherte Aenderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('masterdata.js.unsavedConfirm'))) return;
   await loadAll();
   setEditMode(false);
-  setStatus('Aktualisiert.');
+  setStatus(I18N.t('masterdata.js.refreshed'));
 };
 
 $('rulesetSelect').addEventListener('change', () => {
