@@ -1,5 +1,5 @@
 {
-  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt). 'fields' dokumentiert je Tabelle die fuer den SE16-Download benoetigten Feldnamen sowie einen optionalen WHERE-Filter (SE16-seitige Vorselektion) -- abgeglichen gegen config/Download Data CSI.xls (2026-07-20) UND gegen die tatsaechlich von load/*.cypher gelesenen Spalten. 'fields' wird von Konverter/Runner aktuell NICHT ausgewertet (reine Doku fuer den SAP-Downloadauftrag) -- 'required'/'optional' bleiben die einzigen maschinell geprueften Listen.",
+  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt). 'fields' dokumentiert je Tabelle die fuer den SE16-Download benoetigten Feldnamen sowie einen optionalen WHERE-Filter (SE16-seitige Vorselektion) -- abgeglichen gegen config/Download Data CSI.xls (2026-07-20) UND gegen die tatsaechlich von load/*.cypher gelesenen Spalten; Sprachfelder (SPRAS/LANGU/SPRSL) tragen seit 2026-07-20 einen Sprach-WHERE-Vorschlag (Default DE/DEU/D, analog IMPORT_LANG in backend/app.py). 'fields' wird von Konverter/Runner aktuell NICHT ausgewertet (reine Doku fuer den SAP-Downloadauftrag) -- 'required'/'optional' bleiben die einzigen maschinell geprueften Listen. 'didDo' (seit 2026-07-20) dokumentiert vorlaeufig, GEGEN EIN REALES SYSTEM NOCH ZU VERIFIZIEREN, den Datenbedarf fuer die kuenftige Did-Do-Auswertung (AE-12/AE-13, STAD/ST03N) -- bewusst NICHT Teil von 'required'/'optional', da STAD/ST03N anders als die Can-Do-Tabellen keine einfachen SE16-Transparenztabellen sind (Cluster-/Function-Module-basierter Zugriff, s. Hinweise je Eintrag).",
   "required": [
     "USR02",
     "AGR_DEFINE",
@@ -93,7 +93,7 @@
         "PROFILE",
         "PTEXT"
       ],
-      "where": null,
+      "where": "LANGU IN ('D','DE','DEU','E','EN','ENG') (Vorschlag: auf Anzeigesprachen der App eingrenzen -- Default DE/DEU/D, s. IMPORT_LANG in backend/app.py; EN nur falls Englisch spaeter gebraucht wird)",
       "notes": "PTEXT ist optional -- load/05_role_profiles.cypher faellt bei leerem PTEXT auf den bereits gesetzten Profiltext (i. d. R. aus USR11) zurueck."
     },
     "UST04": {
@@ -162,7 +162,7 @@
         "AKTPS",
         "PTEXT"
       ],
-      "where": null
+      "where": "LANGU IN ('D','DE','DEU','E','EN','ENG') (Vorschlag: auf Anzeigesprachen der App eingrenzen -- Default DE/DEU/D, s. IMPORT_LANG in backend/app.py; EN nur falls Englisch spaeter gebraucht wird)"
     },
     "USR13": {
       "fields": [
@@ -171,7 +171,7 @@
         "OBJCT",
         "ATEXT"
       ],
-      "where": null,
+      "where": "LANGU IN ('D','DE','DEU','E','EN','ENG') (Vorschlag: auf Anzeigesprachen der App eingrenzen -- Default DE/DEU/D, s. IMPORT_LANG in backend/app.py; EN nur falls Englisch spaeter gebraucht wird) -- gilt zusaetzlich zu 'Nicht Teil des CSI-Downloads' (s. notes)",
       "notes": "Nicht Teil des CSI-Downloads (SAP-Standard Berechtigungsfeldtexte) -- separat zu exportieren."
     },
     "TOBJT": {
@@ -180,7 +180,7 @@
         "OBJECT",
         "TTEXT"
       ],
-      "where": null,
+      "where": "LANGU IN ('D','DE','DEU','E','EN','ENG') (Vorschlag: auf Anzeigesprachen der App eingrenzen -- Default DE/DEU/D, s. IMPORT_LANG in backend/app.py; EN nur falls Englisch spaeter gebraucht wird) -- gilt zusaetzlich zu 'Nicht Teil des CSI-Downloads' (s. notes)",
       "notes": "Nicht Teil des CSI-Downloads (SAP-Standard Berechtigungsobjekttexte) -- separat zu exportieren."
     },
     "AGR_TEXTS": {
@@ -192,7 +192,7 @@
         "LINE",
         "TEXT"
       ],
-      "where": null,
+      "where": "SPRAS IN ('D','DE','DEU','E','EN','ENG') bzw. SPRSL IN (...) je nachdem, welche Spalte der Export tatsaechlich fuehrt (s. notes) -- Default DE/DEU/D",
       "notes": "Sprachspalte robust: manche Exporte liefern SPRAS, andere SPRSL -- load/21_role_texts.cypher prueft beide (coalesce)."
     },
     "V_USERNAME": {
@@ -329,6 +329,41 @@
       ],
       "where": null,
       "notes": "Noch kein Loader. Lizenztyp je Nutzer -- eher SAP-Lizenzmanagement- als Can-Do-Thema; auf Nutzerwunsch trotzdem aufgenommen."
+    }
+  },
+  "didDo": {
+    "_about": "Vorlaeufige Arbeitsgrundlage fuer die kuenftigen Did-Do-Extraktoren (noch kein load/*.cypher dafuer, s. ROADMAP-V2 Phase 4). Anders als bei den Can-Do-Tabellen oben ist der Datenzugriff NICHT trivial per SE16: SAP speichert Einzelsatz-Statistiken (STAD) intern clusterartig (Report RSCOLL00 -> Tabelle MONI) und stellt sie i. d. R. nur ueber die Transaktion STAD/ST03N, das Service-Tool /SDF/ST03DL (OSS-Hinweis 2943445) oder Function Modules bereit -- nicht ueber eine einfache Transparenttabelle. Feldnamen unten sind die in der SAP-Community/Dokumentation gaengigen Bezeichnungen (Struktur STATB/STATS-Familie), aber NICHT an einem realen System verifiziert -- vor dem Bau eines echten Loaders gegen das Zielsystem pruefen (SE16/SE11 auf die tatsaechliche Quelle, je nach SAP-Release/ST-PI-Stand kann sich der Zugriffsweg unterscheiden). Betrachtungsraum durchgaengig auf max. 1 Jahr begrenzt (Nutzervorgabe 2026-07-20) -- Achtung: STAD-Einzelsaetze werden von SAP standardmaessig meist nur wenige Tage bis Wochen vorgehalten (Parameter stat/*, Archivierung), ueber ein volles Jahr sind i. d. R. nur die ST03N-Monatsaggregate verfuegbar.",
+    "fields": {
+      "STAD": {
+        "fields": [
+          "MANDT",
+          "BNAME",
+          "TCODE",
+          "COMM_REPID",
+          "DATUM",
+          "UZEIT",
+          "TASKTYPE",
+          "WPRESTIME",
+          "CPUTI",
+          "DBCALLS",
+          "TERMINAL"
+        ],
+        "where": "DATUM >= heute - 1 Jahr (max. Betrachtungsraum, Nutzervorgabe 2026-07-20)",
+        "notes": "Einzelsatz-Nutzungsstatistik (welcher User hat wann welchen TCode/Report ausgefuehrt). KEINE einfache SE16-Tabelle -- Cluster-Speicherung (s. didDo._about). Retention meist nur Tage/Wochen, nicht Jahre -- fuer den vollen 1-Jahres-Zeitraum realistischerweise nur in Kombination mit ST03N-Aggregaten (unten) erreichbar. Feldnamen vorlaeufig, gegen reales System verifizieren."
+      },
+      "ST03N_AGGREGATE": {
+        "fields": [
+          "TCODE",
+          "TASKTYPE",
+          "COUNT",
+          "RESPTI",
+          "CPUTI",
+          "DBCALLS",
+          "PERIOD"
+        ],
+        "where": "PERIOD >= heute - 1 Jahr (max. Betrachtungsraum, Nutzervorgabe 2026-07-20)",
+        "notes": "Monatsaggregierte Workload-Statistik je TCode (kein Einzelsatz, keine User-Ebene in der Standardaggregation). Zugriff ueblicherweise ueber Function Module SWNC_COLLECTOR_GET_AGGREGATES (COMPONENT='TOTAL') statt ueber eine SE16-Tabelle -- kein '.txt'-Tabellenexport im bisherigen Sinn, sondern ein separater Extraktor/Report noetig. Deckt den 1-Jahres-Zeitraum typischerweise besser ab als STAD (s. dort)."
+      }
     }
   }
 }
