@@ -691,361 +691,713 @@
     "query": "1112_BC-DEV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege der Mandanteneinstellungen (SCC4/OY24, Tabelle T000) inkl. mandantenübergreifender Tabellenpflege. Erlaubt, den Mandanten auf „änderbar“ zu setzen, den Änderungsschutz und die mandantenabhängige Protokollierung zu deaktivieren sowie die Mandantenrolle (Produktion/Test) zu ändern. (b) Betrifft Integrität, Nachvollziehbarkeit und über die ITGC (Change Management, logischer Zugriff) mittelbar alle Assertions, da ein geöffneter Produktivmandant unkontrollierte Direktänderungen an Customizing und Repository ermöglicht. Als „Enabler“ hebt es zentrale Schutzmechanismen des Systems auf. (c) Fraud-Bezug: Nach Öffnen des Mandanten können Kontrolleinstellungen manipuliert und Datenänderungen ohne Beleg vorgenommen werden; anschließend wird der Mandant wieder geschlossen, sodass der Eingriff unauffällig bleibt. Kritisch.",
+    "threat": "(1) In SCC4/OY24 wird der Produktivmandant auf „änderbar“ gesetzt und der mandantenabhängige Änderungsschutz deaktiviert. (2) Über SM30/SE16N werden kontroll-/buchungsrelevante Einträge direkt geändert. (3) Die Anwendung übernimmt die manipulierten Werte. (4) Die T000-Einstellungen werden zurückgesetzt; die Öffnung bleibt ohne dedizierte Protokollierung schwer nachweisbar.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd",
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/describing-system-change-options-and-client-change-options-1"
+    ]
   },
   {
     "query": "1113_BC-DEV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Lokale Mandantenkopie (SCC1) kopiert Daten/Customizing aus einem Quellmandanten in den aktuellen Mandanten desselben Systems. (b) Ein unkontrollierter Kopierlauf kann bestehende Stamm-, Bewegungs- und Customizing-Daten des Zielmandanten überschreiben und mandantenübergreifend offenlegen; betroffen sind Integrität, Verfügbarkeit und Vertraulichkeit. Da Kopierläufe massenhaft und faktisch irreversibel wirken, ist der potenzielle Schaden hoch. (c) Fraud-/Fehler-Bezug: Ein versehentlicher oder gezielter Kopierlauf in einen produktiven Mandanten kann Daten vernichten oder aus einem anderen Mandanten eingeschleuste, manipulierte Daten übernehmen. Hoch.",
+    "threat": "(1) Täter startet in SCC1 eine Mandantenkopie mit unpassendem/präpariertem Quellmandanten. (2) Der Lauf überschreibt Daten/Customizing im Zielmandanten. (3) Bestehende Daten gehen verloren bzw. werden durch Fremddaten ersetzt. (4) Der Ursprung ist im Belegwesen der Fachanwendung nicht sichtbar.",
+    "source": [
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1114_BC-DEV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Mandantenkopie über Transport (SCCL) überträgt große Datenmengen zwischen Mandanten, ggf. systemübergreifend. (b) Wie die lokale Kopie kann ein Lauf produktive Daten überschreiben oder mandantenübergreifend offenlegen; zusätzlich wirkt sie über den Transportweg und größere Volumina. Betroffen sind Integrität, Verfügbarkeit und Vertraulichkeit. (c) Fraud-/Fehler-Bezug: Massenhafte, schwer umkehrbare Datenübertragung, die produktive Bestände zerstören oder manipulierte Daten einbringen kann. Hoch.",
+    "threat": "(1) Täter startet SCCL mit einem gewählten Kopierprofil/Quellmandanten. (2) Der Lauf überträgt/überschreibt Mandantendaten. (3) Produktive Daten werden ersetzt oder offengelegt. (4) Der Vorgang läuft außerhalb der fachlichen Kontrollen.",
+    "source": [
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1115_BC-DEV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Berechtigung zum Import/Einspielen von Mandantendaten im Rahmen einer Kopie (SCC1/SCCL). (b) Der Import kann bestehende Mandantendaten überschreiben und damit Datenverlust oder -verfälschung verursachen; betroffen sind Integrität und Verfügbarkeit, die Wirkung ist massenhaft und schwer reversibel. (c) Fraud-/Fehler-Bezug: Über den Import lassen sich fremde/manipulierte Datenbestände in den Zielmandanten bringen bzw. bestehende Daten vernichten. Hoch.",
+    "threat": "(1) Täter führt den Datenimport eines Mandantenkopierlaufs aus. (2) Der Import überschreibt Zieldaten bzw. bringt Fremddaten ein. (3) Bestehende Daten sind verloren/verfälscht. (4) Ohne fachliche Kontrolle bleibt der Eingriff unauffällig.",
+    "source": [
+      "https://onapsis.com/blog/securing-clients-sap-s4hana-and-netweaver-abap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1200_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anlegen von Benutzern (SU01/SU10) über S_USER_GRP, Aktivität 01 – inkl. technischer/Service-Benutzer. (b) Für sich ist es ein Zugriffs-/IKS-Risiko (logischer Zugriff, ITGC „User Access“); in Kombination mit Rollen-/Profilzuweisung (SoD, vgl. BCX_0001) mittelbar alle Assertions, da darüber unautorisierter, privilegierter Zugriff geschaffen werden kann. (c) Fraud-Bezug: Einrichtung von Backdoor-/Sammelkonten als Basis für spätere unautorisierte Handlungen oder zum Handeln unter fremder/technischer Identität. Kritisch.",
+    "threat": "(1) Täter legt in SU01 ein unauffälliges (Service-)Konto an. (2) Das Konto dient später als Ausgangspunkt für Missbrauch oder verschleiert Handlungen. (3) In Kombination mit Rollenzuweisung wird es mit Rechten ausgestattet. (4) Nach Nutzung wird es gesperrt/gelöscht.",
+    "source": [
+      "https://xiting.com/en/sap-knowledge/sap-user/management-with-su01/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ]
   },
   {
     "query": "1201_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Ändern von Benutzerstammsätzen (SU01/SU10), Aktivität 02 – u. a. Benutzertyp, Gültigkeit, Passwort-Reset, Zuordnungen. (b) Ermöglicht Übernahme/Reaktivierung von Konten und Umgehung von Identitätskontrollen; betrifft logischen Zugriff (ITGC) und mittelbar alle Assertions über unautorisierten Zugriff. Passwort-Reset ist ein direkter Account-Takeover-Vektor. (c) Fraud-Bezug: Übernahme eines fremden (privilegierten) Kontos per Passwort-Reset, um unter dessen Identität zu handeln und die Zurechenbarkeit zu verschleiern. Kritisch.",
+    "threat": "(1) Täter setzt in SU01 das Passwort eines privilegierten Fremdkontos zurück. (2) Er meldet sich unter diesem Konto an. (3) Er führt Handlungen unter fremder Identität aus. (4) Die Zurechenbarkeit ist verschleiert; der Nutzer bemerkt ggf. nur eine Passwortänderung.",
+    "source": [
+      "https://xiting.com/en/sap-knowledge/sap-user/management-with-su01/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ]
   },
   {
     "query": "1202_BC-USR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Sperren/Entsperren von Benutzern (Aktivität 05). (b) Entsperren kann deaktivierte/gesperrte Konten reaktivieren (Umgehung der Deprovisionierung); Sperren kann legitime Nutzer aussperren (Verfügbarkeit/DoS). Betroffen sind logischer Zugriff und Verfügbarkeit. (c) Fraud-Bezug: Reaktivierung eines stillgelegten privilegierten Kontos zur Nutzung, oder gezieltes Sperren von Kontrollinstanzen/Kollegen, um ungestört zu handeln. Hoch.",
+    "threat": "(1) Täter entsperrt ein zuvor deaktiviertes privilegiertes Konto. (2) Er nutzt es für seine Zwecke. (3) Alternativ sperrt er das Konto eines Kontrolleurs, um eine Prüfung zu verzögern. (4) Anschließend wird der ursprüngliche Sperrzustand wiederhergestellt.",
+    "source": [
+      "https://xiting.com/en/sap-knowledge/sap-user/management-with-su01/"
+    ]
   },
   {
     "query": "1203_BC-USR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Löschen von Benutzern (Aktivität 06). (b) Das Entfernen von Konten kann die Zurechenbarkeit vergangener Aktivitäten beeinträchtigen (Beweisspur) und legitime Nutzer aussperren (Verfügbarkeit); betroffen sind Nachvollziehbarkeit und Verfügbarkeit. (c) Fraud-Bezug: Löschen eines für Missbrauch genutzten Kontos, um Spuren zu verwischen und die Zuordnung von Handlungen zu erschweren. Hoch.",
+    "threat": "(1) Täter nutzt ein (Service-)Konto für unautorisierte Handlungen. (2) Anschließend löscht er das Konto in SU01. (3) Die spätere Zuordnung der Handlungen zum Konto wird erschwert. (4) Die Löschung erscheint als reguläres User-Housekeeping.",
+    "source": [
+      "https://xiting.com/en/sap-knowledge/sap-user/management-with-su01/"
+    ]
   },
   {
     "query": "1204_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Zuweisung von Rollen zu Benutzern (SU01/PFCG) über S_USER_AGR/S_USER_GRP. (b) Kernkomponente der Rechtevergabe; ermöglicht Selbst- oder Fremdprivilegierung bis zu kritischen/weitreichenden Berechtigungen und ist SoD-relevant (Benutzerverwaltung + Rechtevergabe, vgl. BCX_0001). Betrifft logischen Zugriff (ITGC) und mittelbar alle Assertions. (c) Fraud-Bezug: Zuweisung einer kritischen Rolle an sich selbst oder einen Komplizen, Durchführung unautorisierter Buchungen/Zugriffe, danach Entzug zur Verschleierung. Kritisch.",
+    "threat": "(1) Täter weist über SU01/PFCG einem Konto eine kritische Rolle zu. (2) Nach User-Abgleich sind die Rechte aktiv. (3) Er führt die eigentliche Handlung aus. (4) Die Zuweisung wird zurückgenommen.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-sap/identity-and-access-management-authorization-assignment-part-3-2/ba-p/13564974"
+    ]
   },
   {
     "query": "1205_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Direkte Zuweisung von Berechtigungsprofilen zu Benutzern (SU01/SU02) über S_USER_PRO. (b) Erlaubt die Zuordnung generierter oder manuell gepflegter Profile – inkl. potenziell SAP_ALL/SAP_NEW – unter Umgehung des rollenbasierten Vergabeprozesses; betrifft logischen Zugriff und mittelbar alle Assertions. Direkter Weg zu umfassender Privilegierung. (c) Fraud-Bezug: Zuweisung eines Allmacht-Profils an ein Konto zum kurzfristig unbeschränkten Handeln, gefolgt von Entzug. Kritisch.",
+    "threat": "(1) Täter weist einem Konto direkt ein weitreichendes Profil (bis SAP_ALL) zu. (2) Das Konto verfügt sofort über umfassende Rechte. (3) Er führt beliebige Handlungen aus. (4) Das Profil wird wieder entzogen.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ]
   },
   {
     "query": "1206_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Rollen-/Benutzerzuordnung über den Profilgenerator (PFCG) selbst (Aktivität 02). (b) Wie 1204, jedoch aus der Rollenpflege heraus: Änderungen an einer Rolle wirken auf alle zugeordneten Benutzer; SoD-relevant und ITGC-kritisch, mittelbar alle Assertions. (c) Fraud-Bezug: Erweiterung einer breit zugewiesenen Rolle um kritische Berechtigungen, wodurch viele Benutzer (inkl. eigener) auf einen Schlag privilegiert werden. Kritisch.",
+    "threat": "(1) Täter fügt einer breit zugewiesenen Rolle in PFCG kritische Transaktionen/Objekte hinzu. (2) Nach Generierung/Abgleich erhalten alle Rolleninhaber die neuen Rechte. (3) Er nutzt die Rechte. (4) Die Rolle wird zurückgesetzt.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/"
+    ]
   },
   {
     "query": "1207_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anlegen neuer Rollen (PFCG, Aktivität 01). (b) Ermöglicht die Definition beliebiger Berechtigungsbündel als Grundlage späterer Zuweisung; für sich ein Gestaltungsrisiko im logischen Zugriff (ITGC), in Kombination mit Generierung/Zuweisung mittelbar alle Assertions. (c) Fraud-Bezug: Anlegen einer unauffällig benannten Rolle mit kritischen Rechten, die anschließend zugewiesen wird. Kritisch.",
+    "threat": "(1) Täter legt in PFCG eine neue Rolle mit kritischen Berechtigungen an. (2) Die Rolle wird generiert. (3) Über die Zuweisung (1204/1206) gelangt sie an ein Konto. (4) Sie dient als getarntes Rechtevehikel.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+      "https://keyusertraining.com/en/sap-roles-and-authorizations/"
+    ]
   },
   {
     "query": "1208_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Ändern und Generieren von Rollen inkl. Pflege der Berechtigungswerte (S_USER_AUT/S_USER_VAL) und uneingeschränktem Transaktions-/Wertebereich (S_USER_TCD/S_USER_VAL = *). Ermöglicht das Einfügen beliebiger Transaktionen und Werte in Rollen und deren Aktivierung. (b) Umfassende Kontrolle über den Rechteinhalt; ITGC-kritisch (logischer Zugriff) und mittelbar alle Assertions, da beliebige Rechte erzeugt werden können. (c) Fraud-Bezug: Anreicherung einer Rolle um kritische Rechte mit anschließender Generierung – verdecktes Hochprivilegieren über die Rollenpflege. Kritisch.",
+    "threat": "(1) Täter fügt einer Rolle in PFCG kritische Transaktionen/Objektwerte hinzu. (2) Er generiert das Profil. (3) Rolleninhaber (inkl. eigenem Konto) erhalten die Rechte. (4) Die Änderung wird zurückgenommen.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+      "https://keyusertraining.com/en/sap-roles-and-authorizations/"
+    ]
   },
   {
     "query": "1209_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Manuelle Pflege von Berechtigungsprofilen (SU02) mit uneingeschränktem Profil-/Berechtigungsbereich (PROFILE/AUTH = *). Ermöglicht das Erstellen/Ändern beliebiger Profile außerhalb des rollenbasierten Modells. (b) Direkte Kontrolle über Berechtigungsprofile; ITGC-kritisch und mittelbar alle Assertions. Manuelle Profile umgehen die in PFCG integrierten Prüfungen. (c) Fraud-Bezug: Bau eines weitreichenden Profils, das anschließend zugewiesen wird – verdeckter Privilegierungsweg neben den Rollen. Kritisch.",
+    "threat": "(1) Täter erstellt/ändert in SU02 ein weitreichendes Profil. (2) Über die Profilzuweisung gelangt es an ein Konto. (3) Das Konto handelt umfassend. (4) Profil/Zuweisung werden zurückgesetzt.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles",
+      "https://keyusertraining.com/en/sap-roles-and-authorizations/"
+    ]
   },
   {
     "query": "1210_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege einzelner Berechtigungen (SU03) – Anlegen/Ändern/Aktivieren (Aktivität 01/02/07). (b) Ermöglicht die Definition der granularen Bausteine, aus denen Profile/Rollen bestehen; ITGC-relevant (logischer Zugriff) und mittelbar alle Assertions. Manipulierte Berechtigungswerte wirken auf jede darauf aufsetzende Rolle. (c) Fraud-Bezug: Anpassung einer Berechtigung so, dass sie weitergehende Werte enthält, wodurch bestehende Rollen unbemerkt mehr erlauben. Kritisch.",
+    "threat": "(1) Täter ändert in SU03 die Werte einer Berechtigung. (2) Die Änderung wirkt auf Rollen/Profile, die sie verwenden. (3) Betroffene Konten erhalten unbemerkt erweiterte Rechte. (4) Die Änderung ist ohne gezielte Analyse schwer zu entdecken.",
+    "source": [
+      "https://keyusertraining.com/en/sap-roles-and-authorizations/",
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles"
+    ]
   },
   {
     "query": "1211_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege von Berechtigungsobjekten selbst (SU21) – Definition von Objekten, Feldern und zulässigen Werten. (b) Eingriffe auf dieser Ebene verändern das Fundament des Berechtigungswesens; ITGC-kritisch (logischer Zugriff) und mittelbar alle Assertions, da Prüflogik von Objekten manipuliert oder ausgehöhlt werden kann. (c) Fraud-Bezug: Änderung/Anlage eines Berechtigungsobjekts so, dass Prüfungen ins Leere laufen oder neue, unkontrollierte Prüfmuster entstehen – tiefgreifende, schwer erkennbare Schwächung der Zugriffssteuerung. Kritisch.",
+    "threat": "(1) Täter ändert in SU21 ein Berechtigungsobjekt (Felder/Werte). (2) Prüfungen, die dieses Objekt nutzen, verhalten sich anders als vorgesehen. (3) Der Zugriff wird faktisch geweitet oder eine Kontrolle deaktiviert. (4) Die Manipulation auf Objektebene ist ohne tiefes Review kaum sichtbar.",
+    "source": [
+      "https://keyusertraining.com/en/sap-roles-and-authorizations/",
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/maintaining-user-authorizations-with-roles-and-profiles"
+    ]
   },
   {
     "query": "1212_BC-USR",
     "riskType": null,
     "riskLevel": "very-critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Globales Deaktivieren von Berechtigungsprüfungen für Objekte (AUTH_SWITCH_OBJECTS, S_USER_OBJ). Ein deaktiviertes Objekt wird systemweit nicht mehr geprüft. (b) Das hebt die zugehörige Zugriffskontrolle für alle Benutzer auf einen Schlag auf – ITGC-kritisch (logischer Zugriff) und mittelbar alle Assertions, da eine ganze Prüfklasse wegfällt. Wirkung systemweit und besonders schwerwiegend. (c) Fraud-Bezug: Abschalten der Prüfung eines schützenden Objekts, um eine Handlung ohne Berechtigungshürde auszuführen; danach ggf. Reaktivierung zur Verschleierung. Sehr kritisch.",
+    "threat": "(1) Täter deaktiviert in AUTH_SWITCH_OBJECTS die Prüfung eines schützenden Berechtigungsobjekts. (2) Systemweit entfällt die zugehörige Kontrolle. (3) Er (oder beliebige Nutzer) führt die zuvor gesperrte Handlung aus. (4) Optional wird die Prüfung reaktiviert, sodass nur ein kurzes Fenster bestand.",
+    "source": [
+      "https://mtcskopos.com/blog/sap-authorization-best-practices/"
+    ]
   },
   {
     "query": "1213_BC-USR",
     "riskType": null,
     "riskLevel": "very-critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anpassung der Prüfkennzeichen und Vorschlagswerte (SU24/SU22), die steuern, welche Berechtigungsobjekte eine Transaktion prüft und welche Werte PFCG vorschlägt. (b) Manipulation bewirkt, dass Transaktionen bestimmte Objekte nicht mehr prüfen bzw. Rollen automatisch weitergehende Werte erhalten – ITGC-kritisch und mittelbar alle Assertions. Die Wirkung ist subtil und breit (jede neu gepflegte Rolle erbt die geänderten Vorschläge). (c) Fraud-Bezug: Setzen eines Prüfkennzeichens auf „nicht prüfen“ für eine kritische Transaktion, sodass die Berechtigungshürde entfällt, ohne dass eine einzelne Rolle auffällig geändert wirkt. Sehr kritisch.",
+    "threat": "(1) Täter setzt in SU24 für eine kritische Transaktion das Prüfkennzeichen eines schützenden Objekts auf „nicht prüfen“ bzw. hinterlegt weite Vorschlagswerte. (2) Neue/regenerierte Rollen prüfen das Objekt nicht mehr bzw. erhalten weite Werte. (3) Der Zugriff ist faktisch geweitet. (4) Die Änderung liegt in den Vorschlagswerten, nicht in einer einzelnen Rolle – schwer auffindbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sap-authorization-best-practices/",
+      "https://keyusertraining.com/en/sap-roles-and-authorizations/"
+    ]
   },
   {
     "query": "1214_BC-USR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Systemweites Sperren/Entsperren von Transaktionscodes (SM01, S_ADMI_FCD=TLCK). (b) Entsperren kann bewusst gesperrte kritische Transaktionen wieder verfügbar machen (Umgehung einer Kompensationskontrolle); Sperren kann legitime Prozesse blockieren (Verfügbarkeit). Betroffen sind logischer Zugriff, Nachvollziehbarkeit der Kontrolle und Verfügbarkeit. (c) Fraud-Bezug: Entsperren einer aus Sicherheitsgründen gesperrten Transaktion, Nutzung, erneutes Sperren – die Kontrolle erscheint durchgehend aktiv. Kritisch.",
+    "threat": "(1) Täter entsperrt in SM01 eine bewusst gesperrte kritische Transaktion. (2) Er führt die zugehörige Handlung aus. (3) Er sperrt die Transaktion wieder. (4) Die Kompensationskontrolle wirkt lückenlos, obwohl sie kurzzeitig aufgehoben war.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1300_BC-CTS",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Administrative Kontrolle über das Transportmanagementsystem (STMS, S_CTS_ADMI=TABL) – Konfiguration von Transportwegen, Systemen und Importsteuerung. (b) Erlaubt Eingriffe in den zentralen Änderungs-/Transportprozess (ITGC Change Management); mittelbar alle Assertions, da manipulierte Transportwege/-konfiguration die kontrollierte Migration nach Produktion untergraben. (c) Fraud-Bezug: Umkonfiguration der Transportlandschaft, um Freigabe-/Qualitätsstufen zu umgehen und Objekte gezielt nach Produktion zu bringen. Kritisch.",
+    "threat": "(1) Täter ändert in STMS die Transportwege/Importkonfiguration. (2) Freigabe-/QS-Stufen werden umgangen. (3) Gewünschte Transporte gelangen nach Produktion. (4) Die Konfiguration wird zurückgesetzt.",
+    "source": [
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/",
+      "https://help.sap.com/docs/SAP_Solution_Manager/bdd095d01c7941c8b5d4c27e04da7315/5044fab9e32349c8af5b1d81e45ea048.html"
+    ]
   },
   {
     "query": "1301_BC-CTS",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Import von Transportaufträgen in Ziel-/Produktivsysteme (STMS, S_CTS_ADMI=IMPA/IMPS/IMPT). (b) Der Import ist der Punkt, an dem Änderungen produktiv wirksam werden; unkontrollierter Import umgeht Freigabe und Funktionstrennung (ITGC Change Management) und betrifft mittelbar alle Assertions. (c) Fraud-Bezug: Import eines selbst erstellten oder eingeschleusten Transports mit manipulativem Code/Customizing direkt in Produktion, ohne regulären Freigabeweg. Kritisch.",
+    "threat": "(1) Täter bereitet einen Transport mit manipulativem Inhalt vor bzw. wählt einen im Puffer. (2) Über STMS importiert er ihn ins Produktivsystem. (3) Die Objekte werden produktiv aktiv. (4) Ein regulärer Freigabe-/Vier-Augen-Schritt wurde umgangen.",
+    "source": [
+      "https://help.sap.com/docs/SAP_Solution_Manager/bdd095d01c7941c8b5d4c27e04da7315/5044fab9e32349c8af5b1d81e45ea048.html",
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/",
+      "https://onapsis.com/blog/sap-development-system-critical-entry-point-attacks/"
+    ]
   },
   {
     "query": "1302_BC-CTS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Hinzufügen von Transportaufträgen zur Importqueue (S_CTS_ADMI=TADD). (b) Steuert, welche Transporte für den Import bereitstehen; Missbrauch kann unerwünschte Transporte in die Warteschlange bringen (Vorstufe zum Import) – ITGC Change Management, mittelbar alle Assertions. (c) Fraud-Bezug: Einreihen eines präparierten Transports in die Importqueue als Vorbereitung eines späteren (autorisierten oder eigenen) Imports. Hoch.",
+    "threat": "(1) Täter fügt einen präparierten Transport der Importqueue hinzu. (2) Der Transport steht zum Import bereit. (3) Beim nächsten (ggf. regulären) Importlauf gelangt er mit. (4) Die Einschleusung verbirgt sich in der Queue.",
+    "source": [
+      "https://help.sap.com/docs/SAP_Solution_Manager/bdd095d01c7941c8b5d4c27e04da7315/5044fab9e32349c8af5b1d81e45ea048.html",
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/"
+    ]
   },
   {
     "query": "1303_BC-CTS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Löschen von Transportaufträgen aus der Importqueue (S_CTS_ADMI=TDEL). (b) Kann geplante/erforderliche Transporte entfernen (Verfügbarkeit/Vollständigkeit von Änderungen) oder Spuren eingeschleuster Transporte beseitigen; betrifft Nachvollziehbarkeit und Integrität des Change-Prozesses. (c) Fraud-Bezug: Entfernen eines belastenden oder eines Kontroll-Transports aus der Queue, um den Change-Stand zu manipulieren. Hoch.",
+    "threat": "(1) Täter löscht einen Transport aus der Importqueue. (2) Eine geplante Änderung unterbleibt bzw. eine Spur wird beseitigt. (3) Der Ziel-Systemstand weicht unbemerkt vom Soll ab. (4) Die Manipulation der Queue fällt ohne Abgleich nicht auf.",
+    "source": [
+      "https://onapsis.com/blog/important-audit-aspects-sap-change-and-transport-system-cts/",
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/"
+    ]
   },
   {
     "query": "1304_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Initialisierung des Transport-Organizers/CTS (SE06, S_CTS_ADMI=INIT). (b) INIT ist eine tiefgreifende Administrationsfunktion, die die CTS-Konfiguration (neu) aufsetzen kann; ITGC-kritisch (Change Management) und mittelbar alle Assertions, da sie die Grundlage der kontrollierten Transportsteuerung betrifft. SAP führt SE06 mit INIT/SYSC explizit als kritische Kombination. (c) Fraud-Bezug: Re-Initialisierung/Neukonfiguration des CTS, um Transport- und Änderungskontrollen zu unterlaufen oder zurückzusetzen. Kritisch.",
+    "threat": "(1) Täter ruft in SE06 die Initialisierungsfunktion auf. (2) Die CTS-/Änderbarkeitskonfiguration wird (neu) gesetzt. (3) Kontroll-/Transporteinstellungen werden unterlaufen. (4) Der Eingriff ist tief und schwer nachvollziehbar.",
+    "source": [
+      "https://help.sap.com/docs/SAP_Solution_Manager/bdd095d01c7941c8b5d4c27e04da7315/5044fab9e32349c8af5b1d81e45ea048.html",
+      "https://learning.sap.com/courses/technical-implementation-and-operation-ii-of-sap-s-4hana-and-sap-business-suite/describing-system-change-options-and-client-change-options-1",
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/"
+    ]
   },
   {
     "query": "1305_BC-CTS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Ausführen von tp-/Transport-Kommandos auf Ebene des Transportkontrollprogramms (S_CTS_ADMI=TADM). (b) Erlaubt direkte, mächtige Eingriffe in den Transportprozess außerhalb der geführten Oberfläche; ITGC Change Management, mittelbar alle Assertions. (c) Fraud-Bezug: Nutzung von tp-Kommandos, um Transporte gezielt zu steuern/erzwingen und geführte Kontrollen zu umgehen. Hoch.",
+    "threat": "(1) Täter führt über die Transport-Organizer-Funktionen tp-Kommandos aus. (2) Er steuert Import/Export direkt. (3) Geführte Freigabe-/Reihenfolgekontrollen werden umgangen. (4) Der Eingriff ist technischer Natur und wenig sichtbar.",
+    "source": [
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/",
+      "https://onapsis.com/blog/important-audit-aspects-sap-change-and-transport-system-cts/"
+    ]
   },
   {
     "query": "1306_BC-CTS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Freigabe von Transportaufträgen (S_CTS_ADMI=QTEA). (b) Die Freigabe exportiert den Auftrag und macht ihn importierbar; sie ist ein Kontrollpunkt des Change-Prozesses. Freigabe in einer Hand mit Erstellung untergräbt die Funktionstrennung – ITGC, mittelbar alle Assertions. (c) Fraud-Bezug: Selbst erstellte Transporte selbst freigeben (kein Vier-Augen-Prinzip) und so für den Import vorbereiten. Hoch.",
+    "threat": "(1) Täter erstellt einen Transport mit manipulativem Inhalt. (2) Er gibt ihn selbst frei (QTEA). (3) Der Transport ist exportiert und importierbar. (4) Ohne unabhängige Freigabe fehlt die Kontrolle.",
+    "source": [
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/",
+      "https://onapsis.com/blog/important-audit-aspects-sap-change-and-transport-system-cts/"
+    ]
   },
   {
     "query": "1307_BC-CTS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Aktivieren oder Löschen inaktiver Transportaufträge (S_CTS_ADMI=TQAS). (b) Ermöglicht das Reaktivieren zurückgestellter oder das Entfernen vorhandener Transporte; betrifft Vollständigkeit und Nachvollziehbarkeit des Change-Prozesses (ITGC), mittelbar alle Assertions. (c) Fraud-Bezug: Reaktivieren eines zuvor abgelehnten Transports oder Löschen eines Nachweistransports zur Manipulation des Änderungsstands. Hoch.",
+    "threat": "(1) Täter aktiviert einen zuvor inaktiven/abgelehnten Transport bzw. löscht einen vorhandenen. (2) Der Änderungsstand wird verändert. (3) Der Soll-/Ist-Abgleich der Transporte stimmt nicht mehr. (4) Ohne dedizierte Kontrolle bleibt es unentdeckt.",
+    "source": [
+      "https://onapsis.com/blog/important-audit-aspects-sap-change-and-transport-system-cts/",
+      "https://onapsis.com/articles/securing-sap-transport-management-best-practices/"
+    ]
   },
   {
     "query": "1400_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege der Instanz-/Systemprofilparameter (RZ10, S_RZL_ADM Aktivität 01) – inkl. sicherheitskritischer Parameter: Passwort-/Login-Regeln, Security Audit Log (rsau/*), SAP*-Verhalten (login/no_automatic_user_sapstar), RFC-/Gateway-Einstellungen. (b) Manipulation schwächt systemweite Sicherheits- und Protokollierungsmechanismen; ITGC-kritisch (logischer Zugriff, Change Management) und mittelbar alle Assertions. Ein einzelner Parameter kann Kontrollen für das gesamte System aushebeln. (c) Fraud-Bezug: Deaktivieren des Security Audit Logs oder Reaktivieren des SAP*-Notfallzugangs, um unprotokolliert und hochprivilegiert zu handeln. Kritisch.",
+    "threat": "(1) Täter ändert in RZ10 einen sicherheitskritischen Parameter (z. B. rsau/enable=0 oder login/no_automatic_user_sapstar=0). (2) Nach Aktivierung/Neustart wirkt die geschwächte Einstellung systemweit. (3) Er handelt unprotokolliert bzw. über den SAP*-Notfallzugang. (4) Der Parameter wird zurückgesetzt, sodass nur ein kurzes Fenster bestand.",
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/define-profile-parameters-to-secure-passwords-and-logins",
+      "https://www.sapsecuritypages.com/sap-profile-parameters/"
+    ]
   },
   {
     "query": "1401_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege von RFC-Destinationen (SM59, S_ADMI_FCD=NADM) – inkl. Zielsystem, Verbindungstyp und hinterlegten Anmeldedaten. (b) RFC-Destinationen enthalten oft gespeicherte (privilegierte) Credentials und Vertrauensbeziehungen; Manipulation ermöglicht „RFC-Hopping“/laterale Bewegung in verbundene Systeme und Datenabfluss. ITGC-kritisch (logischer Zugriff, Schnittstellen) und mittelbar alle Assertions der angebundenen Systeme. (c) Fraud-Bezug: Anlegen/Ändern einer Destination mit privilegierten Credentials oder Umleiten auf ein kontrolliertes Ziel, um über die Vertrauensbeziehung in andere Systeme zu gelangen oder Daten abzuziehen. Kritisch.",
+    "threat": "(1) Täter legt in SM59 eine RFC-Destination mit gespeicherten privilegierten Anmeldedaten an bzw. ändert eine bestehende. (2) Über die Destination/Vertrauensbeziehung ruft er Funktionen im Zielsystem auf. (3) Er bewegt sich lateral in angebundene (Produktiv-)Systeme oder zieht Daten ab. (4) Die Destination erscheint als reguläre Schnittstelle.",
+    "source": [
+      "https://onapsis.com/blog/securing-sap-remote-function-calls-the-crucial-role-of-s-icf-authorization/",
+      "https://www.erpsecure.online/rfc_security.html"
+    ]
   },
   {
     "query": "1402_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege von SAP-Instanzen/Betriebsarten (RZ04, S_RZL_ADM Aktivität 01) – Definition von Instanzen, Operation Modes und zugeordneten Profilen. (b) Eingriffe betreffen Systemkonfiguration und -verfügbarkeit sowie die zugeordneten (sicherheitsrelevanten) Profile; ITGC-relevant und mittelbar alle Assertions über Systemstabilität/Konfiguration. (c) Fraud-/Fehler-Bezug: Fehlkonfiguration von Instanzen/Betriebsarten kann Verfügbarkeit beeinträchtigen; in Verbindung mit Profilpflege lassen sich sicherheitsrelevante Einstellungen über Instanzprofile beeinflussen. Kritisch.",
+    "threat": "(1) Täter ändert in RZ04 die Instanz-/Betriebsartendefinition bzw. zugeordnete Profile. (2) Die Systemkonfiguration wird verändert. (3) Verfügbarkeit oder (über Profile) Sicherheitseinstellungen sind betroffen. (4) Der Eingriff liegt auf Basis-Ebene und ist fachlich kaum sichtbar.",
+    "source": [
+      "https://www.sapsecuritypages.com/sap-profile-parameters/",
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/define-profile-parameters-to-secure-passwords-and-logins"
+    ]
   },
   {
     "query": "1403_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege externer Betriebssystemkommandos (SM69, S_RZL_ADM Akt. 01) – Definition/Änderung der OS-Kommandos, die anschließend (via SM49) mit den Rechten des SAP-Systembenutzers <sid>adm ausgeführt werden. (b) Wer Kommandos definieren kann, legt die Grundlage für OS-Zugriff aus der Anwendungsschicht heraus; betroffen sind alle Schutzziele sowie über die ITGC das gesamte System, da OS-Zugriff die SAP-Sicherheitsschicht unterläuft. Die Definition ist der Hebel, die Ausführung (1009) die Wirkung. (c) Fraud-Bezug: Anlegen eines präparierten Kommandos (z. B. mit Parametern für Dateizugriff/Skriptausführung), das später ausgeführt Dateisystemzugriff, Manipulation oder Persistenz ermöglicht. Kritisch.",
+    "threat": "(1) Täter legt in SM69 ein externes Kommando mit gefährlichen/parametrisierbaren Optionen an. (2) Über SM49 wird es mit <sid>adm-Rechten ausgeführt. (3) OS-seitig werden Dateien gelesen/geändert oder Skripte platziert. (4) Das Kommando wird ggf. wieder entfernt; die Definition wirkt unauffällig.",
+    "source": [
+      "https://help.sap.com/saphelp_nw70ehp2/helpdata/en/0a/0a2e69ef6211d3a6510000e835363f/content.htm?no_cache=true",
+      "https://securitybridge.com/blog/sap-vulnerability-type-os-command-injection/",
+      "https://playbook.securitysilverbacks.com/SAP_ABAP_Platform/known_attack_vectors/os_command_execution/"
+    ]
   },
   {
     "query": "1404_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege der Betriebsarten (SM63, S_RZL_ADM Akt. 01) – Steuerung der Verteilung von Arbeitsprozessen (Dialog/Batch) über Tageszeiten. (b) Manipulation kann Verfügbarkeit und Performance beeinträchtigen (z. B. Batch verdrängt Dialog oder umgekehrt); betroffen ist primär die Verfügbarkeit, über die ITGC mittelbar der Betrieb rechnungslegungsrelevanter Prozesse. (c) Fraud-/Fehler-Bezug: Gezielte Umstellung der Betriebsarten, um Batch-Fenster zu verschieben oder Ressourcen zu entziehen und Verarbeitungen zu stören/verzögern. Hoch.",
+    "threat": "(1) Täter ändert in SM63 die Betriebsartendefinition/-zeitpläne. (2) Die Arbeitsprozessverteilung verschiebt sich. (3) Kritische (Batch-)Verarbeitungen werden verzögert oder verdrängt. (4) Die Änderung wirkt als scheinbar reguläre Basis-Konfiguration.",
+    "source": [
+      "https://www.sapsecuritypages.com/sap-profile-parameters/"
+    ]
   },
   {
     "query": "1405_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Verbuchungsadministration (SM13, S_ADMI_FCD=UADM) – Einsicht und Eingriff in offene/fehlerhafte Verbuchungssätze (Update Records): Wiederholen, Löschen oder Abbrechen von Verbuchungsvorgängen. (b) Verbuchungssätze überführen Dialogeingaben in die Datenbank; Eingriffe können Buchungen unvollständig oder inkonsistent machen. Betroffen sind Integrität und Vollständigkeit (Completeness/Accuracy) sowie Verfügbarkeit. (c) Fraud-/Fehler-Bezug: Löschen eines fehlerhaften Verbuchungssatzes kann eine angestoßene Buchung unvollständig lassen (halbe Transaktion) und Bestände/Salden verfälschen; auch gezielte Unterdrückung einer Verbuchung ist denkbar. Kritisch.",
+    "threat": "(1) Täter öffnet in SM13 offene/fehlerhafte Verbuchungssätze. (2) Er löscht oder wiederholt gezielt einen Satz. (3) Die zugehörige Buchung bleibt unvollständig bzw. wird verändert. (4) Die Inkonsistenz ist ohne Abstimmung schwer der Ursache zuzuordnen.",
+    "source": [
+      "https://help.sap.com/docs/SAP_NETWEAVER_700/109e55466c531014ab06eae1260a9fc5/47ea5db1e97f486ee10000000a42189d.html",
+      "https://community.sap.com/t5/technology-q-a/lock-entries-in-sm12/qaq-p/10749924"
+    ]
   },
   {
     "query": "1406_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Prozessadministration (SM50, S_ADMI_FCD=PADM) – Anzeige und Eingriff in die Arbeitsprozesse einer Instanz, inkl. Abbrechen laufender Prozesse (mit/ohne Core). (b) Das Abbrechen kann laufende (Buchungs-)Vorgänge unterbrechen und zu Inkonsistenzen oder Ausfällen führen; betroffen sind Verfügbarkeit und Integrität. Über die Prozessanzeige sind zudem laufende Aktivitäten/Selektionen anderer Nutzer einsehbar (Vertraulichkeit). (c) Fraud-/Fehler-Bezug: Gezieltes Abbrechen eines Prozesses (z. B. eines Kontroll-/Abstimmungslaufs) oder Ausspähen laufender Verarbeitungen als Vorbereitung weiterer Handlungen. Hoch.",
+    "threat": "(1) Täter beobachtet in SM50 laufende Prozesse. (2) Er bricht einen kritischen Arbeitsprozess ab. (3) Der zugehörige Vorgang wird unterbrochen (mögliche Inkonsistenz/Ausfall). (4) Die Störung erscheint als technisches Problem.",
+    "source": []
   },
   {
     "query": "1407_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Transaktionsverwaltung – systemweites Sperren/Entsperren von Transaktionscodes (SM01, S_ADMI_FCD=TLCK). (b) Entsperren kann bewusst gesperrte kritische Transaktionen wieder verfügbar machen (Umgehung einer Kompensationskontrolle); Sperren kann legitime Prozesse blockieren (Verfügbarkeit). Betroffen sind logischer Zugriff, die Wirksamkeit von Sperr-Kontrollen und Verfügbarkeit. (c) Fraud-Bezug: Entsperren einer aus Sicherheitsgründen gesperrten Transaktion, Nutzung, erneutes Sperren – die Kontrolle erscheint durchgehend aktiv. Kritisch.",
+    "threat": "(1) Täter entsperrt in SM01 eine bewusst gesperrte kritische Transaktion. (2) Er führt die zugehörige Handlung aus. (3) Er sperrt die Transaktion wieder. (4) Die Kompensationskontrolle wirkt lückenlos, obwohl sie kurzzeitig aufgehoben war.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ]
   },
   {
     "query": "1408_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Löschen von Sperreinträgen (SM12, S_ENQUE) – Entfernen von Datenbank-/Enqueue-Sperren, auch fremder Nutzer (DLFU) bzw. eigener (DLOU). (b) Sperren sichern exklusiven Zugriff während laufender Verbuchungen; das Löschen valider Sperren kann parallele Änderungen an denselben Daten und damit Dateninkonsistenzen verursachen. Betroffen sind Integrität und Verfügbarkeit (Accuracy/Completeness). (c) Fraud-/Fehler-Bezug: Löschen einer gültigen Sperre, um parallelen Zugriff auf einen gerade bearbeiteten Datensatz zu erzwingen (Race Condition) oder eine blockierende Kontrolle zu umgehen. Kritisch.",
+    "threat": "(1) Täter löscht in SM12 eine gültige Sperre eines fremden Nutzers (DLFU). (2) Der Datensatz ist trotz laufender Bearbeitung wieder zugänglich. (3) Parallele/konkurrierende Änderungen erzeugen eine Inkonsistenz. (4) Der Ursprung der Inkonsistenz ist schwer nachzuvollziehen.",
+    "source": [
+      "https://help.sap.com/docs/SAP_NETWEAVER_700/109e55466c531014ab06eae1260a9fc5/47ea5db1e97f486ee10000000a42189d.html",
+      "https://community.sap.com/t5/technology-q-a/lock-entries-in-sm12/qaq-p/10749924"
+    ]
   },
   {
     "query": "1409_BC-SRV",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anzeige der SAP-Verzeichnisse (AL11, S_ADMI_FCD=STOR) – Einsicht in die Verzeichnisstruktur des Applikationsservers und ggf. Dateinamen/-inhalte. (b) Für sich ein Vertraulichkeits-/Aufklärungsrisiko: Kenntnis von Pfaden, Schnittstellen-/Exportverzeichnissen und Dateien erleichtert gezielte Angriffe (z. B. Dateizugriff via CG3Y/CG3Z, vgl. BCX_0004). Betroffen ist die Vertraulichkeit, mittelbar die Integrität über Folgeangriffe. (c) Fraud-Bezug: Reconnaissance der Serververzeichnisse als Vorstufe zum Abgreifen sensibler Dateien oder zum Einschleusen von Dateien in verarbeitete Verzeichnisse. Medium.",
+    "threat": "(1) Täter sichtet in AL11 die Verzeichnisstruktur des Applikationsservers. (2) Er identifiziert sensible bzw. verarbeitete Verzeichnisse (Schnittstellen, Exporte). (3) Die Erkenntnisse werden für Datei-Down-/Upload (CG3Y/CG3Z) genutzt. (4) Der reine Anzeigezugriff erscheint harmlos.",
+    "source": [
+      "https://playbook.securitysilverbacks.com/SAP_ABAP_Platform/_objects/cg3z/"
+    ]
   },
   {
     "query": "1410_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Auswertung des Security Audit Logs (SM20, S_ADMI_FCD=AUDD) – Lesen der protokollierten sicherheitsrelevanten Ereignisse. (b) Für sich ein Vertraulichkeitsrisiko: Der Auswerter sieht, welche Benutzer welche kritischen Aktionen ausgeführt haben, und kann Muster/Schwachstellen ableiten; die Protokolle enthalten sensible Betriebs- und Sicherheitsinformationen. (c) Fraud-Bezug: Einsicht ins SAL, um zu prüfen, ob eigene (missbräuchliche) Aktivitäten protokolliert wurden, bzw. um Filter/Aufmerksamkeit der Überwachung auszukundschaften. Hoch.",
+    "threat": "(1) Täter wertet in SM20 das Security Audit Log aus. (2) Er prüft, welche seiner Aktionen protokolliert wurden bzw. wie überwacht wird. (3) Er passt sein Vorgehen an (Timing, unprotokollierte Wege). (4) Der Lesezugriff selbst ist unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/ABAP_PLATFORM_NEW/025d1fb2f02c42c097f04f45df09106a/74406e80420e483fba6107bbc56718af.html",
+      "https://www.aglea.com/en/blog/sap-security-audit-log-configuration"
+    ]
   },
   {
     "query": "1411_BC-SRV",
     "riskType": null,
     "riskLevel": "low",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anzeige der Profilparameter-Historie (TU02) – Nachvollziehen, welche Profilparameter wann geändert wurden; die zugeordneten weiten Werte (S_ADMI_FCD/S_SPO_* = *) deuten auf ein zu breit geschnittenes Berechtigungsbündel hin. (b) Für sich vor allem Vertraulichkeit (Kenntnis von Konfigurationsänderungen); die uneingeschränkten Sammelwerte sind jedoch ein Hinweis auf überschüssige Systemrechte. Geringes Einzelrisiko. (c) Fraud-Bezug: Einsicht in Parameteränderungen als Reconnaissance; die weiten Zusatzwerte könnten missbräuchlich für Spool-/Systemfunktionen genutzt werden. Low.",
+    "threat": "(1) Täter sieht in TU02 die Historie der Profilparameter ein. (2) Er erkennt sicherheitsrelevante Änderungen/Schwächen. (3) Die weiten Zusatzberechtigungen (S_ADMI_FCD=*) erlauben ggf. weitergehende Systemaktionen. (4) Der Anzeigezugriff bleibt unauffällig.",
+    "source": []
   },
   {
     "query": "1420_BC-SRV",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Verarbeitung von Batch-Input-Mappen (SM35, S_BDC_MONI, Aktion ABTC/AONL) – Starten der Abarbeitung aufgezeichneter Transaktionsfolgen im Hintergrund oder online. (b) Batch-Input spielt Transaktionen massenhaft ein; das Verarbeiten einer Mappe führt die enthaltenen (Buchungs-)Transaktionen aus. Betroffen sind Integrität und Vollständigkeit (Accuracy/Completeness), da fehlerhafte/manipulierte Mappen Massenwirkung entfalten. (c) Fraud-/Fehler-Bezug: Verarbeitung einer präparierten Mappe, um zahlreiche Buchungen/Änderungen auf einmal und wenig auffällig auszuführen. Medium.",
+    "threat": "(1) Täter wählt in SM35 eine (präparierte) Batch-Input-Mappe. (2) Er startet die Verarbeitung (Hintergrund/online). (3) Die enthaltenen Transaktionen werden massenhaft ausgeführt. (4) Die Einzelwirkung geht in der Masse unter.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1421_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Wie 1420, jedoch für Mappen beliebigen Namens (BDCGROUPID=$) – Verarbeitung auch fremder Batch-Input-Mappen. (b) Ohne Namenskonvention/-einschränkung kann ein Nutzer Mappen anderer Benutzer/Bereiche starten; betroffen sind Integrität, Vollständigkeit und Vertraulichkeit (fremde, ggf. HR-/Finanzdaten). Der Wirkungsradius ist deutlich größer. (c) Fraud-Bezug: Starten einer fremden, bereits vorbereiteten Mappe (z. B. mit sensiblen Buchungen), um Handlungen unter Umgehung der Zuständigkeit auszulösen. Hoch.",
+    "threat": "(1) Täter listet in SM35 alle Mappen (auch fremde). (2) Er startet eine fremde, vorbereitete Mappe. (3) Deren Transaktionen werden ausgeführt, außerhalb seiner Zuständigkeit. (4) Die Zuordnung zur ursprünglichen Fachstelle verschleiert die Handlung.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1422_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Verarbeitung von Batch-Input-Mappen ausschließlich im Hintergrund (ABTC). (b) Hintergrundverarbeitung läuft ohne interaktive Sichtprüfung; fehlerhafte/manipulierte Mappen werden unbeaufsichtigt eingespielt. Betroffen sind Integrität und Vollständigkeit; die fehlende Dialogkontrolle erhöht das Risiko unbemerkter Massenwirkung. (c) Fraud-/Fehler-Bezug: Unbeaufsichtigtes Einspielen einer präparierten Mappe im Hintergrund, sodass keine visuelle Kontrolle stattfindet. Hoch.",
+    "threat": "(1) Täter startet eine Mappe im Hintergrund (ABTC). (2) Die Transaktionen laufen ohne Sichtkontrolle. (3) Manipulierte/fehlerhafte Buchungen werden eingespielt. (4) Erst nachgelagert (Logs) wäre die Wirkung erkennbar.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1423_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Freigeben von Batch-Input-Mappen (S_BDC_MONI, Aktion FREE) – gesperrte Mappen wieder zur Verarbeitung freigeben. (b) Freigabe ist ein Kontrollpunkt; wer eine Sperre umgeht und freigibt, kann zurückgehaltene (ggf. fehlerhafte/geprüfte) Mappen doch zur Ausführung bringen. Betroffen sind Integrität und die Wirksamkeit der Mappenkontrolle. (c) Fraud-Bezug: Freigabe einer bewusst gesperrten (weil auffälligen) Mappe, um deren Verarbeitung doch auszulösen. Hoch.",
+    "threat": "(1) Täter gibt eine gesperrte Batch-Input-Mappe frei (FREE). (2) Die Mappe steht wieder zur Verarbeitung bereit. (3) Sie wird verarbeitet, obwohl sie zurückgehalten war. (4) Die Umgehung der Sperre fällt ohne Kontrolle nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1424_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Löschen von Batch-Input-Mappen (Aktion DELE). (b) Das Löschen entfernt die aufgezeichneten Transaktionen samt Protokoll; eine geplante Verarbeitung unterbleibt bzw. eine Spur wird beseitigt. Betroffen sind Vollständigkeit und Nachvollziehbarkeit. (c) Fraud-Bezug: Löschen einer belastenden oder einer erforderlichen Mappe, um Verarbeitung zu verhindern bzw. Nachweise zu tilgen. Hoch.",
+    "threat": "(1) Täter löscht eine Batch-Input-Mappe (DELE). (2) Die enthaltenen Transaktionen werden nicht verarbeitet bzw. die Spur ist weg. (3) Eine erwartete Buchung/Änderung unterbleibt unbemerkt. (4) Ohne Abgleich fällt die fehlende Mappe nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1425_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Löschen von Batch-Input-Mappen beliebigen Namens (DELE, BDCGROUPID=$) – auch fremder Mappen. (b) Wie 1424, jedoch systemweit über alle Mappen; ermöglicht das massenhafte Entfernen fremder, geplanter Verarbeitungen. Betroffen sind Vollständigkeit, Nachvollziehbarkeit und Verfügbarkeit. (c) Fraud-Bezug: Löschen fremder, vorbereiteter Mappen, um Prozesse zu stören oder Nachweise breit zu beseitigen. Hoch.",
+    "threat": "(1) Täter löscht Mappen beliebiger (fremder) Namen. (2) Zahlreiche geplante Verarbeitungen entfallen. (3) Prozesse werden gestört bzw. Spuren beseitigt. (4) Die Zuordnung des Eingriffs ist erschwert.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1426_BC-SRV",
     "riskType": null,
     "riskLevel": "low",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Analysieren von Batch-Input-Mappen (Aktion ANAL) – Einsicht in Inhalt/Protokoll einer Mappe. (b) Für sich ein geringes Vertraulichkeitsrisiko: Einsicht in die enthaltenen Transaktionen/Daten einer (ggf. fremden) Mappe, ohne verändernde Wirkung. (c) Fraud-Bezug: Ausspähen fremder Mappeninhalte (z. B. sensible Buchungen/Daten) als Reconnaissance. Low.",
+    "threat": "(1) Täter analysiert eine (fremde) Batch-Input-Mappe. (2) Er sieht die enthaltenen Transaktionen/Daten. (3) Die Erkenntnisse dienen als Vorbereitung. (4) Der reine Analysezugriff ist unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html"
+    ]
   },
   {
     "query": "1427_BC-SRV",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Sperren/Entsperren von Batch-Input-Mappen (Aktion LOCK). (b) Sperren kann die Verarbeitung erforderlicher Mappen verhindern (Verfügbarkeit/Vollständigkeit), Entsperren zurückgehaltene Mappen doch verfügbar machen. Betroffen sind Verfügbarkeit und die Wirksamkeit der Mappenkontrolle. (c) Fraud-/Fehler-Bezug: Entsperren einer bewusst gesperrten Mappe (Vorstufe zur Freigabe/Verarbeitung) oder Sperren einer benötigten Mappe zur Prozessstörung. Medium.",
+    "threat": "(1) Täter entsperrt eine bewusst gesperrte Mappe. (2) Die Mappe kann wieder freigegeben/verarbeitet werden. (3) Alternativ sperrt er eine benötigte Mappe. (4) Der Eingriff erscheint als reguläre Mappenverwaltung.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1428_BC-SRV",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Einplanen/Freigeben von Hintergrundjobs (S_BTCH_JOB, Aktion RELE, beliebige Jobgruppe). (b) Über Hintergrundjobs lassen sich Reports/Programme zeitgesteuert und wiederkehrend ausführen – außerhalb interaktiver Kontrolle. Betroffen sind Integrität und Nachvollziehbarkeit, je nach eingeplantem Programm auch Buchungs-Assertions. (c) Fraud-Bezug: Einplanen eines Jobs, der ein datenveränderndes/sensibles Programm wiederkehrend und unauffällig ausführt (z. B. nachts). Medium.",
+    "threat": "(1) Täter plant einen Hintergrundjob mit einem sensiblen/datenverändernden Programm ein. (2) Er gibt den Job frei (RELE). (3) Der Job läuft zeitgesteuert ohne interaktive Kontrolle. (4) Die wiederkehrende Ausführung fällt kaum auf.",
+    "source": [
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1429_BC-SRV",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Jobadministration (SM36/SM37, S_BTCH_ADM=* + S_BTCH_JOB DELE/PLAN/RELE) – umfassende Verwaltung von Hintergrundjobs (planen, freigeben, löschen). (b) Administrative Kontrolle über die Batch-Steuerung; ermöglicht Einrichten, Manipulieren und Löschen beliebiger Jobs. Betroffen sind Integrität, Nachvollziehbarkeit und Verfügbarkeit; über eingeplante Programme mittelbar Buchungs-Assertions. (c) Fraud-Bezug: Einrichten eines verdeckten Jobs bzw. Löschen von Jobs/Job-Logs, um Verarbeitungen zu manipulieren oder Spuren zu beseitigen. Hoch.",
+    "threat": "(1) Täter richtet in SM36 einen Job mit manipulativem Programm ein bzw. ändert einen bestehenden. (2) Er gibt ihn frei. (3) Nach Wirkung löscht er den Job und ggf. das Job-Log. (4) Die administrative Änderung ist schwer nachzuvollziehen.",
+    "source": [
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1430_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Mandantenübergreifende Jobadministration (S_BTCH_ADM=Y) inkl. Einplanen unter beliebigem Namen (S_BTCH_NAM=*). (b) Erlaubt die Steuerung von Jobs über Mandanten hinweg und unter fremden Benutzern; betroffen sind Integrität, Nachvollziehbarkeit und Vertraulichkeit systemweit. Die Kombination hebt Mandanten- und Benutzertrennung im Batchbetrieb auf. (c) Fraud-Bezug: Einplanen/Steuern von Jobs unter fremder Identität und über Mandanten hinweg, um Handlungen wie von einem anderen Nutzer/Mandanten zuzurechnen. Kritisch.",
+    "threat": "(1) Täter plant über S_BTCH_ADM=Y/S_BTCH_NAM=* einen Job unter fremdem Benutzer und ggf. in anderem Mandanten ein. (2) Der Job läuft unter fremder Identität. (3) Die ausgeführten Aktionen werden dem fremden Benutzer zugerechnet. (4) Die eigene Beteiligung ist verschleiert.",
+    "source": [
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1431_BC-SRV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Einplanen von Hintergrundjobs unter einem fremden Benutzernamen (S_BTCH_NAM=*, S_BTCH_JOB RELE). (b) Der Job läuft mit den Rechten/der Identität des angegebenen Steuerbenutzers; das ermöglicht Ausführung mit fremden (ggf. höheren) Berechtigungen und falsche Zurechnung. Betroffen sind Integrität, Nachvollziehbarkeit und logischer Zugriff (korrekte Zurechnung). (c) Fraud-Bezug: Ausführung eines Programms unter der Identität eines privilegierten Benutzers, um dessen Rechte zu nutzen und die Handlung diesem zuzuschreiben. Kritisch.",
+    "threat": "(1) Täter plant einen Job ein und gibt einen fremden (privilegierten) Steuerbenutzer an (S_BTCH_NAM). (2) Der Job läuft mit dessen Rechten/Identität. (3) Das Programm nutzt die fremden Berechtigungen. (4) Die Aktivität wird dem fremden Benutzer zugerechnet, nicht dem Täter.",
+    "source": [
+      "https://www.linkedin.com/pulse/sap-batch-input-job-policies-claudia-robert-aguirre"
+    ]
   },
   {
     "query": "1432_BC-SRV",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Benutzerübergreifende Spooladministration (SP01, S_ADMI_FCD=SP0R + S_SPO_ACT DISP/PRNT/USER) – Zugriff auf Spool-/Druckaufträge anderer Benutzer. (b) Spool-Aufträge enthalten häufig vertrauliche Ausdrucke (Gehaltsabrechnungen, HR-/Finanzdaten, technische Ausgaben); der Zugriff über fremde Aufträge verletzt die Vertraulichkeit. Anzeige, Druck und Umleitung fremder Ausgaben sind möglich. (c) Fraud-Bezug: Einsicht in bzw. Nachdruck vertraulicher fremder Spool-Ausgaben (z. B. Gehaltslisten) oder Umleitung von Ausdrucken. Medium.",
+    "threat": "(1) Täter öffnet in SP01 mit SP0R die Spool-Aufträge aller Benutzer. (2) Er zeigt vertrauliche fremde Ausgaben an (z. B. Gehaltsabrechnungen). (3) Er druckt/exportiert oder leitet sie um. (4) Der administrative Zugriff erscheint legitim.",
+    "source": [
+      "https://www.aglea.com/en/blog/3-suggerimenti-sulla-sicurezza-delle-stampanti-in-sap-0",
+      "https://help.sap.com/docs/SAP_NETWEAVER_750/290ce8983cbc4848a9d7b6f5e77491b9/4e8c021d62df5206e10000000a42189b.html",
+      "https://community.sap.com/t5/application-development-and-automation-discussions/how-to-restrict-sp01-transaction/m-p/4660383"
+    ]
   },
   {
     "query": "1433_BC-SRV",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Mandantenübergreifende Spooladministration (SP01, S_ADMI_FCD=SPAD) – Verwaltung des Spool-Systems über Mandanten hinweg. (b) Erweitert den benutzerübergreifenden Zugriff (1432) um die Mandantengrenze; betroffen ist die Vertraulichkeit systemweit, zudem administrative Eingriffe ins Spool-System (Verfügbarkeit). (c) Fraud-Bezug: Zugriff auf vertrauliche Ausgaben über Mandanten hinweg bzw. Manipulation der Spool-/Druckverarbeitung mit systemweiter Wirkung. Medium.",
+    "threat": "(1) Täter nutzt SPAD für mandantenübergreifende Spooladministration. (2) Er greift auf Spool-Ausgaben anderer Mandanten zu bzw. verwaltet das Spool-System. (3) Vertrauliche Ausgaben werden eingesehen oder die Verarbeitung beeinflusst. (4) Der Zugriff erscheint als reguläre Administration.",
+    "source": [
+      "https://help.sap.com/docs/SAP_NETWEAVER_750/290ce8983cbc4848a9d7b6f5e77491b9/4e8c021d62df5206e10000000a42189b.html",
+      "https://www.aglea.com/en/blog/3-suggerimenti-sulla-sicurezza-delle-stampanti-in-sap-0"
+    ]
   },
   {
     "query": "2000_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anlegen/Ändern von Sachkontenstammdaten auf Kontenplan-Ebene (FSP0, F_SKA1_KTP Akt. 01/02) – definiert die zentralen Eigenschaften eines Sachkontos (Kontengruppe, P&L/Bilanz, Steuerung). (b) Sachkonten sind das Rückgrat des Rechnungswesens; fehlerhafte/manipulierte Stammdaten wirken auf alle darauf gebuchten Vorgänge. Betroffen sind Integrität und die Assertions Accuracy, Classification/Presentation und Completeness. (c) Fraud-Bezug: Anlegen eines Kontos mit gezielt gewählten Eigenschaften (z. B. zur Fehlklassifikation) oder Ändern der Kontensteuerung, um Buchungen zu verschleiern/umzuwidmen. Kritisch.",
+    "threat": "(1) Täter legt in FSP0 ein Sachkonto mit gewünschten Eigenschaften an bzw. ändert die Steuerung eines bestehenden. (2) Über das Konto werden Buchungen geleitet. (3) Vorgänge werden fehlklassifiziert oder verschleiert. (4) Ohne unabhängige Stammdatenkontrolle bleibt die Zweckgestaltung unbemerkt.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/monitor-gl-master-data-changes-and-prevent-fraud-using-process-control-ccm/ba-p/13565809",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2001_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Anlegen des Sachkontenstamms auf Buchungskreis-Ebene (FS00/FSS0, F_SKA1_BUK/F_SKA1_BES Akt. 01) – inkl. buchungskreisspezifischer Steuerung (Feldstatus, Abstimmkonto-Kennzeichen, Berechtigungsgruppe); uneingeschränkte Werte (BUKRS/BRGRU=*) erweitern die Reichweite auf alle Buchungskreise. (b) Buchungskreis-Stammdaten steuern, wie auf ein Konto gebucht werden darf; Manipulation wirkt auf alle Buchungen. Betroffen sind Integrität und Accuracy/Completeness/Classification. (c) Fraud-Bezug: Anlegen eines Kontos ohne enge Kontrolle (z. B. ohne Berechtigungsgruppe) als Sammelbecken für unautorisierte Buchungen. Kritisch.",
+    "threat": "(1) Täter legt in FS00 ein Sachkonto im Buchungskreis an, mit vorteilhafter Steuerung (z. B. ohne BRGRU). (2) Er (oder Dritte) bucht auf dieses Konto. (3) Beträge werden dort geparkt/verschleiert. (4) Mangels unabhängiger Kontenanlage-Kontrolle bleibt die Einrichtung unbemerkt.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/monitor-gl-master-data-changes-and-prevent-fraud-using-process-control-ccm/ba-p/13565809",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2002_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Ändern des Sachkontenstamms auf Buchungskreis-Ebene (FS00/FSS0, F_SKA1_BUK/F_SKA1_BES Akt. 02) – z. B. Buchungssperre setzen/entfernen, Abstimmkonto-Kennzeichen, Berechtigungsgruppe (BRGRU=*). (b) Änderungen an aktiven Konten wirken sofort auf laufende Buchungen; das Entfernen einer Buchungssperre oder Berechtigungsgruppe öffnet ein Konto missbräuchlich. Betroffen sind Integrität und Accuracy/Completeness/Classification. (c) Fraud-Bezug: Entfernen der Berechtigungsgruppe eines geschützten Kontos (Selbst-Öffnung) oder Aufheben einer Buchungssperre, um darauf zu buchen (vgl. FS00+PFCG-Konflikt). Kritisch.",
+    "threat": "(1) Täter entfernt in FS00 die Berechtigungsgruppe bzw. eine Buchungssperre eines Kontos. (2) Das Konto ist nun bebuchbar/zugänglich. (3) Er bucht darauf bzw. leitet Vorgänge darüber. (4) Anschließend kann die Sperre/Gruppe wieder gesetzt werden, um unauffällig zu bleiben.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/monitor-gl-master-data-changes-and-prevent-fraud-using-process-control-ccm/ba-p/13565809",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2003_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Pflege der Zuordnung von Sachkonten in der Bilanz-/GuV-Struktur (FSE3, F_T011 Akt. 02) – steuert, in welcher Abschlussposition ein Konto ausgewiesen wird. (b) Manipulation der Strukturzuordnung verändert den Ausweis, ohne die Buchungen selbst zu ändern; betroffen ist unmittelbar die Assertion Presentation/Classification sowie die Verlässlichkeit des Abschlusses. (c) Fraud-Bezug: Umhängen eines Kontos in eine andere Bilanz-/GuV-Position, um Sachverhalte im Abschluss zu verschieben oder zu verschleiern (Bilanzkosmetik). Kritisch.",
+    "threat": "(1) Täter ändert in FSE3 die Zuordnung eines Kontos in der Bilanz-/GuV-Struktur. (2) Der Saldo erscheint in einer anderen Abschlussposition. (3) Der Ausweis wird verschoben, ohne dass eine Buchung auffällt. (4) Ohne Abgleich der Strukturzuordnung bleibt die Verschiebung unentdeckt.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2004_FI-GL",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Buchen auf Sachkonten (diverse Transaktionen F-02, FB01, FB50 etc.; F_BKPF_BUK/BLA/GSB Akt. 01, BUKRS/BRGRU=*) – erstellt Finanzbuchhaltungsbelege. (b) Die Buchung ist der zentrale wertverändernde Vorgang im Hauptbuch; uneingeschränkte Werte erlauben Buchungen über alle Buchungskreise/Belegarten. Betroffen sind Integrität und die Assertions Occurrence, Accuracy, Completeness. (c) Fraud-Bezug: Erfassen unautorisierter/fingierter Buchungen; in Kombination mit Stammdaten-, Storno- oder Periodenrechten (vgl. FIX_0001/FIX_0002) Grundlage für Manipulationen im Abschluss. Hoch.",
+    "threat": "(1) Täter erfasst über FB01/FB50 eine unautorisierte Buchung (ggf. auf ein selbst präpariertes Konto). (2) Der Beleg wird gebucht und wirkt auf die Salden. (3) Ohne Funktionstrennung (Stammdaten/Storno/Periode) lässt sich der Vorgang absichern/verschleiern. (4) Die Buchung erscheint als regulärer Beleg.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2005_FI-GL",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Buchen über das Kassenbuch (FBCJ, F_BKPF_* Akt. 01) – erfasst Bar-Ein- und -Auszahlungen als FI-Belege. (b) Kassenvorgänge sind bargeldnah und damit besonders betrugsanfällig; die Buchung wirkt auf Kassenbestand und Hauptbuch. Betroffen sind Integrität und die Assertions Occurrence/Accuracy/Completeness. (c) Fraud-Bezug: Erfassen fingierter Bar-Auszahlungen oder Nicht-Erfassen von Einzahlungen, um Bargeld zu entziehen und den Bestand rechnerisch stimmig zu halten. Medium.",
+    "threat": "(1) Täter erfasst in FBCJ eine fingierte Barauszahlung bzw. unterlässt eine Einzahlungsbuchung. (2) Der Kassenbestand wird rechnerisch angepasst. (3) Real entzogenes Bargeld bleibt buchhalterisch unauffällig. (4) Ohne unabhängige Kassenkontrolle fällt die Differenz nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2006_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "(a) Ausführen von Zinsläufen (F.24 Verzugs-/Saldenzinsen, F.26/F.47/F.52) – periodische Ermittlung und Buchung von Zinsen auf Konten/Salden. Die Query zeigt Anzeigeaktivität (ACTVT 03) auf F_BKPF_BUK, der Lauf erzeugt jedoch Zinsbelege. (b) Ein Zinslauf generiert automatisiert (ggf. massenhaft) Buchungen; fehlerhafte Parameter oder Missbrauch führen zu falschen Zins-/Belastungsbuchungen. Betroffen sind Integrität und die Assertions Accuracy/Completeness/Occurrence. (c) Fraud-/Fehler-Bezug: Manipulierte Zinsparameter oder wiederholte Läufe können ungerechtfertigte Zinsbelastungen/-gutschriften erzeugen. Kritisch.",
+    "threat": "(1) Täter startet einen Zinslauf mit manipulierten Parametern (Zinssatz/Selektion). (2) Der Lauf erzeugt automatisiert Zinsbelege. (3) Ungerechtfertigte Zinsbelastungen/-gutschriften entstehen. (4) In der Masse der Zinsbuchungen fallen einzelne Manipulationen kaum auf.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2007_FI-GL",
