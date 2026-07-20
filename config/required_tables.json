@@ -1,5 +1,5 @@
 {
-  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt). 'fields' dokumentiert je Tabelle die fuer den SE16-Download benoetigten Feldnamen sowie einen optionalen WHERE-Filter (SE16-seitige Vorselektion) -- abgeglichen gegen config/Download Data CSI.xls (2026-07-20) UND gegen die tatsaechlich von load/*.cypher gelesenen Spalten; Sprachfelder (SPRAS/LANGU/SPRSL) tragen seit 2026-07-20 einen Sprach-WHERE-Vorschlag (Default DE/DEU/D, analog IMPORT_LANG in backend/app.py). 'fields' wird von Konverter/Runner aktuell NICHT ausgewertet (reine Doku fuer den SAP-Downloadauftrag) -- 'required'/'optional' bleiben die einzigen maschinell geprueften Listen. 'didDo' (seit 2026-07-20) dokumentiert vorlaeufig, GEGEN EIN REALES SYSTEM NOCH ZU VERIFIZIEREN, den Datenbedarf fuer die kuenftige Did-Do-Auswertung (AE-12/AE-13, STAD/ST03N) -- bewusst NICHT Teil von 'required'/'optional', da STAD/ST03N anders als die Can-Do-Tabellen keine einfachen SE16-Transparenztabellen sind (Cluster-/Function-Module-basierter Zugriff, s. Hinweise je Eintrag).",
+  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt). 'fields' dokumentiert je Tabelle die fuer den SE16-Download benoetigten Feldnamen sowie einen optionalen WHERE-Filter (SE16-seitige Vorselektion) -- abgeglichen gegen config/Download Data CSI.xls (2026-07-20) UND gegen die tatsaechlich von load/*.cypher gelesenen Spalten; Sprachfelder (SPRAS/LANGU/SPRSL) tragen seit 2026-07-20 einen Sprach-WHERE-Vorschlag (Default DE/DEU/D, analog IMPORT_LANG in backend/app.py). 'fields' wird von Konverter/Runner aktuell NICHT ausgewertet (reine Doku fuer den SAP-Downloadauftrag) -- 'required'/'optional' bleiben die einzigen maschinell geprueften Listen. 'didDo' (seit 2026-07-20) dokumentiert vorlaeufig, GEGEN EIN REALES SYSTEM NOCH ZU VERIFIZIEREN, den Datenbedarf fuer die kuenftige Did-Do-Auswertung (AE-12/AE-13, STAD/ST03N) -- bewusst NICHT Teil von 'required'/'optional', da STAD/ST03N anders als die Can-Do-Tabellen keine einfachen SE16-Transparenztabellen sind (Cluster-/Function-Module-basierter Zugriff, s. Hinweise je Eintrag). 'changeDocuments' (seit 2026-07-20) dokumentiert vorlaeufig, GEGEN EIN REALES SYSTEM NOCH ZU VERIFIZIEREN, den Datenbedarf fuer eine RSUSR100N-aequivalente Auswertung (welche Rolle/Berechtigung hatte ein Nutzer wann, ueber max. 1 Jahr) -- ebenfalls bewusst NICHT Teil von 'required'/'optional' (CDHDR/CDPOS brauchen einen zweistufigen bzw. FM-basierten Zugriff, kein einfacher SE16-Einzelexport wie die Can-Do-Tabellen).",
   "required": [
     "USR02",
     "AGR_DEFINE",
@@ -363,6 +363,88 @@
         ],
         "where": "PERIOD >= heute - 1 Jahr (max. Betrachtungsraum, Nutzervorgabe 2026-07-20)",
         "notes": "Monatsaggregierte Workload-Statistik je TCode (kein Einzelsatz, keine User-Ebene in der Standardaggregation). Zugriff ueblicherweise ueber Function Module SWNC_COLLECTOR_GET_AGGREGATES (COMPONENT='TOTAL') statt ueber eine SE16-Tabelle -- kein '.txt'-Tabellenexport im bisherigen Sinn, sondern ein separater Extraktor/Report noetig. Deckt den 1-Jahres-Zeitraum typischerweise besser ab als STAD (s. dort)."
+      }
+    }
+  },
+  "changeDocuments": {
+    "_about": "Vorlaeufige Arbeitsgrundlage (analog zu 'didDo', noch kein Loader) fuer eine RSUSR100N-aequivalente Change-Document-Auswertung -- Hintergrund: Chat 2026-07-20, Nachvollziehen von Rollen-/Berechtigungshistorie ueber den Betrachtungszeitraum (max. 1 Jahr, Nutzervorgabe). USH02/USH10/USH12 sind eigene Transparenztabellen (SE16-faehig wie die Can-Do-Tabellen). CDHDR/CDPOS sind das Gegenstueck fuer Rollenzuweisungs-/-inhaltsaenderungen (Rollen haben KEIN eigenes USH-History-Objekt, laufen ueber die generischen Aenderungsbelege) -- anders als USH02/10/12 aber NICHT per einfachem SE16-Einzelexport nutzbar: CDPOS ist meist eine der groessten Tabellen im System. Performanter Zugriff erfordert zweistufiges Vorgehen (1. CDHDR nach OBJECTCLAS+Datum filtern -- trifft den Primaerschluessel MANDT/OBJECTCLAS direkt, 2. CDPOS nach der daraus resultierenden CHANGENR-Liste filtern) -- besser noch ueber die SAP-Function-Module CHANGEDOCUMENT_READ_HDRS_ONLY/CHANGEDOCUMENT_READ statt roher SE16-Mehrfachselektion (die bei mehr als ca. 4095 Werten in der IN-Liste schlicht KEINE Treffer liefert, kein sanftes Chunking). Bewusst NICHT eingepflegt: USH04 (Profilzuordnungs-Historie) -- zu indirekter Nachweis fuer Rollenzuordnung (haengt vom Zeitpunkt des Benutzerabgleichs ab, Rueckuebersetzung Profil->Rolle nur ueber den AKTUELLEN AGR_PROF-Stand moeglich, keine Unterscheidung direkt vs. ueber Rolle zugewiesener Profile). Fuer AKTUELL noch bestehende Rollenzuweisungen ist ohnehin keine Change-Document-Auswertung noetig -- AGR_USERS.FROM_DAT/TO_DAT (bereits geladen, load/04_user_roles.cypher) traegt die Gueltigkeitsspanne der Zuweisung schon direkt.",
+    "fields": {
+      "USH02": {
+        "fields": [
+          "MANDT",
+          "BNAME",
+          "MODDA",
+          "MODTI",
+          "MODBE",
+          "GLTGV",
+          "GLTGB",
+          "USTYP",
+          "CLASS",
+          "UFLAG",
+          "PWDINITIAL"
+        ],
+        "where": "MODDA >= heute - 1 Jahr (max. Betrachtungsraum, Nutzervorgabe 2026-07-20)",
+        "notes": "Spiegelt USR02 (Logon-Daten), zusaetzlich mit Aenderungsdatum/-zeit/-benutzer (MODDA/MODTI/MODBE). ACHTUNG: enthaelt in der Realtabelle auch Passwort-Hash-Felder (BCODE, PASSCODE, CODVN, PWDSALTEDHASH, SECURITY_POLICY) -- analog zu USR02 NICHT exportieren/droppen (s. load/01_users.cypher, convert.py DROP_DEFAULT). Feldnamen vorlaeufig, gegen reales System/SE11 verifizieren."
+      },
+      "USH10": {
+        "fields": [
+          "MANDT",
+          "PROFN",
+          "AKTPS",
+          "MODDA",
+          "MODTI",
+          "MODBE",
+          "TYP",
+          "NRAUT",
+          "AUTHS"
+        ],
+        "where": "MODDA >= heute - 1 Jahr (max. Betrachtungsraum, Nutzervorgabe 2026-07-20)",
+        "notes": "Spiegelt UST10C/UST10S (Profilinhalt/-struktur), zeigt ob/wann sich der Berechtigungsinhalt eines Profils geaendert hat -- damit laesst sich die Annahme 'Rolle/Profil im Zeitraum unveraendert' pruefen statt nur voraussetzen (s. Chat 2026-07-20). Feldnamen vorlaeufig, gegen reales System/SE11 verifizieren."
+      },
+      "USH12": {
+        "fields": [
+          "MANDT",
+          "OBJCT",
+          "AUTH",
+          "AKTPS",
+          "MODDA",
+          "MODTI",
+          "MODBE",
+          "TYP",
+          "VALS"
+        ],
+        "where": "MODDA >= heute - 1 Jahr (max. Betrachtungsraum, Nutzervorgabe 2026-07-20)",
+        "notes": "Spiegelt UST12 (Berechtigungswerte), zeigt Aenderungen an einzelnen Berechtigungswerten -- ebenfalls zur Verifikation, ob sich eine Berechtigung im Betrachtungszeitraum inhaltlich geaendert hat. Feldnamen vorlaeufig, gegen reales System/SE11 verifizieren."
+      },
+      "CDHDR": {
+        "fields": [
+          "MANDT",
+          "OBJECTCLAS",
+          "OBJECTID",
+          "CHANGENR",
+          "USERNAME",
+          "UDATE",
+          "UTIME",
+          "TCODE"
+        ],
+        "where": "OBJECTCLAS = 'PFCG' AND UDATE >= heute - 1 Jahr (nutzt den Primaerschluessel MANDT/OBJECTCLAS direkt -- performant, s. Chat 2026-07-20)",
+        "notes": "Schritt 1 des zweistufigen Zugriffs (s. changeDocuments._about). OBJECTID = Rollenname (AGR_NAME). Deckt sowohl Rolleninhalts- als auch Nutzerzuordnungs-Aenderungen ab (beide laufen unter OBJECTCLAS='PFCG') -- Unterscheidung erst ueber CDPOS.TABNAME/FNAME. Liefert die CHANGENR-Liste fuer CDPOS (s. dort). NICHT per generischem SE16-Einzelexport wie die Can-Do-Tabellen, sondern ueber ein dediziertes Programm/FM (CHANGEDOCUMENT_READ_HDRS_ONLY)."
+      },
+      "CDPOS": {
+        "fields": [
+          "MANDT",
+          "OBJECTCLAS",
+          "OBJECTID",
+          "CHANGENR",
+          "TABKEY",
+          "TABNAME",
+          "FNAME",
+          "CHNGIND",
+          "VALUE_OLD",
+          "VALUE_NEW"
+        ],
+        "where": "OBJECTCLAS = 'PFCG' AND CHANGENR IN (<Liste aus CDHDR-Schritt 1>) -- in Batches von <=4095 Werten, falls doch per SE16-Mehrfachselektion (harte Obergrenze dort, s. Chat 2026-07-20); FM-basiert ohne diese Grenze",
+        "notes": "Schritt 2 des zweistufigen Zugriffs. NIEMALS eigenstaendig/ungefiltert ziehen -- eine der groessten Tabellen im System, CDPOS hat selbst kein Datumsfeld (UDATE steckt nur in CDHDR). Empfohlener Weg: FM CHANGEDOCUMENT_READ (kapselt das Chunking der CHANGENR-Liste intern via FOR ALL ENTRIES) statt manueller SE16-Mehrfachselektion. FNAME/TABNAME unterscheiden Rolleninhalts- von Nutzerzuordnungs-Aenderungen. Feldnamen vorlaeufig, gegen reales System/SE11 verifizieren."
       }
     }
   }
