@@ -40,7 +40,14 @@ nachvollziehbar.
 - [ ] **Filterset-/Konnektor-Import weitere Systeme** — S/4HANA, Azure AD/Entra, Microsoft
   Dynamics, Salesforce. Vor jedem neuen Konnektor erst Datenmodell, Vertrauensgrenze und
   Minimal-Extrakt definieren.
-- [ ] **Mehrsprachigkeit** — Deutsch/Englisch-Umschalter für UI-Texte, Kataloglabels und Reports.
+- [~] **Mehrsprachigkeit** — Deutsch/Englisch-Umschalter für UI-Texte, Kataloglabels und Reports.
+  **Status (2026-07-20):** Schritte (1)–(3) bereits umgesetzt, vorgezogen auf v1 (parallel zum
+  formalen V2-Start): Grundgerüst (`frontend/i18n.js`, `i18n/de.json`+`en.json`,
+  Masterdata-Default über `ui.defaultLanguage`) sowie **alle fünf** Frontend-Seiten vollständig
+  lokalisiert — `index.html`, `admin.html`, `admin-masterdata.html`, `admin-org-profiles.html`,
+  `admin-scopes.html` (statisches HTML + JS-Strings, DE/EN-Parität geprüft, keine Konsolenfehler,
+  Playwright-Spotcheck inkl. dynamischem Re-Render bei Sprachwechsel). **Offen bleibt nur Schritt
+  (4)** (Backend-Fehlermeldungen + PDF/CSV-Reports, `?lang=`-Parameter) — siehe unten.
   - **Ansatz:** Leichtgewichtiges, key-basiertes i18n ohne Framework/Build-Step. Übersetzungen
     liegen in `frontend/i18n/de.json` + `en.json` (flache Keys → Text, mit Platzhaltern wie
     `{n}`). Statisches HTML wird über `data-i18n="key"`-Attribute beim Laden ersetzt;

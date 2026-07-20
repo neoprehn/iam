@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Org-Varianten — IAM</title>
+<script src="/i18n.js"></script>
 <style>
   :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
           --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
@@ -118,31 +119,32 @@
   <div class="brand">
     <div class="mark">IAM</div>
     <div>
-      <div class="title"><b>IAM</b> &middot; Org-Varianten</div>
-      <div class="tag">Org-spezifische Auswertungsvarianten f&uuml;r den "Neuer Lauf"-Dialog</div>
+      <div class="title"><b>IAM</b> &middot; <span data-i18n="orgProfiles.title">Org-Varianten</span></div>
+      <div class="tag" data-i18n="orgProfiles.subtitle">Org-spezifische Auswertungsvarianten f&uuml;r den "Neuer Lauf"-Dialog</div>
     </div>
   </div>
   <div class="bctx">
-    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
-    <span class="chip" id="opDirtyChip" style="display:none">&#9679; ungespeichert</span>
+    <button class="chip" id="langToggle" style="cursor:pointer" data-i18n-attr="title:lang.toggleTitle">DE</button>
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769;</button>
+    <span class="chip" id="opDirtyChip" style="display:none" data-i18n="admin.dirty">&#9679; ungespeichert</span>
   </div>
 </header>
 
 <nav class="ribbon">
   <div class="group">
-    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
-    <div class="lbl">Anzeige</div>
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span><span data-i18n="admin.ribbon.refresh">Aktualisieren</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.refreshGrp">Anzeige</div>
   </div>
   <div class="group">
     <div class="cmds">
-      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
-      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span><span data-i18n="common.save">Speichern</span></button>
+      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span><span data-i18n="common.cancel">Abbrechen</span></button>
     </div>
-    <div class="lbl">Editieren</div>
+    <div class="lbl" data-i18n="orgProfiles.ribbon.editGrp">Editieren</div>
   </div>
   <div class="group">
-    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
-    <div class="lbl">Zur&uuml;ck</div>
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span><span data-i18n="admin.ribbon.back">Zur Auswertung</span></a></div>
+    <div class="lbl" data-i18n="admin.ribbon.backGrp">Zur&uuml;ck</div>
   </div>
 </nav>
 
@@ -151,20 +153,20 @@
 <main>
   <div class="cols">
     <div>
-      <h2>Dataset <span class="muted">(nur f&uuml;r die Werte-Auswahl)</span></h2>
+      <h2><span data-i18n="orgProfiles.datasetHeading">Dataset</span> <span class="muted" data-i18n="orgProfiles.datasetHeadingHint">(nur f&uuml;r die Werte-Auswahl)</span></h2>
       <div class="filterbox">
-        <label for="opDataset">System (dataset)</label>
+        <label for="opDataset" data-i18n="orgProfiles.datasetLabel">System (dataset)</label>
         <select id="opDataset"></select>
-        <div class="hint">Liefert die w&auml;hlbaren Org-Felder/-Werte. Eine gespeicherte Variante
+        <div class="hint" data-i18n="orgProfiles.datasetHint">Liefert die w&auml;hlbaren Org-Felder/-Werte. Eine gespeicherte Variante
           ist nicht an dieses Dataset gebunden.</div>
       </div>
-      <h2>Varianten</h2>
+      <h2 data-i18n="orgProfiles.variantsHeading">Varianten</h2>
       <ul class="runs" id="opList"></ul>
-      <button class="ghost" id="opNewBtn" style="width:100%;margin-top:8px">+ Neue Variante</button>
+      <button class="ghost" id="opNewBtn" style="width:100%;margin-top:8px" data-i18n="orgProfiles.newBtn">+ Neue Variante</button>
     </div>
 
     <div>
-      <div id="opEmpty" class="empty">Links eine Variante w&auml;hlen oder eine neue anlegen.</div>
+      <div id="opEmpty" class="empty" data-i18n="orgProfiles.emptyHint">Links eine Variante w&auml;hlen oder eine neue anlegen.</div>
       <div id="opDetail" style="display:none">
         <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
           <span id="opTitle"></span>
@@ -176,30 +178,30 @@
         </div>
 
         <div id="opForm">
-          <label for="opName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
-          <input id="opName" placeholder="z. B. bukrs-3000" />
+          <label for="opName" data-i18n-html="orgProfiles.nameLabelHtml">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
+          <input id="opName" data-i18n-attr="placeholder:orgProfiles.namePlaceholder" placeholder="z. B. bukrs-3000" />
           <div class="field-label-row">
-            <label for="opDescription" style="margin:12px 0 4px">Beschreibung</label>
-            <button type="button" class="icon-btn" id="opDescExpandBtn" title="Vergr&ouml;&szlig;ern/Verkleinern">&#9974;</button>
+            <label for="opDescription" style="margin:12px 0 4px" data-i18n="orgProfiles.descLabel">Beschreibung</label>
+            <button type="button" class="icon-btn" id="opDescExpandBtn" data-i18n-attr="title:orgProfiles.descExpandTitle" title="Vergr&ouml;&szlig;ern/Verkleinern">&#9974;</button>
           </div>
-          <textarea id="opDescription" rows="2" placeholder="z. B. Buchungskreis 3000"></textarea>
+          <textarea id="opDescription" rows="2" data-i18n-attr="placeholder:orgProfiles.descPlaceholder" placeholder="z. B. Buchungskreis 3000"></textarea>
 
           <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:18px">
-            <h2 style="margin:0">Org-Kriterien</h2>
+            <h2 style="margin:0" data-i18n="orgProfiles.criteriaHeading">Org-Kriterien</h2>
             <div>
-              <button class="ghost" id="opImportBtn" type="button" style="width:auto;padding:5px 10px;font-size:12px" title="Kriterien aus einer JSON-Datei laden">Importieren</button>
-              <button class="ghost" id="opExportBtn" type="button" style="width:auto;padding:5px 10px;font-size:12px" title="Kriterien als JSON-Datei sichern">Exportieren</button>
+              <button class="ghost" id="opImportBtn" type="button" style="width:auto;padding:5px 10px;font-size:12px" data-i18n="orgProfiles.importBtn" data-i18n-attr="title:orgProfiles.importTitle" title="Kriterien aus einer JSON-Datei laden">Importieren</button>
+              <button class="ghost" id="opExportBtn" type="button" style="width:auto;padding:5px 10px;font-size:12px" data-i18n="orgProfiles.exportBtn" data-i18n-attr="title:orgProfiles.exportTitle" title="Kriterien als JSON-Datei sichern">Exportieren</button>
             </div>
           </div>
           <input type="file" id="opImportFile" accept="application/json" style="display:none" />
-          <div class="hint" id="opAndHint" style="display:none;margin-bottom:8px">Mehrere Org-Felder werden immer mit <b>UND</b> verkn&uuml;pft &mdash; die Verkn&uuml;pfung je Kriterium gilt nur innerhalb des jeweiligen Felds. Innerhalb eines Felds k&ouml;nnen Bedingungen und Gruppen mit UND/ODER frei kombiniert werden (max. 2 Ebenen, keine Gruppe-in-Gruppe).</div>
+          <div class="hint" id="opAndHint" style="display:none;margin-bottom:8px" data-i18n-html="orgProfiles.andHintHtml">Mehrere Org-Felder werden immer mit <b>UND</b> verkn&uuml;pft &mdash; die Verkn&uuml;pfung je Kriterium gilt nur innerhalb des jeweiligen Felds. Innerhalb eines Felds k&ouml;nnen Bedingungen und Gruppen mit UND/ODER frei kombiniert werden (max. 2 Ebenen, keine Gruppe-in-Gruppe).</div>
           <div id="criteriaList"></div>
-          <button class="ghost" id="opAddCriterionBtn" type="button" style="width:100%">+ Kriterium hinzuf&uuml;gen</button>
+          <button class="ghost" id="opAddCriterionBtn" type="button" style="width:100%" data-i18n="orgProfiles.addCriterionBtn">+ Kriterium hinzuf&uuml;gen</button>
 
           <div class="actions">
-            <button class="primary" id="opSaveBtn" disabled>Speichern</button>
-            <button class="ghost" id="opCancelBtn" disabled>Abbrechen</button>
-            <button class="ghost" id="opDeleteBtn" style="margin-left:auto;display:none">L&ouml;schen</button>
+            <button class="primary" id="opSaveBtn" disabled data-i18n="common.save">Speichern</button>
+            <button class="ghost" id="opCancelBtn" disabled data-i18n="common.cancel">Abbrechen</button>
+            <button class="ghost" id="opDeleteBtn" style="margin-left:auto;display:none" data-i18n="common.delete">L&ouml;schen</button>
           </div>
         </div>
       </div>
@@ -214,13 +216,21 @@ const doneTag = '<span style="color:var(--ok)">&#10003;</span>';
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+  $('themeToggle').textContent = t === 'light' ? '☀️' : '🌙';
 }
 applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
 $('themeToggle').onclick = () => {
   const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
   localStorage.setItem('theme', next); applyTheme(next);
 };
+
+function renderLangToggle() {
+  const el = $('langToggle'); if (!el) return;
+  el.textContent = (window.I18N && I18N.lang) ? I18N.lang.toUpperCase() : 'DE';
+}
+$('langToggle').onclick = () => { I18N.setLang(I18N.lang === 'de' ? 'en' : 'de'); };
+I18N.ready.then(() => { renderLangToggle(); I18N.applyTo(document.body); });
+I18N.onChange(() => { renderLangToggle(); I18N.applyTo(document.body); renderList(); reRenderOpenDetail(); });
 
 function setStatus(html, isErr) {
   const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
@@ -279,8 +289,8 @@ function renderList() {
   sorted.forEach(p => {
     const li = document.createElement('li');
     li.className = p.name === selectedName ? 'active' : '';
-    const badge = p.protected ? ' <span class="lock-badge">&#128274; geschützt</span>'
-      : (p.source === 'custom' ? ' <span class="custom-badge">&#9679; eigen</span>' : '');
+    const badge = p.protected ? ` <span class="lock-badge">&#128274; ${I18N.t('orgProfiles.js.protectedBadge')}</span>`
+      : (p.source === 'custom' ? ` <span class="custom-badge">&#9679; ${I18N.t('orgProfiles.js.customBadge')}</span>` : '');
     li.innerHTML = `<b>${p.name}</b>${badge}<br><small>${p.description || ''}</small>`;
     li.onclick = () => selectProfile(p.name);
     ul.appendChild(li);
@@ -310,11 +320,16 @@ function filtersToCriteria(filters) {
 }
 
 function leafLabel(n) {
-  return n.type === 'range' ? `Bereich: ${n.from || '–'}…${n.to || '–'}` : (n.value || '(leer)');
+  return n.type === 'range' ? I18N.t('orgProfiles.js.rangeLabel', { from: n.from || '–', to: n.to || '–' })
+    : (n.value || I18N.t('orgProfiles.js.emptyValue'));
+}
+
+function orgModeText(mode) {
+  return mode === 'ignoreOrg' ? I18N.t('orgProfiles.js.orgModeIgnore') : I18N.t('orgProfiles.js.orgModeRestricted');
 }
 
 async function selectProfile(name) {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('orgProfiles.js.unsavedConfirm'))) return;
   selectedName = name; isNew = false;
   const p = profiles.find(x => x.name === name);
   renderList();
@@ -322,17 +337,15 @@ async function selectProfile(name) {
   $('opTitle').textContent = p.name;
   $('opDeleteBtn').style.display = p.protected ? 'none' : '';
   if (p.protected) {
-    $('opBadge').textContent = 'geschützt'; $('opBadge').className = 'badge protected';
+    $('opBadge').textContent = I18N.t('orgProfiles.js.protectedBadge'); $('opBadge').className = 'badge protected';
     $('opForm').style.display = 'none';
     $('opProtectedInfo').style.display = '';
-    const mode = p.org.mode === 'ignoreOrg' ? 'keine Org-Einschränkung — alle Queries laufen wie gebaut'
-      : 'nur Queries mit Org-Feld-Bezug, davon nur echtes „*“ / Vollbereich (übergreifend) — Queries ohne Org-Feld laufen hier nicht';
     $('opProtectedText').innerHTML = `<b>${p.description || ''}</b><div class="hint" style="margin-top:6px">`
-      + `Org-Modus: ${mode}. Diese Basis-Variante ist fest vorgegeben und nicht editierbar.</div>`;
+      + I18N.t('orgProfiles.js.protectedInfo', { mode: orgModeText(p.org.mode) }) + `</div>`;
     setDirty(false);
     return;
   }
-  $('opBadge').textContent = 'eigene Variante'; $('opBadge').className = 'badge custom';
+  $('opBadge').textContent = I18N.t('orgProfiles.js.customVariantBadge'); $('opBadge').className = 'badge custom';
   $('opProtectedInfo').style.display = 'none';
   $('opForm').style.display = '';
   $('opName').value = p.name; $('opName').disabled = false;
@@ -344,12 +357,12 @@ async function selectProfile(name) {
 }
 
 function newProfile() {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('orgProfiles.js.unsavedConfirm'))) return;
   selectedName = null; isNew = true;
   renderList();
   $('opEmpty').style.display = 'none'; $('opDetail').style.display = '';
-  $('opTitle').textContent = 'Neue Variante';
-  $('opBadge').textContent = 'neu'; $('opBadge').className = 'badge custom';
+  $('opTitle').textContent = I18N.t('orgProfiles.js.newVariantTitle');
+  $('opBadge').textContent = I18N.t('orgProfiles.js.newBadge'); $('opBadge').className = 'badge custom';
   $('opDeleteBtn').style.display = 'none';
   $('opProtectedInfo').style.display = 'none';
   $('opForm').style.display = '';
@@ -360,6 +373,24 @@ function newProfile() {
   setDirty(false);
 }
 $('opNewBtn').onclick = newProfile;
+
+function reRenderOpenDetail() {
+  if ($('opDetail').style.display === 'none') return;
+  if (!isNew && selectedName) {
+    const p = profiles.find(x => x.name === selectedName);
+    if (p && p.protected) {
+      $('opBadge').textContent = I18N.t('orgProfiles.js.protectedBadge');
+      $('opProtectedText').innerHTML = `<b>${p.description || ''}</b><div class="hint" style="margin-top:6px">`
+        + I18N.t('orgProfiles.js.protectedInfo', { mode: orgModeText(p.org.mode) }) + `</div>`;
+      return;
+    }
+    $('opBadge').textContent = I18N.t('orgProfiles.js.customVariantBadge');
+  } else if (isNew) {
+    if (!$('opName').value.trim()) $('opTitle').textContent = I18N.t('orgProfiles.js.newVariantTitle');
+    $('opBadge').textContent = I18N.t('orgProfiles.js.newBadge');
+  }
+  renderCriteria();
+}
 
 async function addCriterion() {
   const field = orgFields[0] || '';
@@ -376,7 +407,7 @@ $('opAddCriterionBtn').onclick = addCriterion;
 function renderLeafRow(n, i, gi, li) {
   const attrs = gi === null ? `data-i="${i}" data-li="${li}"` : `data-i="${i}" data-gi="${gi}" data-li="${li}"`;
   return `<div class="leaf-row"><span>${leafLabel(n)}</span>
-    <button type="button" class="icon-btn leafRemove" ${attrs} title="Entfernen">&#10005;</button></div>`;
+    <button type="button" class="icon-btn leafRemove" ${attrs} title="${I18N.t('orgProfiles.js.removeTitle')}">&#10005;</button></div>`;
 }
 
 // "+ Werte"/"+ Bereich"-Zeile, wiederverwendet fuer das Kriterium (gi=null) UND fuer eine Gruppe
@@ -388,26 +419,26 @@ function addRowHtml(i, gi, vals) {
     <select class="orgValueAdd" multiple size="4">
       ${vals.map(v => `<option value="${v}">${v}</option>`).join('')}
     </select>
-    <button type="button" class="ghost addValuesBtn">+ Werte</button>
-    <select class="orgFromAdd"><option value="">von…</option>${vals.map(v => `<option value="${v}">${v}</option>`).join('')}</select>
-    <select class="orgToAdd"><option value="">bis…</option>${vals.map(v => `<option value="${v}">${v}</option>`).join('')}</select>
-    <button type="button" class="ghost addRangeBtn">+ Bereich</button>
-    ${gi === null ? '<button type="button" class="ghost addGroupBtn">+ Gruppe</button>' : ''}
+    <button type="button" class="ghost addValuesBtn">${I18N.t('orgProfiles.js.addValuesBtn')}</button>
+    <select class="orgFromAdd"><option value="">${I18N.t('orgProfiles.js.fromPlaceholder')}</option>${vals.map(v => `<option value="${v}">${v}</option>`).join('')}</select>
+    <select class="orgToAdd"><option value="">${I18N.t('orgProfiles.js.toPlaceholder')}</option>${vals.map(v => `<option value="${v}">${v}</option>`).join('')}</select>
+    <button type="button" class="ghost addRangeBtn">${I18N.t('orgProfiles.js.addRangeBtn')}</button>
+    ${gi === null ? `<button type="button" class="ghost addGroupBtn">${I18N.t('orgProfiles.js.addGroupBtn')}</button>` : ''}
   </div>`;
 }
 
 function renderGroupBox(g, i, ci, vals) {
   return `<div class="org-group">
     <div class="top-row">
-      <div><span class="lbl-sm">Gruppe</span> <select class="groupOp" data-i="${i}" data-ci="${ci}">
-        <option value="AND" ${g.op === 'AND' ? 'selected' : ''}>UND (alle)</option>
-        <option value="OR" ${g.op === 'OR' ? 'selected' : ''}>ODER (mind. eines)</option>
+      <div><span class="lbl-sm">${I18N.t('orgProfiles.js.groupLabel')}</span> <select class="groupOp" data-i="${i}" data-ci="${ci}">
+        <option value="AND" ${g.op === 'AND' ? 'selected' : ''}>${I18N.t('orgProfiles.js.andOp')}</option>
+        <option value="OR" ${g.op === 'OR' ? 'selected' : ''}>${I18N.t('orgProfiles.js.orOp')}</option>
       </select></div>
-      <button type="button" class="icon-btn groupRemove" data-i="${i}" data-ci="${ci}" title="Gruppe entfernen">&#10005;</button>
+      <button type="button" class="icon-btn groupRemove" data-i="${i}" data-ci="${ci}" title="${I18N.t('orgProfiles.js.removeGroupTitle')}">&#10005;</button>
     </div>
     <div class="org-children">
       ${g.children.length ? g.children.map((lf, li) => renderLeafRow(lf, i, ci, li)).join('')
-        : '<div class="hint">Noch keine Bedingung in dieser Gruppe.</div>'}
+        : `<div class="hint">${I18N.t('orgProfiles.js.noConditionGroupHint')}</div>`}
     </div>
     ${addRowHtml(i, ci, vals)}
   </div>`;
@@ -417,36 +448,36 @@ function renderCriteria() {
   const box = $('criteriaList'); box.innerHTML = '';
   $('opAndHint').style.display = criteria.length > 1 ? '' : 'none';
   if (!criteria.length) {
-    box.innerHTML = '<div class="hint criterion full" style="border:none;background:none;padding:0">Noch kein Kriterium — ohne Kriterium ist die Variante nicht speicherbar.</div>';
+    box.innerHTML = `<div class="hint criterion full" style="border:none;background:none;padding:0">${I18N.t('orgProfiles.js.criterionNone')}</div>`;
     return;
   }
   criteria.forEach((c, i) => {
     const loaded = c.field in valueCache;
     const vals = valueCache[c.field] || [];
-    const valuesHint = !loaded ? '<div class="hint"><span class="spin"></span> Werte werden geladen…</div>'
-      : !vals.length ? '<div class="hint">Keine konkreten Werte für dieses Feld im Dataset gefunden — anderes Feld wählen.</div>' : '';
+    const valuesHint = !loaded ? `<div class="hint"><span class="spin"></span> ${I18N.t('orgProfiles.js.valuesLoading')}</div>`
+      : !vals.length ? `<div class="hint">${I18N.t('orgProfiles.js.noValuesForField')}</div>` : '';
     const div = document.createElement('div');
     // Ungerade Kriterienzahl: das letzte spannt volle Breite (deckt 1/3/5.../… ab, s. CSS-Kommentar).
     div.className = 'criterion' + (criteria.length % 2 === 1 && i === criteria.length - 1 ? ' full' : '');
     div.innerHTML = `
       <div class="row">
-        <div><label>Org-Feld</label><select class="critField" data-i="${i}">
+        <div><label>${I18N.t('orgProfiles.js.orgFieldLabel')}</label><select class="critField" data-i="${i}">
           ${orgFields.map(f => `<option value="${f}" ${f === c.field ? 'selected' : ''}>${f}</option>`).join('')}
         </select></div>
-        <div><label>Verkn&uuml;pfung</label><select class="critTopOp" data-i="${i}">
-          <option value="AND" ${c.op === 'AND' ? 'selected' : ''}>UND (alle)</option>
-          <option value="OR" ${c.op === 'OR' ? 'selected' : ''}>ODER (mind. eines)</option>
+        <div><label>${I18N.t('orgProfiles.js.linkLabel')}</label><select class="critTopOp" data-i="${i}">
+          <option value="AND" ${c.op === 'AND' ? 'selected' : ''}>${I18N.t('orgProfiles.js.andOp')}</option>
+          <option value="OR" ${c.op === 'OR' ? 'selected' : ''}>${I18N.t('orgProfiles.js.orOp')}</option>
         </select></div>
       </div>
       ${!loaded || !vals.length ? valuesHint : ''}
       <div class="org-children">
         ${c.children.length ? c.children.map((child, ci) => child.type === 'group'
             ? renderGroupBox(child, i, ci, vals) : renderLeafRow(child, i, null, ci)).join('')
-          : '<div class="hint">Noch keine Bedingung — unten Werte/Bereich/Gruppe hinzuf&uuml;gen.</div>'}
+          : `<div class="hint">${I18N.t('orgProfiles.js.noConditionHint')}</div>`}
       </div>
       ${addRowHtml(i, null, vals)}
       <div class="top" style="margin-top:8px"><span></span>
-        <button type="button" class="ghost critRemove" data-i="${i}">Kriterium entfernen</button></div>`;
+        <button type="button" class="ghost critRemove" data-i="${i}">${I18N.t('orgProfiles.js.removeCriterionBtn')}</button></div>`;
     box.appendChild(div);
   });
   box.querySelectorAll('.critField').forEach(sel => sel.addEventListener('change', async e => {
@@ -485,7 +516,7 @@ function renderCriteria() {
     const row = e.target.closest('.add-row'); const i = +row.dataset.i;
     const target = row.dataset.gi !== undefined ? criteria[i].children[+row.dataset.gi].children : criteria[i].children;
     const from = row.querySelector('.orgFromAdd').value, to = row.querySelector('.orgToAdd').value;
-    if (!from || !to) { setStatus('<b>Fehler:</b> von/bis auswählen.', true); return; }
+    if (!from || !to) { setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('orgProfiles.js.rangeMissingError')}`, true); return; }
     target.push({ type: 'range', from, to });
     renderCriteria(); setDirty(true);
   }));
@@ -517,15 +548,15 @@ $('opDescExpandBtn').onclick = () => {
 // backend/app.py:_normalize_org_filter(). Rein clientseitig (kein Endpunkt noetig): fuellt nur
 // das criteria-Array, gespeichert wird weiterhin ueber den bestehenden Speichern-Knopf.
 function normalizeImportedCriterion(c) {
-  if (!c || typeof c.field !== 'string') throw new Error('Ungültiges Kriterium: ' + JSON.stringify(c));
+  if (!c || typeof c.field !== 'string') throw new Error(I18N.t('orgProfiles.js.importInvalidCriterion', { json: JSON.stringify(c) }));
   if (Array.isArray(c.children)) {
-    if (!['AND', 'OR'].includes(c.op)) throw new Error('Ungültiger Operator: ' + JSON.stringify(c));
+    if (!['AND', 'OR'].includes(c.op)) throw new Error(I18N.t('orgProfiles.js.importInvalidOperator', { json: JSON.stringify(c) }));
     return { field: c.field, op: c.op, children: c.children.map(cloneNode) };
   }
   if (c.op === 'RANGE') {
     return { field: c.field, op: 'OR', children: [{ type: 'range', from: c.rangeFrom || '', to: c.rangeTo || '' }] };
   }
-  if (!['AND', 'OR'].includes(c.op)) throw new Error('Ungültiger Operator: ' + JSON.stringify(c));
+  if (!['AND', 'OR'].includes(c.op)) throw new Error(I18N.t('orgProfiles.js.importInvalidOperator', { json: JSON.stringify(c) }));
   return { field: c.field, op: c.op, children: (c.values || []).map(v => ({ type: 'value', value: v })) };
 }
 $('opExportBtn').onclick = () => {
@@ -541,19 +572,19 @@ $('opImportFile').addEventListener('change', async e => {
   if (!file) return;
   try {
     const parsed = JSON.parse(await file.text());
-    if (!Array.isArray(parsed)) throw new Error('Datei muss ein JSON-Array von Kriterien sein.');
+    if (!Array.isArray(parsed)) throw new Error(I18N.t('orgProfiles.js.importArrayRequired'));
     criteria = parsed.map(normalizeImportedCriterion);
     setDirty(true);
     await Promise.all(criteria.map(c => valuesForField(c.field)));
     renderCriteria();
-    setStatus(`${doneTag} ${criteria.length} Kriterium/Kriterien importiert — noch nicht gespeichert.`);
+    setStatus(`${doneTag} ${I18N.t('orgProfiles.js.importSuccess', { n: criteria.length })}`);
   } catch (err) {
-    setStatus('<b>Fehler beim Import:</b> ' + (err.message || String(err)), true);
+    setStatus(`<b>${I18N.t('orgProfiles.js.importErrorLabel')}:</b> ` + (err.message || String(err)), true);
   }
 });
 $('opName').addEventListener('input', () => {
   setDirty(true);
-  $('opTitle').textContent = $('opName').value.trim() || (isNew ? 'Neue Variante' : '');
+  $('opTitle').textContent = $('opName').value.trim() || (isNew ? I18N.t('orgProfiles.js.newVariantTitle') : '');
 });
 
 function formPayload() {
@@ -564,32 +595,32 @@ function formPayload() {
 }
 
 async function saveCurrent() {
-  if (!criteria.length) { setStatus('<b>Fehler:</b> mindestens ein Org-Kriterium erforderlich.', true); return; }
+  if (!criteria.length) { setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('orgProfiles.js.criterionRequired')}`, true); return; }
   const invalid = criteria.some(c => !c.children.length || c.children.some(n => n.type === 'group' && !n.children.length));
-  if (invalid) { setStatus('<b>Fehler:</b> jedes Kriterium/jede Gruppe braucht mindestens eine Bedingung.', true); return; }
-  setStatus('<span class="spin"></span> Speichern&hellip;');
+  if (invalid) { setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('orgProfiles.js.criterionConditionRequired')}`, true); return; }
+  setStatus(`<span class="spin"></span> ${I18N.t('orgProfiles.js.saving')}`);
   try {
     if (isNew) {
       const name = $('opName').value.trim();
-      if (!name) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
+      if (!name) { setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('orgProfiles.js.nameRequired')}`, true); return; }
       await api('/admin/org-profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, ...formPayload() }) });
-      setStatus(`${doneTag} Variante <b>${name}</b> angelegt.`);
+      setStatus(`${doneTag} ${I18N.t('orgProfiles.js.variantCreated', { name })}`);
       await loadProfiles();
       await selectProfile(name);
     } else {
       const newName = $('opName').value.trim();
-      if (!newName) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
+      if (!newName) { setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('orgProfiles.js.nameRequired')}`, true); return; }
       const res = await api('/admin/org-profiles/' + encodeURIComponent(selectedName),
         { method: 'PUT', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...formPayload(), newName: newName !== selectedName ? newName : null }) });
       const finalName = (res && res.name) || selectedName;
-      setStatus(`${doneTag} Variante <b>${finalName}</b> gespeichert.`);
+      setStatus(`${doneTag} ${I18N.t('orgProfiles.js.variantSaved', { name: finalName })}`);
       await loadProfiles();
       await selectProfile(finalName);
     }
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 }
 function cancelCurrent() {
@@ -601,16 +632,16 @@ $('opCancelBtn').onclick = cancelCurrent;
 $('cmdCancel').onclick = cancelCurrent;
 
 $('opDeleteBtn').onclick = async () => {
-  if (!selectedName || !confirm(`Variante "${selectedName}" wirklich löschen?`)) return;
-  setStatus('<span class="spin"></span> L&ouml;schen&hellip;');
+  if (!selectedName || !confirm(I18N.t('orgProfiles.js.deleteConfirm', { name: selectedName }))) return;
+  setStatus(`<span class="spin"></span> ${I18N.t('orgProfiles.js.deleting')}`);
   try {
     await api('/admin/org-profiles/' + encodeURIComponent(selectedName), { method: 'DELETE' });
-    setStatus(`${doneTag} Variante gel&ouml;scht.`);
+    setStatus(`${doneTag} ${I18N.t('orgProfiles.js.deleted')}`);
     selectedName = null;
     $('opDetail').style.display = 'none'; $('opEmpty').style.display = '';
     await loadProfiles();
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 };
 
@@ -618,14 +649,15 @@ $('cmdRefresh').onclick = async () => {
   const keep = selectedName;
   await loadDatasets(); await loadOrgFields(); await loadProfiles();
   if (keep) await selectProfile(keep);
-  setStatus(`${doneTag} aktualisiert.`);
+  setStatus(`${doneTag} ${I18N.t('orgProfiles.js.refreshed')}`);
 };
 
 (async function init() {
+  await I18N.ready;
   await loadDatasets();
   await loadOrgFields();
   await loadProfiles();
-})().catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+})().catch(e => setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ` + JSON.stringify(e), true));
 </script>
 </body>
 </html>

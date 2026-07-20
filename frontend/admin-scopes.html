@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Scope — IAM</title>
+<script src="/i18n.js"></script>
 <style>
   :root { --bg:#0f1419; --panel:#1a2129; --line:#2b3540; --fg:#e6edf3; --muted:#8b98a5;
           --accent:#4c8bf5; --crit:#e5484d; --ok:#46a758; }
@@ -130,31 +131,32 @@
   <div class="brand">
     <div class="mark">IAM</div>
     <div>
-      <div class="title"><b>IAM</b> &middot; Scope</div>
-      <div class="tag">Persistente Katalog-Auswahl (Einzelfilter/SoD-Regeln) f&uuml;r „Neuer Lauf"</div>
+      <div class="title"><b>IAM</b> &middot; <span data-i18n="scopeAdmin.title">Scope</span></div>
+      <div class="tag" data-i18n="scopeAdmin.subtitle">Persistente Katalog-Auswahl (Einzelfilter/SoD-Regeln) f&uuml;r „Neuer Lauf"</div>
     </div>
   </div>
   <div class="bctx">
-    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
-    <span class="chip" id="spDirtyChip" style="display:none">&#9679; ungespeichert</span>
+    <button class="chip" id="langToggle" style="cursor:pointer" data-i18n-attr="title:lang.toggleTitle">DE</button>
+    <button class="chip" id="themeToggle" style="cursor:pointer">&#127769;</button>
+    <span class="chip" id="spDirtyChip" style="display:none" data-i18n="admin.dirty">&#9679; ungespeichert</span>
   </div>
 </header>
 
 <nav class="ribbon">
   <div class="group">
-    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span>Aktualisieren</button></div>
-    <div class="lbl">Anzeige</div>
+    <div class="cmds"><button class="cmd" id="cmdRefresh"><span class="ico">&#8635;</span><span data-i18n="admin.ribbon.refresh">Aktualisieren</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.refreshGrp">Anzeige</div>
   </div>
   <div class="group">
     <div class="cmds">
-      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span>Speichern</button>
-      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span>Abbrechen</button>
+      <button class="cmd" id="cmdSave" disabled><span class="ico">&#128190;</span><span data-i18n="common.save">Speichern</span></button>
+      <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span><span data-i18n="common.cancel">Abbrechen</span></button>
     </div>
-    <div class="lbl">Editieren</div>
+    <div class="lbl" data-i18n="orgProfiles.ribbon.editGrp">Editieren</div>
   </div>
   <div class="group">
-    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span>Zur Auswertung</a></div>
-    <div class="lbl">Zur&uuml;ck</div>
+    <div class="cmds"><a class="cmd" href="/"><span class="ico">&#8592;</span><span data-i18n="admin.ribbon.back">Zur Auswertung</span></a></div>
+    <div class="lbl" data-i18n="admin.ribbon.backGrp">Zur&uuml;ck</div>
   </div>
 </nav>
 
@@ -163,20 +165,20 @@
 <main>
   <div class="cols">
     <div>
-      <h2>Ruleset</h2>
+      <h2 data-i18n="scopeAdmin.rulesetHeading">Ruleset</h2>
       <div class="filterbox">
-        <label for="spRuleset">Ruleset</label>
+        <label for="spRuleset" data-i18n="scopeAdmin.rulesetHeading">Ruleset</label>
         <select id="spRuleset"></select>
-        <div class="hint">Scope-Profile beziehen sich auf Query-/SoD-Regel-IDs eines Rulesets —
+        <div class="hint" data-i18n="scopeAdmin.rulesetHint">Scope-Profile beziehen sich auf Query-/SoD-Regel-IDs eines Rulesets —
           nicht auf ein bestimmtes Dataset, daher &uuml;ber Datasets hinweg wiederverwendbar.</div>
       </div>
-      <h2>Gespeicherte Scopes</h2>
+      <h2 data-i18n="scopeAdmin.savedHeading">Gespeicherte Scopes</h2>
       <ul class="runs" id="spList"></ul>
-      <button class="ghost" id="spNewBtn" style="width:100%;margin-top:8px">+ Neuer Scope</button>
+      <button class="ghost" id="spNewBtn" style="width:100%;margin-top:8px" data-i18n="scopeAdmin.newBtn">+ Neuer Scope</button>
     </div>
 
     <div>
-      <div id="spEmpty" class="empty">Links einen Scope w&auml;hlen oder einen neuen anlegen.</div>
+      <div id="spEmpty" class="empty" data-i18n="scopeAdmin.emptyHint">Links einen Scope w&auml;hlen oder einen neuen anlegen.</div>
       <div id="spDetail" style="display:none">
         <h2 style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
           <span id="spTitle"></span>
@@ -184,98 +186,98 @@
         </h2>
 
         <div class="sp-stepper" id="spStepper">
-          <button type="button" data-stage="query">&#9312; Einzelfilter</button>
-          <button type="button" data-stage="sod">&#9313; SoD-Regeln</button>
-          <button type="button" data-stage="save">&#9314; Speichern</button>
+          <button type="button" data-stage="query"><span data-i18n="scopeAdmin.stepperQuery">&#9312; Einzelfilter</span></button>
+          <button type="button" data-stage="sod"><span data-i18n="scopeAdmin.stepperSod">&#9313; SoD-Regeln</span></button>
+          <button type="button" data-stage="save"><span data-i18n="scopeAdmin.stepperSave">&#9314; Speichern</span></button>
         </div>
 
         <!-- Stufe 1: Einzelfilter -->
         <div id="sp-stage-query">
           <div class="sp-scope-box">
-            <h3>Einzelfilter <span id="sp-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+            <h3><span data-i18n="scopeAdmin.queryBoxHeading">Einzelfilter</span> <span id="sp-q-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
             <div class="sp-scope-filters">
-              <input type="text" id="sp-q-pattern" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
-              <select id="sp-q-module"><option value="">alle Module</option></select>
-              <select id="sp-q-type"><option value="">alle Typen</option></select>
+              <input type="text" id="sp-q-pattern" data-i18n-attr="placeholder:scopeAdmin.patternPlaceholder" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
+              <select id="sp-q-module"><option value="" data-i18n="scopeAdmin.allModules">alle Module</option></select>
+              <select id="sp-q-type"><option value="" data-i18n="scopeAdmin.allTypes">alle Typen</option></select>
               <select id="sp-q-rank">
-                <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
-                <option value="3">ab high</option><option value="4">ab critical</option>
-                <option value="5">nur very critical</option>
+                <option value="0" data-i18n="scopeAdmin.rankAll">alle Kritikalit&auml;ten</option><option value="2" data-i18n="scopeAdmin.rankMedium">ab medium</option>
+                <option value="3" data-i18n="scopeAdmin.rankHigh">ab high</option><option value="4" data-i18n="scopeAdmin.rankCritical">ab critical</option>
+                <option value="5" data-i18n="scopeAdmin.rankVeryCritical">nur very critical</option>
               </select>
             </div>
             <div class="sp-scope-actions">
-              <button type="button" class="ghost" id="sp-q-all">alle (gefiltert) w&auml;hlen</button>
-              <button type="button" class="ghost" id="sp-q-none">Auswahl leeren</button>
+              <button type="button" class="ghost" id="sp-q-all" data-i18n="scopeAdmin.selectAllFiltered">alle (gefiltert) w&auml;hlen</button>
+              <button type="button" class="ghost" id="sp-q-none" data-i18n="scopeAdmin.clearSelection">Auswahl leeren</button>
             </div>
             <div class="sp-scope-tablewrap">
               <table id="sp-q-table">
-                <thead><tr><th class="ck"></th><th>ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th><th>Modul</th><th>Typ</th></tr></thead>
+                <thead><tr><th class="ck"></th><th data-i18n="scopeAdmin.colId">ID</th><th data-i18n="scopeAdmin.colDesc">Bezeichnung</th><th data-i18n="scopeAdmin.colCrit">Kritikalit&auml;t</th><th data-i18n="scopeAdmin.colModule">Modul</th><th data-i18n="scopeAdmin.colType">Typ</th></tr></thead>
                 <tbody id="sp-q-body"></tbody>
               </table>
             </div>
           </div>
-          <div class="hint" style="margin-bottom:10px">Diese Stufe ist optional &mdash; ohne Auswahl einfach weiter zu den SoD-Regeln.</div>
+          <div class="hint" style="margin-bottom:10px" data-i18n="scopeAdmin.queryOptionalHint">Diese Stufe ist optional &mdash; ohne Auswahl einfach weiter zu den SoD-Regeln.</div>
           <div class="sp-scope-mininav">
-            <button class="ghost" id="sp-q-next">Weiter &#8594; SoD-Regeln</button>
+            <button class="ghost" id="sp-q-next" data-i18n="scopeAdmin.nextToSod">Weiter &#8594; SoD-Regeln</button>
           </div>
         </div>
 
         <!-- Stufe 2: SoD-Regeln -->
         <div id="sp-stage-sod" style="display:none">
           <div class="sp-scope-box">
-            <h3>SoD-Regeln <span id="sp-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
+            <h3><span data-i18n="scopeAdmin.sodBoxHeading">SoD-Regeln</span> <span id="sp-r-count" class="muted" style="text-transform:none;font-weight:400"></span></h3>
             <div class="sp-scope-filters">
-              <input type="text" id="sp-r-pattern" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
+              <input type="text" id="sp-r-pattern" data-i18n-attr="placeholder:scopeAdmin.patternPlaceholder" placeholder="Bezeichnung enth&auml;lt&hellip; (z. B. BC-SEC*)">
               <select id="sp-r-rank">
-                <option value="0">alle Kritikalit&auml;ten</option><option value="2">ab medium</option>
-                <option value="3">ab high</option><option value="4">ab critical</option>
-                <option value="5">nur very critical</option>
+                <option value="0" data-i18n="scopeAdmin.rankAll">alle Kritikalit&auml;ten</option><option value="2" data-i18n="scopeAdmin.rankMedium">ab medium</option>
+                <option value="3" data-i18n="scopeAdmin.rankHigh">ab high</option><option value="4" data-i18n="scopeAdmin.rankCritical">ab critical</option>
+                <option value="5" data-i18n="scopeAdmin.rankVeryCritical">nur very critical</option>
               </select>
               <div class="pillgroup" id="sp-r-possible-pills">
-                <button type="button" class="pill" data-value="all">alle</button>
-                <button type="button" class="pill" data-value="possible">nur m&ouml;gliche</button>
+                <button type="button" class="pill" data-value="all" data-i18n="common.all">alle</button>
+                <button type="button" class="pill" data-value="possible" data-i18n="scopeAdmin.possibleOnly">nur m&ouml;gliche</button>
               </div>
             </div>
             <div class="hint" id="sp-r-possible-hint" style="margin-bottom:8px"></div>
             <div class="sp-scope-actions">
-              <button type="button" class="ghost" id="sp-r-all">alle (gefiltert) w&auml;hlen</button>
-              <button type="button" class="ghost" id="sp-r-none">Auswahl leeren</button>
+              <button type="button" class="ghost" id="sp-r-all" data-i18n="scopeAdmin.selectAllFiltered">alle (gefiltert) w&auml;hlen</button>
+              <button type="button" class="ghost" id="sp-r-none" data-i18n="scopeAdmin.clearSelection">Auswahl leeren</button>
             </div>
             <div class="sp-scope-tablewrap">
               <table id="sp-r-table">
-                <thead><tr><th class="ck"></th><th>ID</th><th>Bezeichnung</th><th>Kritikalit&auml;t</th></tr></thead>
+                <thead><tr><th class="ck"></th><th data-i18n="scopeAdmin.colId">ID</th><th data-i18n="scopeAdmin.colDesc">Bezeichnung</th><th data-i18n="scopeAdmin.colCrit">Kritikalit&auml;t</th></tr></thead>
                 <tbody id="sp-r-body"></tbody>
               </table>
             </div>
           </div>
           <div class="sp-scope-mininav">
-            <button class="ghost" id="sp-r-prev">&#8592; Zur&uuml;ck (Einzelfilter)</button>
-            <button class="ghost" id="sp-r-next">Weiter &#8594; Speichern</button>
+            <button class="ghost" id="sp-r-prev" data-i18n="scopeAdmin.prevToQuery">&#8592; Zur&uuml;ck (Einzelfilter)</button>
+            <button class="ghost" id="sp-r-next" data-i18n="scopeAdmin.nextToSave">Weiter &#8594; Speichern</button>
           </div>
         </div>
 
         <!-- Stufe 3: Speichern -->
         <div id="sp-stage-save" style="display:none">
           <div class="row" style="max-width:600px">
-            <div><label for="spName">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
-              <input id="spName" placeholder="z. B. fi-audit-2026" /></div>
-            <div><label for="spDescription">Beschreibung</label>
-              <input id="spDescription" placeholder="z. B. FI-Audit-Scope Q1 2026" /></div>
+            <div><label for="spName" data-i18n-html="scopeAdmin.nameLabelHtml">Name <span class="muted">(eindeutig, keine Leerzeichen)</span></label>
+              <input id="spName" data-i18n-attr="placeholder:scopeAdmin.namePlaceholder" placeholder="z. B. fi-audit-2026" /></div>
+            <div><label for="spDescription" data-i18n="orgProfiles.descLabel">Beschreibung</label>
+              <input id="spDescription" data-i18n-attr="placeholder:scopeAdmin.descPlaceholder" placeholder="z. B. FI-Audit-Scope Q1 2026" /></div>
           </div>
           <div class="row" style="max-width:600px">
-            <div><label for="spUserTypeProfile">Nutzertyp-Profil</label>
+            <div><label for="spUserTypeProfile" data-i18n="scopeAdmin.userTypeProfileLabel">Nutzertyp-Profil</label>
               <select id="spUserTypeProfile"></select><div class="hint" id="spUserTypeHint"></div></div>
-            <div><label for="spSleepDays">Sleeping (Tage)</label>
+            <div><label for="spSleepDays" data-i18n="scopeAdmin.sleepDaysLabel">Sleeping (Tage)</label>
               <input type="number" id="spSleepDays" min="0" step="1" /></div>
           </div>
-          <div class="hint">Diese beiden Werte werden bei „Neuer Lauf" verwendet, sobald dieser
+          <div class="hint" data-i18n-html="scopeAdmin.presetHintHtml">Diese beiden Werte werden bei „Neuer Lauf" verwendet, sobald dieser
             Scope als Voreinstellung gew&auml;hlt ist &mdash; die eigenen Felder dort verschwinden dann.</div>
           <div class="hint" id="sp-save-summary" style="margin-top:10px"></div>
 
           <div class="actions">
-            <button class="primary" id="spSaveBtn" disabled>Speichern</button>
-            <button class="ghost" id="spCancelBtn" disabled>Abbrechen</button>
-            <button class="ghost" id="spDeleteBtn" style="margin-left:auto;display:none">L&ouml;schen</button>
+            <button class="primary" id="spSaveBtn" disabled data-i18n="common.save">Speichern</button>
+            <button class="ghost" id="spCancelBtn" disabled data-i18n="common.cancel">Abbrechen</button>
+            <button class="ghost" id="spDeleteBtn" style="margin-left:auto;display:none" data-i18n="common.delete">L&ouml;schen</button>
           </div>
         </div>
       </div>
@@ -292,13 +294,24 @@ function critTag(c) { return `<span class="tag ${(c || '').replace('-', '').toLo
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  $('themeToggle').innerHTML = t === 'light' ? '&#9728; Hell' : '&#127769; Dunkel';
+  $('themeToggle').textContent = t === 'light' ? '☀️' : '🌙';
 }
 applyTheme(localStorage.getItem('theme') === 'light' ? 'light' : 'dark');
 $('themeToggle').onclick = () => {
   const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
   localStorage.setItem('theme', next); applyTheme(next);
 };
+
+function renderLangToggle() {
+  const el = $('langToggle'); if (!el) return;
+  el.textContent = (window.I18N && I18N.lang) ? I18N.lang.toUpperCase() : 'DE';
+}
+$('langToggle').onclick = () => { I18N.setLang(I18N.lang === 'de' ? 'en' : 'de'); };
+I18N.ready.then(() => { renderLangToggle(); I18N.applyTo(document.body); });
+I18N.onChange(() => {
+  renderLangToggle(); I18N.applyTo(document.body);
+  reRenderDynamic();
+});
 
 function setStatus(html, isErr) {
   const st = $('status'); st.style.display = 'block'; st.className = isErr ? 'err' : ''; st.innerHTML = html;
@@ -359,7 +372,7 @@ async function loadRulesets() {
   await loadScopesAndCatalog();
 }
 $('spRuleset').addEventListener('change', async () => {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) { $('spRuleset').value = spCatalog.ruleset; return; }
+  if (dirty && !confirm(I18N.t('scopeAdmin.js.unsavedConfirm'))) { $('spRuleset').value = spCatalog.ruleset; return; }
   selectedName = null; isNew = false;
   $('spDetail').style.display = 'none'; $('spEmpty').style.display = '';
   await loadScopesAndCatalog();
@@ -375,8 +388,8 @@ async function loadScopesAndCatalog() {
   scopes = list;
   spCatalog = { ruleset: rs, queries, sodRules };
   const modSel = $('sp-q-module'), typeSel = $('sp-q-type');
-  modSel.innerHTML = '<option value="">alle Module</option>';
-  typeSel.innerHTML = '<option value="">alle Typen</option>';
+  modSel.innerHTML = `<option value="">${I18N.t('scopeAdmin.allModules')}</option>`;
+  typeSel.innerHTML = `<option value="">${I18N.t('scopeAdmin.allTypes')}</option>`;
   [...new Set(queries.map(q => q.module).filter(Boolean))].sort().forEach(m => {
     const o = document.createElement('option'); o.value = m; o.textContent = m; modSel.appendChild(o);
   });
@@ -388,12 +401,12 @@ async function loadScopesAndCatalog() {
 
 function renderList() {
   const ul = $('spList'); ul.innerHTML = '';
-  if (!scopes.length) { ul.innerHTML = '<li class="muted" style="cursor:default">noch keine Scopes gespeichert</li>'; return; }
+  if (!scopes.length) { ul.innerHTML = `<li class="muted" style="cursor:default">${I18N.t('scopeAdmin.js.noScopes')}</li>`; return; }
   scopes.forEach(s => {
     const li = document.createElement('li');
     li.className = s.name === selectedName ? 'active' : '';
     const nq = (s.queryIds || []).length, nr = (s.sodRuleIds || []).length;
-    li.innerHTML = `<b>${escapeHtml(s.name)}</b><br><small>${escapeHtml(s.description || '')}${s.description ? ' — ' : ''}${nq} Einzelfilter, ${nr} SoD-Regel(n)</small>`;
+    li.innerHTML = `<b>${escapeHtml(s.name)}</b><br><small>${escapeHtml(s.description || '')}${s.description ? ' — ' : ''}${I18N.t('scopeAdmin.js.listCounts', { nq, nr })}</small>`;
     li.onclick = () => selectScope(s.name);
     ul.appendChild(li);
   });
@@ -426,7 +439,7 @@ function spFilterSodRules() {
 }
 function spRenderQueryTable() {
   const rows = spFilterQueries();
-  $('sp-q-count').textContent = '(' + rows.length + ' von ' + spCatalog.queries.length + ')';
+  $('sp-q-count').textContent = I18N.t('scopeAdmin.js.countOf', { n: rows.length, total: spCatalog.queries.length });
   $('sp-q-body').innerHTML = rows.map(q => {
     const checked = spQueryIds.has(q.id) ? 'checked' : '';
     const name = q.shortDescription || q.description || '';
@@ -435,7 +448,7 @@ function spRenderQueryTable() {
       + `<td>${escapeHtml(q.id)}</td><td class="muted">${escapeHtml(name)}</td>`
       + `<td>${critTag(q.criticality)}</td><td class="muted">${escapeHtml(q.module || '')}</td>`
       + `<td class="muted">${escapeHtml(q.queryType || '')}</td></tr>`;
-  }).join('') || '<tr><td colspan="6" class="muted">keine Treffer für diesen Filter</td></tr>';
+  }).join('') || `<tr><td colspan="6" class="muted">${I18N.t('scopeAdmin.js.noHitsFilter')}</td></tr>`;
   $('sp-q-body').querySelectorAll('tr[data-id]').forEach(tr => {
     tr.onclick = () => {
       const id = tr.dataset.id;
@@ -446,7 +459,7 @@ function spRenderQueryTable() {
 }
 function spRenderRuleTable() {
   const rows = spFilterSodRules();
-  $('sp-r-count').textContent = '(' + rows.length + ' von ' + spCatalog.sodRules.length + ')';
+  $('sp-r-count').textContent = I18N.t('scopeAdmin.js.countOf', { n: rows.length, total: spCatalog.sodRules.length });
   $('sp-r-body').innerHTML = rows.map(r => {
     const checked = spSodRuleIds.has(r.id) ? 'checked' : '';
     const name = r.shortDescription || r.description || '';
@@ -454,7 +467,7 @@ function spRenderRuleTable() {
       + `<td class="ck"><input type="checkbox" ${checked}></td>`
       + `<td>${escapeHtml(r.id)}</td><td class="muted">${escapeHtml(name)}</td>`
       + `<td>${critTag(r.criticality)}</td></tr>`;
-  }).join('') || '<tr><td colspan="4" class="muted">keine Treffer für diesen Filter</td></tr>';
+  }).join('') || `<tr><td colspan="4" class="muted">${I18N.t('scopeAdmin.js.noHitsFilter')}</td></tr>`;
   $('sp-r-body').querySelectorAll('tr[data-id]').forEach(tr => {
     tr.onclick = () => {
       const id = tr.dataset.id;
@@ -504,9 +517,9 @@ function spRenderRPossiblePills() {
     p.classList.toggle('active', p.dataset.value === spRPossibleMode));
   const hint = $('sp-r-possible-hint');
   hint.textContent = !hasClauses
-    ? 'Dieses Ruleset hat noch keine Klausel-Struktur (CNF) — automatische Verkn\xfcpfung mit Einzelfiltern ist hier nicht m\xf6glich, es werden alle SoD-Regeln angezeigt.'
+    ? I18N.t('scopeAdmin.js.noClauseStructure')
     : (spRPossibleMode === 'possible'
-        ? '„Nur m\xf6gliche" zeigt nur Regeln, deren s\xe4mtliche Klauseln durch die Einzelfilter-Auswahl abgedeckt sind.'
+        ? I18N.t('scopeAdmin.js.possibleHint')
         : '');
 }
 
@@ -517,21 +530,21 @@ function spUpdateSaveSummary() {
   const nr = spSodRuleIds.size;
   const el = $('sp-save-summary');
   if (!effQ && !nr) {
-    el.textContent = 'Noch keine Auswahl — mindestens ein Einzelfilter oder eine SoD-Regel ist zum Speichern erforderlich.';
+    el.textContent = I18N.t('scopeAdmin.js.summaryEmpty');
   } else {
-    el.textContent = effQ + ' Einzelfilter' + (added ? ' (davon ' + added + ' automatisch erg\xe4nzt f\xfcr die gew\xe4hlten SoD-Regeln)' : '')
-      + ' \xb7 ' + nr + ' SoD-Regel(n) werden gespeichert.';
+    const addedNote = added ? I18N.t('scopeAdmin.js.summaryAddedNote', { added }) : '';
+    el.textContent = I18N.t('scopeAdmin.js.summary', { effQ, addedNote, nr });
   }
 }
 
 function selectScope(name) {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('scopeAdmin.js.unsavedConfirm'))) return;
   selectedName = name; isNew = false;
   const s = scopes.find(x => x.name === name);
   renderList();
   $('spEmpty').style.display = 'none'; $('spDetail').style.display = '';
   $('spTitle').textContent = s.name;
-  $('spBadge').textContent = 'gespeicherter Scope'; $('spBadge').className = 'badge custom';
+  $('spBadge').textContent = I18N.t('scopeAdmin.js.savedScopeBadge'); $('spBadge').className = 'badge custom';
   $('spDeleteBtn').style.display = '';
   $('spName').value = s.name; $('spName').disabled = true;
   $('spDescription').value = s.description || '';
@@ -546,12 +559,12 @@ function selectScope(name) {
 }
 
 function newScope() {
-  if (dirty && !confirm('Ungespeicherte Änderungen verwerfen?')) return;
+  if (dirty && !confirm(I18N.t('scopeAdmin.js.unsavedConfirm'))) return;
   selectedName = null; isNew = true;
   renderList();
   $('spEmpty').style.display = 'none'; $('spDetail').style.display = '';
-  $('spTitle').textContent = 'Neuer Scope';
-  $('spBadge').textContent = 'neu'; $('spBadge').className = 'badge custom';
+  $('spTitle').textContent = I18N.t('scopeAdmin.js.newScopeTitle');
+  $('spBadge').textContent = I18N.t('orgProfiles.js.newBadge'); $('spBadge').className = 'badge custom';
   $('spDeleteBtn').style.display = 'none';
   $('spName').value = ''; $('spName').disabled = false;
   $('spDescription').value = '';
@@ -580,29 +593,29 @@ function formPayload() {
 async function saveCurrent() {
   const payload = formPayload();
   if (!payload.queryIds.length && !payload.sodRuleIds.length) {
-    setStatus('<b>Fehler:</b> mindestens ein Einzelfilter oder eine SoD-Regel erforderlich.', true); return;
+    setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('scopeAdmin.js.selectionRequired')}`, true); return;
   }
   const rs = $('spRuleset').value;
-  setStatus('<span class="spin"></span> Speichern&hellip;');
+  setStatus(`<span class="spin"></span> ${I18N.t('scopeAdmin.js.saving')}`);
   try {
     if (isNew) {
       const name = $('spName').value.trim();
-      if (!name) { setStatus('<b>Fehler:</b> Name fehlt.', true); return; }
+      if (!name) { setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ${I18N.t('scopeAdmin.js.nameRequired')}`, true); return; }
       await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes',
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, ...payload }) });
-      setStatus(`${doneTag} Scope <b>${name}</b> angelegt.`);
+      setStatus(`${doneTag} ${I18N.t('scopeAdmin.js.scopeCreated', { name })}`);
       await loadScopesAndCatalog();
       selectScope(name);
     } else {
       await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes/' + encodeURIComponent(selectedName),
         { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      setStatus(`${doneTag} Scope <b>${selectedName}</b> gespeichert.`);
+      setStatus(`${doneTag} ${I18N.t('scopeAdmin.js.scopeSaved', { name: selectedName })}`);
       const keep = selectedName;
       await loadScopesAndCatalog();
       selectScope(keep);
     }
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 }
 function cancelCurrent() { if (isNew) newScope(); else selectScope(selectedName); }
@@ -612,17 +625,17 @@ $('spCancelBtn').onclick = cancelCurrent;
 $('cmdCancel').onclick = cancelCurrent;
 
 $('spDeleteBtn').onclick = async () => {
-  if (!selectedName || !confirm(`Scope "${selectedName}" wirklich löschen?`)) return;
+  if (!selectedName || !confirm(I18N.t('scopeAdmin.js.deleteConfirm', { name: selectedName }))) return;
   const rs = $('spRuleset').value;
-  setStatus('<span class="spin"></span> L&ouml;schen&hellip;');
+  setStatus(`<span class="spin"></span> ${I18N.t('scopeAdmin.js.deleting')}`);
   try {
     await api('/admin/rulesets/' + encodeURIComponent(rs) + '/scopes/' + encodeURIComponent(selectedName), { method: 'DELETE' });
-    setStatus(`${doneTag} Scope gel&ouml;scht.`);
+    setStatus(`${doneTag} ${I18N.t('scopeAdmin.js.deleted')}`);
     selectedName = null;
     $('spDetail').style.display = 'none'; $('spEmpty').style.display = '';
     await loadScopesAndCatalog();
   } catch (err) {
-    setStatus('<b>Fehler:</b> ' + (err.detail || JSON.stringify(err)), true);
+    setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ` + (err.detail || JSON.stringify(err)), true);
   }
 };
 
@@ -630,10 +643,31 @@ $('cmdRefresh').onclick = async () => {
   const keep = selectedName;
   await loadScopesAndCatalog();
   if (keep) selectScope(keep);
-  setStatus(`${doneTag} aktualisiert.`);
+  setStatus(`${doneTag} ${I18N.t('scopeAdmin.js.refreshed')}`);
 };
 
-loadRulesets().catch(e => setStatus('<b>Fehler:</b> ' + JSON.stringify(e), true));
+function reRenderDynamic() {
+  renderList();
+  if (spCatalog.ruleset) {
+    $('sp-q-module').options[0].textContent = I18N.t('scopeAdmin.allModules');
+    $('sp-q-type').options[0].textContent = I18N.t('scopeAdmin.allTypes');
+    spRenderQueryTable(); spRenderRuleTable(); spRenderRPossiblePills();
+  }
+  if ($('spDetail').style.display !== 'none') {
+    if (isNew) {
+      if (!$('spName').value.trim()) $('spTitle').textContent = I18N.t('scopeAdmin.js.newScopeTitle');
+      $('spBadge').textContent = I18N.t('orgProfiles.js.newBadge');
+    } else {
+      $('spBadge').textContent = I18N.t('scopeAdmin.js.savedScopeBadge');
+    }
+    if (spStage === 'save') spUpdateSaveSummary();
+  }
+}
+
+(async function init() {
+  await I18N.ready;
+  await loadRulesets();
+})().catch(e => setStatus(`<b>${I18N.t('common.errorLabel')}:</b> ` + JSON.stringify(e), true));
 </script>
 </body>
 </html>

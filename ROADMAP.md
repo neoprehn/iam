@@ -176,6 +176,17 @@ Schritt für Schritt befüllt wird (s. `new_chat_rule.md`).**
   `subprocess(..., shell=True)`, unsichere Deserialisierung) plus Bandit-Scan mit
   `backend/bandit.yaml`. **Weiterer Ausbau (z. B. zusätzliche Tools/strengere Policies)
   ist bewusst nach hinten verschoben.**
+- **Mehrsprachigkeit DE/EN — UI-Chrome (2026-07-19/20)** — vorgezogen auf v1 (Thema stand
+  eigentlich als V2-Punkt in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege)
+  geparkt, wurde aber parallel begonnen): leichtgewichtige key-basierte i18n-Runtime
+  (`frontend/i18n.js`, `frontend/i18n/de.json`+`en.json`, DE/EN-Parität geprüft) plus
+  `data-i18n`/`data-i18n-attr`/`data-i18n-html`-Attribute und `I18N.t()` für alle JS-Strings.
+  **Alle fünf Frontend-Seiten vollständig lokalisiert:** `index.html`, `admin.html`,
+  `admin-masterdata.html`, `admin-org-profiles.html`, `admin-scopes.html` — inkl. dynamisch
+  nachgeladener Inhalte (Listen/Tabellen/Badges/Hints), die bei Sprachumschalter live neu
+  gerendert werden. Verifiziert per Playwright gegen den laufenden Container (DE→EN-Umschalter je
+  Seite, keine Konsolenfehler). **Offen (ausgelagert, s. [ROADMAP-V2](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege)):**
+  Backend-Fehlermeldungen und PDF/CSV-Reports laufen noch nur auf Deutsch.
 
 #### 9.3 Org-Varianten & „Can-Do nach Org" — abgeschlossen (2026-07-17)
 - [x] Umsetzung vollständig abgeschlossen (Org-Varianten-Batch, Org-Vergleich, verschachtelte
