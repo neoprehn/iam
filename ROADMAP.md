@@ -412,7 +412,17 @@ Die konkrete S/4-/Fiori-Erweiterung ist V2-Thema: [`ROADMAP-V2.md`](ROADMAP-V2.m
 
 ## Offene Punkte / Annahmen
 
-- Verfügbarkeit/Format der SAP-Extrakte (SE16/Reports) je Mandant.
+- Verfügbarkeit/Format der SAP-Extrakte (SE16/Reports) je Mandant. **Feld-/Where-Spezifikation je
+  Tabelle dokumentiert** (2026-07-20, `config/required_tables.json` → neuer `fields`-Block, reine
+  Doku für den SAP-Downloadauftrag, keine Laufzeitwirkung): abgeglichen gegen
+  `config/Download Data CSI.xls` und die tatsächlich von `load/*.cypher` gelesenen Spalten. Dabei
+  Lücken der XLS-Vorlage gefunden und ergänzt (u. a. `AGR_USERS.EXCLUDE`, `AGR_TCODES.EXCLUDE`,
+  `AGR_DEFINE`-Stammdatenfelder, `USR02`-Passwortfelder — ohne die bricht der bestehende Ladeprozess
+  bzw. verliert Funktionalität). Sechs bislang ungenutzte Tabellen aus der XLS neu als `optional`
+  aufgenommen (`ADRP`, `AGR_FLAGS`, `AGR_1250`, `AGR_1016B`, `T000`, `USR06`) — noch **ohne**
+  `load/*.cypher`-Loader, nur dokumentiert; `AGR_1016B` bewusst mit Verwechslungswarnung gegenüber
+  dem bereits genutzten `AGR_1016` (frühere Bug-Historie, s. Kommentar in
+  `load/22_role_profile_status.cypher`).
 - Umfang Org-Ebenen-Pivot (ob `OrgValue`-Knoten benötigt werden).
 - S/4-Scope und Datenschutz-/Mitbestimmungsabstimmung für Did-Do sind in V2 ausgelagert.
 

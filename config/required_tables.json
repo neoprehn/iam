@@ -1,5 +1,5 @@
 {
-  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt).",
+  "_about": "Erwartete SE16-Tabellen fuer den Import (Tabellennamen = .txt-Basisnamen, ohne Endung). Zentrale Quelle, referenziert vom Konverter (load/Convert-Se16Export.ps1) und vom kuenftigen Runner. 'required' = Minimalset (Konverter bricht ab, wenn eine fehlt); 'optional' = Anreicherung (nur Hinweis, wenn sie fehlt). 'fields' dokumentiert je Tabelle die fuer den SE16-Download benoetigten Feldnamen sowie einen optionalen WHERE-Filter (SE16-seitige Vorselektion) -- abgeglichen gegen config/Download Data CSI.xls (2026-07-20) UND gegen die tatsaechlich von load/*.cypher gelesenen Spalten. 'fields' wird von Konverter/Runner aktuell NICHT ausgewertet (reine Doku fuer den SAP-Downloadauftrag) -- 'required'/'optional' bleiben die einzigen maschinell geprueften Listen.",
   "required": [
     "USR02",
     "AGR_DEFINE",
@@ -24,6 +24,311 @@
     "AGR_1252",
     "AGR_TCODES",
     "AGR_1016",
-    "USORG"
-  ]
+    "USORG",
+    "ADRP",
+    "AGR_FLAGS",
+    "AGR_1250",
+    "AGR_1016B",
+    "T000",
+    "USR06"
+  ],
+  "fields": {
+    "USR02": {
+      "fields": [
+        "MANDT",
+        "BNAME",
+        "GLTGV",
+        "GLTGB",
+        "USTYP",
+        "CLASS",
+        "UFLAG",
+        "TRDAT",
+        "PWDINITIAL",
+        "PWDCHGDATE",
+        "PWDSETDATE"
+      ],
+      "where": null,
+      "notes": "PWDINITIAL/PWDCHGDATE/PWDSETDATE fehlten in der XLS-Vorlage, werden aber von load/01_users.cypher fuer Sleeping-/Passwort-Auswertungen benoetigt."
+    },
+    "AGR_DEFINE": {
+      "fields": [
+        "MANDT",
+        "AGR_NAME",
+        "PARENT_AGR",
+        "TEXT",
+        "CREATE_USR",
+        "CREATE_DAT",
+        "CHANGE_USR",
+        "CHANGE_DAT"
+      ],
+      "where": null,
+      "notes": "TEXT/CREATE_*/CHANGE_* fehlten in der XLS-Vorlage, werden aber von load/02_roles.cypher fuer die Rollen-Detailseite (Stammdaten) benoetigt."
+    },
+    "AGR_AGRS": {
+      "fields": [
+        "AGR_NAME",
+        "CHILD_AGR",
+        "ATTRIBUTES"
+      ],
+      "where": null,
+      "notes": "ATTRIBUTES aktuell von load/03_role_hierarchy.cypher nicht ausgewertet (Reserve)."
+    },
+    "AGR_USERS": {
+      "fields": [
+        "AGR_NAME",
+        "UNAME",
+        "FROM_DAT",
+        "TO_DAT",
+        "EXCLUDE",
+        "COL_FLAG"
+      ],
+      "where": "COL_FLAG = '' (Vorschlag laut CSI-Downloadvorlage)",
+      "notes": "EXCLUDE fehlte in der XLS-Vorlage, wird aber von load/04_user_roles.cypher zwingend benoetigt (EXCLUDE='X' = ausgeschlossene Zuordnung, wird beim Laden uebersprungen). Der COL_FLAG-Filter aus der XLS ist zusaetzlich/optional, der Loader wertet ihn bisher nicht aus."
+    },
+    "AGR_PROF": {
+      "fields": [
+        "MANDT",
+        "AGR_NAME",
+        "LANGU",
+        "PROFILE",
+        "PTEXT"
+      ],
+      "where": null,
+      "notes": "PTEXT ist optional -- load/05_role_profiles.cypher faellt bei leerem PTEXT auf den bereits gesetzten Profiltext (i. d. R. aus USR11) zurueck."
+    },
+    "UST04": {
+      "fields": [
+        "BNAME",
+        "PROFILE"
+      ],
+      "where": null
+    },
+    "AGR_1251": {
+      "fields": [
+        "AGR_NAME",
+        "OBJECT",
+        "AUTH",
+        "FIELD",
+        "LOW",
+        "HIGH",
+        "DELETED",
+        "MODIFIED",
+        "COPIED"
+      ],
+      "where": null,
+      "notes": "MODIFIED/COPIED aktuell von load/08_authorizations.cypher nicht ausgewertet (Reserve); DELETED wird benoetigt."
+    },
+    "TSTCT": {
+      "fields": [
+        "SPRSL",
+        "TCODE",
+        "TTEXT"
+      ],
+      "where": null,
+      "notes": "Nicht Teil des CSI-Downloads (SAP-Standardinhalt, Transaktionstexte) -- separat aus dem Repository zu exportieren."
+    },
+    "USOBT_C": {
+      "fields": [
+        "NAME",
+        "OBJECT"
+      ],
+      "where": null,
+      "notes": "Nicht Teil des CSI-Downloads (SAP-Standard SU24-Vorschlagswerte) -- separat zu exportieren."
+    },
+    "UST10S": {
+      "fields": [
+        "PROFN",
+        "AKTPS",
+        "OBJCT",
+        "AUTH"
+      ],
+      "where": null
+    },
+    "UST12": {
+      "fields": [
+        "OBJCT",
+        "AUTH",
+        "AKTPS",
+        "FIELD",
+        "VON",
+        "BIS"
+      ],
+      "where": null
+    },
+    "USR11": {
+      "fields": [
+        "LANGU",
+        "PROFN",
+        "AKTPS",
+        "PTEXT"
+      ],
+      "where": null
+    },
+    "USR13": {
+      "fields": [
+        "LANGU",
+        "AUTH",
+        "OBJCT",
+        "ATEXT"
+      ],
+      "where": null,
+      "notes": "Nicht Teil des CSI-Downloads (SAP-Standard Berechtigungsfeldtexte) -- separat zu exportieren."
+    },
+    "TOBJT": {
+      "fields": [
+        "LANGU",
+        "OBJECT",
+        "TTEXT"
+      ],
+      "where": null,
+      "notes": "Nicht Teil des CSI-Downloads (SAP-Standard Berechtigungsobjekttexte) -- separat zu exportieren."
+    },
+    "AGR_TEXTS": {
+      "fields": [
+        "MANDT",
+        "AGR_NAME",
+        "SPRAS",
+        "SPRSL",
+        "LINE",
+        "TEXT"
+      ],
+      "where": null,
+      "notes": "Sprachspalte robust: manche Exporte liefern SPRAS, andere SPRSL -- load/21_role_texts.cypher prueft beide (coalesce)."
+    },
+    "V_USERNAME": {
+      "fields": [
+        "BNAME",
+        "PERSNUMBER",
+        "NAME_LAST",
+        "NAME_TEXT"
+      ],
+      "where": "PERSNUMBER <> '' (Vorschlag laut CSI-Downloadvorlage)"
+    },
+    "USREFUS": {
+      "fields": [
+        "BNAME",
+        "REFUSER",
+        "USERALIAS"
+      ],
+      "where": null,
+      "notes": "USERALIAS aktuell von load/14_reference_users.cypher nicht ausgewertet (Reserve)."
+    },
+    "UST10C": {
+      "fields": [
+        "PROFN",
+        "AKTPS",
+        "SUBPROF"
+      ],
+      "where": null
+    },
+    "AGR_1252": {
+      "fields": [
+        "AGR_NAME",
+        "VARBL",
+        "LOW",
+        "HIGH"
+      ],
+      "where": null
+    },
+    "AGR_TCODES": {
+      "fields": [
+        "AGR_NAME",
+        "TYPE",
+        "TCODE",
+        "DIRECT",
+        "EXCLUDE"
+      ],
+      "where": "TYPE = 'TR' AND DIRECT = 'X' (Vorschlag zur SE16-seitigen Vorfilterung; load/17_role_menu.cypher selbst filtert nur auf EXCLUDE<>'X' und TCODE nicht leer)",
+      "notes": "EXCLUDE fehlte in der XLS-Vorlage, wird aber von load/17_role_menu.cypher zwingend benoetigt."
+    },
+    "AGR_1016": {
+      "fields": [
+        "AGR_NAME",
+        "GENERATED",
+        "PSTATE"
+      ],
+      "where": null,
+      "notes": "ACHTUNG: nicht mit AGR_1016B verwechseln (fruehere Bug-Historie, s. Kommentar in load/22_role_profile_status.cypher) -- AGR_1016 liefert GENERATED/PSTATE (Profil-Generierungsstatus je Rolle), AGR_1016B liefert AGR_NAME/PROFILE (Profilzuordnung, bereits ueber AGR_PROF abgedeckt)."
+    },
+    "USORG": {
+      "fields": [
+        "FIELD",
+        "VARBL"
+      ],
+      "where": null
+    },
+    "ADRP": {
+      "fields": [
+        "PERSNUMBER",
+        "NAME_FIRST",
+        "NAME_LAST"
+      ],
+      "where": null,
+      "notes": "Noch kein Loader. Liefert Vorname zusaetzlich zu V_USERNAME (NAME_LAST/NAME_TEXT). Enthaelt PII (Vorname) -- Einsatzzweck vor Nutzung klaeren."
+    },
+    "AGR_FLAGS": {
+      "fields": [
+        "MANDT",
+        "AGR_NAME",
+        "FLAG_TYPE",
+        "FLAG_VALUE"
+      ],
+      "where": null,
+      "notes": "Noch kein Loader. Bedeutung/Nutzen fuer Can-Do noch zu klaeren (Rollen-Flags/-Schalter)."
+    },
+    "AGR_1250": {
+      "fields": [
+        "AGR_NAME",
+        "OBJECT",
+        "AUTH",
+        "MODIFIED"
+      ],
+      "where": "MODIFIED = 'U' (nur manuell -- nicht aus SU24-Vorschlag -- gepflegte Berechtigungen)",
+      "notes": "Noch kein Loader. Zeigt manuell gepflegte (von SU24-Vorschlagswerten abweichende) Berechtigungen je Rolle -- potenziell Can-Do-relevant als Abweichungs-/Risikoindikator."
+    },
+    "AGR_1016B": {
+      "fields": [
+        "AGR_NAME",
+        "PROFILE"
+      ],
+      "where": null,
+      "notes": "ACHTUNG: nicht mit AGR_1016 verwechseln (s. dort, fruehere Bug-Historie). Inhaltlich redundant zu AGR_PROF (AGR_NAME/PROFILE bereits dort vorhanden). Noch kein Loader -- vor Nutzung Mehrwert gegenueber AGR_PROF pruefen."
+    },
+    "T000": {
+      "fields": [
+        "MANDT",
+        "MTEXT",
+        "ORT01",
+        "MWAER",
+        "ADRNR",
+        "CCCATEGORY",
+        "CCCORACTIV",
+        "CCNOCLIIND",
+        "CCCOPYLOCK",
+        "CCNOCASCAD",
+        "CCSOFTLOCK",
+        "CCORIGCONT",
+        "CCIMAILDIS",
+        "CCTEMPLOCK",
+        "CHANGEUSER",
+        "CHANGEDATE",
+        "LOGSYS"
+      ],
+      "where": null,
+      "notes": "Noch kein Loader. Mandant-Metadaten (u. a. MTEXT=Firmenname) -- potenziell fuer die Deckblatt-Metafelder im Import-Evidenz-Report (ROADMAP 9.4) statt manueller Eingabe."
+    },
+    "USR06": {
+      "fields": [
+        "BNAME",
+        "LIC_TYPE",
+        "VONDAT",
+        "BISDAT",
+        "MANDT2",
+        "SYSID",
+        "ANAME"
+      ],
+      "where": null,
+      "notes": "Noch kein Loader. Lizenztyp je Nutzer -- eher SAP-Lizenzmanagement- als Can-Do-Thema; auf Nutzerwunsch trotzdem aufgenommen."
+    }
+  }
 }
