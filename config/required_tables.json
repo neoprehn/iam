@@ -124,8 +124,8 @@
         "TCODE",
         "TTEXT"
       ],
-      "where": null,
-      "notes": "Nicht Teil des CSI-Downloads (SAP-Standardinhalt, Transaktionstexte) -- separat aus dem Repository zu exportieren."
+      "where": "SPRSL IN ('D','DE','DEU','E','EN','ENG') (Default DE/DEU/D, optional EN) -- bestaetigt durch den bestehenden CSI_Tabellen.xlsm-Extraktor, der fuer TSTCT bereits real einen Sprachfilter DE/EN auf dem SE16-Selektionsbild setzt (Felder ctxtI1-LOW/ctxtI1-HIGH).",
+      "notes": "Nicht Teil des CSI-Downloads (SAP-Standardinhalt, Transaktionstexte) -- separat aus dem Repository zu exportieren. Sprachfeld ist SPRSL (nicht SPRAS wie bei AGR_TEXTS)."
     },
     "USOBT_C": {
       "fields": [
