@@ -1403,541 +1403,1106 @@
     "query": "2007_FI-GL",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Mit dieser Berechtigung werden Zahlungseingänge auf Sachkonten über F-06 als Finanzbuchhaltungsbelege erfasst; über die uneingeschränkten Werte (BUKRS/BRGRU=*) ist dies für alle Buchungskreise möglich. Da hier reale Geldeingänge verbucht werden, wirkt sich jede Erfassung unmittelbar auf Bank-/Verrechnungskonten und die Hauptbuchsalden aus. Betroffen sind die Integrität der Buchführung sowie die Assertions Occurrence, Accuracy und Completeness, weil fehlerhafte oder fingierte Eingangsbuchungen Salden verfälschen. Im Missbrauchsfall lässt sich ein Zahlungseingang auf ein falsches Konto lenken oder eine tatsächlich nicht erfolgte Zahlung vortäuschen, um offene Posten unberechtigt auszugleichen. Ohne Funktionstrennung zu Stammdaten- oder Ausgleichsrechten kann dies zur Verschleierung von Unterschlagungen genutzt werden.",
+    "threat": "(1) Täter erfasst in F-06 einen (fingierten) Zahlungseingang auf ein gewähltes Konto. (2) Ein offener Posten wird dadurch scheinbar ausgeglichen. (3) Der reale Geldfluss weicht vom gebuchten ab. (4) Ohne Abstimmung mit dem Bankkonto bleibt die Differenz zunächst unentdeckt.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2008_FI-GL",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über F-07 werden Zahlungsausgänge auf Sachkonten gebucht; die uneingeschränkten Werte erlauben dies buchungskreisübergreifend. Zahlungsausgänge sind unmittelbar vermögenswirksam, da sie den Abfluss von Mitteln abbilden, weshalb das Risiko höher liegt als beim Eingang. Betroffen sind Integrität sowie die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Zahlungsausgang zugunsten eines gewünschten Empfängers oder Kontos erfassen oder ein Ausgang fingieren beziehungsweise verschleiern. In Kombination mit Bankkonten- oder Ausgleichsrechten entsteht ein direkter Hebel für einen Mittelabfluss.",
+    "threat": "(1) Täter erfasst in F-07 einen Zahlungsausgang zugunsten eines von ihm bestimmten Kontos. (2) Die Buchung wirkt auf Bank-/Verrechnungskonten. (3) Mittel fließen bzw. der Abgang wird vorgetäuscht. (4) Ohne unabhängige Zahlungskontrolle bleibt der Vorgang zunächst unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2009_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Berechtigung erlaubt die Pflege der Zinssätze im FI-Customizing über OB42 beziehungsweise direkt per SM30/SM31 auf die Tabellen der Berechtigungsgruppe FC. Zinssätze steuern die Berechnung von Verzugs-, Haben- und Sollzinsen in nachgelagerten Zinsläufen, sodass eine Manipulation auf alle darauf basierenden Zinsbuchungen durchschlägt. Betroffen sind Integrität und die Assertions Accuracy und Valuation, da falsche Zinssätze zu falschen Zinsaufwendungen oder -erträgen führen. Die direkte Tabellenpflege über SM30 umgeht zudem die geführte Customizing-Transaktion und gegebenenfalls das Transportwesen. Missbräuchlich lässt sich ein Zinssatz gezielt erhöhen oder senken, um Zinsbelastungen zu Lasten Dritter oder zugunsten bestimmter Partner zu verändern.",
+    "threat": "(1) Täter ändert in OB42/SM30 einen Zinssatz. (2) Ein nachfolgender Zinslauf verwendet den manipulierten Satz. (3) Zu hohe/zu niedrige Zinsen werden gebucht. (4) In der Masse der Zinsbuchungen fällt die Ursache kaum auf.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2010_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über OB52 beziehungsweise direkt per SM30/SM31 auf die Tabelle der Gruppe FC31 werden Buchungsperioden geöffnet und geschlossen. Wer diese Steuerung beherrscht, kann geschlossene Vorperioden gezielt wieder öffnen, nachträglich buchen und wieder schließen und damit die Periodenabgrenzung und die Abschlusskontrollen aushebeln. Betroffen sind Integrität sowie die Assertions Cutoff und Completeness und die Verlässlichkeit des Abschlusses. Die direkte Tabellenpflege umgeht dabei die geführte Transaktion. In Kombination mit Buchungsrechten (vgl. FIX_0002) ist dies ein klassischer Hebel zur Bilanzmanipulation.",
+    "threat": "(1) Täter öffnet über OB52 eine bereits geschlossene Periode. (2) Er bucht nachträglich ergebnis-/bilanzwirksam in diese Periode. (3) Die Periode wird wieder geschlossen. (4) Der Abschluss wirkt unverändert, obwohl er nachträglich manipuliert wurde.",
+    "source": [
+      "https://learning.sap.com/courses/customizing-core-settings-in-financial-accounting-in-sap-s4hana/managing-posting-periods",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "SAP-Hinweis 2251160 (Berechtigungen Buchungsperioden)"
+    ]
   },
   {
     "query": "2011_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt die Pflege der Wechselkurse über OB08 beziehungsweise SM30/SM31 auf die Tabelle TCURR der Gruppe FC32. Wechselkurse fließen in die Umrechnung von Fremdwährungstransaktionen und in die Fremdwährungsbewertung zum Abschluss ein, sodass eine Manipulation Belegwerte und Bewertungsergebnisse verändert. Betroffen sind Integrität und insbesondere die Assertions Valuation und Accuracy. Missbräuchlich lässt sich ein Kurs gezielt setzen, um Fremdwährungsbeträge über- oder unterzubewerten, Bewertungsgewinne und -verluste zu steuern oder einzelne Transaktionen vorteilhaft umzurechnen. Da Kurse häufig maschinell aktualisiert werden, kann eine manuelle Abweichung zudem unauffällig bleiben.",
+    "threat": "(1) Täter setzt in OB08 für ein Währungspaar/Datum einen manipulierten Kurs. (2) Fremdwährungsbelege oder der Bewertungslauf verwenden diesen Kurs. (3) Beträge/Bewertungen werden verfälscht. (4) Da Kurse ohnehin schwanken, fällt die gezielte Abweichung kaum auf.",
+    "source": [
+      "https://expressgrc.com/streamline-sap-fraud-detection-step-by-step-guide-to-maintaining-exchange-rates-manually-in-tcurr-table/",
+      "https://techlorean.com/2020/06/10/sap-exchange-rate-and-foreign-currency-valuation-detailed-process-and-configuration/",
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html"
+    ]
   },
   {
     "query": "2012_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über die direkte Tabellenpflege per SM30/SM31 (Gruppe FC02) lassen sich die Regeln für Stammdatenänderungen anpassen, also Feldstatus und Änderungsregeln. Diese Regeln legen fest, welche Stammdatenfelder in welchem Umfang geändert werden dürfen und ob Änderungen protokolliert werden, sodass ihre Manipulation Kontrollen über Stammdatenänderungen aushebeln kann. Betroffen sind Integrität und Nachvollziehbarkeit sowie mittelbar alle Assertions, da geschwächte Änderungsregeln unautorisierte Stammdatenmanipulationen erleichtern. Die direkte Tabellenpflege umgeht die geführte Customizing-Transaktion und das Transportwesen. Missbräuchlich lässt sich eine Regel so ändern, dass kritische Feldänderungen künftig ohne Kontrolle oder Protokoll möglich werden.",
+    "threat": "(1) Täter ändert in SM30 die Stammdatenänderungsregeln (Gruppe FC02). (2) Kritische Feldänderungen sind fortan ohne Kontrolle/Protokoll möglich. (3) Er (oder Dritte) ändert sensible Stammdaten unbemerkt. (4) Die geschwächte Regel bleibt bis zu einer gezielten Prüfung unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "2013_FI-GL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "F.80 ermöglicht die Massenstornierung von Buchhaltungsbelegen in einem einzigen Lauf. Während ein Einzelstorno überschaubar bleibt, kann ein Massenstorno zahlreiche Belege gleichzeitig zurücknehmen und damit Salden erheblich und schwer nachvollziehbar verändern. Betroffen sind Integrität sowie die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich eine Vielzahl belastender Belege auf einmal stornieren, um Buchungen zu beseitigen oder Salden vor einem Stichtag zu manipulieren; in Kombination mit dem Öffnen von Perioden (OB52) verstärkt sich die Wirkung. Die Massenwirkung erschwert zusätzlich die Einzelfallprüfung.",
+    "threat": "(1) Täter selektiert in F.80 eine Menge von Belegen. (2) Er stößt die Massenstornierung an. (3) Zahlreiche Buchungen werden zurückgenommen, Salden verändern sich. (4) In der Menge der Stornos gehen gezielt entfernte Belege unter.",
+    "source": [
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://xiting.com/en/the-difference-between-s_program-and-s_prognam-and-the-use-of-parameter-transactions/"
+    ]
   },
   {
     "query": "2014_FI-GL",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Auswerten und Herunterladen der Bilanz und GuV über F.01 sowie über SA38/SE38/SE84 gestartete Reports mit lesendem Zugriff über alle Buchungskreise (BUKRS=*). Auch wenn es sich um Anzeige- und Reportingaktivität handelt, umfasst der Umfang sensible, konsolidierte Finanzdaten des gesamten Unternehmens, die exportiert werden können. Betroffen ist primär die Vertraulichkeit; der breite Report- und SE38-Zugriff birgt zusätzlich das Risiko, andere und gegebenenfalls datenverändernde Reports auszuführen. Missbräuchlich lassen sich nicht-öffentliche Finanzdaten abziehen (Insiderinformationen, Wettbewerbsdaten) oder über die weite Reportberechtigung weitergehende Programme starten.",
+    "threat": "(1) Täter wertet über F.01 die Bilanz/GuV aller Buchungskreise aus. (2) Er lädt die Daten lokal herunter. (3) Vertrauliche Finanzdaten verlassen das System. (4) Über die zusätzliche SA38/SE38-Berechtigung könnte er zudem weitere Reports starten.",
+    "source": [
+      "https://xiting.com/en/the-difference-between-s_program-and-s_prognam-and-the-use-of-parameter-transactions/",
+      "https://sast-solutions.com/blog-en/2016/10/26/how-to-reliably-prevent-the-execution-of-sap-reports/"
+    ]
   },
   {
     "query": "2100_FI-AR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Berechtigung erlaubt das Anlegen von Debitorenstammdaten in der Buchhaltungssicht (FD01/XD01), inklusive zahlungs- und steuerungsrelevanter Felder wie Zahlungsbedingungen und Bankverbindung; die weiten Werte (BUKRS/BRGRU=*) erstrecken dies auf alle Buchungskreise. Debitorenstammdaten sind die Grundlage des Forderungsprozesses, sodass fehlerhafte oder fingierte Kunden auf alle nachgelagerten Buchungen und Zahlungen wirken. Betroffen sind Integrität und die Assertions Existence/Occurrence und Accuracy. Missbräuchlich lässt sich ein fiktiver Debitor mit vorteilhaften Konditionen und Bankdaten anlegen, als Basis für Scheingeschäfte, Gutschriften oder umgeleitete Erstattungen. Ohne Funktionstrennung zur Auftrags- und Buchungsseite (vgl. OCX_0001/0002) ist dies ein Betrugsansatz im Order-to-Cash.",
+    "threat": "(1) Täter legt in FD01 einen (fiktiven) Debitor mit gewünschten Konditionen/Bankdaten an. (2) Über den OtC-Prozess werden Buchungen/Gutschriften auf diesen Debitor geleitet. (3) Erstattungen/Zahlungen fließen an die hinterlegten Daten. (4) Ohne unabhängige Stammdatenkontrolle bleibt die Einrichtung unbemerkt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2101_FI-AR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über FD02/XD02 werden bestehende Debitorenstammdaten in der Buchhaltungssicht geändert, insbesondere Bankverbindung, Zahlungsbedingungen und Mahnsteuerung. Änderungen an aktiven Debitoren wirken sofort auf laufende Forderungen und Zahlungsvorgänge, und die Änderung der Bankverbindung ist ein klassischer Betrugsvektor zur Umleitung von Erstattungen oder Gutschriften. Betroffen sind Integrität und die Assertions Accuracy und Existence. Missbräuchlich lässt sich die Bankverbindung eines realen Debitors auf ein eigenes Konto ändern, um Rückzahlungen abzugreifen, oder es lassen sich Zahlungsbedingungen vorteilhaft anpassen. In Kombination mit Buchungs- oder Ausgleichsrechten verstärkt sich die Wirkung.",
+    "threat": "(1) Täter ändert in FD02 die Bankverbindung/Konditionen eines Debitors. (2) Eine Erstattung/Gutschrift wird ausgelöst. (3) Der Betrag fließt an die manipulierten Bankdaten. (4) Anschließend kann die Bankverbindung zurückgeändert werden, um die Umleitung zu verschleiern.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2102_FI-AR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FD06 erlaubt das Setzen von Lösch- und Deaktivierungskennzeichen im Debitorenstamm der Buchhaltungssicht. Das Deaktivieren eines Debitors kann laufende Forderungsprozesse und die Nachvollziehbarkeit beeinträchtigen beziehungsweise auffällige Konten der regulären Sicht entziehen. Betroffen sind Integrität, Nachvollziehbarkeit und Verfügbarkeit sowie die Assertions Completeness und Existence. Missbräuchlich lässt sich ein für Manipulationen genutzter Debitor nachträglich zur Löschung markieren, um Spuren zu verschleiern, oder ein aktiver Debitor blockieren, um Forderungsprozesse zu stören.",
+    "threat": "(1) Täter nutzt einen Debitor für manipulative Vorgänge. (2) Über FD06 markiert er ihn zur Löschung/Deaktivierung. (3) Das Konto entzieht sich der regulären Sicht/Bearbeitung. (4) Die Zuordnung der Vorgänge wird erschwert.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2103_FI-AR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Buchen auf Debitorenkonten über zahlreiche Transaktionen (F-22, F-28, FB70, FB75 etc.) buchungskreisübergreifend. Debitorenbuchungen erzeugen und verändern Forderungen und wirken auf Umsatz- und Ertragskonten, und die breite Streuung der Transaktionen von Rechnung über Gutschrift bis Zahlungseingang macht die Berechtigung mächtig. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich fingierte Forderungen, unberechtigte Gutschriften oder vorgetäuschte Zahlungseingänge buchen; in Kombination mit Stammdaten- oder Ausgleichsrechten ist dies Grundlage für Manipulationen im Forderungsbereich.",
+    "threat": "(1) Täter erfasst über FB70/FB75 eine unberechtigte Gutschrift bzw. eine fingierte Forderung. (2) Der Beleg wirkt auf Debitoren- und Erlöskonten. (3) Der Vorgang verschiebt Salden zugunsten eines Ziels. (4) Ohne Funktionstrennung lässt sich der Vorgang absichern/verschleiern.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2104_FI-AR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über F-22/FB70 werden Debitorenrechnungen und damit Forderungen erfasst. Die Rechnungserfassung begründet Forderungen und Erlöse, sodass fehlerhafte oder fingierte Rechnungen Umsatz und Forderungsbestand verfälschen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich Scheinforderungen erzeugen, etwa zur Umsatzaufblähung, oder Rechnungen an manipulierte Debitoren stellen. Ohne unabhängige Kontrolle bleibt die Zweckgestaltung unbemerkt.",
+    "threat": "(1) Täter erfasst in FB70 eine (fingierte) Debitorenrechnung. (2) Forderung und Erlös werden gebucht. (3) Der Umsatz erscheint höher bzw. eine Scheinforderung entsteht. (4) Ohne Abgleich mit realer Leistung fällt dies zunächst nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2105_FI-AR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Erfassen von Debitoren-Gutschriften (FB75/F-27), die Forderungen mindern beziehungsweise Erlöse zurücknehmen. Gutschriften sind besonders missbrauchsanfällig, da sie unmittelbar den Forderungsbestand reduzieren und gegebenenfalls Auszahlungen auslösen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine unberechtigte Gutschrift zugunsten eines gegebenenfalls gesteuerten Debitors erfassen, um eine offene Forderung zu tilgen oder eine Erstattung auszulösen. Ohne Freigabe- oder Funktionstrennung ist dies ein direkter finanzieller Nachteil.",
+    "threat": "(1) Täter erfasst in FB75 eine unberechtigte Gutschrift für einen Debitor. (2) Die Forderung wird gemindert bzw. eine Erstattung angestoßen. (3) Der Debitor profitiert unberechtigt. (4) Ohne unabhängige Kontrolle bleibt die Gutschrift unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2106_FI-AR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über F-28 sowie F-26/F-06 werden Zahlungseingänge von Debitoren erfasst und offene Posten ausgeglichen. Da hier reale Geldeingänge verbucht und Forderungen ausgeglichen werden, wirkt jede Erfassung auf Bank- und Debitorenkonten. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Zahlungseingang vortäuschen, um eine offene Forderung ohne realen Geldfluss auszugleichen, etwa zur Verschleierung einer Unterschlagung, oder ein Eingang falsch zuordnen. Ohne Bankabstimmung bleibt die Differenz zunächst verborgen.",
+    "threat": "(1) Täter erfasst in F-28 einen (fingierten) Zahlungseingang und gleicht einen offenen Posten aus. (2) Die Forderung erscheint beglichen. (3) Der reale Geldeingang fehlt. (4) Ohne Bankabstimmung bleibt die Lücke unentdeckt.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2107_FI-AR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FBE1 erlaubt das Anlegen von Zahlungsavisen für Debitoren, also Ankündigungen erwarteter Zahlungen, die den späteren Ausgleich steuern. Ein Avis beeinflusst, welche offenen Posten wie ausgeglichen werden, sodass manipulierte Avise den Ausgleichsprozess in eine bestimmte Richtung lenken können. Betroffen sind Integrität und die Assertions Accuracy und Completeness. Missbräuchlich lässt sich ein Avis so gestalten, dass Zahlungen falschen Posten zugeordnet werden oder ein Ausgleich vorbereitet wird, der nicht der realen Zahlung entspricht. Das Einzelrisiko ist moderat, in Verbindung mit Ausgleichsrechten aber relevant.",
+    "threat": "(1) Täter legt in FBE1 ein manipuliertes Zahlungsavis an. (2) Der spätere Ausgleich orientiert sich am Avis. (3) Zahlungen werden falschen Posten zugeordnet. (4) Die Fehlzuordnung ist ohne Detailabgleich schwer erkennbar.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2108_FI-AR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über FBE2 werden bestehende Zahlungsavise geändert. Das nachträgliche Ändern eines Avis kann die Zuordnung erwarteter Zahlungen zu offenen Posten verschieben und so den Ausgleich beeinflussen. Betroffen sind Integrität und die Assertions Accuracy und Completeness. Missbräuchlich lässt sich ein Avis so anpassen, dass ein Ausgleich vorteilhaft und falsch erfolgt oder eine Zahlung einem anderen Posten zugerechnet wird. Wie beim Anlegen ist das Einzelrisiko moderat, in Kombination mit dem Ausgleich jedoch relevant.",
+    "threat": "(1) Täter ändert in FBE2 ein bestehendes Avis. (2) Die Zuordnung erwarteter Zahlungen verschiebt sich. (3) Der Ausgleich erfolgt abweichend von der realen Zahlung. (4) Die Änderung fällt ohne Abgleich kaum auf.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2109_FI-AR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FB1D/F-32 erlauben den Ausgleich offener Debitorenposten, also die Zuordnung von Zahlungen und Gutschriften zu Forderungen. Der Ausgleich bestimmt, welche Forderungen als beglichen gelten, sodass eine Manipulation offene Posten unberechtigt schließen oder falsch zuordnen kann. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich lässt sich eine offene, gegebenenfalls uneinbringliche Forderung gegen eine unberechtigte Gutschrift ausgleichen oder ein Ausgleich so setzen, dass Fehlbeträge kaschiert werden. In Verbindung mit Gutschrift- oder Buchungsrechten entsteht ein Manipulationsansatz im Forderungsbereich.",
+    "threat": "(1) Täter gleicht in FB1D eine offene Forderung gegen eine (unberechtigte) Gutschrift aus. (2) Der Posten erscheint beglichen. (3) Eine tatsächlich offene/uneinbringliche Forderung verschwindet aus der Sicht. (4) Ohne unabhängige Kontrolle bleibt der Ausgleich unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2110_FI-AR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FBRA ermöglicht das Zurücksetzen und Stornieren von Ausgleichsbelegen, wodurch bereits ausgeglichene Posten wieder offen werden. Da FBRA im Hauptbuch als Contra-Buchung durchschlägt und ausgeglichene Zahlungen wieder aufmacht, kann es Forderungs- und Zahlungsstände erheblich verändern, besonders nahe des Periodenabschlusses. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein Ausgleich zurücknehmen, um Posten neu und vorteilhaft zuzuordnen, Zahlungen zu manipulieren oder bei bereits an die Bank übermittelten Zahlungen Doppelzahlungen anzustoßen. Aufgrund der finanziellen Tragweite sollten Zugriff und Begründung über Reason Codes eng kontrolliert werden.",
+    "threat": "(1) Täter setzt in FBRA einen Ausgleichsbeleg zurück. (2) Der zuvor beglichene Posten ist wieder offen. (3) Er ordnet Zahlungen neu zu bzw. stößt (ggf. über F110) eine erneute Zahlung an. (4) Die Rücknahme geht in der Belegmenge unter, sofern keine Reason-Code-/Genehmigungskontrolle greift.",
+    "source": [
+      "https://hobsoft.com/guides/resetting-erroneous-clearings-an-sap-fbra-how-to-guide/",
+      "https://community.sap.com/t5/enterprise-resource-planning-q-a/cancel-reset-payment-document-fbra/qaq-p/12377503"
+    ]
   },
   {
     "query": "2111_FI-AR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über FD32 wird das Kreditmanagement eines Debitors gepflegt, insbesondere das Kreditlimit. Das Kreditlimit steuert die automatische Kreditprüfung im Vertrieb, sodass derjenige, der es setzen kann, die Kreditkontrolle für einen Kunden faktisch aushebeln kann. Betroffen sind Integrität und die finanzielle Steuerung, mittelbar die Valuation über das Ausfallrisiko. Missbräuchlich lässt sich das Limit eines bonitätsschwachen Kunden erhöhen, um Aufträge und Lieferungen über die zulässige Grenze hinaus zu ermöglichen; in Kombination mit der Auftragserfassung (vgl. OCX_0004) ist dies ein Ansatz für uneinbringliche Forderungen.",
+    "threat": "(1) Täter erhöht in FD32 das Kreditlimit eines Debitors. (2) Aufträge, die sonst an der Kreditprüfung scheitern würden, werden freigegeben. (3) Lieferungen/Leistungen erfolgen über die zulässige Grenze hinaus. (4) Das erhöhte Ausfallrisiko bleibt ohne unabhängige Kreditentscheidung bestehen.",
+    "source": [
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/new-access-risks-new-sod-matrix-how-s-4hana-changes-the-approach-to/ba-p/14298296",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2200_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Berechtigung erlaubt das Anlegen von Kreditorenstammdaten in der Buchhaltungssicht (FK01/XK01), inklusive Bankverbindung und Zahlungsbedingungen, buchungskreisübergreifend (BUKRS/BRGRU=*). Kreditorenstammdaten steuern, an wen und wie gezahlt wird, sodass ein fiktiver oder manipulierter Kreditor die klassische Grundlage für Kreditorenbetrug bildet. Betroffen sind Integrität und die Assertions Existence/Occurrence und Accuracy. Missbräuchlich lässt sich ein fiktiver Lieferant mit eigener Bankverbindung anlegen, um über Rechnung und Zahllauf Mittel abfließen zu lassen. Ohne Funktionstrennung zur Rechnungs- und Zahlungsseite (vgl. PPX_0001/0004) ist dies der zentrale P2P-Betrugsansatz.",
+    "threat": "(1) Täter legt in FK01 einen (fiktiven) Kreditor mit eigener Bankverbindung an. (2) Über Rechnung und Zahllauf werden Zahlungen ausgelöst. (3) Mittel fließen an das hinterlegte Konto. (4) Ohne unabhängige Stammdatenkontrolle bleibt der fiktive Kreditor unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2201_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über FK02/XK02 werden Kreditorenstammdaten in der Buchhaltungssicht geändert, insbesondere die Bankverbindung. Die Änderung der Bankverbindung eines realen Kreditors ist einer der häufigsten und wirksamsten Betrugsvektoren zur Umleitung von Zahlungen, da anschließend reguläre Zahlläufe an das falsche Konto laufen. Betroffen sind Integrität und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich die Bankverbindung kurz vor einem Zahllauf auf ein eigenes Konto ändern und danach zurücksetzen, sodass die Umleitung schwer erkennbar ist. In Kombination mit dem Zahllauf (vgl. PPX_0010) entsteht ein unmittelbarer Mittelabfluss.",
+    "threat": "(1) Täter ändert in FK02 die Bankverbindung eines real bebuchten Kreditors auf ein eigenes Konto. (2) Ein regulärer Zahllauf (F110) begleicht offene Verbindlichkeiten. (3) Die Zahlung fließt an das hinterlegte Konto. (4) Anschließend wird die Bankverbindung zurückgeändert, um die Umleitung zu verschleiern.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2202_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FK05 erlaubt das Sperren beziehungsweise Entsperren des Kreditorenstamms in der Buchhaltungssicht (Aktivität 05). Die Sperre steuert, ob an einen Kreditor gebucht und gezahlt werden kann, sodass ein missbräuchliches Entsperren einen bewusst gesperrten, auffälligen Kreditor wieder aktivieren kann. Betroffen sind Integrität, die Wirksamkeit von Kreditorensperren und Verfügbarkeit. Missbräuchlich lässt sich ein gesperrter Kreditor entsperren, um Zahlungen doch zu ermöglichen, oder ein legitimer Kreditor sperren, um Zahlungsprozesse zu stören.",
+    "threat": "(1) Täter entsperrt in FK05 einen bewusst gesperrten Kreditor. (2) An den Kreditor kann wieder gebucht/gezahlt werden. (3) Eine (auffällige) Zahlung wird ermöglicht. (4) Anschließend kann die Sperre wieder gesetzt werden, um unauffällig zu bleiben.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2203_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FK06 setzt Lösch- und Deaktivierungskennzeichen im Kreditorenstamm der Buchhaltungssicht. Das Markieren eines Kreditors zur Löschung kann auffällige Konten der regulären Sicht entziehen und die Nachvollziehbarkeit vergangener Zahlungen beeinträchtigen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Completeness und Existence. Missbräuchlich lässt sich ein für Betrug genutzter fiktiver Kreditor nachträglich zur Löschung markieren, um Spuren zu verschleiern.",
+    "threat": "(1) Täter nutzt einen (fiktiven) Kreditor für Zahlungen. (2) Über FK06 markiert er ihn zur Löschung/Deaktivierung. (3) Das Konto entzieht sich der regulären Sicht. (4) Die Zuordnung der Zahlungen wird erschwert.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2204_FI-AP",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Buchen auf Kreditorenkonten über zahlreiche Transaktionen (F-43, F-53, FB60 etc.) buchungskreisübergreifend. Kreditorenbuchungen begründen Verbindlichkeiten und lösen mittelbar Zahlungen aus, und die breite Transaktionsstreuung von Rechnung über Zahlung bis Ausgleich macht die Berechtigung besonders mächtig und zahlungswirksam. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich fingierte oder überhöhte Verbindlichkeiten buchen, die anschließend zur Zahlung führen; in Kombination mit Stammdaten- oder Zahllaufrechten (vgl. PPX_0004/0006) ist dies der Kern des P2P-Betrugs.",
+    "threat": "(1) Täter erfasst über FB60 eine fingierte/überhöhte Kreditorenrechnung. (2) Die Verbindlichkeit wird gebucht. (3) Sie geht in den Zahlungslauf. (4) Ohne Funktionstrennung fließt Geld an den (gesteuerten) Kreditor.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2205_FI-AP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über FB60/F-43 werden Kreditorenrechnungen, also Eingangsrechnungen, erfasst, die Verbindlichkeiten begründen. Fehlerhafte oder fingierte Eingangsrechnungen erhöhen die Verbindlichkeiten und führen zu unberechtigten Zahlungen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine fiktive oder überhöhte Rechnung ohne oder mit manipuliertem Bestellbezug erfassen, um eine Zahlung an einen gesteuerten Kreditor auszulösen. Ohne 3-Way-Match oder Funktionstrennung bleibt dies zunächst unauffällig.",
+    "threat": "(1) Täter erfasst in FB60 eine fiktive/überhöhte Eingangsrechnung. (2) Die Verbindlichkeit wird gebucht. (3) Der spätere Zahllauf begleicht sie. (4) Ohne Abgleich mit Bestellung/Wareneingang fällt die Manipulation nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2206_FI-AP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FB65/FV65 erlauben das Erfassen von Kreditoren-Gutschriften, die Verbindlichkeiten mindern. Eine unberechtigte Gutschrift reduziert die Verbindlichkeit gegenüber einem Kreditor beziehungsweise korrigiert eine Rechnung und verfälscht falsch eingesetzt den Verbindlichkeitsbestand. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine Gutschrift nutzen, um eine zuvor fingierte oder überhöhte Rechnung zu kaschieren oder Salden zu manipulieren. Das Einzelrisiko ist moderat, im Zusammenspiel mit der Rechnungserfassung jedoch relevant.",
+    "threat": "(1) Täter erfasst in FB65 eine Kreditoren-Gutschrift. (2) Die Verbindlichkeit wird gemindert. (3) Eine vorherige Manipulation (überhöhte Rechnung) wird kaschiert bzw. Salden verschoben. (4) Ohne Belegabgleich bleibt der Zusammenhang verborgen.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2207_FI-AP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "F-59 erlaubt das Erfassen von Zahlungsanforderungen, also die gezielte Auswahl offener Posten für einen Sonderzahllauf. Eine Zahlungsanforderung steuert, welche Posten außerhalb des regulären Zahllaufs zur Zahlung vorgemerkt werden, sodass sie missbräuchlich unberechtigte Posten in die Zahlung bringen kann. Betroffen sind Integrität und die Assertions Occurrence und Completeness. Missbräuchlich lässt sich ein fingierter oder gesteuerter Posten per Zahlungsanforderung zur Auszahlung vormerken. In Kombination mit dem Zahllauf entsteht ein Ansatz für unberechtigte Zahlungen.",
+    "threat": "(1) Täter erfasst in F-59 eine Zahlungsanforderung für einen (gesteuerten) Posten. (2) Der Posten wird zur Zahlung vorgemerkt. (3) Der Zahllauf begleicht ihn. (4) Ohne unabhängige Prüfung der Anforderung bleibt dies unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2208_FI-AP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "F-53/F-58 erlauben das Erfassen und Buchen von Kreditoren-Anzahlungen und Zahlungen. Anzahlungen führen zu Mittelabflüssen, bevor eine Leistung vollständig erbracht oder abgerechnet ist, und sind daher besonders kontrollbedürftig. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich eine Anzahlung an einen gesteuerten oder fiktiven Kreditor auslösen, für die keine reale Gegenleistung vorgesehen ist. Ohne Funktionstrennung oder Freigabe ist dies ein direkter Mittelabfluss.",
+    "threat": "(1) Täter erfasst in F-53/F-58 eine Anzahlung an einen (gesteuerten) Kreditor. (2) Der Mittelabfluss erfolgt vor/ohne Gegenleistung. (3) Das Geld fließt an das hinterlegte Konto. (4) Ohne Freigabekontrolle bleibt die Anzahlung unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2209_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Erfassen von Kreditoren-Zahlungsausgängen beziehungsweise Anzahlungsanforderungen (F-47/F-48/F-07). Zahlungsausgänge sind unmittelbar vermögenswirksam, und die manuelle Erfassung außerhalb des automatischen Zahllaufs entzieht sich zudem dessen Kontrollen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein manueller Zahlungsausgang zugunsten eines gesteuerten Kreditors oder Kontos erfassen, ohne den regulären Zahllauf und dessen Freigaben zu durchlaufen. In Kombination mit Stammdatenrechten entsteht ein direkter Mittelabfluss.",
+    "threat": "(1) Täter erfasst in F-48/F-07 einen manuellen Zahlungsausgang an einen gesteuerten Kreditor. (2) Der Ausgang umgeht den regulären Zahllauf und dessen Freigaben. (3) Mittel fließen an das hinterlegte Konto. (4) Ohne unabhängige Zahlungskontrolle bleibt der manuelle Ausgang unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2210_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über F-44 (manuell) und F.13 (automatischer Ausgleich) werden offene Kreditorenposten ausgeglichen, also Zahlungen und Gutschriften den zugehörigen Verbindlichkeiten zugeordnet. Der Ausgleich bestimmt, welche Verbindlichkeiten als beglichen gelten, und F.13 wirkt zudem massenhaft über viele Konten. Betroffen sind Integrität und die Assertions Completeness und Accuracy, da falsche Zuordnungen offene Posten unberechtigt schließen oder Fehlbeträge kaschieren können. Missbräuchlich lässt sich ein offener Posten gegen eine unberechtigte Gutschrift ausgleichen oder ein automatischer Ausgleichslauf so parametrisieren, dass Differenzen verschwinden. In Kombination mit Buchungs- oder Stammdatenrechten entsteht ein Manipulationsansatz im Verbindlichkeitsbereich.",
+    "threat": "(1) Täter gleicht in F-44 eine offene Verbindlichkeit gegen eine (unberechtigte) Gutschrift aus bzw. startet F.13 mit passenden Parametern. (2) Der Posten erscheint beglichen. (3) Eine tatsächlich offene Verbindlichkeit oder Differenz verschwindet aus der Sicht. (4) Ohne unabhängige Kontrolle bleibt der Ausgleich unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/gl-account-authorization-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "2211_FI-AP",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FBRA ermöglicht das Zurücksetzen und Stornieren von Ausgleichsbelegen im Kreditorenbereich, wodurch bereits ausgeglichene Verbindlichkeiten wieder offen werden. Da FBRA im Hauptbuch als Contra-Buchung durchschlägt und ausgeglichene Zahlungen wieder aufmacht, kann es Verbindlichkeits- und Zahlungsstände erheblich verändern, besonders nahe des Abschlusses. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein Ausgleich zurücknehmen, um Posten neu zuzuordnen, oder bei bereits an die Bank übermittelten Zahlungen eine erneute Zahlung anzustoßen (Doppelzahlung). Aufgrund der finanziellen Tragweite sollten Zugriff und Begründung über Reason Codes eng kontrolliert werden.",
+    "threat": "(1) Täter setzt in FBRA einen Kreditoren-Ausgleichsbeleg zurück. (2) Die zuvor beglichene Verbindlichkeit ist wieder offen. (3) Über einen erneuten Zahllauf kann eine Doppelzahlung ausgelöst werden. (4) Die Rücknahme geht in der Belegmenge unter, sofern keine Reason-Code-/Genehmigungskontrolle greift.",
+    "source": [
+      "https://hobsoft.com/guides/resetting-erroneous-clearings-an-sap-fbra-how-to-guide/",
+      "https://community.sap.com/t5/enterprise-resource-planning-q-a/cancel-reset-payment-document-fbra/qaq-p/12377503"
+    ]
   },
   {
     "query": "2300_FI-AA",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "AS01 erlaubt das Anlegen von Anlagenstammsätzen, also die Definition eines Anlagegegenstands inklusive Anlagenklasse, Kontenfindung, Kostenstelle und Abschreibungsparametern. Der Anlagenstamm ist die Grundlage für Aktivierung, Abschreibung und Abgang, sodass ein fiktiver oder falsch parametrisierter Stammsatz auf alle nachgelagerten Anlagenbuchungen wirkt. Betroffen sind Integrität und die Assertions Existence und Accuracy/Valuation. Missbräuchlich lässt sich ein fiktiver Anlagegegenstand anlegen, um darauf Zugänge zu buchen und Mittel zu vereinnahmen, oder ein Stammsatz so einrichten, dass Abschreibungen manipuliert werden. In Kombination mit der Zugangsbuchung (F-90/ABZON) ist dies ein klassischer Ansatz für fiktive Anlagen.",
+    "threat": "(1) Täter legt in AS01 einen fiktiven Anlagenstammsatz an. (2) Über F-90/ABZON bucht er einen (unberechtigten) Zugang. (3) Mittel werden gegen die Scheinanlage vereinnahmt bzw. falsch aktiviert. (4) Ohne unabhängige Stammdatenkontrolle bleibt die fiktive Anlage unentdeckt.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2301_FI-AA",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über AS02 werden bestehende Anlagenstammsätze geändert, unter anderem Abschreibungsschlüssel, Nutzungsdauer, Kontenfindung und Kostenstellenzuordnung. Änderungen an aktiven Anlagen wirken unmittelbar auf die laufende Abschreibung und die Buchwertentwicklung. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich der Abschreibungsschlüssel oder die Nutzungsdauer so anpassen, dass Aufwand und Ergebnis gesteuert werden, oder die Kontenfindung ändern, um Buchungen umzulenken. Ohne unabhängige Kontrolle bleibt die Ergebnissteuerung über die Anlagenparameter unauffällig.",
+    "threat": "(1) Täter ändert in AS02 den Abschreibungsschlüssel/die Nutzungsdauer einer Anlage. (2) Die maschinelle Abschreibung berechnet fortan abweichende Werte. (3) Aufwand und Ergebnis werden gesteuert. (4) Die Parameteränderung fällt ohne gezielte Prüfung kaum auf.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2302_FI-AA",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "AS05 setzt eine Buchungssperre im Anlagenstamm, sodass auf die betreffende Anlage keine weiteren Buchungen erfolgen können. Das Sperren und Entsperren steuert die Bebuchbarkeit einer Anlage, sodass sich missbräuchlich eine Anlage sperren lässt, um Prozesse zu blockieren, oder eine gesperrte auffällige Anlage entsperren lässt. Betroffen sind Integrität, die Wirksamkeit von Anlagensperren und Verfügbarkeit. Missbräuchlich kann eine bewusst gesperrte Anlage wieder für Buchungen geöffnet werden, um Manipulationen zu ermöglichen. Anschließend lässt sich die Sperre wieder setzen, um unauffällig zu bleiben.",
+    "threat": "(1) Täter entsperrt in AS05 eine bewusst gesperrte Anlage. (2) Auf die Anlage kann wieder gebucht werden. (3) Eine (auffällige) Anlagenbuchung wird ermöglicht. (4) Anschließend kann die Sperre wieder gesetzt werden, um unauffällig zu bleiben.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2303_FI-AA",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "AS06 erlaubt das Löschen beziehungsweise Markieren zur Löschung von Anlagenstammsätzen. Das Löschen einer Anlage entfernt den Stammsatz aus der regulären Sicht und kann die Nachvollziehbarkeit von Anlagenvorgängen beeinträchtigen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Completeness und Existence. Missbräuchlich lässt sich eine für Manipulationen genutzte Anlage nachträglich löschen, um Spuren zu verschleiern. Die Zuordnung vergangener Vorgänge zur Anlage wird dadurch erschwert.",
+    "threat": "(1) Täter nutzt eine Anlage für manipulative Vorgänge. (2) Über AS06 markiert/löscht er den Anlagenstammsatz. (3) Die Anlage entzieht sich der regulären Sicht. (4) Die Zuordnung der Vorgänge wird erschwert.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2304_FI-AA",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "F-90/ABZON buchen den Anlagenzugang durch Kauf, also die Aktivierung eines Anlagegegenstands mit beziehungsweise ohne automatische Gegenbuchung. Zugangsbuchungen erhöhen den Anlagenbestand und den aktivierten Wert, sodass fehlerhafte oder fingierte Zugänge Anlagevermögen und gegebenenfalls Aufwand verfälschen. Betroffen sind Integrität und die Assertions Occurrence, Existence und Accuracy. Missbräuchlich lässt sich ein Zugang gegen eine fiktive Anlage buchen, also die Kapitalisierung nicht vorhandener Gegenstände, oder ein Aufwand unzulässig aktivieren. In Kombination mit dem Anlegen von Anlagen (AS01) entsteht der Ansatz für fiktive Anlagen.",
+    "threat": "(1) Täter bucht in F-90/ABZON einen Zugang auf eine (fiktive) Anlage. (2) Der aktivierte Wert erhöht das Anlagevermögen. (3) Mittel werden vereinnahmt bzw. Aufwand unzulässig aktiviert. (4) Ohne Abgleich mit realer Beschaffung fällt dies zunächst nicht auf.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2305_FI-AA",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ABZE bucht Anlagenzugänge aus Eigenfertigung, also die Aktivierung selbst erstellter Anlagen. Wie beim Kauf erhöht dies den aktivierten Anlagenwert, wobei bei Eigenfertigung zusätzlich Ermessensspielraum bei den aktivierten Herstellungskosten besteht. Betroffen sind Integrität und die Assertions Occurrence, Existence und Accuracy/Valuation. Missbräuchlich lassen sich Kosten unzulässig als Herstellungskosten aktivieren (Ergebnisverschönerung) oder fiktive Eigenfertigungszugänge buchen. Ohne unabhängige Kontrolle bleibt die Aktivierung unauffällig.",
+    "threat": "(1) Täter bucht in ABZE einen Zugang aus Eigenfertigung. (2) (Überhöhte) Kosten werden aktiviert statt als Aufwand erfasst. (3) Anlagevermögen und Ergebnis erscheinen vorteilhafter. (4) Ohne Prüfung der aktivierten Kosten fällt dies nicht auf.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2306_FI-AA",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ABAD/F-92 buchen den Anlagenabgang durch Verkauf mit Debitorenbezug, inklusive Erlös- und Gewinn-/Verlustermittlung. Der Abgang entfernt die Anlage aus dem Bestand und bucht den Restbuchwert gegen Erlös, sodass eine Manipulation Vermögensgegenstände unter Wert veräußern oder Gewinne und Verluste steuern kann. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Valuation. Missbräuchlich lässt sich eine Anlage zu einem manipulierten, zu niedrigen Erlös an einen gesteuerten Debitor abgeben oder der Abgangszeitpunkt zur Ergebnissteuerung wählen. Ohne unabhängige Bewertung bleibt der Nachteil unentdeckt.",
+    "threat": "(1) Täter bucht in ABAD/F-92 einen Anlagenabgang an einen (gesteuerten) Debitor. (2) Der Erlös wird zu niedrig angesetzt. (3) Der Vermögensgegenstand verlässt das Unternehmen unter Wert. (4) Ohne unabhängige Bewertung/Genehmigung fällt der Nachteil nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_ERP/e054164e736046be90f4aec602391321/8e90d1538cdf4608e10000000a174cb4.html",
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control"
+    ]
   },
   {
     "query": "2307_FI-AA",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ABAON bucht den Anlagenabgang durch Verkauf ohne Debitorenbezug, also ohne die kontrollierende Verknüpfung zu einem Forderungskonto. Da kein Debitor und kein Forderungsbeleg entsteht, fehlt eine natürliche Gegenkontrolle über den Verkaufsvorgang, während der Abgang unmittelbar auf Anlagevermögen und Erlös wirkt. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Valuation. Missbräuchlich lässt sich eine Anlage abgehen lassen, ohne dass ein nachvollziehbarer Erlös- und Forderungsprozess dahintersteht, was geeignet ist, Vermögensabgänge zu verschleiern. Das Risiko ist höher als beim Abgang mit Debitor.",
+    "threat": "(1) Täter bucht in ABAON einen Anlagenabgang ohne Debitorenbezug. (2) Die Anlage verlässt den Bestand ohne kontrollierenden Forderungsbeleg. (3) Ein realer Vermögensabgang wird verschleiert bzw. Erlöse werden nicht sauber erfasst. (4) Ohne unabhängige Kontrolle bleibt der Vorgang unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_ERP/e054164e736046be90f4aec602391321/8e90d1538cdf4608e10000000a174cb4.html",
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control"
+    ]
   },
   {
     "query": "2308_FI-AA",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ABAV/ABAVN buchen den Anlagenabgang durch Verschrottung, also die erlöslose Ausbuchung eines Anlagegegenstands. Da bei Verschrottung kein Erlös und kein Käufer entsteht, ist der Vorgang besonders kontrollarm und daher missbrauchsanfällig, weil ein noch werthaltiger Gegenstand als verschrottet ausgebucht und anschließend entwendet werden kann. Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich eine werthaltige Anlage per Verschrottung aus den Büchern nehmen (Restbuchwert als Verlust), während der Gegenstand real abgezweigt wird. Aufgrund der fehlenden Erlöskontrolle ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht in ABAV/ABAVN die Verschrottung einer (noch werthaltigen) Anlage. (2) Der Gegenstand ist buchhalterisch ausgebucht (Verlust). (3) Real wird der Gegenstand entwendet/veräußert. (4) Ohne physische Verschrottungskontrolle bleibt der Diebstahl unentdeckt.",
+    "source": [
+      "https://help.sap.com/docs/SAP_ERP/e054164e736046be90f4aec602391321/8e90d1538cdf4608e10000000a174cb4.html",
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2309_FI-AA",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ABMA erlaubt das Buchen manueller, außerplanmäßiger Abschreibungen auf Anlagen. Anders als die maschinelle Abschreibung nach hinterlegtem Schlüssel greift die manuelle Abschreibung diskretionär in den Buchwert ein. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Anlage gezielt ab- oder aufwerten, um Ergebnis oder Buchwert zu steuern (etwa stille Reserven bilden oder auflösen) oder eine spätere Verschleierung vorzubereiten. Ohne unabhängige Kontrolle bleibt der diskretionäre Eingriff unauffällig.",
+    "threat": "(1) Täter bucht in ABMA eine manuelle Abschreibung auf eine Anlage. (2) Der Buchwert wird diskretionär verändert. (3) Ergebnis/Vermögen werden gesteuert bzw. eine spätere Ausbuchung vorbereitet. (4) Ohne Genehmigung fällt die außerplanmäßige Abschreibung kaum auf.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2310_FI-AA",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "AFAB führt den maschinellen Abschreibungslauf durch und bucht die planmäßige Abschreibung auf die Sachkonten. Der Lauf wirkt massenhaft über den gesamten Anlagenbestand, sodass fehlerhafte Parameter (Periode, Buchungslauf-Typ) oder wiederholte beziehungsweise ausgelassene Läufe den Abschreibungsaufwand verfälschen. Betroffen sind Integrität und die Assertions Accuracy, Completeness und Cutoff. Missbräuchlich lässt sich der Lauf für eine falsche Periode oder mit falschen Parametern ausführen, um Aufwand zu verschieben, oder ein erforderlicher Lauf unterlassen. Da es sich um einen periodischen Standardlauf handelt, ist eine Abweichung eher fehler- als betrugsgetrieben, aber ergebniswirksam.",
+    "threat": "(1) Täter startet AFAB mit falschen Parametern bzw. für eine falsche Periode. (2) Die planmäßige Abschreibung wird fehlerhaft/verschoben gebucht. (3) Der Abschreibungsaufwand der Periode weicht ab. (4) Ohne Abgleich mit dem Abschreibungsplan fällt die Abweichung zunächst nicht auf.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2311_FI-AA",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ASKB bucht periodisch die anlagenbezogenen Bewegungen aus den nicht buchhaltungsführenden Bewertungsbereichen in das Hauptbuch (periodische APC-Buchung). Der Lauf überführt bereichsspezifische Bewegungen ins FI und wirkt massenhaft, sodass eine fehlerhafte Ausführung zu inkonsistenten Anlagen- und Hauptbuchständen führen kann. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich oder fehlerhaft lässt sich der Lauf verschieben oder unterlassen, sodass Anlagenbewegungen nicht periodengerecht ins FI gelangen. Das Risiko ist überwiegend fehler-, weniger betrugsgetrieben, aber abstimmungsrelevant.",
+    "threat": "(1) Täter führt ASKB fehlerhaft aus bzw. unterlässt den Lauf. (2) Bereichsspezifische Anlagenbewegungen werden nicht/verschoben ins FI gebucht. (3) Anlagen- und Hauptbuchbestände weichen voneinander ab. (4) Ohne Abstimmung bleibt die Inkonsistenz zunächst unentdeckt.",
+    "source": [
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2312_FI-AA",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über OAAQ/OAAR beziehungsweise direkt per SM30/SM31 auf die Tabellen der Gruppe AC lässt sich der Anlagenbuchhaltungs-Jahresabschluss zurücknehmen, also ein bereits abgeschlossenes Anlagen-Geschäftsjahr wieder öffnen. Ein wieder geöffnetes Jahr erlaubt nachträgliche Anlagenbuchungen und Abschreibungsänderungen in einer eigentlich abgeschlossenen Periode. Betroffen sind Integrität und die Assertions Cutoff und Completeness sowie die Verlässlichkeit des Abschlusses. Missbräuchlich lässt sich das abgeschlossene Anlagenjahr wieder öffnen, um Werte und Abschreibungen nachträglich zu manipulieren, und anschließend wieder abschließen. Die direkte Tabellenpflege umgeht zudem die geführte Transaktion.",
+    "threat": "(1) Täter nimmt über OAAQ den Anlagen-Jahresabschluss zurück. (2) Das abgeschlossene Anlagenjahr ist wieder buchbar. (3) Er manipuliert Anlagenwerte/Abschreibungen nachträglich. (4) Das Jahr wird wieder abgeschlossen, sodass der Abschluss unverändert wirkt.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.voquzlabs.com/blog/asset-accounting-controls-in-remq-and-one-do-it-yourself-control"
+    ]
   },
   {
     "query": "2400_FI-CM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FF.5/FF_5 lesen den elektronischen Kontoauszug (etwa MT940) ein und stoßen die automatische Verbuchung und den Abgleich mit offenen Posten an. Der Einleseprozess bestimmt, welche Bankbewegungen als welche Buchungen ins System gelangen und wie sie automatisch verrechnet werden, sodass ein präparierter oder wiederholt eingelesener Auszug Buchungen verfälschen kann. Betroffen sind Integrität und die Assertions Completeness, Occurrence und Accuracy. Missbräuchlich lässt sich ein manipulierter Auszug einspielen oder ein Auszug mehrfach beziehungsweise gar nicht einlesen, um Bankbewegungen zu verschleiern. In Verbindung mit der Nachbearbeitung (FEBA) entsteht ein Manipulationsansatz im Zahlungsverkehr.",
+    "threat": "(1) Täter liest über FF.5 einen präparierten bzw. unvollständigen Kontoauszug ein. (2) Die automatische Verbuchung/Verrechnung erfolgt auf dieser Basis. (3) Bankbewegungen werden verfälscht oder verschleiert. (4) Ohne Abgleich mit dem Original-Bankauszug bleibt die Manipulation unentdeckt.",
+    "source": [
+      "https://www.learntosap.com/SAP-Bank-Reconciliation-Guide.html",
+      "https://www.mobolutions.com/blogs/sap-bank-reconciliation/"
+    ]
   },
   {
     "query": "2401_FI-CM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FEBA/FEBAN dienen der manuellen Nachbearbeitung des elektronischen Kontoauszugs, also dem Zuordnen und Ausgleichen nicht automatisch verrechneter Positionen und dem Nachbuchen manueller Positionen wie Gebühren. In der Nachbearbeitung entscheidet der Bearbeiter diskretionär, welche Bankbewegung gegen welchen offenen Posten ausgeglichen und wie eine Differenz behandelt wird. Betroffen sind Integrität und die Assertions Accuracy und Completeness. Missbräuchlich lässt sich eine Zahlung einem falschen Posten zuordnen, eine Differenz als vermeintliche Bankgebühr ausbuchen oder eine Unterschlagung so gegen das Bankkonto glattstellen, dass der GL-Saldo zum Auszug passt. Das macht FEBA zu einem sensiblen Punkt der Bankabstimmung.",
+    "threat": "(1) Täter ordnet in FEBA eine Bankbewegung einem falschen offenen Posten zu. (2) Eine Differenz wird als Gebühr/Sonstiges ausgebucht. (3) Der GL-Bankbestand stimmt scheinbar mit dem Auszug überein, obwohl eine Unterschlagung kaschiert wurde. (4) Ohne unabhängige Prüfung der Zuordnungen bleibt dies unentdeckt.",
+    "source": [
+      "https://www.mobolutions.com/blogs/sap-bank-reconciliation/",
+      "https://www.erplingo.com/sap-transaction-code/en/FEBAN",
+      "https://www.learntosap.com/SAP-Bank-Reconciliation-Guide.html"
+    ]
   },
   {
     "query": "2402_FI-CM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FF67 erlaubt die manuelle Erfassung eines Bankkontoauszugs, wenn kein elektronischer Auszug vorliegt. Da der Bearbeiter die Auszugsdaten selbst eingibt, kann er von der Bankrealität abweichende Werte erfassen und die anschließende Verrechnung entsprechend steuern. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Kontoauszug mit manipulierten Beträgen oder Positionen erfassen, um Bankbewegungen vorzutäuschen oder zu unterdrücken und den Abgleich zu beeinflussen. Ohne Vergleich mit dem echten Bankbeleg ist die manuelle Erfassung besonders kontrollbedürftig.",
+    "threat": "(1) Täter erfasst in FF67 einen manuellen Kontoauszug mit manipulierten Positionen. (2) Die Verrechnung/Verbuchung erfolgt auf dieser Basis. (3) Bankbewegungen werden vorgetäuscht oder unterdrückt. (4) Ohne Abgleich mit dem Original-Bankbeleg bleibt die Manipulation unentdeckt.",
+    "source": [
+      "https://www.learntosap.com/SAP-Bank-Reconciliation-Guide.html",
+      "https://www.mobolutions.com/blogs/sap-bank-reconciliation/"
+    ]
   },
   {
     "query": "2403_FI-CM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Ausführen des automatischen Zahllaufs (F110/F111) für alle Kontoarten (KOART=*) mit den Aktivitäten Zahllauf ausführen und Zahlmedium erzeugen (FBTCH 21/25). Der Zahllauf ist der Schritt, an dem Zahlungen tatsächlich angestoßen und Zahlmedien wie Bankdateien erzeugt werden, also unmittelbar vermögenswirksam. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Da Ausführung und Zahlmedienerstellung enthalten sind, kann ein Nutzer den zahlungswirksamen Teil des Prozesses allein durchführen; ohne Trennung zur Vorschlagserstellung (FBTCH 11/12) entsteht ein SoD-Risiko. Missbräuchlich lässt sich ein Zahllauf mit manipuliertem Vorschlag ausführen und das Zahlmedium erzeugen.",
+    "threat": "(1) Täter führt in F110 den Zahllauf für einen (ggf. manipulierten) Vorschlag aus. (2) Er erzeugt das Zahlmedium (Bankdatei). (3) Zahlungen werden angestoßen und an die Bank übermittelt. (4) Ohne Trennung zur Vorschlagsseite fehlt die unabhängige Kontrolle.",
+    "source": [
+      "https://blogs.sap.com/2010/02/27/tcodes-f110-and-fbz0-segregation-of-duty-fix",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.guru99.com/all-about-automatic-payment-run.html"
+    ]
   },
   {
     "query": "2404_FI-CM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt den Zahllauf (F110) speziell für Debitoren (KOART=D) mit Ausführung und Zahlmedienerstellung. Debitorenzahlläufe betreffen Auszahlungen an Kunden, etwa Guthaben oder Erstattungen, und die Ausführung ist unmittelbar vermögenswirksam. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine unberechtigte Erstattung an einen gesteuerten Debitor über den Zahllauf auszahlen, insbesondere in Verbindung mit manipulierten Debitorenstamm- oder Buchungsdaten. Ohne Trennung zur Vorschlagsseite und Stammdatenpflege entsteht ein direkter Auszahlungshebel.",
+    "threat": "(1) Täter sorgt für ein Debitorenguthaben (z. B. über eine Gutschrift). (2) Über den Debitoren-Zahllauf (F110, KOART D) wird die Erstattung ausgeführt. (3) Die Zahlung fließt an die hinterlegte Bankverbindung. (4) Ohne unabhängige Kontrolle bleibt die unberechtigte Erstattung unauffällig.",
+    "source": [
+      "https://blogs.sap.com/2010/02/27/tcodes-f110-and-fbz0-segregation-of-duty-fix",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.guru99.com/all-about-automatic-payment-run.html"
+    ]
   },
   {
     "query": "2405_FI-CM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt den Zahllauf (F110) speziell für Kreditoren (KOART=K) mit Ausführung und Zahlmedienerstellung, also den zentralen, unmittelbar zahlungswirksamen Schritt im Kreditorenprozess. Wer den Kreditoren-Zahllauf ausführen kann, kann offene Verbindlichkeiten zur Auszahlung bringen; in Verbindung mit Kreditorenstamm- oder Rechnungsrechten (vgl. PPX_0006/0010) entsteht der Kern des P2P-Betrugs. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine fingierte oder überhöhte Verbindlichkeit über den Zahllauf begleichen oder eine Zahlung an eine manipulierte Bankverbindung auslösen. Aufgrund der direkten Zahlungswirkung ist das Risiko kritisch.",
+    "threat": "(1) Täter sorgt für eine offene (fingierte) Kreditorenverbindlichkeit bzw. manipulierte Bankdaten. (2) Über den Kreditoren-Zahllauf (F110, KOART K) wird sie beglichen. (3) Die Zahlung fließt an das hinterlegte Konto. (4) Ohne Trennung zur Vorschlags-/Stammdatenseite bleibt der Mittelabfluss unauffällig.",
+    "source": [
+      "https://blogs.sap.com/2010/02/27/tcodes-f110-and-fbz0-segregation-of-duty-fix",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.guru99.com/all-about-automatic-payment-run.html"
+    ]
   },
   {
     "query": "2406_FI-CM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung umfasst die Vorschlagsseite des Zahllaufs (F110), also Vorschlag ausführen und bearbeiten (FBTCH 11/12). Über den Zahlungsvorschlag wird festgelegt, welche offenen Posten in welcher Höhe zur Zahlung vorgemerkt werden, und die Bearbeitung erlaubt das Sperren und Freigeben einzelner Posten. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich lässt sich der Vorschlag so bearbeiten, dass ein gesteuerter Posten aufgenommen oder ein zu blockierender Posten doch freigegeben wird; die eigentliche Zahlung erfolgt zwar erst im Lauf, der Vorschlag steuert diese aber maßgeblich. In Kombination mit der Ausführung (2403â2405) entfällt die Funktionstrennung.",
+    "threat": "(1) Täter bearbeitet in F110 den Zahlungsvorschlag. (2) Er nimmt einen gesteuerten Posten auf bzw. gibt einen zu sperrenden Posten frei. (3) Der spätere Zahllauf begleicht den Vorschlag. (4) Ohne Trennung zur Ausführungsseite fehlt die Gegenkontrolle.",
+    "source": [
+      "https://blogs.sap.com/2010/02/27/tcodes-f110-and-fbz0-segregation-of-duty-fix",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2407_FI-CM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "F111 führt den Zahllauf für Zahlungsanordnungen auf Sachkonten (KOART=S) aus. Über F111 lassen sich Zahlungen anstoßen, die nicht an Debitoren oder Kreditoren, sondern direkt an sachkontenbasierte Zahlungsanordnungen gebunden sind; die Ausführung ist unmittelbar vermögenswirksam und außerhalb des klassischen Offene-Posten-Ausgleichs. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine sachkontenbasierte Zahlungsanordnung zur Auszahlung bringen, die schwerer an einen Geschäftspartnerprozess rückgebunden ist und daher weniger auffällt. Aufgrund der direkten Zahlungswirkung ist das Risiko hoch.",
+    "threat": "(1) Täter erstellt/nutzt eine sachkontenbasierte Zahlungsanordnung. (2) Über F111 (KOART S) wird der Zahllauf ausgeführt. (3) Die Zahlung fließt, ohne klaren Bezug zu einem Debitoren-/Kreditorenprozess. (4) Die geringere Rückbindung erschwert die Aufdeckung.",
+    "source": [
+      "https://blogs.sap.com/2010/02/27/tcodes-f110-and-fbz0-segregation-of-duty-fix",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "2500_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNV1/FNENHYP legen einen Hypothekendarlehensvertrag im SAP-Darlehensmanagement (FS-CML) an, inklusive Konditionen, Partner und Rückzahlungsstruktur. Der Vertrag ist die Grundlage für spätere Auszahlung sowie Zins- und Tilgungsbuchungen, und seine Ausgestaltung bestimmt die finanziellen Verpflichtungen und Erträge. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Vertrag mit vorteilhaften, nicht marktgerechten Konditionen oder für einen gesteuerten Partner anlegen, als Vorstufe zu einer späteren unberechtigten Auszahlung. Da im Darlehensmanagement mehrstufige Freigabeverfahren vorgesehen sind, ist das Anlegen ohne Freigabe und Funktionstrennung kontrollrelevant.",
+    "threat": "(1) Täter legt in FNV1 einen Hypothekenvertrag mit vorteilhaften Konditionen/gesteuertem Partner an. (2) Der Vertrag bildet die Basis für spätere Auszahlung und Konditionen. (3) In Verbindung mit der Auszahlungsberechtigung wird ein Mittelabfluss vorbereitet. (4) Ohne Freigabe/Funktionstrennung fällt die Ausgestaltung nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2501_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FN15/FNENSSD legen einen Schuldscheindarlehensvertrag (FS-CML) an. Wie beim Hypothekenvertrag begründet das Anlegen die finanziellen Konditionen und die Grundlage für Auszahlung und Zins-/Tilgungsbuchungen. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Schuldscheindarlehen mit nicht marktgerechten Konditionen oder für einen gesteuerten Partner anlegen, als Vorstufe einer späteren Auszahlung. Angesichts der vorgesehenen Freigabeverfahren ist das Anlegen ohne Funktionstrennung kontrollrelevant.",
+    "threat": "(1) Täter legt in FN15 einen Schuldscheinvertrag mit vorteilhaften Konditionen an. (2) Der Vertrag bildet die Basis für die Auszahlung. (3) In Verbindung mit der Auszahlungsberechtigung wird ein Mittelabfluss vorbereitet. (4) Ohne Freigabe fällt die Ausgestaltung nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2502_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNV6/FNENPOL legen einen Policendarlehensvertrag (FS-CML) an. Auch hier begründet das Anlegen die Konditionen und die Grundlage für Auszahlung und Folgebuchungen. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Policendarlehen mit vorteilhaften Konditionen oder für einen gesteuerten Partner anlegen, als Vorstufe einer späteren Auszahlung. Ohne Freigabe und Funktionstrennung ist dies kontrollrelevant.",
+    "threat": "(1) Täter legt in FNV6 einen Policendarlehensvertrag an. (2) Der Vertrag bildet die Basis für die Auszahlung. (3) In Verbindung mit der Auszahlungsberechtigung wird ein Mittelabfluss vorbereitet. (4) Ohne Freigabe fällt die Ausgestaltung nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2503_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FN1V/FNENALG legen einen allgemeinen Darlehensvertrag (FS-CML) an. Wie bei den übrigen Darlehensarten begründet das Anlegen die Konditionen und die Grundlage für Auszahlung und Zins-/Tilgungsbuchungen. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Darlehen mit nicht marktgerechten Konditionen oder für einen gesteuerten Partner anlegen, als Vorstufe einer späteren Auszahlung. Ohne Freigabe und Funktionstrennung ist dies kontrollrelevant.",
+    "threat": "(1) Täter legt in FN1V einen allgemeinen Darlehensvertrag an. (2) Der Vertrag bildet die Basis für die Auszahlung. (3) In Verbindung mit der Auszahlungsberechtigung wird ein Mittelabfluss vorbereitet. (4) Ohne Freigabe fällt die Ausgestaltung nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2504_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNVM erlaubt das Ändern bestehender Darlehensverträge (FS-CML). Änderungen an Vertragsdaten und -konditionen wirken auf künftige Zins-, Tilgungs- und Auszahlungsvorgänge, und die Berechtigung enthält unter anderem F_CHG_COND für die Konditionsänderung. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Vertrag nachträglich zugunsten eines gesteuerten Partners anpassen (etwa Zins senken, Tilgung strecken) oder eine Kondition so ändern, dass Erträge und Verpflichtungen verzerrt werden. Ohne unabhängige Freigabe der Änderung ist dies kontrollrelevant.",
+    "threat": "(1) Täter ändert in FNVM die Konditionen eines bestehenden Darlehens. (2) Zins-/Tilgungsvorgänge verändern sich zugunsten des Partners. (3) Erträge/Verpflichtungen werden verzerrt. (4) Ohne unabhängige Freigabe fällt die Konditionsänderung kaum auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2505_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt über FNVM das Ändern von Vertragskonditionen auch nach bereits erfolgten Buchungen (F_CHG_COND mit BUKRS=*). Konditionsänderungen nach Buchung sind besonders sensibel, da sie bereits verbuchte Zins-/Tilgungsvorgänge betreffen beziehungsweise rückwirkend Effekte erzeugen können. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Cutoff. Missbräuchlich lässt sich eine Kondition nachträglich so ändern, dass bereits gebuchte Vorgänge in eine gewünschte Richtung korrigiert werden oder künftige Buchungen verzerrt entstehen. Aufgrund der Wirkung auf bereits verbuchte Sachverhalte ist die Kontrolle besonders wichtig.",
+    "threat": "(1) Täter ändert in FNVM eine Kondition nach bereits erfolgten Buchungen. (2) Bereits verbuchte bzw. künftige Zins-/Tilgungsvorgänge werden beeinflusst. (3) Erträge/Verpflichtungen verschieben sich zugunsten eines Ziels. (4) Ohne unabhängige Freigabe bleibt die nachträgliche Änderung unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2506_TR-LO",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt die Auszahlung von Darlehensverträgen (FNVD/FN5V etc.), also die Aktivierung des zugesagten Darlehensbetrags und die Überführung in die Finanzbuchhaltung. Die Auszahlung ist der unmittelbar vermögenswirksame Schritt im Darlehensprozess, an dem die Mittel an den Darlehensnehmer fließen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein gegebenenfalls für einen gesteuerten Partner angelegter Darlehensvertrag auszahlen, insbesondere in Verbindung mit der Vertragsanlage oder -änderung, also ein direkter Mittelabfluss ohne die vorgesehene mehrstufige Freigabe. Aufgrund der Zahlungswirkung ist das Risiko hoch.",
+    "threat": "(1) Täter zahlt über FNVD/FN5V einen (ggf. selbst angelegten) Darlehensvertrag aus. (2) Der zugesagte Betrag wird aktiviert und ins FI überführt. (3) Mittel fließen an den (gesteuerten) Darlehensnehmer. (4) Ohne mehrstufige Freigabe/Funktionstrennung bleibt der Mittelabfluss unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/",
+      "https://www.tcodesearch.com/sap-tcodes/FNVD"
+    ]
   },
   {
     "query": "2507_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNM3 storniert einzelne Darlehensvorgänge beziehungsweise -buchungen im Darlehensmanagement (FS-CML). Das Stornieren nimmt einen erfassten Vorgang zurück und wirkt auf die zugehörigen FI-Buchungen. Betroffen sind Integrität und die Assertions Occurrence und Completeness. Missbräuchlich lässt sich ein belastender oder korrekter Darlehensvorgang stornieren, um Buchungen zu manipulieren oder zu beseitigen. Ohne unabhängige Freigabe ist dies kontrollrelevant.",
+    "threat": "(1) Täter storniert in FNM3 einen Darlehensvorgang. (2) Die zugehörige FI-Buchung wird zurückgenommen. (3) Der Vorgang bzw. Beleg ist beseitigt. (4) Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2508_TR-LO",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNP0 prolongiert einen Darlehensvertrag im Wege der Einzelumsetzung, verlängert also Laufzeit und passt Konditionen an. Die Prolongation wirkt auf künftige Zins-, Tilgungs- und Bewertungsvorgänge des Vertrags. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Verlängerung zu vorteilhaften, nicht marktgerechten Konditionen für einen gesteuerten Partner vornehmen. Ohne unabhängige Freigabe ist dies kontrollrelevant.",
+    "threat": "(1) Täter prolongiert in FNP0 einen Vertrag zu vorteilhaften Konditionen. (2) Laufzeit/Kondition werden verlängert. (3) Erträge/Verpflichtungen verschieben sich zugunsten des Partners. (4) Ohne Freigabe fällt die Ausgestaltung nicht auf.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2509_TR-LO",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNX1 legt ein Prolongationstableau an, also eine Steuerungsvorlage mit den Konditionen für die (Massen-)Prolongation von Darlehen. Da das Tableau die Verlängerungskonditionen für viele Verträge vorgibt, wirkt eine Manipulation breit auf den gesamten prolongierten Bestand. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Tableau mit vorteilhaften Konditionen anlegen, das anschließend auf zahlreiche Prolongationen wirkt und dessen Einzelwirkung schwer nachvollziehbar ist.",
+    "threat": "(1) Täter legt in FNX1 ein Tableau mit vorteilhaften Konditionen an. (2) Bei der Massenprolongation wird es angewendet. (3) Viele Verträge erhalten die geänderten Konditionen. (4) Die breite Wirkung ist schwer nachzuvollziehen.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2510_TR-LO",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNX2 ändert ein bestehendes Prolongationstableau. Wie beim Anlegen wirken die im Tableau hinterlegten Konditionen breit auf alle darüber prolongierten Verträge. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich das Tableau so ändern, dass Verlängerungen zu manipulierten Konditionen erfolgen und viele Verträge gleichzeitig betroffen sind. Die breite Wirkung erschwert die Einzelfallprüfung.",
+    "threat": "(1) Täter ändert in FNX2 ein bestehendes Tableau. (2) Die Verlängerungskonditionen ändern sich. (3) Zahlreiche Prolongationen sind betroffen. (4) Die Einzelwirkung geht in der Masse unter.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2511_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNM1S bucht einzelne Darlehens-Plansätze (Zins, Tilgung, Gebühren) ins Rechnungswesen. Die Buchung ist wertwirksam und überführt den erfassten Vorgang in die Finanzbuchhaltung. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich eine falsche oder unberechtigte Darlehensbuchung erfassen. Ohne unabhängige Kontrolle bleibt der Vorgang unauffällig.",
+    "threat": "(1) Täter bucht in FNM1S einen Darlehens-Plansatz. (2) Eine FI-Buchung entsteht. (3) Werte werden verändert. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2512_TR-LO",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FN8D bucht einzelne Sätze (Flows) eines Darlehens ins Rechnungswesen. Ähnlich wie FNM1S ist die Buchung wertwirksam und überführt Darlehensbewegungen ins FI. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich ein Einzelsatz mit falschen Werten buchen. Ohne unabhängige Kontrolle bleibt der Vorgang unauffällig.",
+    "threat": "(1) Täter bucht in FN8D einen Einzelsatz. (2) Eine FI-Buchung entsteht. (3) Werte werden verändert. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2513_TR-LO",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FNM1 bucht massenhaft Darlehens-Plansätze ins Rechnungswesen (periodischer Buchungslauf über viele Verträge). Der Lauf wirkt massenhaft, sodass fehlerhafte oder manipulierte Läufe zahlreiche Buchungen verfälschen. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich lässt sich der Lauf mit falschen Parametern ausführen, sodass viele fehlerhafte Buchungen entstehen und einzelne Manipulationen in der Masse untergehen.",
+    "threat": "(1) Täter startet FNM1 mit (falschen) Parametern. (2) Viele Plansätze werden gebucht. (3) Zahlreiche Buchungen sind betroffen. (4) Einzelne Manipulationen gehen in der Masse unter.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2514_TR-LO",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung storniert Darlehens-Buchungsbelege (über F_STO_TRAN). Das Stornieren nimmt gebuchte Belege zurück und wirkt auf das Rechnungswesen; im Unterschied zum Einzelvorgangsstorno (2507) betrifft es die Belegstornierung breiter. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence und Completeness. Missbräuchlich lassen sich gebuchte, belastende Belege stornieren, um Buchungen oder Spuren zu beseitigen. Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert in FNM3 gebuchte Belege. (2) Die Belege werden zurückgenommen. (3) Buchungen/Spuren sind beseitigt. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/99fb46a79ab241d5984df80fe7a9aa32/a902c753b1081d4be10000000a174cb4.html",
+      "https://dycsi.net/sap-fs-cml-loans-management-overview/"
+    ]
   },
   {
     "query": "2600_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TM01 legt ein Festgeldgeschäft (Geldmarkt) im Treasury Transaction Manager an, also die Front-Office-Erfassung eines Deals mit Betrag, Laufzeit, Zins und Kontrahent. Der Deal begründet eine finanzielle Position (Anlage oder Aufnahme). Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich ein unautorisiertes Geschäft anlegen, gegebenenfalls über Limits hinaus oder mit einem gesteuerten Kontrahenten (Rogue-Trading). In der Treasury-Kontrolllogik ist die Trennung von Front-Office (Deal) und Back-Office (Settlement/Buchung) entscheidend: Wer Deals anlegen kann, sollte sie nicht selbst abrechnen oder buchen.",
+    "threat": "(1) Täter legt in TM01 ein Festgeldgeschäft an. (2) Eine Position entsteht, ggf. über Limit/mit gesteuertem Kontrahenten. (3) Das Geschäft wirkt auf die Finanzlage. (4) Ohne Back-Office-Trennung bleibt es ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.erpvits.com/blog/sap-trm-and-revenue-management-smarter-financial-risk-decisions/",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2601_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TM02 ändert ein bestehendes Festgeldgeschäft, etwa Konditionen, Betrag oder Laufzeit. Änderungen wirken unmittelbar auf Position und Bewertung des Geschäfts. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Deal nachträglich vorteilhaft ändern, etwa um Verluste zu kaschieren oder Konditionen zugunsten eines Kontrahenten zu verschieben. Ohne Front-/Back-Office-Trennung fehlt die unabhängige Prüfung.",
+    "threat": "(1) Täter ändert in TM02 ein Festgeldgeschäft. (2) Kondition/Betrag werden verändert. (3) Position/Bewertung verschieben sich. (4) Ohne Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2602_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TM04 prolongiert ein Festgeldgeschäft, verlängert also Laufzeit und Konditionen der Position. Die Prolongation wirkt auf Zins und Bewertung des Geschäfts. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Verlängerung zu vorteilhaften Konditionen vornehmen. Ohne unabhängige Kontrolle bleibt die Ausgestaltung unauffällig.",
+    "threat": "(1) Täter prolongiert in TM04 ein Festgeld. (2) Laufzeit/Kondition werden verlängert. (3) Position/Bewertung verschieben sich. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2603_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TM06 rechnet ein Festgeldgeschäft ab (Abrechnung/Settlement). Die Abrechnung führt zur zahlungs- und buchungswirksamen Erledigung des Geschäfts. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich eine Abrechnung mit manipulierten Werten oder für ein gesteuertes Geschäft vornehmen. Wenn Abrechnung und Dealerfassung in einer Hand liegen, entfällt die für Treasury zentrale Front-/Back-Office-Trennung.",
+    "threat": "(1) Täter rechnet in TM06 ein Festgeld ab. (2) Das Geschäft wird zahlungs-/buchungswirksam erledigt. (3) Mit manipulierten Werten. (4) Ohne Front-/Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.erpvits.com/blog/sap-trm-and-revenue-management-smarter-financial-risk-decisions/",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2604_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TX01 legt ein Devisengeschäft (FX) im Transaction Manager an, also die Front-Office-Erfassung eines Deals mit Kurs, Betrag und Kontrahent. Der Deal begründet eine FX-Position. Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich ein unautorisiertes FX-Geschäft anlegen, gegebenenfalls über Limit oder mit manipuliertem Kurs (Rogue-Trading). Die Trennung von Front- und Back-Office ist die entscheidende Kontrolle.",
+    "threat": "(1) Täter legt in TX01 ein FX-Geschäft an. (2) Eine Position mit Kurs/Betrag entsteht, ggf. über Limit/manipulierter Kurs. (3) Das Geschäft wirkt auf die Finanzlage. (4) Ohne Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.erpvits.com/blog/sap-trm-and-revenue-management-smarter-financial-risk-decisions/",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2605_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TX02 ändert ein bestehendes Devisengeschäft, etwa Kurs, Betrag oder Laufzeit. Änderungen wirken auf Position und Bewertung. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein FX-Deal nachträglich vorteilhaft ändern, etwa um Verluste zu kaschieren. Ohne Front-/Back-Office-Trennung fehlt die unabhängige Prüfung.",
+    "threat": "(1) Täter ändert in TX02 ein FX-Geschäft. (2) Kurs/Betrag werden verändert. (3) Position/Bewertung verschieben sich. (4) Ohne Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2606_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TX10 legt ein Devisen-Swap-Geschäft an, ein kombiniertes Kassa-/Termingeschäft mit entsprechender Wirkung auf Position und Bewertung. Als komplexeres FX-Instrument ist seine Bewertung schwerer nachzuvollziehen. Betroffen sind Integrität und die Assertions Existence und Valuation. Missbräuchlich lässt sich ein unautorisierter oder komplexer Deal anlegen, dessen Bewertung sich schwerer prüfen lässt. Ohne Front-/Back-Office-Trennung fehlt die Gegenkontrolle.",
+    "threat": "(1) Täter legt in TX10 ein Swap-Geschäft an. (2) Eine komplexe FX-Position entsteht. (3) Die Bewertung ist schwer prüfbar. (4) Ohne Front-/Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2607_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TX11 prolongiert ein Devisengeschäft, verlängert also Laufzeit und Konditionen der FX-Position. Die Prolongation wirkt auf Bewertung und künftige Flüsse. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Verlängerung zu vorteilhaften Konditionen vornehmen. Ohne unabhängige Kontrolle bleibt die Ausgestaltung unauffällig.",
+    "threat": "(1) Täter prolongiert in TX11 ein FX-Geschäft. (2) Laufzeit/Kondition werden verlängert. (3) Position/Bewertung verschieben sich. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2608_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TX-5 rechnet ein Devisengeschäft ab (Settlement) und macht es damit zahlungs- und buchungswirksam. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich eine Abrechnung mit manipulierten Werten oder für ein gesteuertes Geschäft vornehmen. Wenn Abrechnung und Dealerfassung in einer Hand liegen, entfällt die Front-/Back-Office-Trennung.",
+    "threat": "(1) Täter rechnet in TX-5 ein FX-Geschäft ab. (2) Es wird zahlungs-/buchungswirksam. (3) Mit manipulierten Werten. (4) Ohne Front-/Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2609_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TX04 storniert einen Devisengeschäftsvorgang (Aktivität 85). Das Stornieren nimmt ein erfasstes Geschäft zurück. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence und Completeness. Missbräuchlich lässt sich ein verlustbringendes oder belastendes FX-Geschäft stornieren, um Position oder Spuren zu beseitigen. Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert in TX04 einen FX-Vorgang. (2) Das Geschäft wird zurückgenommen. (3) Position/Spur sind beseitigt. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2610_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TBB1 führt die Buchung von Treasury-Geschäften ins Rechnungswesen durch (Fluss- und Positionsbuchung, ein Back-Office-Schritt). Die Buchung überführt Deals in die Finanzbuchhaltung und ist wertwirksam. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich manipulierte Geschäfte buchen; wenn Dealerfassung und Buchung in einer Hand liegen, entfällt die für Treasury zentrale Front-/Back-Office-Trennung.",
+    "threat": "(1) Täter führt in TBB1 die Treasury-Buchung durch. (2) Deals werden ins FI überführt. (3) Manipulierte Geschäfte werden gebucht. (4) Ohne Front-/Back-Office-Trennung ungeprüft.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.erpvits.com/blog/sap-trm-and-revenue-management-smarter-financial-risk-decisions/",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2611_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TBB2 storniert Treasury-Buchungsbelege und nimmt damit gebuchte Flüsse und Positionen zurück. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence und Completeness. Missbräuchlich lassen sich gebuchte, belastende Belege stornieren, um Buchungen oder Spuren zu beseitigen. Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert in TBB2 Buchungsbelege. (2) Gebuchte Flüsse werden zurückgenommen. (3) Spuren sind beseitigt. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2612_TR-TM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TBB7 führt die Stichtagsbewertung (Mark-to-Market, Fremdwährungs- und Zinsbewertung) der Treasury-Positionen durch und bucht die Bewertungsergebnisse. Die Bewertung bestimmt den Bilanzansatz der Finanzinstrumente zum Stichtag und ist damit unmittelbar abschlussrelevant. Betroffen sind Integrität und die Assertions Valuation, Accuracy und Cutoff sowie die Verlässlichkeit des Abschlusses. Missbräuchlich lässt sich die Bewertung mit manipulierten Kursen oder Parametern durchführen, um Bewertungsgewinne und -verluste und damit das Ergebnis zu steuern, was ein klassisches Feld für Bilanzmanipulation im Treasury ist.",
+    "threat": "(1) Täter führt in TBB7 die Bewertung mit manipulierten Kursen/Parametern durch. (2) Bewertungsergebnisse werden gebucht. (3) Ergebnis/Bilanzansatz werden gesteuert. (4) In der Masse der Bewertungsbuchungen unauffällig.",
+    "source": [
+      "https://www.erpvits.com/blog/sap-trm-and-revenue-management-smarter-financial-risk-decisions/",
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management",
+      "https://www.treasurers.org/hub/treasurer-magazine/treasury-essentials-segregation-duties"
+    ]
   },
   {
     "query": "2613_TR-TM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "TBB8 storniert die Stichtagsbewertung und nimmt damit gebuchte Bewertungsergebnisse zurück. Betroffen sind Integrität und die Assertions Valuation und Cutoff. Missbräuchlich lässt sich eine korrekte Bewertung stornieren, um Ergebnisse zu manipulieren, oder eine zuvor manipulierte Bewertung zu verschleiern. Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert in TBB8 die Bewertung. (2) Bewertungsergebnisse werden zurückgenommen. (3) Ergebnis/Bilanzansatz verschieben sich. (4) Ohne unabhängige Kontrolle unauffällig.",
+    "source": [
+      "https://www.erpvits.com/blog/sap-trm-and-revenue-management-smarter-financial-risk-decisions/",
+      "https://www.academia.edu/6872961/SAP_Treasury_and_Risk_Management"
+    ]
   },
   {
     "query": "3000_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MK01/XK01 legen den Lieferantenstamm in der Einkaufssicht an (Einkaufsorganisationsdaten). Zusammen mit der Buchhaltungssicht (FK01) bildet dies den vollständigen Kreditor, wobei die Einkaufssicht die Bestell- und Konditionsfindung steuert. Betroffen sind Integrität und die Assertions Existence, Occurrence und Accuracy. Missbräuchlich lässt sich ein fiktiver Lieferant (mit) anlegen; in Kombination mit der Buchhaltungssicht (vgl. PPX_0001) ist dies die Grundlage für Kreditorenbetrug, und wer beide Sichten pflegen kann, umgeht die Trennung von Einkauf und Buchhaltung.",
+    "threat": "(1) Täter legt in MK01 die Einkaufssicht eines (fiktiven) Lieferanten an. (2) Mit FK01 entsteht ein vollständiger Kreditor. (3) Bestell-/Zahlungsprozess läuft an den gesteuerten Lieferanten. (4) Ohne Sichten-Trennung bleibt er unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3001_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MK02/XK02 ändern die Einkaufssicht des Lieferantenstamms, etwa Einkaufsorganisationsdaten, Konditionen oder Ansprechpartner. Änderungen wirken auf die Bestell- und Konditionsfindung. Betroffen sind Integrität und die Assertion Accuracy. Missbräuchlich lassen sich Einkaufssichtdaten so anpassen, dass Bestellungen oder Konditionen zugunsten eines gesteuerten Lieferanten ausfallen. Ohne unabhängige Kontrolle bleibt die Anpassung unauffällig.",
+    "threat": "(1) Täter ändert in MK02 die Einkaufssicht. (2) Bestell-/Konditionsfindung wird beeinflusst. (3) Ein gesteuerter Lieferant wird bevorteilt. (4) Ohne Kontrolle unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3002_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MK05 sperrt oder entsperrt den Lieferanten in der Einkaufssicht (Bestellsperre) und steuert damit, ob bei einem Lieferanten bestellt werden kann. Betroffen sind Integrität, die Wirksamkeit von Lieferantensperren und Verfügbarkeit. Missbräuchlich lässt sich ein bewusst gesperrter, auffälliger Lieferant entsperren, um Bestellungen zu ermöglichen, oder ein legitimer Lieferant sperren, um Beschaffungsprozesse zu stören. Anschließend lässt sich die Sperre wieder setzen, um unauffällig zu bleiben.",
+    "threat": "(1) Täter entsperrt in MK05 einen gesperrten Lieferanten. (2) Bestellungen sind wieder möglich. (3) An den gesteuerten/auffälligen Lieferanten wird bestellt. (4) Danach wird die Sperre ggf. wieder gesetzt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3003_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME11 legt Einkaufsinfosätze an, also Stammdaten je Lieferant/Material inklusive Preis und Konditionen. Der im Infosatz hinterlegte Preis wird automatisch in Bestellungen (ME21N) gezogen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Infosatz mit überhöhtem Preis für einen gesteuerten Lieferanten anlegen, sodass alle darauf basierenden Bestellungen überteuert sind, ohne dass der Preis je Einzelbestellung auffällt.",
+    "threat": "(1) Täter legt in ME11 einen Infosatz mit überhöhtem Preis an. (2) Der Preis fließt automatisch in Bestellungen. (3) Es entsteht eine Überzahlung an den gesteuerten Lieferanten. (4) Je Einzelbestellung ist dies unauffällig.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://www.erpvits.com/blog/purchase-info-record-in-sap-mm/",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3004_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME12 ändert Einkaufsinfosätze inklusive Preis und Konditionen. Wie beim Anlegen wirkt die Preisänderung sofort auf künftige Bestellungen, die den Infosatzpreis automatisch ziehen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich der Preis eines Infosatzes erhöhen, um Bestellungen zu verteuern, und anschließend gegebenenfalls zurückändern, sodass die Manipulation schwer erkennbar bleibt.",
+    "threat": "(1) Täter erhöht in ME12 den Infosatzpreis. (2) Künftige Bestellungen werden teurer. (3) Es entsteht eine Überzahlung. (4) Der Preis wird ggf. zurückgeändert.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://www.erpvits.com/blog/purchase-info-record-in-sap-mm/",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3005_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MEK1 legt Einkaufs-Konditionssätze an, also Preis-, Zu- und Abschlagskonditionen über flexible Schlüsselkombinationen, die in die Preisfindung von Bestellungen einfließen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Kondition für einen Lieferanten oder Materialbereich vorteilhaft anlegen, sodass Bestellungen systematisch überteuert oder verfälscht werden. Da MEK1 breitere Kombinationen als ME11 zulässt, ist die potenzielle Wirkung größer.",
+    "threat": "(1) Täter legt in MEK1 eine vorteilhafte Kondition an. (2) Sie fließt in die Bestellpreisfindung. (3) Bestellungen werden systematisch überteuert. (4) Je Bestellung schwer erkennbar.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3006_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MEK2 ändert Einkaufs-Konditionssätze. Wie beim Anlegen fließen die Konditionen in die Preisfindung von Bestellungen ein, sodass eine Änderung künftige Bestellpreise beeinflusst. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Kondition vorteilhaft ändern, sodass Bestellungen überteuert werden, und anschließend gegebenenfalls zurückändern.",
+    "threat": "(1) Täter ändert in MEK2 eine Kondition. (2) Die Bestellpreisfindung wird beeinflusst. (3) Bestellungen werden überteuert/verfälscht. (4) Die Kondition wird ggf. zurückgeändert.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3007_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung pflegt Einkaufspreise und -konditionen über verschiedene Pflegetransaktionen (MEKAâMEKD, MEK32) inklusive Rahmen- und Preiskonditionen (M_RAHM_BSA) und bündelt damit breiten Zugriff auf die einkaufsseitige Preisfindung. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Einkaufspreise und -konditionen breit so pflegen, dass Bestellungen zugunsten gesteuerter Lieferanten überteuert werden. Aufgrund des breiten Zugriffs auf die Preisfindung ist das Risiko besonders relevant.",
+    "threat": "(1) Täter pflegt über MEKA/MEK32 Einkaufspreise/-konditionen. (2) Die Bestellpreisfindung wird breit beeinflusst. (3) Bestellungen an gesteuerte Lieferanten werden überteuert. (4) Je Bestellung schwer erkennbar.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3008_MM-PUR",
