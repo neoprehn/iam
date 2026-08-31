@@ -1160,6 +1160,141 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   `PUT .../sodrules/{ruleId}`, `GET .../sodrules/overlay/download`. **Kein „Ableiten"** für SoD
   in v1 — nur Metadaten-Edits an bestehenden Regeln.
 
+#### Import-Evidenz (2026-07-12)
+Vollständigkeitsnachweis gegen Quell-SAP. Vorher: **Import-Robustheit** — Abbrechen laufender
+Importe, Resume über Checkpoint nach Abbruch/Fehler, fehlende optionale Quelltabelle bricht nicht
+mehr ab, parallele CSV-Konvertierung, Quelldateien nach Backup löschbar (s. „Geführte Auswertung").
+
+- [x] **Persistente, abrufbare Import-Statistik je Lauf.** War bisher nur flüchtig (Job-Counts)
+  bzw. verworfen (`99_validate.cypher` lief nur via `.consume()`, s. `run_cypher_path()`).
+  - **Persistenz:** `(:Dataset)-[:HAS_IMPORT]->(:Import {dataset, importedAt, lang})` (ein Knoten
+    je Import-Vorgang, keine Überschreibung → Historie über Re-Importe) mit
+    `-[:HAS_TABLE]->(:ImportTable {table, sourceRows, droppedColumns, filteredRows})` je
+    Quelltabelle (Konverter liefert Zeilen/verworfene Sensibel-Spalten bereits, `filteredRows`
+    zusätzlich per eigenem `DELETED='X'`-Zähler für AGR_1251) + `-[:HAS_NODE_COUNT]->`/
+    `-[:HAS_EDGE_COUNT]->` Graph-Zähler je Label-Kombination/Kantentyp (`99_validate.cypher`,
+    jetzt über `run_cypher_path_capturing()` statt verworfen). `backend/app.py
+    _persist_import_evidence()`, aufgerufen am Ende von `do_import()`. Migration
+    `V004__import_evidence.cypher` (Unique-Constraints).
+  - **Abgleich/Checks:** `cypher/checks/import_evidence.cypher` — 22 SAP-Quelltabellen als
+    literal eingebettete Zuordnung (node_1to1/edge_1to1 echte 1:1-Erwartung, edge_filtered
+    bewusst gefilterte Zeilen wie EXCLUDE='X', shared_edge_type mehrere Quelltabellen auf
+    denselben Kantentyp — z. B. CONTAINS für Rolle- **und** Profil-Hierarchie, aggregated
+    Bündelung nach AE-03/Dedupe, property reine Anreicherung ohne eigenen Zähler). **Wichtiger
+    Fund beim Testen:** Knoten tragen zusätzliche Subtyp-Labels (`User`+`Dialog`/`Active`/…,
+    `Role`+`Composite`/`Single`) — `99_validate.cypher` gruppiert nach der **exakten**
+    Label-Kombination, ein naiver Abgleich gegen `[Zielabel]` fand daher nie etwas; Fix: über
+    alle Kombinationen summieren, die das Ziel-Label enthalten (`CALL`-Subquery je
+    Rekonziliierungszeile).
+  - **Als eigene Konsistenzcheck-Kategorie „Import" (I) aufgenommen** (Nutzer-Wunsch, weicht vom
+    ursprünglichen Plan ab, das unter der bestehenden Kategorie E als E6 zu führen — E6 verweist
+    jetzt auf I1): `CHECK_AREAS`/`area_names` um `"import": ["I"]` erweitert, `checks/I1.json`
+    (`group` für die Box-Überschrift), dritter Ribbon-Punkt „Import" neben „User-spezifisch"/
+    „Rollen-spezifisch" — die komplette Rendering-Pipeline (Grid/Pillfilter/Detailansicht) war
+    bereits generisch über `CHECK_AREAS` gebaut, bis auf eine hart auf `.role` verdrahtete Stelle
+    in `ccGroupOrder()` (jetzt `consistencyCatalog[ccArea]`). Damit läuft I1 automatisch im
+    allgemeinen Konsistenz-Report (CSV/PDF, fpdf2) mit.
+  - **Dedizierter Import-Evidenz-Report** (`GET /datasets/{d}/import-evidence` JSON,
+    `.../export` CSV, `.../export/pdf` PDF) — der allgemeine Konsistenz-Report zeigt I1 nur als
+    einen Katalogeintrag mit Trefferzahl, für die Prüfungsnachweisführung („alle wichtigen
+    Informationen") braucht es die **volle** Tabelle-für-Tabelle-Rekonziliierung mit
+    Deckblatt-Metafeldern (Unternehmen/System/Anlass/Ersteller/Stichtag/Import-Zeitpunkt) —
+    `_build_import_evidence_pdf()` als Schwester-Funktion zu `_build_consistency_pdf()`, gleiche
+    fpdf2-Bibliothek/Optik. Downloadbar direkt vom I1-Check-Detail (eigener Report-Block, PDF/CSV,
+    Dataset aus dem Ausführen-Formular). Truncation über `pdf.get_string_width()` statt
+    Zeichen-Schätzung (sonst harte, wortmittige Abschnitte bei sehr langen Hinweistexten).
+  - Verifiziert gegen den laufenden Container: I1 im Leerzustand (Dataset noch nicht mit
+    Import-Evidenz importiert) liefert informativen Hinweis statt Fehler; mit simulierten
+    realistischen Zähldaten (echte Node-/Edge-Counts + eine bewusst falsche Zeile) liefert die
+    Rekonziliierung korrekt OK/Hinweis/Abweichung; allgemeiner CSV/PDF-Report läuft mit
+    Kategorie „Import" durch ohne Fehler; PDF-Layout Zelle für Zelle geprüft (keine
+    abgeschnittenen Texte mehr nach dem Truncation-Fix); Playwright-UI-Test (Ribbon-Button,
+    Single-Box-Grid, Detailansicht, Export-Links). Testdaten danach entfernt.
+
+**DoD ✓:** Tabelle-für-Tabelle-Rekonziliierung gegen die Quell-SAP-Extrakte, downloadbar als
+JSON/CSV/PDF, ohne Mandantendaten im Report-Code selbst.
+
+#### 9.4 Masterdata-Stammdaten (Juli 2026)
+Zentrale, editierbare Stammdaten statt verstreuter Freitexte/Konstanten — Basis für Dropdowns und
+Badges an Einzelfilter/SoD.
+
+- [x] **Kritikalitäts-Stammdaten** (2026-07-17) — Basiskatalog umgesetzt: neue
+  `config/masterdata.json` mit Stufe/Label/Rang/Farbe/KRI-Score, Backend-API
+  `GET|PUT /admin/masterdata/criticalities`, Validierung gegen Katalog bei Query-/SoD-Edits,
+  sowie dynamische Verdrahtung der Kritikalitäts-Dropdowns/Filter im Admin-Editor
+  (keine hart codierten Stufen mehr).
+- [x] **Reason-Code-Stammdaten (SoD)** (2026-07-18) — Prozesscode + Prozessbezeichnung als
+  Masterdata umgesetzt: `GET|PUT /admin/masterdata/reason-codes`, Pflege auf der Masterdata-Seite
+  und Dropdown im SoD-Editor.
+- [x] **Modul-Stammdaten** (2026-07-18) — bestehende SAP-Module als zentraler Katalog pflegbar:
+  `GET|PUT /admin/masterdata/modules`, Pflege auf der Masterdata-Seite und Dropdown im Query-Editor.
+- [x] **Querytyp-Stammdaten** (2026-07-18) — Querytypen inkl. Beschreibung als zentraler Katalog
+  pflegbar: `GET|PUT /admin/masterdata/query-types`, Pflege auf der Masterdata-Seite und Dropdown
+  im Query-Editor.
+- [x] **Dropdowns statt Freitext** (2026-07-18) — umgesetzt für Kritikalität inkl.
+  Datenschutz/RiskLevel, Modul, Querytyp und Reason-Code; Validierung erfolgt gegen die zentralen
+  Masterdata-Kataloge.
+- [x] **Neuen SoD-Filter anlegen** (2026-07-18) — neue SoD-Regeln als Ableitung bestehender Regeln
+  anlegen, Klausel-/CNF-Struktur über visuellen Builder bzw. Texteditor pflegen, testen und als
+  Overlay (`sod_rules.custom.json`/`risks.json`) persistieren.
+
+**DoD ✓:** Kritikalität, Reason-Code, Modul und Querytyp sind zentral pflegbare Kataloge statt
+verstreuter Freitexte/Konstanten; Editoren validieren gegen sie.
+
+#### 9.6 Export (2026-07-15)
+Nativer XLSX-/CSV-Export der Ergebnis-Übersicht, vorgezogen auf v1 (weitere Exportsichten wie
+System-/Mandant-Vergleich und Interview-Ergebnisse bleiben V2, s. [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-3--vergleich-interview-ergebnisse-und-erweiterte-exporte)).
+
+- [x] **Nativer `.xlsx`-Export der Ergebnisse-Übersicht** (2026-07-15, vorgezogen auf Nutzerwunsch) —
+  CSV der Findings/Matches war bereits erledigt (s. o.); jetzt zusätzlich ein Format-Dialog beim
+  Export der Einzelfilter-/SoD-**Übersicht** (`GET /queries/summary/export`,
+  `/sodrules/summary/export`, `format=csv|xlsx|xlsx_detailed`): **CSV** (bisheriges Verhalten, jetzt
+  serverseitig statt clientseitig aus `summaryRows` gebaut), **Excel** (kompakte `.xlsx` via
+  `openpyxl`, neue Dependency) und **ausführliches Excel** — faltet je Zeile (Query/Regel) die
+  betroffenen Nutzer (ID/Name/Typ/Status) über Excels native Gliederungs-/Gruppierungsfunktion
+  darunter auf (`ws.row_dimensions.group(..., outline_level=1, hidden=True)`,
+  `outlinePr.summaryBelow=False` damit die Query-/Regelzeile über statt unter der Gruppe steht).
+  Verifiziert: generierte `.xlsx` mit `openpyxl.load_workbook()` zurückgelesen, Gruppierung/
+  `outlineLevel`/`hidden` je Zeile geprüft.
+  - **Tabellenköpfe dezent eingefärbt** (Nutzerwunsch, direkt danach) — drei Farbtöne je
+    Verschachtelungstiefe (Hauptkopf `DCE6F1` Blau, Nutzer-Zwischenüberschrift `EDF2FB` heller Blau,
+    Rollen/Profil-Zwischenüberschrift `F2F2F2` Grau), volle ARGB-Angabe (`FF`-Alpha-Präfix) statt
+    openpyxl-Default `00`, um nicht von Excels Alpha-Kulanz bei Füllfarben abhängig zu sein.
+  - **Eine Ebene tiefer** (Nutzerwunsch: „Rolle (S_TCode) Rolle BOs"): je Nutzer eine zweite,
+    verschachtelte Gruppierungsebene mit der/den belegenden Rolle(n)/Profil(en) — bei SoD-Regeln
+    günstig über die bereits materialisierten `VIA_ROLE`/`VIA_PROFILE`-Evidenzkanten (AE-11, ~0,3s),
+    bei Einzelfiltern live berechnet (`_query_req_blocks`/`_enrich_query_users_with_roles`,
+    Bulk-Cypher je Berechtigungsobjekt/TCode-Prüfung über alle matchenden User einer Query zusammen
+    statt je User einzeln wie `/root-cause`) inkl. des jeweils abgedeckten Objekts/der TCode-Prüfung.
+    **Performance-Grenze gefunden und mit Nutzer abgestimmt (2026-07-15):** gegen einen echten Lauf
+    (38 Queries, ~12.000 User-Query-Treffer, 4 „Mega-Queries" mit 662–7924 Nutzern) brauchte die
+    ungedeckelte Live-Traversierung ~10 Minuten; App-seitige Parallelisierung (`ThreadPoolExecutor`,
+    6 Worker) brachte praktisch keine Verbesserung (9m21s) — die Kosten liegen in der
+    Graphtraversierung selbst (gleiche Größenordnung wie die Match-Materialisierung, s. 9.3
+    Performance-Thema), nicht im Anfrage-Overhead. Nutzer-Entscheidung: **Deckeln + Hinweis** statt
+    asynchronem Hintergrund-Job oder mehrminütigem synchronem Export — `_QUERY_ROLE_ENRICH_MAX_USERS
+    = 200`, oberhalb wird die Rollen-/Objekt-Aufschlüsselung übersprungen (eine Hinweiszeile statt
+    Daten, die flache Nutzerliste bleibt vollständig). Damit sank der Beispiel-Export von ~10 Minuten
+    auf ~17 Sekunden (SoD-Seite ohnehin ~0,3s). Root-Cause je einzelnem User bleibt interaktiv in
+    der App verfügbar für die übersprungenen Mega-Queries.
+  - Generierte Profile (PFCG-Artefakt einer Rolle) standardmäßig ausgeblendet, deckungsgleich mit
+    dem Root-Cause-Default `rcTechMode='hide'` — sonst taucht dieselbe Berechtigung doppelt auf.
+  - **Ausgelagert nach V2:** weitere Sichten (Top-Regeln, Matrix), nativer Excel-Export für
+    Import-Evidenz, gebündelte Reports und Business-Objects/Feldwerte im Detail-Export.
+- **Nebenbei behobener Bug (2026-07-15):** Drill-down auf eine Regel/Query aus der Übersicht
+  (`jumpToRuleFilter`/`jumpToQueryFilter`) bzw. „← zurück" (`goBackFilter`) zeigte manchmal nicht
+  die gefilterte Liste, sondern sprang auf einen älteren Filterzustand zurück (z. B. bei „Replace/
+  Debug" mit 3 betroffenen Nutzern). Ursache: `showResultsView()` löste intern bereits
+  `applyFilters()` mit den **alten** Filterwerten aus, bevor die drei Funktionen die neuen Werte
+  setzten und `applyFilters()` ein zweites Mal aufriefen — zwei parallele, ungeschützte `async`-Läufe
+  ohne Sequenzzähler (anders als `refreshFindingsGraph()`/`fgLoadSeq`), von denen der zuletzt
+  ankommende (nicht notwendigerweise der zweite) die Tabelle füllte. Fix: `showResultsView(skipApply)`
+  mit Parameter, die drei Aufrufer unterdrücken den internen Auto-Apply und rufen `applyFilters()`
+  danach selbst genau einmal auf.
+
+**DoD ✓:** Einzelfilter-/SoD-Übersicht als CSV oder Excel (kompakt/ausführlich mit Rollen-
+Aufschlüsselung) exportierbar, ohne dass ein Export länger als ~20s dauert.
+
 ## Phase X — erledigt
 
 - [x] **Intra-/Inter-Rollen-Evidenz (AE-11) v1.** `cypher/sod/explain_sod.cypher`: pro Finding die verursachenden Rollen/Profile (`(:SoDConflict)-[:VIA_ROLE]->(:Role)` / `-[:VIA_PROFILE]->(:Profile)`) und `conflictType` **intra** vs. **inter**; Hilfsrelation `(:Role|:Profile)-[:PROVIDES]->(:Query)`. Sichtbar in `/findings`, CSV-Export und UI. **Opt-in** (teuer). *(Perf-Optimierung offen → ROADMAP.)*
