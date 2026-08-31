@@ -2508,481 +2508,965 @@
     "query": "3008_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung pflegt Einkaufskonditionen für Zu- und Abschläge über die Konditionspflege-Transaktionen (MEKA, MEKE, MEKK, MEKG, MEKF, MEKI, MEKJ) inklusive Rahmenvertragsbezug. Zu- und Abschläge (Fracht, Rabatte, Zuschläge) fließen unmittelbar in die Preisfindung von Bestellungen ein und verändern den effektiven Einkaufspreis, ohne dass der Grundpreis auffällig wirkt. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Zuschläge zugunsten eines gesteuerten Lieferanten erhöhen oder Rabatte entfernen, sodass Bestellungen systematisch verteuert werden. Da die Wirkung über die Konditionsart verteilt ist, fällt sie je Einzelbestellung kaum auf.",
+    "threat": "(1) Täter erhöht in MEKA/MEKE einen Zuschlag bzw. entfernt einen Rabatt. (2) Die Kondition fließt in die Bestellpreisfindung. (3) Bestellungen werden systematisch verteuert. (4) Da der Grundpreis unverändert bleibt, fällt dies je Bestellung kaum auf.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3009_MM-PUR",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über MEKP, MEKR und MEKL werden lieferantenbezogene Einkaufskonditionen gepflegt, also Preise und Konditionen mit direktem Lieferantenbezug. Diese Konditionen wirken auf alle Bestellungen des betreffenden Lieferanten und bestimmen damit dessen effektive Konditionen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Konditionen zugunsten eines gesteuerten Lieferanten anpassen, sodass dieser systematisch bessergestellt wird und das Unternehmen überhöhte Preise zahlt. Ohne unabhängige Konditionskontrolle bleibt dies unauffällig.",
+    "threat": "(1) Täter pflegt in MEKP/MEKR lieferantenbezogene Konditionen. (2) Der gesteuerte Lieferant erhält bessere Konditionen. (3) Alle Bestellungen an ihn sind betroffen. (4) Ohne Konditionskontrolle bleibt die Bevorteilung unauffällig.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3010_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME51/ME51N legen Bedarfsanforderungen (BANF) an, also den bedarfsseitigen Auslöser des Beschaffungsprozesses. Die BANF begründet den dokumentierten Bedarf, auf dessen Basis der Einkauf bestellt, und ist damit der erste Kontrollpunkt im Purchase-to-Pay. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich ein nicht bestehender Bedarf anfordern, um eine Beschaffung anzustoßen; in Kombination mit der Bestellung (vgl. PPX_0002) entfällt die Trennung von Bedarfsträger und Einkauf. Ohne unabhängige Bedarfsprüfung ist dies der Einstieg in unberechtigte Beschaffungen.",
+    "threat": "(1) Täter legt in ME51N eine BANF ohne realen Bedarf an. (2) Die BANF geht in den Beschaffungsprozess. (3) Eine Bestellung an den gewünschten Lieferanten entsteht. (4) Ohne unabhängige Bedarfsprüfung erscheint die Beschaffung legitim.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3011_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME52/ME52N ändern bestehende Bedarfsanforderungen, etwa Menge, Material, Kontierung oder Wert. Änderungen nach der Erstellung können den ursprünglich geprüften Bedarf verfälschen, insbesondere wenn sie nach einer Freigabe erfolgen und die Freigabestrategie nicht erneut greift. Betroffen sind Integrität und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich eine BANF nach Freigabe erhöhen oder auf ein anderes Material umstellen, sodass eine genehmigte Position eine andere Beschaffung auslöst. Ohne erneute Freigabeprüfung bleibt die Änderung unauffällig.",
+    "threat": "(1) Täter ändert in ME52N eine bereits freigegebene BANF (Menge/Wert/Material). (2) Die Freigabestrategie greift nicht erneut. (3) Eine abweichende Beschaffung wird ausgelöst. (4) Die Genehmigung erscheint formal erteilt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3012_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME54/ME54N/ME55 geben Bedarfsanforderungen frei, setzen also den Genehmigungsschritt der Freigabestrategie um; ME55 erlaubt zudem die Sammelfreigabe. Die Freigabe ist die zentrale Genehmigungskontrolle vor der Bestellung, sodass wer freigeben kann, den Kontrollpunkt selbst bedient. Betroffen sind Integrität und die Assertions Occurrence und Accuracy sowie die Wirksamkeit der Freigabekontrolle. Missbräuchlich lässt sich eine selbst erstellte BANF freigeben (kein Vier-Augen-Prinzip) oder eine Sammelfreigabe ohne inhaltliche Prüfung durchführen. In Kombination mit dem Anlegen (3010) entfällt die Genehmigungskontrolle vollständig.",
+    "threat": "(1) Täter legt eine BANF an. (2) Über ME54N/ME55 gibt er sie selbst frei. (3) Die Beschaffung wird ohne Vier-Augen-Prinzip angestoßen. (4) Formal liegt eine Freigabe vor.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "3013_MM-PUR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME41 legt Anfragen an Lieferanten an, also die Aufforderung zur Angebotsabgabe im Rahmen des Ausschreibungsprozesses. Die Anfrage bestimmt, welche Lieferanten überhaupt in den Wettbewerb einbezogen werden. Betroffen sind Integrität und die Assertion Accuracy sowie die Wirksamkeit des Wettbewerbsprinzips. Missbräuchlich lässt sich der Kreis der Angefragten so gestalten, dass ein gewünschter Lieferant bevorzugt wird oder echter Wettbewerb ausbleibt. Das Einzelrisiko ist moderat, für die Beschaffungsintegrität aber relevant.",
+    "threat": "(1) Täter legt in ME41 eine Anfrage an. (2) Er wählt den Kreis der angefragten Lieferanten gezielt. (3) Der gewünschte Lieferant hat faktisch keinen Wettbewerb. (4) Der Vergabeprozess erscheint formal ordnungsgemäß.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3014_MM-PUR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME42 ändert bestehende Anfragen, etwa Positionen, Mengen oder Lieferantenkreis. Änderungen können den Ausschreibungsgegenstand nachträglich verschieben und den Vergleich der Angebote verzerren. Betroffen sind Integrität und die Assertion Accuracy. Missbräuchlich lässt sich eine Anfrage so anpassen, dass ein bestimmter Lieferant bessergestellt wird. Ohne unabhängige Kontrolle des Ausschreibungsprozesses bleibt dies unauffällig.",
+    "threat": "(1) Täter ändert in ME42 eine bestehende Anfrage. (2) Umfang/Lieferantenkreis verschieben sich. (3) Der Angebotsvergleich wird verzerrt. (4) Ohne Prozesskontrolle unauffällig.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3015_MM-PUR",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME47 pflegt und erfasst Angebote zu Anfragen, also die Preis- und Konditionsangaben der Lieferanten. Da die erfassten Angebotsdaten die Grundlage des Preisspiegels und der Vergabeentscheidung bilden, verzerrt eine Manipulation den Anbietervergleich. Betroffen sind Integrität und die Assertion Accuracy. Missbräuchlich lassen sich Angebotswerte so erfassen oder ändern, dass ein gewünschter Lieferant als günstigster erscheint. Ohne Abgleich mit den Originalangeboten bleibt die Manipulation unentdeckt.",
+    "threat": "(1) Täter erfasst in ME47 Angebotswerte abweichend vom Original. (2) Der Preisspiegel zeigt den gewünschten Lieferanten als günstigsten. (3) Die Vergabeentscheidung fällt entsprechend. (4) Ohne Abgleich mit den Originalangeboten unentdeckt.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3016_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME21/ME21N und die Sammeltransaktionen (ME25, ME58, ME59) legen Bestellungen an und begründen damit die vertragliche Verpflichtung gegenüber dem Lieferanten. Die Bestellung ist der zentrale Schritt im Purchase-to-Pay und Grundlage für Wareneingang, Rechnungsprüfung und Zahlung. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine Bestellung an einen gesteuerten Lieferanten oder ohne realen Bedarf auslösen; in Kombination mit Stammdaten-, Wareneingangs- oder Rechnungsrechten (vgl. PPX_0003/0005/0007) entfällt der 3-Way-Match als Kontrolle. Ohne Funktionstrennung ist dies der Kern des Beschaffungsbetrugs.",
+    "threat": "(1) Täter legt in ME21N eine Bestellung an einen gesteuerten Lieferanten an. (2) Die Bestellung wird Grundlage für Wareneingang und Rechnung. (3) Der P2P-Prozess läuft auf dieser Basis. (4) Ohne Funktionstrennung fehlt die Gegenkontrolle.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://ramp.com/blog/sap-3-way-match"
+    ]
   },
   {
     "query": "3017_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME22/ME22N ändern bestehende Bestellungen, etwa Menge, Preis, Lieferant oder Kontierung. Änderungen nach der Freigabe können eine genehmigte Bestellung inhaltlich verschieben, insbesondere wenn die Freigabestrategie nicht erneut greift. Betroffen sind Integrität und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich eine freigegebene Bestellung im Preis erhöhen oder auf einen anderen Lieferanten umstellen, sodass die Genehmigung faktisch umgangen wird; ebenso lässt sich eine Bestellung nachträglich an eine bereits erfasste Rechnung angleichen. Damit wird die Rechnungsprüfung ausgehebelt.",
+    "threat": "(1) Täter ändert in ME22N eine freigegebene Bestellung (Preis/Lieferant/Menge). (2) Die Freigabestrategie greift nicht erneut bzw. die Bestellung wird an eine erfasste Rechnung angeglichen. (3) Der 3-Way-Match geht auf. (4) Die Genehmigung erscheint formal erteilt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://ramp.com/blog/sap-3-way-match"
+    ]
   },
   {
     "query": "3018_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME28/ME28N geben Bestellungen frei und setzen damit den Genehmigungsschritt der Freigabestrategie um. Die Freigabe ist die zentrale Kontrolle vor dem Wirksamwerden einer Bestellung, sodass wer freigeben kann, diesen Kontrollpunkt selbst bedient. Betroffen sind Integrität und die Assertions Occurrence und Accuracy sowie die Wirksamkeit der Freigabekontrolle. Missbräuchlich lässt sich eine selbst angelegte Bestellung freigeben und damit das Vier-Augen-Prinzip aushebeln. In Kombination mit dem Anlegen (3016) entfällt die Genehmigungskontrolle vollständig.",
+    "threat": "(1) Täter legt eine Bestellung an. (2) Über ME28N gibt er sie selbst frei. (3) Die Bestellung wird ohne Vier-Augen-Prinzip wirksam. (4) Formal liegt eine Freigabe vor.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3019_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME31/ME31K legen Rahmenverträge und Kontrakte an, also längerfristige Vereinbarungen mit Lieferanten über Mengen, Preise und Konditionen. Kontrakte wirken über viele Einzelabrufe hinweg, sodass die vereinbarten Konditionen breit auf künftige Beschaffungen durchschlagen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Kontrakt mit überhöhten Preisen oder ungünstigen Konditionen zugunsten eines gesteuerten Lieferanten abschließen, dessen Wirkung sich über die gesamte Laufzeit erstreckt. Die Breitenwirkung macht das Risiko höher als bei einer Einzelbestellung.",
+    "threat": "(1) Täter legt in ME31K einen Kontrakt mit überhöhten Preisen an. (2) Abrufe erfolgen zu diesen Konditionen. (3) Über die Laufzeit entsteht ein fortlaufender Nachteil. (4) Je Einzelabruf erscheint der Preis vertragskonform.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3020_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME32/ME32K ändern bestehende Rahmenverträge und Kontrakte, insbesondere Preise, Mengen und Laufzeiten. Änderungen wirken auf alle künftigen Abrufe aus dem Kontrakt. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Kontraktpreise nachträglich zugunsten eines Lieferanten erhöhen, sodass alle Folgeabrufe verteuert werden. Ohne unabhängige Kontrolle der Vertragsänderungen bleibt dies unauffällig.",
+    "threat": "(1) Täter erhöht in ME32K die Kontraktpreise. (2) Künftige Abrufe werden teurer. (3) Der Nachteil wirkt über die Restlaufzeit. (4) Ohne Vertragsänderungskontrolle unauffällig.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3021_MM-PUR",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ME35K gibt Kontrakte frei und setzt damit den Genehmigungsschritt für Rahmenvereinbarungen um. Da der Kontrakt über viele Abrufe wirkt, ist seine Freigabe eine besonders wirkungsvolle Kontrolle. Betroffen sind Integrität und die Assertions Occurrence und Accuracy sowie die Wirksamkeit der Freigabekontrolle. Missbräuchlich lässt sich ein selbst angelegter Kontrakt freigeben und damit eine langfristig wirkende Vereinbarung ohne Vier-Augen-Prinzip in Kraft setzen. In Kombination mit dem Anlegen (3019) entfällt die Genehmigungskontrolle.",
+    "threat": "(1) Täter legt einen Kontrakt an. (2) Über ME35K gibt er ihn selbst frei. (3) Die langfristige Vereinbarung wird ohne Vier-Augen-Prinzip wirksam. (4) Formal liegt eine Freigabe vor.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs"
+    ]
   },
   {
     "query": "3100_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung bucht den Wareneingang zur Bestellung mit Bewegungsart 101 (MIGO, MB01) und bestätigt damit den Erhalt der bestellten Ware. Der Wareneingang erhöht den Bestand, erzeugt die GR/IR-Abgrenzung und ist der zweite Schritt des 3-Way-Match. Betroffen sind Integrität und die Assertions Occurrence, Existence und Completeness. Missbräuchlich lässt sich ein Wareneingang vortäuschen, obwohl keine oder nur teilweise Lieferung erfolgte, sodass die Rechnungsprüfung den Abgleich passiert und für nicht erhaltene Ware gezahlt wird. In Kombination mit Bestell- oder Rechnungsrechten (vgl. PPX_0007/0008) ist dies ein zentraler P2P-Betrugsansatz.",
+    "threat": "(1) Täter bucht in MIGO den Wareneingang (101) zu einer Bestellung ohne reale (vollständige) Lieferung. (2) Bestand und GR/IR-Abgrenzung entstehen. (3) Die Rechnungsprüfung passiert den Abgleich. (4) Es wird für nicht erhaltene Ware gezahlt.",
+    "source": [
+      "https://www.doxis.com/en/blog/goods-receipt-checks",
+      "https://ramp.com/blog/sap-3-way-match",
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html"
+    ]
   },
   {
     "query": "3101_MM-IM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Mit Bewegungsart 501 wird ein Wareneingang ohne Bestellbezug gebucht, also Bestand ohne zugrunde liegende Bestellung eingebucht. Da kein Bestellbezug besteht, ist für diese Zugänge keine Rechnungsprüfung möglich und der 3-Way-Match entfällt vollständig; entsprechend gilt die Bewegungsart als mächtig, aber gefährlich und wird von Prüfern regelmäßig hinterfragt. Betroffen sind Integrität und die Assertions Existence, Occurrence und Completeness. Missbräuchlich lässt sich Bestand ohne Beschaffungsvorgang einbuchen, um Fehlmengen zu kaschieren oder Bestände zu schaffen, die anschließend entnommen werden. Aufgrund der fehlenden Bestellkontrolle ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht mit BWART 501 einen Wareneingang ohne Bestellbezug. (2) Bestand entsteht ohne Beschaffungsvorgang und ohne Möglichkeit der Rechnungsprüfung. (3) Fehlmengen werden kaschiert bzw. Bestand für spätere Entnahme geschaffen. (4) Mangels Bestellbezug fehlt jede Gegenkontrolle.",
+    "source": [
+      "https://learning.sap.com/courses/inventory-management-and-physical-inventory-in-sap-s-4hana/posting-a-goods-receipt-without-reference",
+      "https://cloudbook.co.in/blog/common-errors-with-movement-types-and-how-to-fix-them/",
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html"
+    ]
   },
   {
     "query": "3102_MM-IM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Bewegungsarten 561/563/565 dienen der Ersterfassung von Bestandsbeständen (Initial Entry of Stock Balances) und erhöhen den bewerteten Bestand ohne Beschaffungsvorgang. Diese Bewegungsarten sind eigentlich für die einmalige Datenübernahme bei Systemeinführung vorgesehen und im Produktivbetrieb nicht für laufende Buchungen gedacht; zudem wird der Wert bei der Erfassung mitgegeben. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich Bestand mit selbst bestimmtem Wert einbuchen, um Inventurdifferenzen zu verdecken oder Bestände künstlich zu schaffen. Aufgrund der fehlenden Gegenkontrolle ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht mit BWART 561/563/565 Bestand als Ersterfassung ein und gibt den Wert selbst vor. (2) Bestand und Wert erhöhen sich ohne Beschaffungsvorgang. (3) Inventurdifferenzen werden verdeckt bzw. Bestände künstlich geschaffen. (4) Im Produktivbetrieb ist die Bewegungsart untypisch, fällt aber ohne gezielte Auswertung nicht auf.",
+    "source": [
+      "https://learning.sap.com/courses/inventory-management-and-physical-inventory-in-sap-s-4hana/posting-a-goods-receipt-without-reference",
+      "https://expressgrc.com/sap-audit-steps-exploring-sap-transaction-migo-and-the-significance-of-movement-type-561/",
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html"
+    ]
   },
   {
     "query": "3103_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Über MB1B/MIGO werden Umbuchungen mit beliebiger Bewegungsart (BWART=*) vorgenommen, also Bestände zwischen Lagerorten, Beständen oder Bestandsarten verschoben. Umbuchungen verändern zwar nicht den Gesamtbestand, können aber Bestände in andere Verantwortungsbereiche, Bestandsarten oder Lagerorte verlagern und so Zuordnung und Kontrolle verschieben. Betroffen sind Integrität und die Assertions Existence und Accuracy. Missbräuchlich lassen sich Bestände in schlechter kontrollierte Bereiche verschieben, um eine spätere Entnahme zu erleichtern oder Differenzen zu verlagern. Der uneingeschränkte Bewegungsartenwert erweitert die Reichweite erheblich.",
+    "threat": "(1) Täter bucht in MB1B eine Umbuchung mit passender Bewegungsart. (2) Bestand wechselt Lagerort/Bestandsart. (3) Das Material gelangt in einen schlechter kontrollierten Bereich. (4) Eine spätere Entnahme wird erleichtert.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://cloudbook.co.in/blog/common-errors-with-movement-types-and-how-to-fix-them/"
+    ]
   },
   {
     "query": "3104_MM-IM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Bewegungsarten 231/261 buchen den Warenausgang zum Kunden- beziehungsweise Fertigungsauftrag und entnehmen damit Material aus dem Bestand. Warenausgänge sind unmittelbar vermögenswirksam, da der Bestand real abgeht und der Wert in den Verbrauch beziehungsweise die Auftragskosten fließt. Betroffen sind Integrität und die Assertions Existence, Occurrence und Completeness. Missbräuchlich lässt sich Material auf einen Auftrag entnehmen, ohne dass es dort verwendet wird, sodass der Abgang buchhalterisch legitim erscheint, während das Material tatsächlich entwendet wird. Ohne physische Kontrolle bleibt die Differenz verborgen.",
+    "threat": "(1) Täter bucht mit BWART 231/261 eine Entnahme auf einen Auftrag. (2) Der Bestand geht ab, der Wert fließt in die Auftragskosten. (3) Das Material wird tatsächlich nicht verwendet, sondern entwendet. (4) Der Abgang erscheint buchhalterisch legitim.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3105_MM-IM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Bewegungsarten 201/221 buchen den Warenausgang an Kostenstelle beziehungsweise Projekt und verbuchen den Materialwert direkt als Aufwand. Da die Entnahme unmittelbar in den Verbrauch geht und keine Weiterverfolgung über einen Auftragsbestand erfolgt, fehlt eine natürliche Gegenkontrolle über die tatsächliche Verwendung. Betroffen sind Integrität und die Assertions Existence, Occurrence und Accuracy. Missbräuchlich lässt sich Material auf eine Kostenstelle ausbuchen und tatsächlich entwenden, wobei der Aufwand im Sammelposten der Kostenstelle untergeht. Aufgrund der schwachen Nachverfolgung ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht mit BWART 201/221 eine Entnahme auf Kostenstelle/Projekt. (2) Der Wert geht direkt in den Aufwand. (3) Das Material wird entwendet. (4) Der Aufwand geht im Sammelposten der Kostenstelle unter.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3106_MM-IM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Bewegungsart 551 bucht den Warenausgang zur Verschrottung, also die erlöslose Ausbuchung von Bestand. Wie bei der Anlagenverschrottung entsteht kein Erlös und kein Empfänger, sodass eine natürliche Gegenkontrolle fehlt und werthaltiges Material buchhalterisch verschwinden kann. Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich werthaltiges Material als verschrottet ausbuchen und anschließend entwenden oder privat verwertet werden. Ohne physische Verschrottungskontrolle ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht mit BWART 551 werthaltiges Material als Verschrottung aus. (2) Der Bestand wird ausgebucht (Aufwand). (3) Real wird das Material entwendet/verwertet. (4) Ohne physische Verschrottungskontrolle bleibt der Diebstahl unentdeckt.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3107_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MB26 dient dem Kommissionieren mit beliebiger Bewegungsart, also der Bereitstellung und Entnahme von Material für Aufträge. Die Kommissionierung führt zu Bestandsbewegungen und bereitet den Warenausgang vor. Betroffen sind Integrität und die Assertions Existence und Accuracy. Missbräuchlich lassen sich Kommissionierbuchungen so vornehmen, dass Mengen abweichend zugeordnet oder Bestände verschoben werden. Das Einzelrisiko ist moderat, in Verbindung mit Warenausgangsrechten aber relevant.",
+    "threat": "(1) Täter bucht in MB26 Kommissioniermengen abweichend. (2) Bestände werden verschoben/abweichend zugeordnet. (3) Differenzen entstehen bzw. Entnahmen werden vorbereitet. (4) Ohne Abgleich fällt dies nicht auf.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html"
+    ]
   },
   {
     "query": "3108_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MI01 legt Inventurbelege an, also die Zähllisten für die körperliche Bestandsaufnahme. Der Inventurbeleg bestimmt, welche Materialien und Lagerorte überhaupt gezählt werden, und steuert damit den Umfang der Inventurkontrolle. Betroffen sind Integrität und die Assertions Existence und Completeness. Missbräuchlich lässt sich der Zählumfang so gestalten, dass kritische Bestände nicht erfasst werden und Differenzen unentdeckt bleiben. In Kombination mit Zähl- und Differenzbuchungsrechten entsteht ein Manipulationsansatz über den gesamten Inventurprozess.",
+    "threat": "(1) Täter legt in MI01 den Inventurbeleg mit eingeschränktem Umfang an. (2) Kritische Bestände werden nicht gezählt. (3) Vorhandene Fehlmengen bleiben unentdeckt. (4) Die Inventur erscheint formal durchgeführt.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3109_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MI02 ändert bestehende Inventurbelege, etwa Positionen oder Zählstatus. Änderungen am Inventurbeleg können den Zählumfang nachträglich verschieben oder bereits erfasste Positionen verändern. Betroffen sind Integrität und die Assertions Existence und Completeness. Missbräuchlich lässt sich ein Inventurbeleg so anpassen, dass auffällige Positionen aus der Zählung genommen werden. Ohne unabhängige Inventurleitung bleibt dies unauffällig.",
+    "threat": "(1) Täter ändert in MI02 den Inventurbeleg. (2) Auffällige Positionen werden aus der Zählung genommen. (3) Fehlmengen erscheinen nicht. (4) Ohne unabhängige Inventurleitung unauffällig.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3110_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MI04/MI09 erfassen das Inventur-Zählergebnis, also die tatsächlich gezählte Menge je Position. Das erfasste Zählergebnis ist die Grundlage für die Ermittlung von Inventurdifferenzen und damit für die Bestandskorrektur. Betroffen sind Integrität und die Assertions Existence und Accuracy. Missbräuchlich lässt sich eine Zählmenge so erfassen, dass sie dem Buchbestand entspricht, obwohl real Material fehlt, sodass eine Unterschlagung nicht als Differenz sichtbar wird. Ohne Stichprobenkontrolle der Zählung bleibt dies verborgen.",
+    "threat": "(1) Täter erfasst in MI04 die Zählmenge passend zum Buchbestand. (2) Es entsteht keine Differenz. (3) Eine reale Fehlmenge bleibt unsichtbar. (4) Ohne Stichprobenkontrolle der Zählung unentdeckt.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3111_MM-IM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MI05 ändert bereits erfasste Inventurzählergebnisse. Das nachträgliche Ändern einer Zählung kann eine korrekt erfasste Differenz beseitigen, bevor sie ausgewertet wird. Betroffen sind Integrität und die Assertions Existence und Accuracy. Missbräuchlich lässt sich eine Zählmenge nachträglich an den Buchbestand angeglichen, sodass eine reale Fehlmenge nicht als Differenz erscheint. Ohne Protokollierung und unabhängige Prüfung der Änderung bleibt dies unauffällig.",
+    "threat": "(1) Täter ändert in MI05 eine bereits erfasste Zählung. (2) Die Differenz verschwindet. (3) Der Fehlbestand wird nicht ausgewertet. (4) Ohne Änderungsprotokollierung unauffällig.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3112_MM-IM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MI07/MI08/MI10 buchen Inventurdifferenzen, gleichen also den Buchbestand an das Zählergebnis an und verbuchen die Differenz als Aufwand oder Ertrag. Die Differenzbuchung ist der Punkt, an dem Fehlbestände buchhalterisch bereinigt werden, sodass eine Unterschlagung hier endgültig verschwinden kann. Betroffen sind Integrität und die Assertions Existence, Accuracy und Completeness. Missbräuchlich lässt sich eine durch Diebstahl entstandene Differenz ohne Untersuchung ausgebucht werden, sodass der Verlust im Inventuraufwand untergeht. In Kombination mit Zählrechten (3110/3111) beherrscht eine Person den gesamten Inventurprozess.",
+    "threat": "(1) Es besteht eine durch Entnahme entstandene Fehlmenge. (2) Täter bucht in MI07 die Differenz ohne Untersuchung aus. (3) Buchbestand und Realbestand stimmen wieder überein. (4) Der Verlust geht im Inventuraufwand unter.",
+    "source": [
+      "https://www.learntosap.com/SAP-Movement-Types-List-Examples-Scenarios.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "3200_MM-IV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MIRO/MIRA erfassen Eingangsrechnungen aus MM-Sicht mit Bestell- und Wareneingangsbezug und lösen den 3-Way-Match aus. Die Rechnungserfassung begründet die Verbindlichkeit und führt bei erfolgreichem Abgleich zur Zahlung. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine überhöhte oder fiktive Rechnung erfassen; in Kombination mit Bestell-, Wareneingangs- oder Stammdatenrechten (vgl. PPX_0005/0008/0009) wird der 3-Way-Match vollständig ausgehebelt. Ohne Funktionstrennung ist dies der Kern des P2P-Betrugs.",
+    "threat": "(1) Täter erfasst in MIRO eine überhöhte/fiktive Rechnung. (2) Der 3-Way-Match wird durchlaufen bzw. umgangen. (3) Die Verbindlichkeit steht zur Zahlung. (4) Ohne Funktionstrennung fließt Geld an den gesteuerten Lieferanten.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://ramp.com/blog/sap-3-way-match",
+      "https://www.doxis.com/en/blog/goods-receipt-checks"
+    ]
   },
   {
     "query": "3201_MM-IV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MRHR/MR44/MR08 erfassen beziehungsweise stornieren Rechnungen aus FI-Sicht (Kreditoren- und Sachkonten). Die FI-seitige Erfassung kann ohne den vollständigen MM-Bestellbezug erfolgen, sodass die logistische Rechnungsprüfung und der 3-Way-Match umgangen werden; MR08 erlaubt zudem das Stornieren erfasster Rechnungen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine Rechnung ohne Bestell-/Wareneingangsabgleich buchen oder eine belastende Rechnung stornieren. Aufgrund der Umgehung der logistischen Prüfung ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht über MRHR/MR44 eine Rechnung ohne vollständigen MM-Bestellbezug. (2) Die logistische Rechnungsprüfung entfällt. (3) Die Verbindlichkeit steht zur Zahlung; alternativ storniert er über MR08 eine belastende Rechnung. (4) Der 3-Way-Match wurde umgangen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "3202_MM-IV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MRBR/MR02 geben gesperrte Rechnungen frei, heben also die durch den 3-Way-Match gesetzten Sperren (Preis, Menge, Termin, Qualität) auf. Die Rechnungssperre ist die eigentliche Schutzwirkung der Rechnungsprüfung, sodass ihre Freigabe die zentrale Kontrolle im P2P direkt aushebelt; entsprechend werden Funktionstrennung und verbindliche Genehmigungen für die Freigabe gesperrter Rechnungen als Kernkontrolle empfohlen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine wegen Preis- oder Mengenabweichung gesperrte Rechnung freigeben, sodass für nicht erhaltene oder überteuerte Leistungen gezahlt wird. Aufgrund der direkten Zahlungswirkung ist das Risiko kritisch.",
+    "threat": "(1) Eine Rechnung ist wegen Preis-/Mengenabweichung gesperrt. (2) Täter gibt sie in MRBR frei. (3) Die Sperre entfällt, die Rechnung geht in den Zahllauf. (4) Es wird für überteuerte oder nicht erhaltene Leistung gezahlt.",
+    "source": [
+      "https://expressgrc.com/sap-audit-step-understanding-sap-mrbr-release-blocked-invoices/",
+      "https://www.linkedin.com/pulse/sap-audit-step-understanding-mrbr-release-blocked-invoices-kumar",
+      "https://www.erpfixers.com/blog/2016/10/5/csx0bltfdpki7f68azads58z64bk7p"
+    ]
   },
   {
     "query": "3203_MM-IV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MR21 ändert den Materialpreis (Standardpreis beziehungsweise Bewertungspreis) und bucht die Bestandsumbewertung. Da der Preis mit dem vorhandenen Bestand multipliziert wird, erzeugt eine Preisänderung unmittelbar eine ergebniswirksame Umbewertung des gesamten Bestands. Betroffen sind Integrität und die Assertions Valuation und Accuracy. Missbräuchlich lässt sich der Materialpreis so ändern, dass Bestandswerte und damit Vorräte und Ergebnis gezielt gesteuert werden, etwa zur Verschönerung des Abschlusses oder zur Verdeckung von Fehlbeständen. Aufgrund der unmittelbaren Bewertungswirkung ist das Risiko kritisch.",
+    "threat": "(1) Täter ändert in MR21 den Materialpreis. (2) Der gesamte Bestand wird umbewertet. (3) Vorräte und Ergebnis verschieben sich in die gewünschte Richtung. (4) Die Umbewertung erscheint als reguläre Preispflege.",
+    "source": [
+      "https://help.sap.com/docs/SUPPORT_CONTENT/ficontrolling/3361879100.html",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3204_MM-IV",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MR11 dient der Wareneingangs-/Rechnungseingangs-Kontenpflege, also dem Ausbuchen von Differenzen auf dem GR/IR-Verrechnungskonto. Über MR11 werden offene Mengen- und Wertdifferenzen zwischen Wareneingang und Rechnung ergebniswirksam bereinigt, ohne dass die zugrunde liegende Ursache geklärt sein muss; problematisch ist zudem, dass ein MR11-Lauf in bestimmten Konstellationen dazu führen kann, dass eine gesperrte Rechnung anschließend über MRBR automatisch zur Zahlung freigegeben wird. Betroffen sind Integrität und die Assertions Completeness, Accuracy und Valuation. Missbräuchlich lassen sich Differenzen aus fingierten Wareneingängen oder überhöhten Rechnungen stillschweigend ausgebucht werden. Aufgrund der Verdeckungswirkung ist das Risiko kritisch.",
+    "threat": "(1) Auf dem GR/IR-Konto stehen Differenzen aus fingierten Wareneingängen/Rechnungen. (2) Täter bucht sie über MR11 aus. (3) Die Differenz verschwindet ergebniswirksam. (4) Ggf. wird dadurch zusätzlich eine gesperrte Rechnung über MRBR automatisch freigegeben.",
+    "source": [
+      "https://www.erpfixers.com/blog/2016/10/5/csx0bltfdpki7f68azads58z64bk7p",
+      "SAP-KBA 3517481 (MR11 â Rechnung nach Kontenpflege zur Zahlung freigegeben)"
+    ]
   },
   {
     "query": "3300_MM-CBP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MD03 führt die MRP-Einzelplanung einstufig durch und erzeugt daraus Beschaffungsvorschläge wie Planaufträge oder Bedarfsanforderungen. Der Planungslauf steuert, welche Bedarfe automatisch in Beschaffungsvorschläge münden, und wirkt damit mittelbar auf die Beschaffungsmenge. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich oder fehlerhaft lässt sich der Lauf so parametrisieren, dass überhöhte oder unnötige Beschaffungsvorschläge entstehen. Das Risiko ist überwiegend fehler-, weniger betrugsgetrieben, aber bestands- und kostenwirksam.",
+    "threat": "(1) Täter startet MD03 mit abweichenden Parametern. (2) Es entstehen überhöhte Beschaffungsvorschläge. (3) Bestände/Kosten steigen. (4) Der Lauf erscheint als reguläre Planung.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3301_MM-CBP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MD11 legt Planaufträge manuell an, also Beschaffungs- oder Produktionsvorschläge außerhalb des regulären Planungslaufs. Ein manuell angelegter Planauftrag kann in eine Bedarfsanforderung oder einen Fertigungsauftrag umgesetzt werden und damit reale Beschaffung oder Produktion auslösen. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich ein Planauftrag ohne realen Bedarf anlegen, um eine Beschaffung anzustoßen, die planungsseitig legitimiert erscheint. Das Einzelrisiko ist moderat, als Einstieg in den Beschaffungsprozess aber relevant.",
+    "threat": "(1) Täter legt in MD11 einen Planauftrag ohne realen Bedarf an. (2) Der Planauftrag wird in BANF/Fertigungsauftrag umgesetzt. (3) Eine Beschaffung/Produktion wird ausgelöst. (4) Die Planungsherkunft lässt sie legitim erscheinen.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3302_MM-CBP",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MD61 pflegt die Vorplanung (Planprimärbedarf), also die geplanten Bedarfe, auf deren Basis die Disposition Beschaffungsvorschläge erzeugt. Manipulierte Vorplanungswerte wirken über den Planungslauf breit auf die gesamte nachfolgende Beschaffungs- und Produktionsplanung. Betroffen sind Integrität und die Assertions Accuracy und Completeness. Missbräuchlich oder fehlerhaft lassen sich Vorplanungsmengen erhöhen, sodass systematisch zu viel beschafft oder produziert wird. Die Breitenwirkung macht den Eingriff relevanter als eine Einzelbuchung.",
+    "threat": "(1) Täter erhöht in MD61 die Vorplanungsmengen. (2) Der Planungslauf erzeugt entsprechend höhere Vorschläge. (3) Es wird systematisch zu viel beschafft/produziert. (4) Die Ursache liegt in der Planung, nicht in einer Einzelbuchung.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3400_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MM01 legt Materialstammsätze an, also die zentralen Stammdaten eines Materials über alle Sichten (Einkauf, Bestandsführung, Buchhaltung, Disposition). Der Materialstamm steuert Bewertung, Preissteuerung, Kontenfindung und Dispositionsverhalten und wirkt damit auf nahezu alle logistischen und wertmäßigen Vorgänge. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Material mit manipulierter Bewertungsklasse, Preissteuerung oder Kontenfindung anlegen, sodass Buchungen falsch klassifiziert oder bewertet werden. Ohne unabhängige Stammdatenkontrolle bleibt die Zweckgestaltung unbemerkt.",
+    "threat": "(1) Täter legt in MM01 ein Material mit manipulierter Bewertungsklasse/Preissteuerung an. (2) Bewegungen auf dieses Material werden entsprechend bewertet/kontiert. (3) Buchungen werden falsch klassifiziert. (4) Ohne Stammdatenkontrolle unauffällig.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3401_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MM02 ändert bestehende Materialstammsätze, etwa Bewertungsklasse, Preissteuerung, Preis oder Dispositionsparameter. Änderungen an aktiven Materialien wirken sofort auf laufende Bewegungen, Bewertungen und Kontenfindungen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Bewertungsparameter so ändern, dass Bestandswerte oder Kontenzuordnungen verschoben werden, gegebenenfalls kombiniert mit einer Preisänderung. Ohne unabhängige Kontrolle bleibt die Manipulation unauffällig.",
+    "threat": "(1) Täter ändert in MM02 Bewertungsparameter eines Materials. (2) Bewertung/Kontenfindung verschieben sich. (3) Bestandswerte oder Aufwandszuordnung ändern sich. (4) Ohne Kontrolle bleibt die Manipulation unauffällig.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3402_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MM06/MM16 setzen Löschvormerkungen für Materialstammsätze. Das Markieren zur Löschung entzieht ein Material der regulären Nutzung und kann die Nachvollziehbarkeit vergangener Bewegungen beeinträchtigen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Completeness und Existence. Missbräuchlich lässt sich ein für Manipulationen genutztes Material zur Löschung markieren, um Spuren zu verschleiern, oder ein benötigtes Material blockieren und damit Prozesse stören.",
+    "threat": "(1) Täter nutzt ein Material für manipulative Vorgänge. (2) Über MM06 markiert er es zur Löschung. (3) Das Material entzieht sich der regulären Sicht. (4) Die Zuordnung der Vorgänge wird erschwert.",
+    "source": [
+      "https://www.slideshare.net/phongho/sap-audit-programsandicqs",
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3403_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MMD1/MP80 legen Materialstammprofile beziehungsweise Dispositions- und Prognoseprofile an, also Vorlagen, die Feldwerte und Verhalten für viele Materialstämme vorgeben. Da ein Profil auf zahlreiche Materialien wirkt, entfaltet seine Gestaltung Breitenwirkung über den Einzelstamm hinaus. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Profil mit ungünstigen oder manipulativen Vorgaben anlegen, das anschließend auf viele Materialien angewendet wird. Die Breitenwirkung erschwert die Einzelfallprüfung.",
+    "threat": "(1) Täter legt in MMD1/MP80 ein Profil mit manipulativen Vorgaben an. (2) Das Profil wird Materialien zugeordnet. (3) Zahlreiche Materialien übernehmen die Vorgaben. (4) Die Breitenwirkung erschwert die Prüfung.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3404_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MMD2/MP81 ändern bestehende Materialstamm- und Dispositionsprofile. Wie beim Anlegen wirken die Profilwerte auf alle zugeordneten Materialien, sodass eine Änderung breit durchschlägt. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Profil so ändern, dass zahlreiche Materialien abweichende Steuerungs- oder Bewertungsparameter erhalten. Ohne unabhängige Kontrolle bleibt die breite Wirkung unauffällig.",
+    "threat": "(1) Täter ändert in MMD2/MP81 ein genutztes Profil. (2) Die Änderung wirkt auf alle zugeordneten Materialien. (3) Steuerungs-/Bewertungsparameter verschieben sich breit. (4) Die Ursache liegt im Profil, nicht im Einzelstamm.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3405_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MMD6/MP82 löschen Materialstamm- und Dispositionsprofile. Das Löschen eines genutzten Profils kann die Steuerung der zugeordneten Materialien beeinträchtigen und zu unerwartetem Verhalten führen. Betroffen sind Integrität, Verfügbarkeit und die Assertion Accuracy. Missbräuchlich oder fehlerhaft lässt sich ein produktiv genutztes Profil entfernen, sodass Materialien ihre Steuerungsgrundlage verlieren. Die Breitenwirkung macht den Eingriff relevanter als eine Einzeländerung.",
+    "threat": "(1) Täter löscht in MMD6/MP82 ein produktiv genutztes Profil. (2) Zugeordnete Materialien verlieren ihre Steuerungsgrundlage. (3) Es kommt zu unerwartetem Verhalten/Störungen. (4) Die Ursache ist schwer zuzuordnen.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3406_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MSC1/MSC1N legen Chargen an, also die chargenspezifischen Stammdaten inklusive Klassifizierung und Merkmalswerten. Chargen steuern Rückverfolgbarkeit, Qualitätsmerkmale und Verwendbarkeit von Material und sind in regulierten Branchen compliance-relevant. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Existence und Accuracy. Missbräuchlich lässt sich eine Charge mit unzutreffenden Merkmalen anlegen, um Material als verwendbar oder qualitätsgeprüft erscheinen zu lassen. Neben dem finanziellen besteht damit ein Qualitäts- und Compliance-Risiko.",
+    "threat": "(1) Täter legt in MSC1N eine Charge mit unzutreffenden Merkmalen an. (2) Die Charge erscheint verwendbar/qualitätsgeprüft. (3) Nicht freigegebenes Material gelangt in den Prozess. (4) Die Rückverfolgbarkeit ist verfälscht.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "3407_MM-MD",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "MSC2/MSC2N ändern bestehende Chargen und deren Klassifizierung beziehungsweise Merkmalswerte. Da Chargenmerkmale über Verwendbarkeit, Sperrstatus und Rückverfolgbarkeit entscheiden, wirkt eine Änderung unmittelbar auf Qualitäts- und Freigabeentscheidungen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Existence und Accuracy. Missbräuchlich lässt sich eine gesperrte oder mangelhafte Charge als verwendbar umklassifizieren, sodass nicht freigegebenes Material in den Prozess gelangt. Damit besteht neben dem finanziellen ein erhebliches Qualitäts- und Compliance-Risiko.",
+    "threat": "(1) Täter ändert in MSC2N die Klassifizierung einer gesperrten/mangelhaften Charge. (2) Die Charge gilt als verwendbar. (3) Nicht freigegebenes Material wird verarbeitet/ausgeliefert. (4) Qualitäts- und Compliance-Kontrollen sind umgangen.",
+    "source": [
+      "https://nav-it.com/sap-mm-t-codes-a-comprehensive-guide/"
+    ]
   },
   {
     "query": "4000_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VD01/XD01 legen den Kundenstamm in der Vertriebssicht an, also Verkaufsorganisations-, Vertriebsweg- und Spartendaten inklusive Preis- und Versandsteuerung. Zusammen mit der Buchhaltungssicht (FD01) bildet dies den vollständigen Debitor, wobei die Vertriebssicht die Auftrags- und Preisfindung steuert. Betroffen sind Integrität und die Assertions Existence, Occurrence und Accuracy. Missbräuchlich lässt sich ein fiktiver oder vorteilhaft parametrisierter Kunde anlegen; wer beide Sichten pflegen kann, umgeht die Trennung von Vertrieb und Buchhaltung (vgl. OCX_0001). Damit entsteht die Grundlage für Scheingeschäfte und manipulierte Konditionen.",
+    "threat": "(1) Täter legt in VD01 die Vertriebssicht eines (fiktiven/vorteilhaften) Kunden an. (2) Mit FD01 entsteht ein vollständiger Debitor. (3) Aufträge/Lieferungen laufen an den gesteuerten Kunden. (4) Ohne Sichten-Trennung bleibt dies unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4001_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VD02/XD02 ändern die Vertriebssicht des Kundenstamms, etwa Preisgruppen, Versanddaten oder Konditionsschlüssel. Änderungen wirken sofort auf laufende Aufträge und die Preisfindung. Betroffen sind Integrität und die Assertions Accuracy und Existence. Missbräuchlich lassen sich Kundendaten so anpassen, dass ein gesteuerter Kunde bessere Preise, Konditionen oder Versandbedingungen erhält. Ohne unabhängige Stammdatenkontrolle bleibt die Bevorteilung unauffällig.",
+    "threat": "(1) Täter ändert in VD02 Preisgruppe/Konditionsschlüssel eines Kunden. (2) Die Preisfindung fällt günstiger aus. (3) Der Kunde wird systematisch bevorteilt. (4) Ohne Stammdatenkontrolle unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4002_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VD05 sperrt oder entsperrt den Kunden in der Vertriebssicht, etwa Auftrags-, Liefer- oder Fakturasperre. Die Sperre steuert, ob für einen Kunden überhaupt Aufträge und Lieferungen abgewickelt werden dürfen, und dient häufig als Kreditkontroll- oder Compliance-Instrument. Betroffen sind Integrität, die Wirksamkeit von Kundensperren und Verfügbarkeit. Missbräuchlich lässt sich ein bewusst gesperrter, etwa bonitätsschwacher oder sanktionsrelevanter Kunde entsperren, um Aufträge und Lieferungen zu ermöglichen. Anschließend lässt sich die Sperre wieder setzen, sodass die Kontrolle durchgehend aktiv erscheint.",
+    "threat": "(1) Täter entsperrt in VD05 einen gesperrten Kunden. (2) Aufträge/Lieferungen sind wieder möglich. (3) Es wird an einen bonitätsschwachen/sanktionsrelevanten Kunden geliefert. (4) Danach wird die Sperre ggf. wieder gesetzt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4003_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VD06 setzt Löschvormerkungen im Kundenstamm der Vertriebssicht. Das Markieren zur Löschung entzieht einen Kunden der regulären Sicht und kann die Nachvollziehbarkeit vergangener Vorgänge beeinträchtigen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Completeness und Existence. Missbräuchlich lässt sich ein für Manipulationen genutzter Kunde nachträglich zur Löschung markieren, um Spuren zu verschleiern. Die Zuordnung vergangener Aufträge und Buchungen wird dadurch erschwert.",
+    "threat": "(1) Täter nutzt einen Kunden für manipulative Vorgänge. (2) Über VD06 markiert er ihn zur Löschung. (3) Der Kunde entzieht sich der regulären Sicht. (4) Die Zuordnung der Vorgänge wird erschwert.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4004_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VK11/VK31/VK34 legen Vertriebskonditionen an, also Preise, Rabatte, Zu- und Abschläge, die in die Preisfindung von Kundenaufträgen und Fakturen einfließen. Die Kondition bestimmt den effektiven Verkaufspreis und damit unmittelbar den Erlös. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Kondition zugunsten eines bestimmten Kunden anlegen, etwa ein überhöhter Rabatt, sodass systematisch unter Wert verkauft wird. Da die Kondition automatisch gezogen wird, fällt der Nachteil je Einzelauftrag kaum auf.",
+    "threat": "(1) Täter legt in VK11 eine vorteilhafte Kondition (z. B. hoher Rabatt) für einen Kunden an. (2) Sie wird automatisch in Aufträge/Fakturen gezogen. (3) Es wird systematisch unter Wert verkauft. (4) Je Einzelauftrag fällt der Erlösverlust kaum auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4005_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VK12/VK32 ändern bestehende Vertriebskonditionen. Wie beim Anlegen wirken die Konditionen auf die Preisfindung aller darauf basierenden Aufträge und Fakturen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Kondition zugunsten eines Kunden ändern, sodass Erlöse gemindert werden, und anschließend gegebenenfalls zurückändern, was die Manipulation schwer erkennbar macht. Ohne Konditionsüberwachung bleibt der Erlösverlust unauffällig.",
+    "threat": "(1) Täter ändert in VK12 eine bestehende Kondition zugunsten eines Kunden. (2) Aufträge/Fakturen ziehen den geänderten Wert. (3) Erlöse werden gemindert. (4) Die Kondition wird ggf. zurückgeändert, was die Manipulation verdeckt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4006_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VK31/VK34 pflegen Vertriebskonditionen über die Konditionspflege-Oberfläche mit flexiblen Schlüsselkombinationen. Über diese Pflege lassen sich Konditionen breiter und über mehr Kombinationen anlegen als über die klassische Einzelpflege, sodass die potenzielle Wirkung auf die Preisfindung größer ist. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Konditionen breit so pflegen, dass Verkaufspreise zugunsten bestimmter Kunden oder Bereiche gemindert werden. Die Breitenwirkung erschwert die Einzelfallprüfung.",
+    "threat": "(1) Täter pflegt über VK31/VK34 Konditionen über breite Schlüsselkombinationen. (2) Die Preisfindung wird breit beeinflusst. (3) Verkaufspreise sinken zugunsten bestimmter Kunden/Bereiche. (4) Die Breitenwirkung erschwert die Einzelfallprüfung.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4007_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VK32 ändert Vertriebskonditionen über die Konditionspflege-Oberfläche mit flexiblen Schlüsselkombinationen. Da über diese Pflege Konditionen breiter geändert werden können als über die klassische Einzelpflege, wirkt eine Manipulation auf die Preisfindung zahlreicher Aufträge und Fakturen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Rabatte oder Preise breit zugunsten bestimmter Kunden oder Bereiche verändern, sodass systematisch unter Wert verkauft wird. Da die Konditionen automatisch gezogen werden, fällt der Erlösverlust je Einzelbeleg kaum auf.",
+    "threat": "(1) Täter ändert über VK32 Konditionen über breite Schlüsselkombinationen. (2) Die Preisfindung zieht die geänderten Werte. (3) Verkaufspreise sinken zugunsten bestimmter Kunden. (4) Die Breitenwirkung erschwert die Einzelfallprüfung.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4008_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FD32 pflegt die Kreditmanagement-Stammdaten eines Debitors, insbesondere Kreditlimit, Risikoklasse und Kreditkontrollbereich. Das Kreditlimit steuert die automatische Kreditprüfung in Auftrag und Auslieferung, sodass derjenige, der es setzen kann, die Kreditkontrolle für einen Kunden faktisch außer Kraft setzt. Betroffen sind Integrität, die Wirksamkeit der Kreditkontrolle und mittelbar die Valuation über das Forderungsausfallrisiko. Missbräuchlich lässt sich das Limit eines bonitätsschwachen Kunden erhöhen, sodass Aufträge und Lieferungen über die zulässige Grenze hinaus möglich werden. In Kombination mit der Auftragserfassung (vgl. OCX_0004) entsteht ein Ansatz für uneinbringliche Forderungen.",
+    "threat": "(1) Täter erhöht in FD32 das Kreditlimit eines bonitätsschwachen Kunden. (2) Aufträge passieren die Kreditprüfung. (3) Lieferungen erfolgen über die zulässige Grenze hinaus. (4) Das Ausfallrisiko bleibt ohne unabhängige Kreditentscheidung bestehen.",
+    "source": [
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/new-access-risks-new-sod-matrix-how-s-4hana-changes-the-approach-to/ba-p/14298296",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4009_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VBO1 legt Bonusabsprachen an, also Vereinbarungen über nachträgliche Vergütungen an Kunden auf Basis erreichter Umsätze. Die Absprache begründet einen künftigen Zahlungs- beziehungsweise Gutschriftsanspruch des Kunden und wirkt sich über Rückstellungen bereits vor der Abrechnung ergebniswirksam aus. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Valuation. Missbräuchlich lässt sich eine Bonusabsprache mit überhöhten Sätzen für einen gegebenenfalls gesteuerten Kunden anlegen, sodass ungerechtfertigte Vergütungen entstehen. In Kombination mit Debitorenstamm- und Abrechnungsrechten (vgl. OCX_0005/0006) beherrscht eine Person den gesamten Bonusprozess.",
+    "threat": "(1) Täter legt in VBO1 eine Bonusabsprache mit überhöhten Sätzen an. (2) Umsätze des Kunden bauen Bonusansprüche auf. (3) Bei Abrechnung entsteht eine ungerechtfertigte Vergütung. (4) Ohne Trennung von Absprache und Abrechnung fehlt die Kontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4010_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VB02 ändert bestehende Bonusabsprachen, insbesondere Konditionssätze und Gültigkeit. Änderungen wirken auf die Ermittlung der Bonusansprüche und damit auf die spätere Abrechnung. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich der Bonussatz nachträglich erhöhen oder der Gültigkeitszeitraum ausgedehnt werden, sodass ein Kunde ungerechtfertigt begünstigt wird. Ohne unabhängige Kontrolle der Absprachenänderung bleibt der finanzielle Nachteil unauffällig.",
+    "threat": "(1) Täter erhöht in VB02 den Bonussatz bzw. dehnt die Gültigkeit aus. (2) Die Bonusermittlung fällt höher aus. (3) Die Abrechnung zahlt einen überhöhten Bonus. (4) Ohne Kontrolle der Änderung bleibt der Nachteil unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4011_SD-MD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt die direkte Tabellenpflege (SE16/SM30, Aktivität 02) für Tabellen ohne zugeordnete Berechtigungsgruppe (&NC&), hier im Kontext der Absagegründe. Die Pflege erfolgt unter Umgehung der Anwendungslogik und ihrer Prüfungen, und der Gruppenwert &NC& umfasst alle nicht klassifizierten Tabellen, sodass die tatsächliche Reichweite weit über den fachlichen Zweck hinausgehen kann. Betroffen sind Integrität und Nachvollziehbarkeit sowie mittelbar die Assertions Accuracy und Completeness. Missbräuchlich lassen sich Steuerungstabellen direkt manipulieren, ohne dass ein fachlicher Beleg entsteht. Aufgrund des unbestimmten Umfangs von &NC& sollte diese Berechtigung besonders eng geführt werden.",
+    "threat": "(1) Täter öffnet über SE16/SM30 eine nicht klassifizierte Tabelle (&NC&). (2) Er ändert Steuerungseinträge direkt. (3) Die Anwendung verhält sich gemäß den manipulierten Werten. (4) Mangels fachlichem Beleg bleibt der Eingriff ohne Tabellenprotokollierung unentdeckt.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/"
+    ]
   },
   {
     "query": "4100_SD-SLS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VA11 legt Kundenanfragen an, also die erste Stufe des Vertriebsbelegflusses mit Kalkulationsbezug (K_KEKO/K_CKBS). Die Anfrage dokumentiert das Kundeninteresse und bildet die Grundlage für Angebot und Auftrag; über die enthaltenen Kalkulationsberechtigungen besteht zudem Einblick in Kosten- und Kalkulationsdaten. Betroffen sind Integrität und Vertraulichkeit sowie die Assertion Accuracy. Missbräuchlich lassen sich Anfragen mit manipulierten Konditionen anlegen oder Kalkulationsdaten einsehen, die Rückschlüsse auf Margen erlauben. Das Risiko liegt vor allem in der Vorbereitung nachgelagerter Vertriebsbelege.",
+    "threat": "(1) Täter legt in VA11 eine Anfrage an und sichtet dabei Kalkulationsdaten. (2) Er erkennt Margen und Kostenstrukturen. (3) Die Erkenntnisse fließen in manipulierte Angebote/Aufträge. (4) Der Anfragevorgang selbst erscheint unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4101_SD-SLS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VA21 legt Angebote an, also die verbindliche Preisaussage gegenüber dem Kunden inklusive Konditionen und Gültigkeit; auch hier bestehen Kalkulationsberechtigungen. Das Angebot bindet das Unternehmen preislich und wird regelmäßig in einen Auftrag übernommen. Betroffen sind Integrität und Vertraulichkeit sowie die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Angebot mit zu niedrigen Preisen oder überhöhten Rabatten für einen gesteuerten Kunden erstellen, das anschließend als Auftrag übernommen wird. Ohne Freigabe- oder Margenkontrolle bleibt die Bevorteilung unauffällig.",
+    "threat": "(1) Täter erstellt in VA21 ein Angebot mit zu niedrigen Preisen/hohen Rabatten. (2) Das Angebot wird in einen Auftrag übernommen. (3) Die Lieferung erfolgt unter Wert. (4) Ohne Margenkontrolle fällt die Bevorteilung nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4102_SD-SLS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VA01 legt Kundenaufträge an und begründet damit die Leistungsverpflichtung und den späteren Erlös. Der Auftrag ist der zentrale Auslöser des Order-to-Cash-Prozesses und steuert Preisfindung, Lieferung und Fakturierung. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Auftrag für einen fiktiven oder gesteuerten Kunden, mit manipulierten Konditionen oder ohne reale Geschäftsgrundlage erfassen; in Kombination mit Stammdaten-, Auslieferungs- oder Kreditrechten (vgl. OCX_0002/0003/0004) entfallen die wesentlichen Gegenkontrollen. Ohne Funktionstrennung ist dies der Einstieg in Vertriebsbetrug.",
+    "threat": "(1) Täter legt in VA01 einen Auftrag für einen gesteuerten Kunden mit manipulierten Konditionen an. (2) Der Auftrag steuert Lieferung und Fakturierung. (3) Ware/Leistung fließt zu vorteilhaften Bedingungen ab. (4) Ohne Funktionstrennung fehlt die Gegenkontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4103_SD-SLS",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VA02 ändert bestehende Kundenaufträge, etwa Menge, Preis, Konditionen, Empfänger oder Sperrkennzeichen. Änderungen wirken unmittelbar auf Lieferung und Fakturierung, und über das Entfernen von Liefer- oder Fakturasperren lassen sich Kontrollen aufheben. Betroffen sind Integrität und die Assertions Accuracy, Occurrence und Completeness. Missbräuchlich lässt sich ein Auftrag nachträglich im Preis mindern, auf einen anderen Empfänger umstellen oder eine gesetzte Sperre entfernen, sodass eine eigentlich blockierte Lieferung doch erfolgt. Ohne unabhängige Kontrolle bleibt die Änderung unauffällig.",
+    "threat": "(1) Täter ändert in VA02 einen Auftrag (Preis, Empfänger) bzw. entfernt eine Liefer-/Fakturasperre. (2) Die Sperre greift nicht mehr. (3) Lieferung oder Fakturierung erfolgt trotz Vorbehalt. (4) Die Änderung erscheint als reguläre Auftragspflege.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4104_SD-SLS",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VA41 legt Vertriebskontrakte an, also längerfristige Rahmenvereinbarungen mit Kunden über Mengen und Konditionen. Der Kontrakt wirkt über viele Abrufe hinweg, sodass die vereinbarten Konditionen breit auf künftige Aufträge durchschlagen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Kontrakt mit zu niedrigen Preisen zugunsten eines Kunden abschließen, dessen Wirkung sich über die gesamte Laufzeit erstreckt. Die Breitenwirkung macht das Risiko größer als bei einem Einzelauftrag.",
+    "threat": "(1) Täter legt in VA41 einen Kontrakt mit zu niedrigen Preisen an. (2) Abrufe erfolgen zu diesen Konditionen. (3) Über die Laufzeit entsteht ein fortlaufender Erlösverlust. (4) Je Einzelabruf erscheint der Preis vertragskonform.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4105_SD-SLS",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VA42 ändert bestehende Vertriebskontrakte, insbesondere Preise, Mengen und Laufzeiten. Änderungen wirken auf alle künftigen Abrufe aus dem Kontrakt. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich Kontraktkonditionen nachträglich zugunsten eines Kunden verändern, sodass alle Folgeabrufe unter Wert abgewickelt werden. Ohne unabhängige Kontrolle der Vertragsänderungen bleibt dies unauffällig.",
+    "threat": "(1) Täter senkt in VA42 die Kontraktpreise. (2) Künftige Abrufe werden günstiger für den Kunden. (3) Der Nachteil wirkt über die Restlaufzeit. (4) Ohne Vertragsänderungskontrolle unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4106_SD-SLS",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VL01N legt die Auslieferung zum Kundenauftrag an und stößt damit den physischen Versandprozess an (Kommissionierung, Warenausgang). Die Auslieferung ist der Schritt, an dem reale Ware das Unternehmen verlässt, und damit unmittelbar vermögenswirksam. Betroffen sind Integrität und die Assertions Existence, Occurrence und Completeness. Missbräuchlich lässt sich eine Auslieferung zu einem manipulierten Auftrag oder an einen gesteuerten Empfänger anlegen; in Kombination mit der Auftragserfassung (vgl. OCX_0003) entfällt die Trennung von Vertrieb und Versand. Ohne physische Versandkontrolle fließt Vermögen ab.",
+    "threat": "(1) Täter legt in VL01N eine Auslieferung zu einem manipulierten Auftrag an. (2) Der Versandprozess wird angestoßen. (3) Ware wird an den gesteuerten Empfänger bereitgestellt. (4) Ohne Trennung von Vertrieb und Versand fehlt die Kontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4107_SD-SLS",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VL02/VL02N pflegen die Auslieferung und buchen den Warenausgang, wobei die Berechtigung zusätzlich die Bewegungsart 261 umfasst. Mit der Warenausgangsbuchung geht der Bestand real ab und der Umsatzkostenaufwand entsteht; dieser Schritt ist der eigentliche Vermögensabgang im Order-to-Cash. Betroffen sind Integrität und die Assertions Existence, Occurrence und Completeness. Missbräuchlich lässt sich der Warenausgang zu einem manipulierten Auftrag buchen, sodass Ware an einen gesteuerten Empfänger geliefert wird, ohne dass ein unabhängiger Versand mitwirkt. In Kombination mit der Auftragserfassung ist dies eine der wirksamsten Betrugskonstellationen im Vertrieb.",
+    "threat": "(1) Täter bucht in VL02N den Warenausgang zur Auslieferung. (2) Der Bestand geht real ab. (3) Ware verlässt das Unternehmen an den gesteuerten Empfänger. (4) Bestand und Forderung wirken systemisch konsistent, während Vermögen abfließt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4108_SD-SLS",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VL06G bearbeitet die Warenausgangs-Liste der Auslieferungen und erlaubt insbesondere die Sammelbuchung von Warenausgängen. Da hier viele Auslieferungen auf einmal warenausgangsgebucht werden können, wirkt der Vorgang massenhaft und ohne belegweise Sichtprüfung. Betroffen sind Integrität und die Assertions Existence, Occurrence und Completeness. Missbräuchlich lässt sich eine manipulierte Auslieferung im Sammellauf mitbuchen, sodass sie in der Masse untergeht. Die fehlende Einzelfallprüfung erhöht das Risiko gegenüber der Einzelbuchung.",
+    "threat": "(1) Täter selektiert in VL06G eine Menge von Auslieferungen. (2) Er bucht den Warenausgang im Sammellauf. (3) Eine manipulierte Auslieferung wird mitgebucht. (4) In der Masse fällt der Einzelfall nicht auf.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4109_SD-SLS",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VKM1 bearbeitet kreditgesperrte Vertriebsbelege und erlaubt deren Freigabe beziehungsweise erneute Sperre. Die Kreditsperre ist die Schutzwirkung der automatischen Kreditprüfung, sodass ihre Freigabe die Kreditkontrolle unmittelbar aushebelt. Betroffen sind Integrität, die Wirksamkeit der Kreditkontrolle und mittelbar die Valuation über das Ausfallrisiko. Missbräuchlich lässt sich ein wegen Limitüberschreitung gesperrter Auftrag freigeben, sodass an einen bonitätsschwachen Kunden geliefert wird. In Kombination mit der Kreditlimitpflege (4008) oder der Auftragserfassung entfällt jede unabhängige Kreditentscheidung.",
+    "threat": "(1) Ein Auftrag ist wegen Kreditlimit gesperrt. (2) Täter gibt ihn in VKM1 frei. (3) Lieferung und Fakturierung erfolgen an den bonitätsschwachen Kunden. (4) Ohne unabhängige Kreditentscheidung entsteht ein Ausfallrisiko.",
+    "source": [
+      "https://community.sap.com/t5/financial-management-blog-posts-by-members/new-access-risks-new-sod-matrix-how-s-4hana-changes-the-approach-to/ba-p/14298296",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4200_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF01/VF04 legen Fakturen an und realisieren damit den Erlös sowie die Forderung gegenüber dem Kunden. Die Fakturierung ist der erlöswirksame Abschluss des Order-to-Cash-Prozesses und überführt den Vorgang in die Finanzbuchhaltung. Betroffen sind Integrität und die Assertions Occurrence, Accuracy, Completeness und Cutoff. Missbräuchlich lässt sich eine Faktura mit manipulierten Konditionen erstellen, eine Fakturierung zum falschen Zeitpunkt vornehmen (Periodenverschiebung) oder eine Scheinfaktura zur Umsatzaufblähung erzeugen. Ohne unabhängige Kontrolle bleibt die Erlösmanipulation unauffällig.",
+    "threat": "(1) Täter erstellt in VF01 eine Faktura mit manipulierten Konditionen bzw. zu einem gewählten Zeitpunkt. (2) Erlös und Forderung entstehen entsprechend. (3) Umsatz wird verkürzt oder periodenverschoben. (4) Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://www.erpyourself.net/en/sap-transaction-codes/VF11.html"
+    ]
   },
   {
     "query": "4201_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF02 ändert bestehende Fakturen, etwa Konditionen, Preise oder Buchungsdaten, solange sie nicht an die Buchhaltung übergeben sind. Änderungen an der Faktura wirken unmittelbar auf Erlös und Forderung. Betroffen sind Integrität und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich eine Faktura nachträglich im Wert mindern oder umkonditionieren, sodass ein Kunde bevorteilt und der Erlös verkürzt wird. Ohne unabhängige Kontrolle bleibt die Änderung unauffällig.",
+    "threat": "(1) Täter ändert in VF02 eine noch nicht übergebene Faktura. (2) Preise/Konditionen werden gemindert. (3) Der Erlös fällt niedriger aus. (4) Der Kunde wird bevorteilt, ohne dass ein Beleg auffällt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.erpyourself.net/en/sap-transaction-codes/VF11.html"
+    ]
   },
   {
     "query": "4202_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF11 storniert Fakturen und nimmt damit Erlös und Forderung zurück; beim Storno werden keine neue Preis- und Kontenfindung durchgeführt, sondern die Daten aus der Originalfaktura übernommen. Der Storno ist unmittelbar erlöswirksam und kann kurz vor einem Stichtag Umsatz und Forderungsbestand erheblich verändern. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich eine berechtigte Faktura stornieren, um eine Forderung verschwinden zu lassen oder Umsatz in eine andere Periode zu verschieben, gegebenenfalls gefolgt von einer manipulierten Neufakturierung. Aufgrund der direkten Erlöswirkung ist das Risiko kritisch.",
+    "threat": "(1) Täter storniert in VF11 eine berechtigte Faktura. (2) Erlös und Forderung werden zurückgenommen. (3) Der Umsatz verschwindet bzw. verschiebt sich in eine andere Periode. (4) Ggf. folgt eine manipulierte Neufakturierung.",
+    "source": [
+      "SAP-Hinweis 400000 (FAQ VF11: Storno von SD-Fakturen; keine neue Preis-/Kontenfindung beim Storno)",
+      "https://help.sap.com/docs/SAP_REVENUE_ACCOUNTING_AND_REPORTING/6fd2a64fed4f43f7b0f99be707e4b9c0/69ece4579fea42eba3223b6582d97384.html?locale=en-US&state=PRODUCTION&version=1.3.14",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4203_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "V.23 gibt zur Fakturierung gesperrte Aufträge frei, hebt also Fakturasperren auf. Die Fakturasperre ist eine bewusst gesetzte Kontrolle, etwa bei Preisklärungen, Reklamationen oder Prüfvorbehalten, sodass ihre Freigabe den Kontrollpunkt direkt aushebelt. Betroffen sind Integrität und die Assertions Occurrence und Accuracy. Missbräuchlich lässt sich ein bewusst gesperrter Auftrag zur Fakturierung freigeben, sodass eine strittige oder fehlerhafte Position doch abgerechnet wird. Ohne unabhängige Prüfung der Freigabe bleibt dies unauffällig.",
+    "threat": "(1) Ein Auftrag ist zur Fakturierung gesperrt (z. B. Preisklärung). (2) Täter gibt ihn über V.23 frei. (3) Die strittige Position wird abgerechnet. (4) Der Kontrollvorbehalt ist umgangen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html"
+    ]
   },
   {
     "query": "4204_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF04 bearbeitet den Fakturavorrat, also die Liste der zur Fakturierung anstehenden Belege, und erlaubt deren Sammelfakturierung. Da hier viele Belege auf einmal abgerechnet werden, wirkt der Vorgang massenhaft und ohne belegweise Sichtprüfung; zugleich lässt sich über die Selektion steuern, was in welcher Periode fakturiert wird. Betroffen sind Integrität und die Assertions Completeness, Occurrence und Cutoff. Missbräuchlich lässt sich der Fakturalauf so steuern, dass Umsätze periodenverschoben oder einzelne Belege bewusst ausgelassen werden. Die Massenwirkung erschwert die Einzelfallprüfung.",
+    "threat": "(1) Täter selektiert in VF04 den Fakturavorrat gezielt. (2) Er fakturiert eine Teilmenge bzw. zu einem gewählten Datum. (3) Umsätze werden periodenverschoben oder ausgelassen. (4) Die Massenverarbeitung verdeckt die Steuerung.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://www.erpyourself.net/en/sap-transaction-codes/VF11.html"
+    ]
   },
   {
     "query": "4205_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VB(7) rechnet Bonusabsprachen ab und erzeugt damit die Bonusgutschrift beziehungsweise -zahlung an den Kunden. Die Abrechnung ist der zahlungswirksame Abschluss des Bonusprozesses und setzt die zuvor gebildeten Rückstellungen um. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Valuation. Missbräuchlich lässt sich eine ungerechtfertigte oder überhöhte Bonusabrechnung auslösen, insbesondere in Verbindung mit einer selbst angelegten Absprache (vgl. OCX_0006). Ohne Funktionstrennung zwischen Absprache und Abrechnung entsteht ein direkter finanzieller Nachteil.",
+    "threat": "(1) Täter rechnet über VB(7) eine (selbst angelegte) Bonusabsprache ab. (2) Eine Bonusgutschrift/-zahlung entsteht. (3) Der gesteuerte Kunde erhält eine ungerechtfertigte Vergütung. (4) Ohne Trennung von Absprache und Abrechnung fehlt die Kontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4206_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF21 legt Rechnungslisten an, also die Zusammenfassung mehrerer Fakturen zu einer Sammelrechnung für den Kunden, häufig mit Bezug zu Konditionen wie Delkredere. Die Rechnungsliste bestimmt, welche Fakturen gebündelt und wie sie dem Kunden gegenüber abgerechnet werden. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich lässt sich die Zusammenstellung so steuern, dass Positionen entfallen oder Konditionen vorteilhaft wirken. Das Risiko liegt in der Vollständigkeit und Korrektheit der Kundenabrechnung.",
+    "threat": "(1) Täter legt in VF21 eine Rechnungsliste an. (2) Er steuert die Zusammenstellung/Konditionen. (3) Positionen entfallen bzw. wirken vorteilhaft für den Kunden. (4) Die Sammelabrechnung verdeckt den Einzelfall.",
+    "source": [
+      "https://www.erpyourself.net/en/sap-transaction-codes/VF11.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4207_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF22 ändert bestehende Rechnungslisten. Änderungen wirken auf die Zusammenstellung und die Konditionen der Sammelabrechnung gegenüber dem Kunden. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich lässt sich eine Rechnungsliste nachträglich so ändern, dass Positionen oder Beträge zugunsten des Kunden entfallen. Ohne unabhängige Kontrolle bleibt die Änderung unauffällig.",
+    "threat": "(1) Täter ändert in VF22 eine bestehende Rechnungsliste. (2) Positionen/Beträge werden angepasst. (3) Die Kundenabrechnung fällt niedriger aus. (4) Ohne Kontrolle bleibt die Änderung unauffällig.",
+    "source": [
+      "https://www.erpyourself.net/en/sap-transaction-codes/VF11.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "4208_SD-BIL",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VF24 bearbeitet den Rechnungslistenvorrat, also die Arbeitsvorratsliste der zu erstellenden Rechnungslisten, und erlaubt deren Sammelverarbeitung. Wie beim Fakturavorrat wirkt die Verarbeitung massenhaft und ohne belegweise Sichtprüfung. Betroffen sind Integrität und die Assertions Completeness und Cutoff. Missbräuchlich lässt sich die Selektion so steuern, dass Rechnungslisten unvollständig oder periodenverschoben erzeugt werden. Die Massenwirkung erschwert die Einzelfallprüfung.",
+    "threat": "(1) Täter steuert in VF24 die Selektion des Rechnungslistenvorrats. (2) Rechnungslisten werden unvollständig/periodenverschoben erzeugt. (3) Abrechnungen fehlen oder fallen in die falsche Periode. (4) Die Massenverarbeitung erschwert die Aufdeckung.",
+    "source": [
+      "https://www.erpyourself.net/en/sap-transaction-codes/VF11.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ]
   },
   {
     "query": "5000_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KA01/KA06 legen primäre und sekundäre Kostenarten an, also die Klassifizierung von Kosten im Controlling; die primäre Kostenart ist die Verbindung zwischen dem Sachkonto in FI und dem Controlling-Kreis, die sekundäre existiert nur in CO und dient internen Verrechnungen. Über die Kostenart wird gesteuert, wie Kosten im Controlling erfasst und weiterverrechnet werden. Betroffen sind Integrität und die Assertions Classification/Presentation und Accuracy. Missbräuchlich lässt sich eine Kostenart mit unzutreffender Kategorie anlegen, sodass Kosten falsch klassifiziert oder über Verrechnungen in andere Bereiche geleitet werden. Da die Verrechnungslogik im CO auf Kostenarten aufsetzt, wirkt eine Manipulation breit auf die interne Kostenrechnung.",
+    "threat": "(1) Täter legt in KA01/KA06 eine Kostenart mit unzutreffender Kategorie an. (2) Buchungen/Verrechnungen nutzen diese Kostenart. (3) Kosten werden falsch klassifiziert bzw. in andere Bereiche verrechnet. (4) Ohne Stammdatenkontrolle bleibt dies unauffällig.",
+    "source": [
+      "https://www.tutorialkart.com/sap-co/cost-center-in-sap-create-cost-cost-centers/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5001_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KA02 ändert bestehende Kostenarten, etwa Kategorie oder Zuordnungen. Änderungen wirken auf alle künftigen Buchungen und Verrechnungen, die diese Kostenart verwenden, und können die Zuordnung von Kosten im gesamten Controlling verschieben. Betroffen sind Integrität und die Assertions Classification/Presentation und Accuracy. Missbräuchlich lässt sich die Kategorie einer genutzten Kostenart so ändern, dass Kosten künftig anders klassifiziert oder verrechnet werden. Ohne unabhängige Stammdatenkontrolle bleibt die Verschiebung unauffällig.",
+    "threat": "(1) Täter ändert in KA02 die Kategorie einer genutzten Kostenart. (2) Künftige Buchungen/Verrechnungen folgen der neuen Logik. (3) Die Kostenzuordnung verschiebt sich. (4) Die Ursache liegt im Stammsatz, nicht in der Buchung.",
+    "source": [
+      "https://www.tutorialkart.com/sap-co/cost-center-in-sap-create-cost-cost-centers/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5002_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KS01/KS07 legen Kostenstellen an, also die Verantwortungsbereiche, auf denen Kosten gesammelt werden, inklusive Verantwortlichem, Kostenstellenart, Profit Center und Hierarchiezuordnung. Die Kostenstelle bestimmt, wo Kosten anfallen und wem sie zugerechnet werden. Betroffen sind Integrität und die Assertions Existence, Classification und Accuracy. Missbräuchlich lässt sich eine Kostenstelle anlegen, auf die Kosten geleitet und dort verborgen werden können, etwa außerhalb der regulären Verantwortungs- und Berichtsstruktur. In Kombination mit Warenausgangs- oder Buchungsrechten (vgl. 3105) entsteht ein Ansatz zur Verschleierung von Aufwand.",
+    "threat": "(1) Täter legt in KS01 eine Kostenstelle außerhalb der regulären Berichtsstruktur an. (2) Kosten werden dorthin gebucht/entnommen. (3) Aufwand wird dort gesammelt und fällt in der Berichterstattung kaum auf. (4) Ohne Stammdatenkontrolle bleibt die Kostenstelle unbemerkt.",
+    "source": [
+      "https://www.tutorialkart.com/sap-co/cost-center-in-sap-create-cost-cost-centers/",
+      "https://blog.sap-press.com/what-are-cost-centers-in-sap-s4hana",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5003_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KS02/KS12 ändern bestehende Kostenstellen, wobei KS12 die Massenänderung erlaubt; Änderungen betreffen etwa Verantwortlichen, Profit Center, Sperrkennzeichen oder Hierarchiezuordnung, und da Kostenstellen zeitabhängig geführt werden, können Änderungen periodenbezogen wirken. Die Zuordnung bestimmt, in welchen Bereich Kosten berichtet werden. Betroffen sind Integrität und die Assertions Classification/Presentation und Accuracy. Missbräuchlich lässt sich eine Kostenstelle einem anderen Profit Center oder Hierarchiebereich zuordnen, sodass Kosten in der Berichterstattung verschoben werden; die Massenänderung verstärkt die Wirkung. Ohne unabhängige Kontrolle bleibt die Verschiebung unauffällig.",
+    "threat": "(1) Täter ordnet in KS02/KS12 Kostenstellen einem anderen Profit Center/Hierarchiebereich zu. (2) Die Berichterstattung aggregiert Kosten anders. (3) Kosten erscheinen in einem anderen Verantwortungsbereich. (4) Die Massenänderung verstärkt die Wirkung.",
+    "source": [
+      "https://blog.sap-press.com/what-are-cost-centers-in-sap-s4hana",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5004_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KS04/KS14 löschen Kostenstellen, wobei KS14 die Massenlöschung erlaubt. Das Löschen einer Kostenstelle entzieht einen Verantwortungsbereich der regulären Sicht und kann die Nachvollziehbarkeit der dort gebuchten Kosten beeinträchtigen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Completeness und Existence. Missbräuchlich lässt sich eine für Manipulationen genutzte Kostenstelle entfernen, um Spuren zu verwischen, oder eine produktiv genutzte Kostenstelle löschen und damit Buchungs- und Berichtsprozesse stören. Die Massenlöschung erhöht das Schadenspotenzial erheblich.",
+    "threat": "(1) Täter nutzt eine Kostenstelle für manipulative Buchungen. (2) Über KS04/KS14 löscht er sie. (3) Der Verantwortungsbereich entzieht sich der regulären Sicht. (4) Die Zuordnung vergangener Buchungen wird erschwert.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://www.tutorialkart.com/sap-co/cost-center-in-sap-create-cost-cost-centers/"
+    ]
   },
   {
     "query": "5005_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "OKEON pflegt die Kostenstellen-Standardhierarchie, also die Baumstruktur, nach der Kostenstellen zu Berichts- und Verantwortungsbereichen zusammengefasst werden. Die Standardhierarchie ist die Grundlage der Kostenstellenberichterstattung, sodass eine Änderung die Aggregation von Kosten über alle Auswertungen hinweg verschiebt, ohne dass eine einzelne Buchung verändert wird. Betroffen sind Integrität und die Assertions Presentation/Classification und Completeness. Missbräuchlich lässt sich eine Kostenstelle in einen anderen Hierarchieknoten verschoben werden, sodass Kosten in der Berichterstattung anders ausgewiesen werden. Da nur die Struktur und nicht die Buchung geändert wird, ist die Manipulation ohne Strukturvergleich schwer erkennbar.",
+    "threat": "(1) Täter verschiebt in OKEON eine Kostenstelle in einen anderen Hierarchieknoten. (2) Berichte aggregieren die Kosten neu. (3) Der Ausweis verschiebt sich, ohne dass eine Buchung geändert wurde. (4) Ohne Strukturvergleich ist die Manipulation kaum erkennbar.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://blog.sap-press.com/what-are-cost-centers-in-sap-s4hana"
+    ]
   },
   {
     "query": "5006_CO-OM",
