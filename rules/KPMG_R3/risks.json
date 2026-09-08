@@ -6059,805 +6059,1782 @@
     "query": "8502_IS-U",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP07 nimmt Ausgleiche im Vertragskontokorrent zurück, macht also bereits ausgeglichene Posten wieder offen. Da der Ausgleich bestimmt, welche Forderungen als beglichen gelten, verändert seine Rücknahme unmittelbar den Forderungsbestand und kann bereits an die Bank übermittelte Zahlungen erneut zur Ausführung bringen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein Ausgleich zurückgenommen werden, um Posten neu und vorteilhaft zuzuordnen oder um eine Rückzahlung an ein gesteuertes Konto auszulösen. Aufgrund der Zahlungswirkung sollte die Rücknahme begründungspflichtig und nachvollziehbar sein.",
+    "threat": "(1) Täter nimmt in FP07 einen Ausgleich zurück. (2) Der Posten ist wieder offen. (3) Er ordnet Zahlungen neu zu bzw. löst eine Rückzahlung aus. (4) Ohne Begründungspflicht geht der Vorgang in der Belegmenge unter.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "8503_IS-U",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP18 storniert Rückzahlungsanforderungen, also die Anweisungen zur Auszahlung von Guthaben an Kunden. Der Storno greift in einen bereits angestoßenen Auszahlungsvorgang ein und verändert damit die Liquiditätsseite. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence und Completeness. Missbräuchlich lässt sich eine berechtigte Rückzahlung storniert werden, sodass ein Kundenguthaben nicht ausgezahlt wird, oder ein Vorgang so manipuliert werden, dass anschließend eine abweichende Auszahlung erfolgt. Ohne Kontrolle der Stornos bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert in FP18 eine Rückzahlungsanforderung. (2) Die Auszahlung unterbleibt bzw. wird neu angestoßen. (3) Ein Guthaben fließt nicht oder abweichend. (4) Ohne Kontrolle der Stornos unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "8504_IS-U",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPB0 bucht Zahlungen im Vertragskontokorrent, ordnet also eingehende Zahlungen den offenen Posten der Kunden zu. Die Zahlungsbuchung bestimmt, welche Forderungen als beglichen gelten, und wirkt unmittelbar auf Bank- und Forderungsbestände. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Zahlungseingang vorgetäuscht oder falsch zugeordnet werden, sodass die Forderung eines gesteuerten Kunden ohne realen Geldfluss ausgeglichen wird, was zur Verschleierung einer Unterschlagung dient. Ohne Bankabstimmung bleibt die Differenz zunächst verborgen.",
+    "threat": "(1) Täter bucht in FPB0 einen (fingierten) Zahlungseingang. (2) Die Forderung des Kunden erscheint ausgeglichen. (3) Der reale Geldeingang fehlt. (4) Ohne Bankabstimmung bleibt die Lücke verborgen.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "8505_IS-U",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPR1 legt Ratenpläne an, also die Stundung offener Forderungen in Teilbeträgen. Der Ratenplan setzt die reguläre Fälligkeit außer Kraft und nimmt die Forderung aus dem Mahn- und Inkassoprozess heraus. Betroffen sind Integrität und die Assertions Completeness, Valuation und Cutoff. Missbräuchlich lässt sich für einen gesteuerten Kunden ein sehr langer oder niedrig dotierter Ratenplan angelegt werden, sodass die Forderung faktisch nicht eingetrieben wird und das Ausfallrisiko steigt. Da der Posten weiterhin als offen geführt wird, fällt die fehlende Beitreibung nicht unmittelbar auf.",
+    "threat": "(1) Täter legt in FPR1 einen sehr langen Ratenplan für einen Kunden an. (2) Die Forderung wird gestundet. (3) Sie fällt aus dem Mahn-/Inkassoprozess heraus. (4) Der Posten bleibt formal offen, wird aber nicht beigetrieben.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "8506_IS-U",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPR2 ändert bestehende Ratenpläne, etwa Ratenhöhe, Anzahl und Fälligkeiten. Änderungen verschieben die Fälligkeit weiter in die Zukunft und beeinflussen damit Liquidität und Mahnprozess. Betroffen sind Integrität und die Assertions Completeness, Valuation und Cutoff. Missbräuchlich lässt sich ein Ratenplan wiederholt verlängert werden, sodass eine Forderung dauerhaft dem Mahnwesen entzogen bleibt. Ohne Überwachung der Ratenplanänderungen bleibt die faktische Nichtbeitreibung unauffällig.",
+    "threat": "(1) Täter verlängert in FPR2 wiederholt einen Ratenplan. (2) Die Fälligkeit verschiebt sich immer weiter. (3) Die Forderung wird dauerhaft nicht eingezogen. (4) Ohne Überwachung der Änderungen fällt dies nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "8507_IS-U",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPY1 führt den Zahlungs- beziehungsweise Lastschriftlauf im Vertragskontokorrent durch und erzeugt die Zahlungsdatei zur Übermittlung an die Bank. Der Lauf ist der unmittelbar zahlungswirksame Schritt und betrifft massenhaft Kundenkonten, sowohl beim Einzug offener Forderungen als auch bei der Auszahlung von Guthaben. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich der Lauf so selektiert werden, dass bestimmte Kunden vom Einzug ausgenommen werden, oder eine Auszahlung an eine zuvor manipulierte Bankverbindung ausgelöst werden. In Kombination mit der Pflege der Vertragskonten (vgl. 8003) entsteht ein direkter Hebel für Mittelabfluss.",
+    "threat": "(1) Täter selektiert den Zahlungslauf so, dass bestimmte Kunden ausgenommen werden bzw. eine Auszahlung enthalten ist. (2) Die Zahlungsdatei wird erzeugt. (3) Einzug unterbleibt bzw. Guthaben fließt an ein manipuliertes Konto. (4) Die Massenwirkung verdeckt den Einzelfall.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9000_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACS öffnet das Hauptmenü des Incentive and Commission Management und bündelt damit den Einstieg in sämtliche Provisionsfunktionen. Über das Menü sind je nach zugeordneten Berechtigungen Stammdaten, Provisionsfälle, Belege und Abrechnungsläufe erreichbar. Betroffen sind Vertraulichkeit und mittelbar Integrität, da das Provisionssystem unmittelbar auszahlungsrelevante Daten von Vertriebspartnern führt. Missbräuchlich dient der Zugang als Einstiegspunkt für die Sichtung von Provisionsdaten und die Vorbereitung weitergehender Eingriffe. Das eigentliche Risiko liegt in den nachgelagerten Funktionen, weshalb der Menüzugang vor allem in Kombination mit Pflege- und Buchungsrechten kritisch wird.",
+    "threat": "(1) Täter öffnet über CACS das Provisionsmenü. (2) Er verschafft sich Überblick über Partner und Vorgänge. (3) Er identifiziert Ansatzpunkte für weitere Eingriffe. (4) Der Menüzugang selbst erscheint unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9001_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSMWB öffnet den Managers Desktop des Provisionsmanagements, der eine gebündelte Sicht auf Vertriebspartner, deren Verträge und Provisionsergebnisse bietet. Die Zusammenführung ermöglicht einen umfassenden Überblick über Vergütungsstrukturen und Leistungsdaten einzelner Partner. Betroffen ist primär die Vertraulichkeit wirtschaftlich sensibler Partnerdaten; bei natürlichen Personen als Vertriebspartner besteht zusätzlich ein Bezug zu personenbezogenen Daten. Missbräuchlich lassen sich Provisions- und Leistungsdaten gesichtet und weitergegeben werden, etwa an Wettbewerber oder zur Verhandlungsvorbereitung. In Verbindung mit Pflegerechten dient die Sicht der gezielten Auswahl von Manipulationsobjekten.",
+    "threat": "(1) Täter öffnet den Managers Desktop. (2) Er sichtet Partner-, Vertrags- und Provisionsdaten gebündelt. (3) Die Informationen werden weitergegeben bzw. für Manipulationen genutzt. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9002_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACS_APPL_59 generiert Periodenregeln im Provisionsmanagement, also die Steuerung, welche Zeiträume für Provisionsermittlung und Abrechnung herangezogen werden. Die Periodenregel bestimmt die zeitliche Zuordnung von Provisionsansprüchen und wirkt damit auf alle darauf aufsetzenden Läufe. Betroffen sind Integrität und die Assertions Cutoff, Completeness und Accuracy. Missbräuchlich lassen sich Perioden so generiert werden, dass Provisionsansprüche in eine andere Periode fallen oder doppelt erfasst werden. Da die Manipulation in der Steuerungsebene liegt, ist sie ohne Regelvergleich schwer erkennbar.",
+    "threat": "(1) Täter generiert Periodenregeln mit abweichenden Zeiträumen. (2) Provisionsermittlung und Abrechnung folgen diesen Perioden. (3) Ansprüche verschieben sich oder entstehen doppelt. (4) Die Ursache liegt in der Steuerungsebene.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9003_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACS_0 führt Berichte des Provisionsmanagements aus und liefert damit Auswertungen über Vertriebspartner, Provisionsfälle und Abrechnungsergebnisse. Die Berichte bündeln wirtschaftlich sensible Daten über Vergütungsstrukturen und Vertriebsleistungen. Betroffen ist primär die Vertraulichkeit. Missbräuchlich lassen sich umfangreiche Provisionsauswertungen erzeugt und exportiert werden, etwa zur Weitergabe an Wettbewerber oder zur Vorbereitung eigener Verhandlungen. Da es sich um Anzeigefunktionen handelt, hinterlässt der Zugriff außerhalb des Security Audit Logs kaum Spuren.",
+    "threat": "(1) Täter führt Provisionsberichte aus. (2) Er erhält umfassende Auswertungen zu Partnern und Vergütungen. (3) Die Daten werden exportiert und weitergegeben. (4) Als Anzeigefunktion bleibt der Zugriff unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9004_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung zeigt Provisionsvertragspartner an, also die Stammdaten der Vertriebspartner einschließlich Zuordnungen und Konditionsbezügen. Auch ohne Änderungsmöglichkeit besteht Einblick in die Vergütungsstruktur einzelner Partner. Betroffen ist die Vertraulichkeit; bei natürlichen Personen als Partner handelt es sich zudem um personenbezogene Daten. Missbräuchlich lassen sich Partner- und Konditionsdaten gesichtet und weitergegeben werden. Das Risiko liegt deutlich unter dem der Pflegeberechtigung, ist aber für Wettbewerbs- und Datenschutzbelange relevant.",
+    "threat": "(1) Täter ruft Provisionsvertragspartner auf. (2) Er sichtet Stammdaten und Konditionsbezüge. (3) Die Informationen werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9005_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung pflegt Provisionsvertragspartner, also die Stammdaten der Vertriebspartner einschließlich Zuordnungen, Status und zahlungsrelevanter Angaben. Der Vertragspartner ist der Empfänger der Provisionszahlungen, sodass seine Stammdaten unmittelbar bestimmen, an wen und in welcher Struktur vergütet wird. Betroffen sind Integrität und die Assertions Existence, Occurrence und Accuracy. Missbräuchlich lässt sich ein fiktiver Vertriebspartner angelegt oder die Zuordnung eines bestehenden Partners geändert werden, sodass Provisionen an eine gesteuerte Stelle fließen. In Kombination mit Vertrags- und Buchungsrechten entsteht der zentrale Betrugsansatz im Provisionsmanagement.",
+    "threat": "(1) Täter legt einen fiktiven Vertriebspartner an bzw. ändert dessen Zuordnung. (2) Provisionsfälle werden ihm zugeordnet. (3) Vergütungen fließen an die gesteuerte Stelle. (4) Ohne Stammdatenkontrolle bleibt dies unbemerkt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9006_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung zeigt Provisionsvertragsdaten an, also die vereinbarten Konditionen und Vergütungsregeln je Vertriebspartner. Die Vertragsdaten enthalten die wirtschaftlich sensibelsten Angaben des Provisionssystems. Betroffen ist die Vertraulichkeit. Missbräuchlich lassen sich Provisionskonditionen gesichtet und weitergegeben werden, etwa zur Bevorteilung einzelner Partner in Verhandlungen. Als reine Anzeigeberechtigung liegt das Risiko unter dem der Pflege, bleibt aber wettbewerbsrelevant.",
+    "threat": "(1) Täter ruft Provisionsvertragsdaten auf. (2) Er sichtet Konditionen und Vergütungsregeln. (3) Die Informationen werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9007_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung pflegt Provisionsvertragsdaten, also die Konditionen und Vergütungsregeln, nach denen Provisionen ermittelt werden. Die Konditionen wirken auf alle künftigen Provisionsfälle des Vertragspartners und damit dauerhaft auf die Höhe der Vergütung. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Occurrence. Missbräuchlich lassen sich Provisionssätze zugunsten eines gesteuerten Partners erhöht werden, sodass systematisch überhöhte Provisionen entstehen, ohne dass ein einzelner Beleg auffällig wirkt. Ohne unabhängige Genehmigung von Konditionsänderungen bleibt der Nachteil unauffällig.",
+    "threat": "(1) Täter erhöht die Provisionssätze eines Vertragspartners. (2) Alle künftigen Fälle werden danach bewertet. (3) Systematisch überhöhte Provisionen entstehen. (4) Je Einzelbeleg wirkt der Betrag vertragskonform.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9008_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung pflegt Provisionsfalldaten, also die einzelnen provisionsauslösenden Geschäftsvorfälle mit Bemessungsgrundlage und Zuordnung. Der Provisionsfall bestimmt, für welchen Vorgang, in welcher Höhe und zugunsten welches Partners ein Anspruch entsteht. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Existence. Missbräuchlich lässt sich ein Provisionsfall mit überhöhter Bemessungsgrundlage oder für ein nicht vermitteltes Geschäft angelegt beziehungsweise geändert werden. Da Provisionsfälle in großer Zahl anfallen, fällt der Einzelfall ohne gezielte Auswertung nicht auf.",
+    "threat": "(1) Täter legt einen Provisionsfall mit überhöhter Bemessungsgrundlage an bzw. ändert ihn. (2) Der Anspruch entsteht in falscher Höhe. (3) Die Abrechnung übernimmt den Wert. (4) In der Masse der Fälle fällt dies nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9009_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung bucht Provisionsfälle und überführt damit den ermittelten Anspruch in einen wertwirksamen Vorgang. Die Buchung begründet die Verbindlichkeit gegenüber dem Vertriebspartner und ist Grundlage der späteren Abrechnung und Auszahlung. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein fingierter oder überhöhter Provisionsfall gebucht werden, der anschließend zur Auszahlung gelangt. In Kombination mit der Falldatenpflege (9008) entfällt jede Gegenkontrolle über Entstehung und Buchung des Anspruchs.",
+    "threat": "(1) Täter bucht einen fingierten/überhöhten Provisionsfall. (2) Die Verbindlichkeit gegenüber dem Partner entsteht. (3) Die Abrechnung führt zur Auszahlung. (4) Ohne Trennung von Pflege und Buchung fehlt die Gegenkontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9010_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung zeigt Provisionsbelegdaten an, also die gebuchten Provisionsvorgänge mit Beträgen und Zuordnungen. Die Belegdaten dokumentieren die entstandenen Ansprüche der Vertriebspartner. Betroffen ist die Vertraulichkeit wirtschaftlich sensibler Vergütungsdaten. Missbräuchlich lassen sich Provisionsdaten gesichtet und weitergegeben werden. Als reine Anzeigeberechtigung liegt das Risiko unter dem der Pflege.",
+    "threat": "(1) Täter ruft Provisionsbelegdaten auf. (2) Er sichtet gebuchte Ansprüche und Beträge. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9011_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung pflegt Provisionsbelegdaten und greift damit in bereits erzeugte Provisionsbelege ein. Änderungen wirken unmittelbar auf die Höhe des Anspruchs gegenüber dem Vertriebspartner. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich ein Provisionsbeleg nachträglich erhöht oder einem anderen Partner zugeordnet werden, sodass die Auszahlung zugunsten einer gesteuerten Stelle ausfällt. Da der Eingriff nach der Belegentstehung erfolgt, umgeht er die vorgelagerte Ermittlungslogik.",
+    "threat": "(1) Täter ändert einen gebuchten Provisionsbeleg. (2) Betrag oder Empfänger werden angepasst. (3) Die Auszahlung fällt zugunsten der gesteuerten Stelle aus. (4) Die vorgelagerte Ermittlungslogik wurde umgangen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9012_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "PPOSE zeigt die Organisationsstruktur an, die im Provisionsmanagement die Hierarchie der Vertriebseinheiten und die Zuordnung der Partner abbildet. Die Struktur bestimmt, wie Provisionen entlang der Vertriebshierarchie verteilt und aggregiert werden. Betroffen ist die Vertraulichkeit organisatorischer und vergütungsrelevanter Zusammenhänge. Missbräuchlich lassen sich Strukturinformationen gesichtet werden, um Manipulationsansätze in der Provisionsverteilung zu identifizieren. Als Anzeigeberechtigung ist das unmittelbare Risiko begrenzt.",
+    "threat": "(1) Täter ruft in PPOSE die Organisationsstruktur auf. (2) Er sichtet Hierarchie und Partnerzuordnung. (3) Er identifiziert Ansatzpunkte für Provisionsverschiebungen. (4) Der Anzeigezugriff erscheint unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9013_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung legt Provisionsvertragsdaten an und begründet damit die Konditionen, nach denen ein Vertriebspartner vergütet wird. Der Vertrag wirkt über seine gesamte Laufzeit auf alle Provisionsfälle des Partners. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Vertrag mit überhöhten Provisionssätzen für einen gesteuerten Partner angelegt werden, wodurch dauerhaft überhöhte Vergütungen entstehen. In Kombination mit der Partnerpflege (9005) lässt sich ein vollständig fiktives Vertriebsverhältnis aufbauen.",
+    "threat": "(1) Täter legt einen Provisionsvertrag mit überhöhten Sätzen an. (2) Provisionsfälle des Partners werden danach bewertet. (3) Dauerhaft überhöhte Vergütungen entstehen. (4) In Kombination mit der Partnerpflege entsteht ein fiktives Vertriebsverhältnis.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9014_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung storniert und reaktiviert Provisionsfälle, nimmt also entstandene Ansprüche zurück oder setzt sie erneut in Kraft. Die Kombination aus Storno und Reaktivierung erlaubt es, Ansprüche gezielt aus- und wieder einzuschalten, ohne den ursprünglichen Fall neu anlegen zu müssen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence und Completeness. Missbräuchlich lässt sich ein Provisionsfall storniert werden, um eine Rückforderung zu vermeiden, oder ein zuvor stornierter Fall reaktiviert werden, um einen Anspruch erneut entstehen zu lassen. Ohne Begründungspflicht bleibt die Manipulation in der Belegmenge unauffällig.",
+    "threat": "(1) Täter storniert einen Provisionsfall, um eine Rückforderung zu vermeiden. (2) Alternativ reaktiviert er einen stornierten Fall. (3) Der Anspruch entfällt bzw. entsteht erneut. (4) Ohne Begründungspflicht geht dies in der Belegmenge unter.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9015_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung bucht Provisionsbelege und überführt damit die ermittelten Ansprüche in wertwirksame Belege. Die Buchung ist die Grundlage der späteren Abrechnung und Auszahlung an die Vertriebspartner. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich manipulierte Provisionsbelege gebucht werden, die anschließend zur Auszahlung gelangen. Liegen Belegpflege (9011) und Buchung in einer Hand, entfällt die Funktionstrennung im Provisionsprozess vollständig.",
+    "threat": "(1) Täter bucht manipulierte Provisionsbelege. (2) Die Ansprüche werden wertwirksam. (3) Die Abrechnung führt zur Auszahlung. (4) Liegen Pflege und Buchung in einer Hand, fehlt jede Kontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9016_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung storniert Provisionsbelege und nimmt damit bereits gebuchte Ansprüche zurück. Der Storno wirkt unmittelbar auf die Verbindlichkeit gegenüber dem Vertriebspartner und auf das Periodenergebnis. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein belastender Beleg storniert werden, um eine Rückforderung zu vermeiden oder eine manipulierte Neubuchung zu ermöglichen. Ohne Kontrolle der Stornos bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert einen belastenden Provisionsbeleg. (2) Der gebuchte Anspruch wird zurückgenommen. (3) Eine Rückforderung entfällt bzw. eine Neubuchung wird möglich. (4) Ohne Kontrolle der Stornos unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9017_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "PPOME und PPSM pflegen die Organisationsstruktur, die im Provisionsmanagement die Vertriebshierarchie und die Zuordnung der Partner abbildet. Da Provisionen entlang dieser Hierarchie verteilt und aggregiert werden, verschiebt eine Änderung der Struktur die Vergütungsströme, ohne dass ein einzelner Provisionsfall verändert wird. Betroffen sind Integrität und die Assertions Classification, Accuracy und Presentation. Missbräuchlich lässt sich eine Vertriebseinheit oder ein Partner so umgehängt werden, dass Provisionen einer anderen Stelle zufließen oder Überhangprovisionen entstehen. Da nur die Struktur und nicht die Buchung geändert wird, ist die Manipulation ohne Strukturvergleich besonders schwer erkennbar.",
+    "threat": "(1) Täter hängt in PPOME eine Vertriebseinheit/einen Partner um. (2) Die Provisionsverteilung folgt der neuen Hierarchie. (3) Vergütungen fließen einer anderen Stelle zu. (4) Da keine Buchung geändert wurde, ist die Manipulation kaum erkennbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9018_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACS_COI führt die Massenrücknahme im Provisionsmanagement durch und nimmt damit zahlreiche Provisionsvorgänge in einem Lauf zurück. Der Lauf wirkt massenhaft und verändert die Ansprüche einer Vielzahl von Vertriebspartnern gleichzeitig. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf mit abweichender Selektion ausgeführt werden, sodass berechtigte Ansprüche entfallen oder eine gezielte Rücknahme in der Masse untergeht. Die Massenwirkung erschwert die Einzelfallprüfung erheblich.",
+    "threat": "(1) Täter startet CACS_COI mit abweichender Selektion. (2) Zahlreiche Provisionsvorgänge werden zurückgenommen. (3) Berechtigte Ansprüche entfallen bzw. eine gezielte Rücknahme geht in der Masse unter. (4) Die Massenwirkung erschwert die Prüfung.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9019_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACS_MRU führt die Massennachverbuchung im Provisionsmanagement durch und erzeugt damit nachträglich Provisionsvorgänge für große Bestände. Der Lauf begründet massenhaft Ansprüche und ist damit unmittelbar aufwands- und auszahlungswirksam. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich oder fehlerhaft lässt sich der Lauf so parametrisiert werden, dass überhöhte oder unberechtigte Ansprüche entstehen, die in der Masse nicht auffallen. Aufgrund der Kombination aus Massenwirkung und Anspruchsbegründung ist das Risiko besonders hoch.",
+    "threat": "(1) Täter parametrisiert CACS_MRU abweichend. (2) Massenhaft werden Provisionsvorgänge nachverbucht. (3) Überhöhte/unberechtigte Ansprüche entstehen. (4) In der Masse fällt der Einzelfall nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9020_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY10 führt den periodischen Abschluss von Pauschalen und Garantien durch, ermittelt also die garantierten Vergütungsbestandteile der Vertriebspartner. Garantien und Pauschalen entstehen unabhängig von der tatsächlichen Vermittlungsleistung und sind damit besonders kontrollbedürftig. Betroffen sind Integrität und die Assertions Occurrence, Accuracy, Valuation und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf so ausgeführt werden, dass Garantiezahlungen zugunsten bestimmter Partner zu hoch ermittelt oder in eine falsche Periode gelegt werden. Da der Anspruch nicht an eine Leistung gekoppelt ist, fehlt eine natürliche Plausibilitätskontrolle.",
+    "threat": "(1) Täter führt CACSPY10 mit abweichenden Parametern aus. (2) Garantien und Pauschalen werden zu hoch ermittelt. (3) Zahlungen entstehen ohne Vermittlungsleistung. (4) Eine Plausibilitätskontrolle über die Leistung fehlt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9021_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY11 führt die Provisionsabrechnung durch und ermittelt damit die auszuzahlenden Beträge je Vertriebspartner. Die Abrechnung ist der zentrale wertbestimmende Lauf des Provisionsmanagements und Grundlage der Auszahlung. Betroffen sind Integrität und die Assertions Occurrence, Accuracy, Completeness und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf auf Basis zuvor manipulierter Konditionen oder Fälle ausgeführt werden, sodass überhöhte Provisionen zur Auszahlung gelangen. In Kombination mit Konditions- oder Falldatenpflege entfällt die Funktionstrennung im gesamten Provisionsprozess.",
+    "threat": "(1) Täter manipuliert zuvor Konditionen oder Fälle. (2) Er startet die Abrechnung über CACSPY11. (3) Überhöhte Provisionen werden ermittelt und ausgezahlt. (4) Ohne Funktionstrennung fehlt jede Gegenkontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9022_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY12 zeigt die Übersicht der Abrechnungsläufe und dokumentiert damit, welche Provisionsabrechnungen mit welchen Ergebnissen durchgeführt wurden. Die Übersicht dient der Nachvollziehbarkeit und Überwachung der Abrechnungsläufe. Betroffen ist primär die Vertraulichkeit; als Anzeigefunktion besteht keine unmittelbare Wertwirkung. Missbräuchlich lassen sich Informationen über Abrechnungsergebnisse gesichtet werden, etwa um den Erfolg einer vorherigen Manipulation zu prüfen. Das eigenständige Risiko ist begrenzt.",
+    "threat": "(1) Täter ruft die Abrechnungslaufübersicht auf. (2) Er prüft die Ergebnisse vorheriger Läufe. (3) Er kontrolliert den Erfolg einer Manipulation. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9023_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY14 storniert den periodischen Abschluss im Provisionsmanagement und nimmt damit einen bereits durchgeführten Abschluss- oder Abrechnungslauf zurück. Der Storno wirkt massenhaft über alle im Lauf enthaltenen Vertriebspartner und verändert die ermittelten Ansprüche. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein korrekter Abschluss storniert werden, um eine manipulierte Neuabrechnung zu ermöglichen, oder um Ergebnisse zwischen Perioden zu verschieben. Ohne Begründungspflicht und unabhängige Kontrolle der Stornoläufe bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert über CACSPY14 einen korrekten Abschluss. (2) Die ermittelten Ansprüche werden zurückgenommen. (3) Eine manipulierte Neuabrechnung wird möglich bzw. Ergebnisse verschieben sich zwischen Perioden. (4) Ohne Kontrolle der Stornoläufe unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9024_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY13 hebt Zahlsperren im Provisionsmanagement auf und gibt damit zuvor blockierte Provisionszahlungen zur Auszahlung frei. Die Zahlsperre ist eine bewusst gesetzte Kontrolle, etwa bei offenen Klärungen, Rückforderungen oder Verdachtsfällen, sodass ihre Aufhebung genau diesen Kontrollpunkt aushebelt. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Accuracy. Missbräuchlich lässt sich eine bewusst gesperrte Provisionszahlung freigegeben werden, sodass an einen gesteuerten oder auffälligen Vertriebspartner ausgezahlt wird. Da die Sperre gerade in Verdachtsfällen gesetzt wird, ist ihre Aufhebung besonders kontrollbedürftig.",
+    "threat": "(1) Eine Provisionszahlung ist wegen Klärung/Verdacht gesperrt. (2) Täter hebt die Sperre über CACSPY13 auf. (3) Die Zahlung wird ausgeführt. (4) Die bewusst gesetzte Kontrolle wurde umgangen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9025_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY15 nimmt Provisionsabrechnungen zurück und macht damit bereits ermittelte Abrechnungsergebnisse rückgängig. Die Rücknahme wirkt über alle im Lauf enthaltenen Vertriebspartner und verändert die ermittelten Ansprüche. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich eine korrekte Abrechnung zurückgenommen werden, um eine manipulierte Neuabrechnung zu ermöglichen oder Ergebnisse zwischen Perioden zu verschieben. Ohne Begründungspflicht bleibt die Rücknahme in der Vielzahl der Läufe unauffällig.",
+    "threat": "(1) Täter nimmt über CACSPY15 eine korrekte Abrechnung zurück. (2) Die ermittelten Ansprüche entfallen. (3) Eine manipulierte Neuabrechnung wird möglich. (4) Ohne Begründungspflicht geht dies in der Vielzahl der Läufe unter.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9026_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSPY22 löscht Abrechnungspläne, also die Steuerung, welche Abrechnungen zu welchen Terminen für welche Partner durchgeführt werden. Das Löschen eines Plans führt dazu, dass die zugehörigen Abrechnungen nicht mehr ausgeführt werden. Betroffen sind Integrität, Verfügbarkeit und die Assertions Completeness und Cutoff. Missbräuchlich lässt sich ein Abrechnungsplan gelöscht werden, sodass Rückforderungen oder Korrekturabrechnungen nicht mehr entstehen, oder um Spuren einer vorherigen Manipulation zu beseitigen. Da eine unterbliebene Abrechnung keinen Beleg erzeugt, ist die Lücke ohne Soll-Ist-Abgleich der Pläne schwer erkennbar.",
+    "threat": "(1) Täter löscht über CACSPY22 einen Abrechnungsplan. (2) Die zugehörigen Abrechnungen unterbleiben. (3) Rückforderungen/Korrekturen entstehen nicht. (4) Da kein Beleg entsteht, ist die Lücke ohne Plan-Abgleich unsichtbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9027_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACSLOGDIS zeigt die Protokolle des Provisionsmanagements an und dokumentiert damit die durchgeführten Läufe, Fehler und Verarbeitungsergebnisse. Die Protokolle sind das zentrale Nachweismittel für die ordnungsgemäße Durchführung der Provisionsprozesse. Betroffen ist primär die Vertraulichkeit; als Anzeigefunktion besteht keine unmittelbare Wertwirkung. Missbräuchlich lassen sich die Protokolle eingesehen werden, um zu prüfen, ob eigene Eingriffe protokolliert wurden, und das weitere Vorgehen darauf abzustimmen. Das eigenständige Risiko ist begrenzt, der Aufklärungsnutzen für einen Täter jedoch erheblich.",
+    "threat": "(1) Täter ruft die Provisionsprotokolle auf. (2) Er prüft, ob eigene Eingriffe protokolliert wurden. (3) Er passt sein Vorgehen an. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9028_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung transportiert Standardkonditionen über Batch-Input-Verfahren zwischen Systemen beziehungsweise Mandanten und umfasst dabei auch die Mappenverarbeitung über SM35. Konditionen bestimmen die Höhe der Provisionsvergütung, sodass ihr Transport eine Änderung der Vergütungslogik ohne den regulären Pflegeweg bewirken kann. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Completeness. Missbräuchlich lassen sich manipulierte Konditionen über den Transportweg in das Produktivsystem eingebracht werden, wobei die Batch-Input-Verarbeitung die interaktiven Kontrollen der Konditionspflege umgeht. Da der Vorgang technisch als Datenübernahme erscheint, wirkt er unauffälliger als eine direkte Konditionsänderung.",
+    "threat": "(1) Täter erzeugt eine Batch-Input-Mappe mit manipulierten Standardkonditionen. (2) Er verarbeitet sie über SM35. (3) Die Konditionen werden ohne interaktive Kontrolle eingespielt. (4) Der Vorgang erscheint als technische Datenübernahme.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9029_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung transportiert versionsgeführte Daten des Provisionsmanagements zwischen Systemen. Versionsgeführte Daten umfassen die zeitabhängigen Stände von Konditionen und Regelwerken, sodass ihr Transport die geltende Vergütungsbasis verändern kann. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Accuracy und Valuation. Missbräuchlich lassen sich abweichende Datenstände eingespielt werden, sodass Provisionen nach nicht genehmigten Regeln ermittelt werden. Da der Transport außerhalb der fachlichen Pflege erfolgt, umgeht er deren Freigabemechanismen.",
+    "threat": "(1) Täter transportiert abweichende versionsgeführte Datenstände. (2) Die geltende Vergütungsbasis ändert sich. (3) Provisionen werden nach nicht genehmigten Regeln ermittelt. (4) Die fachlichen Freigabemechanismen wurden umgangen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9030_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung ermöglicht die Fremddatenübernahme in das Provisionsmanagement, unter anderem über die Datenübernahmetransaktionen KCLJ, KCLA und KCLP. Über die Übernahme lassen sich externe Daten wie Vermittlungsvorgänge oder Bemessungsgrundlagen massenhaft in das System einspielen, ohne dass sie über die regulären Erfassungswege und deren Prüfungen laufen. Betroffen sind Integrität und die Assertions Existence, Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich fingierte Vermittlungsvorgänge eingespielt werden, die anschließend Provisionsansprüche begründen. Aufgrund der Massenwirkung und der Umgehung der Erfassungskontrollen ist dies einer der wirksamsten Manipulationspfade im Provisionsmanagement.",
+    "threat": "(1) Täter bereitet eine Übernahmedatei mit fingierten Vermittlungsvorgängen vor. (2) Über KCLJ/KCLA spielt er sie ein. (3) Provisionsansprüche entstehen massenhaft ohne reale Vermittlung. (4) Die regulären Erfassungskontrollen wurden umgangen.",
+    "source": [
+      "https://help.sap.com/docs/r/864321b9b3dd487d94c70f6a007b0397/7.40.24/en-US/8c95ef39dcf9de7fe10000000a11402f.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9031_FS-ICM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CACS_APPL_54 berechtigt Provisionssachbearbeiter, steuert also, welche Bearbeiter für welche Vertriebspartner und Vorgänge zuständig sind. Damit wird die fachliche Zugriffssteuerung innerhalb des Provisionsmanagements festgelegt. Betroffen sind Integrität und die Wirksamkeit der Zuständigkeitskontrolle sowie mittelbar alle Assertions des Provisionsprozesses. Missbräuchlich lässt sich die eigene Zuständigkeit auf zusätzliche Partner ausgeweitet werden, sodass Vorgänge bearbeitet werden können, für die keine Zuständigkeit besteht. Als Meta-Kontrolle, die die Wirksamkeit anderer Beschränkungen bestimmt, ist dieser Filter besonders zu kennzeichnen.",
+    "threat": "(1) Täter weitet über CACS_APPL_54 die eigene Zuständigkeit aus. (2) Er kann Vorgänge weiterer Vertriebspartner bearbeiten. (3) Manipulationen werden außerhalb der eigentlichen Zuständigkeit möglich. (4) Die Zuständigkeitskontrolle ist ausgehebelt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9500_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "INSODISP zeigt Versicherungsobjekte an, also die versicherten Risiken mit ihren Vertrags- und Zuordnungsdaten. Die Versicherungsobjekte verbinden Vertrag, Versicherungsnehmer und Forderungen im Vertragskontokorrent. Betroffen ist die Vertraulichkeit; bei natürlichen Personen als Versicherungsnehmer handelt es sich um personenbezogene Daten, teils mit besonderem Schutzbedarf. Missbräuchlich lassen sich Versicherungs- und Vertragsdaten gesichtet und weitergegeben werden. Als Anzeigeberechtigung liegt das Risiko unter dem der Pflege, ist datenschutzrechtlich aber relevant.",
+    "threat": "(1) Täter ruft Versicherungsobjekte auf. (2) Er sichtet Vertrags- und Personendaten. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9501_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "CFCSTART startet den Clarification Controller, über den ungeklärte Zahlungs- und Buchungsvorgänge bearbeitet werden. In der Klärung wird entschieden, welchem Konto und welchem Posten ein unklarer Zahlungseingang zugeordnet wird. Betroffen sind Integrität und die Assertions Accuracy, Occurrence und Completeness. Missbräuchlich lässt sich ein ungeklärter Zahlungseingang einem falschen Konto zugeordnet werden, sodass eine Forderung ohne realen Zahlungsbezug ausgeglichen wird. Da Klärfälle definitionsgemäß unklar sind, ist die Zuordnungsentscheidung besonders kontrollbedürftig.",
+    "threat": "(1) Täter öffnet den Clarification Controller. (2) Er ordnet einen unklaren Zahlungseingang einem gewählten Konto zu. (3) Eine Forderung wird ohne realen Zahlungsbezug ausgeglichen. (4) Die Unklarheit des Falls verdeckt die Fehlzuordnung.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9502_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP04 bucht Posten im Vertragskontokorrent aus, verzichtet also auf offene Forderungen und bucht sie ergebniswirksam ab. Die Ausbuchung beendet die Forderung endgültig und wirkt unmittelbar auf Forderungsbestand und Ergebnis. Betroffen sind Integrität und die Assertions Completeness, Valuation und Occurrence. Missbräuchlich lässt sich die Forderung gegenüber einem gesteuerten Kunden ausgebucht werden, sodass dieser von seiner Zahlungspflicht befreit wird, oder eine durch Unterschlagung entstandene Lücke ergebniswirksam beseitigt werden. Aufgrund der endgültigen Wirkung sollte die Ausbuchung wertgrenzenabhängig genehmigungspflichtig sein.",
+    "threat": "(1) Täter bucht in FP04 die Forderung eines gesteuerten Kunden aus. (2) Die Forderung entfällt ergebniswirksam. (3) Der Kunde wird von der Zahlungspflicht befreit bzw. eine Lücke wird beseitigt. (4) Ohne Wertgrenzen und Genehmigung bleibt dies unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9503_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP05 bearbeitet Zahlungsstapel, also die Erfassung und Zuordnung eingehender Zahlungen zu Konten und Posten. Über den Zahlungsstapel wird entschieden, welche Zahlung welchem Kunden und welcher Forderung gutgeschrieben wird. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine Zahlung einem falschen Konto zugeordnet werden, sodass die Forderung eines gesteuerten Kunden ohne dessen Zahlung ausgeglichen wird, während die reale Zahlung anderweitig verbleibt. Ohne Bankabstimmung bleibt die Differenz zunächst verborgen.",
+    "threat": "(1) Täter ordnet im Zahlungsstapel eine Zahlung einem falschen Konto zu. (2) Die Forderung des gesteuerten Kunden erscheint beglichen. (3) Die reale Zahlung verbleibt anderweitig. (4) Ohne Bankabstimmung bleibt die Differenz verborgen.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9504_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP05CLE_CALL ruft die Klärungsbearbeitung des Zahlungsstapels über einen Transaktionsaufruf auf. Fachlich entspricht dies der Zuordnung unklarer Zahlungen zu Konten und Posten, wobei der Aufruf über CALL TRANSACTION erfolgt und damit gegebenenfalls außerhalb der regulären Menüführung liegt. Betroffen sind Integrität und die Assertions Accuracy, Occurrence und Completeness. Missbräuchlich lässt sich ein Klärfall so zugeordnet werden, dass eine Forderung ohne realen Zahlungsbezug ausgeglichen wird. Der Aufrufweg über CALL TRANSACTION sollte zusätzlich daraufhin geprüft werden, ob die Berechtigungsprüfung der aufgerufenen Transaktion vollständig greift.",
+    "threat": "(1) Täter ruft die Klärungsbearbeitung auf. (2) Er ordnet einen Klärfall einem gewählten Posten zu. (3) Eine Forderung wird ohne realen Zahlungsbezug ausgeglichen. (4) Der Aufruf über CALL TRANSACTION kann zusätzliche Prüflücken aufweisen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9505_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP06 dient der Kontenpflege im Vertragskontokorrent, also der manuellen Zuordnung und Umgliederung offener Posten sowie dem Ausgleich innerhalb eines Kontos. Über die Kontenpflege lassen sich Posten gegeneinander ausgeglichen und Zuordnungen verändert, ohne dass ein Zahlungsvorgang stattfindet. Betroffen sind Integrität und die Assertions Completeness, Accuracy und Occurrence. Missbräuchlich lassen sich Forderungen gegen unberechtigte Gutschriften ausgeglichen oder Posten so umgegliedert werden, dass Fehlbeträge kaschiert werden. Da kein Zahlungsfluss beteiligt ist, fehlt eine natürliche Gegenkontrolle über die Bank.",
+    "threat": "(1) Täter gleicht in FP06 eine Forderung gegen eine unberechtigte Gutschrift aus. (2) Der Posten erscheint beglichen. (3) Ein Fehlbetrag wird kaschiert. (4) Da kein Zahlungsfluss beteiligt ist, fehlt die Bankkontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9506_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP07 nimmt Ausgleiche im Vertragskontokorrent zurück und macht damit bereits ausgeglichene Posten wieder offen. Die Rücknahme verändert den Forderungsbestand und kann bereits angestoßene Zahlungsvorgänge erneut auslösen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein Ausgleich zurückgenommen werden, um Posten neu und vorteilhaft zuzuordnen oder eine erneute Auszahlung anzustoßen. Aufgrund der Zahlungswirkung sollte die Rücknahme begründungspflichtig sein.",
+    "threat": "(1) Täter nimmt in FP07 einen Ausgleich zurück. (2) Der Posten ist wieder offen. (3) Er ordnet ihn neu zu bzw. löst eine Auszahlung aus. (4) Ohne Begründungspflicht unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9507_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP08 storniert Belege im Vertragskontokorrent und nimmt damit gebuchte Forderungen oder Zahlungen zurück. Der Storno wirkt unmittelbar auf Forderungsbestand und Ergebnis. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein berechtigter Beleg storniert werden, sodass eine Forderung gegenüber einem gesteuerten Kunden entfällt, gegebenenfalls gefolgt von einer manipulierten Neubuchung. Ohne Begründungspflicht bleibt der Storno in der Belegmenge unauffällig.",
+    "threat": "(1) Täter storniert in FP08 einen berechtigten Beleg. (2) Die Forderung entfällt. (3) Ggf. folgt eine manipulierte Neubuchung. (4) In der Belegmenge geht der Storno unter.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9508_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP08M führt den Massenstorno von Belegen durch und nimmt damit zahlreiche Buchungen in einem Lauf zurück. Der Lauf wirkt über große Bestände und kann Forderungen und Ergebnis erheblich verändern. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich eine Vielzahl von Belegen auf einmal storniert werden, wobei ein gezielt gewünschter Storno in der Masse untergeht. Die Massenwirkung erschwert die Einzelfallprüfung erheblich.",
+    "threat": "(1) Täter startet FP08M mit passender Selektion. (2) Zahlreiche Belege werden storniert. (3) Der gezielt gewünschte Storno geht in der Masse unter. (4) Die Einzelfallprüfung ist erschwert.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9509_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP09 bearbeitet Rückläufer, also fehlgeschlagene Lastschriften und Zahlungsrückgaben der Bank. In der Rückläuferbearbeitung wird entschieden, wie mit der zurückgegebenen Zahlung verfahren wird, etwa hinsichtlich Wiederholung, Gebühren und Mahnsteuerung. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Accuracy. Missbräuchlich lässt sich ein Rückläufer so bearbeitet werden, dass Rücklastschriftgebühren entfallen oder die Forderung nicht erneut eingezogen wird, zugunsten eines gesteuerten Kunden. Da Rückläufer in großer Zahl anfallen, fällt die Einzelentscheidung nicht auf.",
+    "threat": "(1) Täter bearbeitet einen Rückläufer zugunsten eines Kunden. (2) Gebühren entfallen bzw. der Einzug wird nicht wiederholt. (3) Die Forderung bleibt uneingezogen. (4) In der Vielzahl der Rückläufer fällt dies nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9510_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP22 führt den Massenstorno von Belegen durch und nimmt damit zahlreiche gebuchte Vorgänge in einem Lauf zurück. Wie beim Einzelstorno wirkt dies auf Forderungsbestand und Ergebnis, jedoch mit erheblich größerer Reichweite. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich ein gezielter Storno in einem Massenlauf verborgen werden. Vermeintliche Diskrepanz: FP22 und FP08M (9508) sind beide als Massenstorno von Belegen beschrieben; die fachliche Abgrenzung beider Einträge sollte geprüft und gegebenenfalls präzisiert werden.",
+    "threat": "(1) Täter startet FP22 mit passender Selektion. (2) Zahlreiche Belege werden storniert. (3) Ein gezielter Storno verbirgt sich im Massenlauf. (4) Forderungsbestand und Ergebnis verändern sich erheblich.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9511_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP25 bearbeitet Scheckstapel, also die Erfassung und Verarbeitung eingehender Schecks. Die Scheckbearbeitung ordnet Zahlungsmittel den Kundenkonten zu und ist aufgrund des physischen Zahlungsmittels besonders manipulationsanfällig. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Scheck einem falschen Konto zugeordnet oder nicht erfasst werden, sodass die Zahlung anderweitig verbleibt. Da Schecks außerhalb des Systems physisch vorliegen, ist der Abgleich zwischen physischem Bestand und Erfassung die entscheidende Kontrolle.",
+    "threat": "(1) Täter erfasst einen eingehenden Scheck nicht bzw. ordnet ihn falsch zu. (2) Die Zahlung erscheint nicht auf dem richtigen Konto. (3) Der physische Scheck verbleibt anderweitig. (4) Ohne Abgleich physischer Bestand/Erfassung bleibt dies verborgen.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9512_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP35 bearbeitet Kreditkartenstapel, also die Verarbeitung von Kreditkartenzahlungen im Vertragskontokorrent. Die Bearbeitung ordnet die Zahlungen den Kundenkonten zu und verarbeitet dabei Zahlungsmitteldaten. Betroffen sind Integrität und die Assertions Occurrence und Accuracy; zusätzlich besteht ein Datenschutz- und Compliance-Bezug hinsichtlich der Kreditkartendaten. Missbräuchlich lassen sich Zahlungen falsch zugeordnet oder Kartendaten unbefugt eingesehen werden. Neben dem finanziellen besteht damit ein erhebliches Datenschutzrisiko.",
+    "threat": "(1) Täter bearbeitet den Kreditkartenstapel. (2) Er ordnet Zahlungen falsch zu bzw. sichtet Kartendaten. (3) Forderungen werden falsch ausgeglichen bzw. Daten abgegriffen. (4) Neben dem finanziellen entsteht ein Datenschutzschaden.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9513_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP40 transferiert Posten, verschiebt also Forderungen zwischen Konten oder Vertragskonten. Der Transfer verändert die Zuordnung einer Forderung zu einem Geschäftspartner, ohne dass ein Zahlungsvorgang stattfindet. Betroffen sind Integrität und die Assertions Accuracy, Classification und Completeness. Missbräuchlich lässt sich eine Forderung auf ein Konto transferiert werden, das nicht beigetrieben wird, sodass sie faktisch nicht mehr eingezogen wird. Da kein Zahlungsfluss beteiligt ist, fehlt die Gegenkontrolle über die Bank.",
+    "threat": "(1) Täter transferiert in FP40 eine Forderung auf ein anderes Konto. (2) Die Forderung verlässt den regulären Einzugsprozess. (3) Sie wird faktisch nicht mehr beigetrieben. (4) Ohne Zahlungsfluss fehlt die Gegenkontrolle.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9514_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP45 bearbeitet Zahlungsauftragsstapel, also die Sammlung der zur Auszahlung anstehenden Zahlungsaufträge. Über den Stapel wird gesteuert, welche Auszahlungen mit welchen Beträgen und Empfängern ausgeführt werden. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Zahlungsauftrag hinzugefügt oder verändert werden, sodass eine Auszahlung an eine gesteuerte Stelle erfolgt. Aufgrund der unmittelbaren Zahlungswirkung ist eine unabhängige Freigabe vor Ausführung die entscheidende Kontrolle.",
+    "threat": "(1) Täter fügt dem Zahlungsauftragsstapel einen Auftrag hinzu bzw. ändert ihn. (2) Der Stapel wird ausgeführt. (3) Eine Auszahlung erfolgt an die gesteuerte Stelle. (4) Ohne unabhängige Freigabe fehlt die Kontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9515_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FP50 bearbeitet den Stapel manueller Ausgangsschecks, also die außerhalb des automatischen Zahlungslaufs erstellten Schecks. Manuelle Schecks umgehen die Kontrollen des regulären Zahlungslaufs und sind an einen physischen Zahlungsträger gebunden. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein manueller Scheck zugunsten einer gesteuerten Stelle erstellt werden, ohne dass die Freigabemechanismen des Zahlungslaufs greifen. Die Kombination aus manueller Erstellung und physischem Zahlungsmittel macht diesen Vorgang besonders betrugsanfällig.",
+    "threat": "(1) Täter erstellt in FP50 einen manuellen Ausgangsscheck. (2) Die Kontrollen des automatischen Zahlungslaufs greifen nicht. (3) Der Scheck wird zugunsten einer gesteuerten Stelle ausgestellt. (4) Das physische Zahlungsmittel erschwert die Nachverfolgung.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9516_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPAY1A legt Zahlungsfestlegungen an, also die verbindliche Anweisung, einen bestimmten Betrag an einen bestimmten Empfänger auszuzahlen. Die Zahlungsfestlegung ist die Grundlage der späteren Auszahlung und bestimmt Empfänger, Betrag und Fälligkeit. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Existence. Missbräuchlich lässt sich eine Zahlungsfestlegung zugunsten einer gesteuerten Stelle angelegt werden, die anschließend über den Zahlungslauf ausgeführt wird. Ohne unabhängige Freigabe entsteht ein direkter Hebel für Mittelabfluss.",
+    "threat": "(1) Täter legt in FPAY1A eine Zahlungsfestlegung zugunsten einer gesteuerten Stelle an. (2) Der Zahlungslauf führt sie aus. (3) Mittel fließen ab. (4) Ohne unabhängige Freigabe fehlt die Kontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9517_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPAY2 ändert bestehende Zahlungsfestlegungen, insbesondere Betrag, Empfänger und Fälligkeit. Eine Änderung nach der Anlage kann eine bereits geprüfte Festlegung inhaltlich verschieben. Betroffen sind Integrität und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich der Empfänger oder Betrag einer freigegebenen Festlegung nachträglich geändert werden, sodass die Auszahlung abweichend erfolgt. Greift keine erneute Freigabeprüfung nach Änderung, ist die vorgelagerte Kontrolle wirkungslos.",
+    "threat": "(1) Täter ändert in FPAY2 Empfänger oder Betrag einer freigegebenen Festlegung. (2) Eine erneute Freigabeprüfung erfolgt nicht. (3) Die Auszahlung erfolgt abweichend. (4) Die vorgelagerte Freigabe ist wirkungslos.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9518_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPAY3 zeigt Zahlungsfestlegungen an, also die geplanten Auszahlungen mit Empfänger, Betrag und Fälligkeit. Die Anzeige gibt Einblick in bevorstehende Zahlungsströme. Betroffen ist die Vertraulichkeit; als Anzeigeberechtigung besteht keine unmittelbare Wertwirkung. Missbräuchlich lassen sich Informationen über Zahlungsströme gesichtet werden, etwa zur Vorbereitung gezielter Eingriffe oder zur Weitergabe an Dritte. Das eigenständige Risiko ist begrenzt.",
+    "threat": "(1) Täter ruft Zahlungsfestlegungen auf. (2) Er sichtet bevorstehende Zahlungsströme. (3) Die Informationen dienen der Vorbereitung weiterer Eingriffe. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9519_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPAY8 storniert Zahlungsfestlegungen und verhindert damit die geplante Auszahlung. Der Storno greift in einen bereits angelegten Auszahlungsvorgang ein. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence und Completeness. Missbräuchlich lässt sich eine berechtigte Auszahlung, etwa eine Leistung an einen Versicherungsnehmer, storniert werden, oder ein Vorgang so verändert werden, dass anschließend eine abweichende Zahlung erfolgt. Ohne Kontrolle der Stornos bleibt dies unauffällig.",
+    "threat": "(1) Täter storniert in FPAY8 eine berechtigte Zahlungsfestlegung. (2) Die Auszahlung unterbleibt bzw. wird neu angelegt. (3) Eine Leistung wird nicht oder abweichend ausgezahlt. (4) Ohne Kontrolle der Stornos unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9520_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPAY9 storniert Postenvormerkungen und nimmt damit die Kennzeichnung von Posten für einen bestimmten Verarbeitungsschritt zurück. Die Vormerkung steuert, welche Posten in nachgelagerte Prozesse wie Zahlung oder Mahnung einbezogen werden. Betroffen sind Integrität und die Assertions Completeness und Occurrence. Missbräuchlich lässt sich eine Vormerkung storniert werden, sodass ein Posten aus einem Verarbeitungslauf herausfällt, etwa aus dem Forderungseinzug. Da kein Beleg über den unterbliebenen Schritt entsteht, ist die Lücke schwer erkennbar.",
+    "threat": "(1) Täter storniert in FPAY9 eine Postenvormerkung. (2) Der Posten fällt aus dem Verarbeitungslauf. (3) Forderungseinzug oder Mahnung unterbleiben. (4) Da kein Beleg entsteht, ist die Lücke schwer erkennbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9521_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPB0 bucht Zahlungen im Vertragskontokorrent und ordnet damit Zahlungsvorgänge den Konten und Posten der Versicherungsnehmer zu. Die Zahlungsbuchung bestimmt, welche Forderungen als beglichen gelten, und wirkt unmittelbar auf Bank- und Forderungsbestände. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Zahlungseingang vorgetäuscht oder falsch zugeordnet werden, sodass eine Forderung ohne realen Geldfluss ausgeglichen und damit eine Unterschlagung verdeckt wird. Ohne Bankabstimmung bleibt die Differenz zunächst verborgen.",
+    "threat": "(1) Täter bucht in FPB0 einen fingierten Zahlungseingang. (2) Die Forderung erscheint ausgeglichen. (3) Der reale Geldeingang fehlt. (4) Ohne Bankabstimmung bleibt die Lücke verborgen.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9522_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPCJ führt das Kassenbuch im Vertragskontokorrent und erfasst damit Bar-Ein- und -Auszahlungen. Kassenvorgänge sind bargeldnah und damit besonders betrugsanfällig, da der physische Bestand nur über die Kassenzählung mit der Buchung abgeglichen werden kann. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine fingierte Barauszahlung erfasst oder eine Einzahlung nicht gebucht werden, sodass Bargeld entzogen wird, während der Kassenbestand rechnerisch stimmig bleibt. Die regelmäßige unabhängige Kassenzählung ist hier die entscheidende Kontrolle.",
+    "threat": "(1) Täter erfasst im Kassenbuch eine fingierte Barauszahlung bzw. unterlässt eine Einzahlungsbuchung. (2) Der Kassenbestand wird rechnerisch angepasst. (3) Real entzogenes Bargeld bleibt buchhalterisch unauffällig. (4) Ohne unabhängige Kassenzählung fällt die Differenz nicht auf.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9523_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPCPL bearbeitet Klärfälle aus dem Zahlungsstapel, ordnet also unklare Zahlungseingänge Konten und Posten zu. In der Klärung entscheidet der Bearbeiter, welchem Vertragskonto eine Zahlung gutgeschrieben wird. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine unklare Zahlung dem Konto eines gesteuerten Kunden zugeordnet werden, sodass dessen Forderung ohne dessen Zahlung ausgeglichen wird. Da Klärfälle definitionsgemäß unklar sind, fehlt eine natürliche Plausibilitätskontrolle.",
+    "threat": "(1) Täter bearbeitet einen Zahlungs-Klärfall. (2) Er ordnet die Zahlung dem Konto eines gesteuerten Kunden zu. (3) Dessen Forderung erscheint beglichen. (4) Die Unklarheit des Falls verdeckt die Fehlzuordnung.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9524_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPCRL bearbeitet Klärfälle aus Rückläufern, also fehlgeschlagenen Lastschriften und Zahlungsrückgaben. In der Klärung wird entschieden, wie mit der zurückgegebenen Zahlung und den daraus entstehenden Gebühren verfahren wird. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Accuracy. Missbräuchlich lässt sich ein Rückläufer so geklärt werden, dass Gebühren entfallen oder die Forderung nicht erneut eingezogen wird, zugunsten eines gesteuerten Kunden. In der Vielzahl der Rückläufer fällt die Einzelentscheidung nicht auf.",
+    "threat": "(1) Täter klärt einen Rückläufer zugunsten eines Kunden. (2) Gebühren entfallen bzw. der Einzug wird nicht wiederholt. (3) Die Forderung bleibt uneingezogen. (4) In der Vielzahl der Rückläufer fällt dies nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9525_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPCRPO bearbeitet Klärfälle zu Guthaben, entscheidet also über die Verwendung von Guthaben auf Kundenkonten. Über die Klärung wird bestimmt, ob ein Guthaben verrechnet, ausgezahlt oder umgebucht wird. Betroffen sind Integrität und die Assertions Occurrence, Completeness und Accuracy. Missbräuchlich lässt sich ein Guthaben zur Auszahlung an eine gesteuerte Bankverbindung gebracht oder einem anderen Konto zugeordnet werden. Aufgrund der möglichen Auszahlungswirkung ist die Guthabenklärung besonders kontrollbedürftig.",
+    "threat": "(1) Täter klärt einen Guthabenfall. (2) Er bestimmt die Auszahlung an eine gewählte Bankverbindung. (3) Das Guthaben fließt an die gesteuerte Stelle. (4) Ohne Kontrolle der Guthabenverwendung bleibt dies unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9526_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPE1 bucht Belege im Vertragskontokorrent und begründet damit Forderungen oder Gutschriften gegenüber Vertragspartnern. Die Belegbuchung ist der zentrale wertbegründende Vorgang im FI-CA und wirkt unmittelbar auf Forderungsbestand und Ergebnis. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine unberechtigte Gutschrift zugunsten eines gesteuerten Kunden gebucht werden, sodass dessen Forderung entfällt, oder eine fingierte Forderung erzeugt werden. Ohne Funktionstrennung zu Ausgleich und Zahlung entfällt die Gegenkontrolle.",
+    "threat": "(1) Täter bucht in FPE1 eine unberechtigte Gutschrift bzw. fingierte Forderung. (2) Der Posten wirkt auf den Forderungsbestand. (3) Eine Forderung entfällt bzw. entsteht ohne Grundlage. (4) Ohne Funktionstrennung fehlt die Gegenkontrolle.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9527_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPE2 ändert bestehende Belege im Vertragskontokorrent, etwa Zuordnungen, Fälligkeiten oder Steuerungsangaben. Änderungen wirken auf die Behandlung des Postens in Mahnung, Zahlung und Ausgleich. Betroffen sind Integrität und die Assertions Accuracy und Completeness. Missbräuchlich lässt sich die Fälligkeit oder Mahnsteuerung eines Postens so geändert werden, dass er dem Einzugsprozess entzogen wird. Da der Betrag unverändert bleibt, wirkt die Änderung unauffällig.",
+    "threat": "(1) Täter ändert in FPE2 Fälligkeit oder Mahnsteuerung eines Postens. (2) Der Posten fällt aus dem Einzugsprozess. (3) Die Forderung wird nicht beigetrieben. (4) Da der Betrag unverändert bleibt, wirkt die Änderung unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9528_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPE2M führt Massenänderungen an Belegen durch und verändert damit zahlreiche Posten in einem Lauf, etwa Fälligkeiten, Mahnsperren oder Zuordnungen. Die Massenwirkung macht den Eingriff erheblich weitreichender als die Einzeländerung. Betroffen sind Integrität und die Assertions Accuracy, Completeness und Cutoff. Missbräuchlich lässt sich eine große Zahl von Posten mit Mahnsperren versehen oder in der Fälligkeit verschoben werden, sodass Forderungen flächig dem Einzug entzogen werden. Ein gezielt gewünschter Einzelfall geht dabei in der Masse unter.",
+    "threat": "(1) Täter startet FPE2M mit passender Selektion. (2) Zahlreiche Posten erhalten Mahnsperren bzw. neue Fälligkeiten. (3) Forderungen werden flächig dem Einzug entzogen. (4) Der gezielte Einzelfall geht in der Masse unter.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9529_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPE3 zeigt Belege im Vertragskontokorrent an, also Forderungen, Zahlungen und Ausgleichsvorgänge der Vertragspartner. Die Belegdaten enthalten wirtschaftlich und personenbezogen sensible Informationen. Betroffen ist die Vertraulichkeit; als Anzeigeberechtigung besteht keine unmittelbare Wertwirkung. Missbräuchlich lassen sich Kunden- und Forderungsdaten gesichtet und weitergegeben werden. Das eigenständige Risiko liegt deutlich unter dem der Buchungsberechtigung.",
+    "threat": "(1) Täter ruft Belege im Vertragskontokorrent auf. (2) Er sichtet Forderungs- und Zahlungsdaten. (3) Die Informationen werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9530_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPI1 bearbeitet die Verzinsung einzelner Posten, ermittelt und bucht also Verzugs- oder Guthabenzinsen für einen konkreten Vorgang. Die Einzelbearbeitung erlaubt den gezielten Zugriff auf einen bestimmten Kunden. Betroffen sind Integrität und die Assertions Accuracy, Occurrence und Valuation. Missbräuchlich lässt sich die Verzinsung für einen gesteuerten Kunden ausgesetzt oder zu niedrig angesetzt werden, sodass ihm Verzugszinsen erlassen werden. Die Zielgenauigkeit macht die Einzelbearbeitung für Missbrauch besonders geeignet.",
+    "threat": "(1) Täter bearbeitet in FPI1 die Verzinsung eines Postens. (2) Er setzt die Zinsen aus bzw. reduziert sie. (3) Dem gesteuerten Kunden werden Verzugszinsen erlassen. (4) Der gezielte Einzelzugriff fällt in der Masse nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9531_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPINTM1 führt den Zinslauf im Vertragskontokorrent durch und ermittelt massenhaft Verzugs- oder Guthabenzinsen für die selektierten Konten. Der Lauf ist wertwirksam und betrifft in einem Durchgang große Kundenbestände. Betroffen sind Integrität und die Assertions Accuracy, Completeness, Occurrence und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf mit eingeschränkter Selektion oder abweichenden Parametern ausgeführt werden, sodass Zinsansprüche nicht entstehen oder überhöht berechnet werden. Die Massenwirkung erschwert die Einzelfallprüfung erheblich.",
+    "threat": "(1) Täter startet FPINTM1 mit eingeschränkter Selektion/abweichenden Parametern. (2) Zinsansprüche entstehen nicht bzw. werden falsch ermittelt. (3) Erträge entgehen bzw. Kunden werden falsch belastet. (4) Die Massenwirkung verdeckt den Einzelfall.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9532_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPL9 zeigt den Kontostand eines Vertragspartners an, also die offenen Posten, Zahlungen und Salden. Die Kontostandsanzeige gibt einen vollständigen Überblick über die finanzielle Beziehung zum Kunden. Betroffen ist die Vertraulichkeit; bei natürlichen Personen handelt es sich um personenbezogene Finanzdaten. Missbräuchlich lassen sich Kontostände gesichtet und weitergegeben werden, etwa zur Vorbereitung gezielter Eingriffe. Als Anzeigeberechtigung ist das unmittelbare Risiko begrenzt.",
+    "threat": "(1) Täter ruft in FPL9 Kontostände auf. (2) Er sichtet offene Posten und Salden. (3) Die Informationen dienen der Vorbereitung weiterer Eingriffe. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9533_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPM4 zeigt die Rückläuferhistorie an, dokumentiert also fehlgeschlagene Lastschriften und Zahlungsrückgaben je Konto. Die Historie ist ein Indikator für Zahlungsverhalten und Bonität des Kunden. Betroffen ist die Vertraulichkeit personenbezogener Bonitätsdaten. Missbräuchlich lassen sich Informationen über das Zahlungsverhalten gesichtet und weitergegeben werden. Als Anzeigeberechtigung ist das unmittelbare Risiko begrenzt, der Datenschutzbezug jedoch relevant.",
+    "threat": "(1) Täter ruft die Rückläuferhistorie auf. (2) Er sichtet Zahlungsverhalten und Bonitätsindikatoren. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9534_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPP1 legt Vertragspartner im Vertragskontokorrent an, also die Stammdaten des Geschäftspartners einschließlich Adress- und Zahlungsangaben. Der Vertragspartner ist Grundlage für Vertragskonto, Forderungen und Zahlungsverkehr. Betroffen sind Integrität und die Assertions Existence und Accuracy; datenschutzrechtlich handelt es sich um personenbezogene Daten. Missbräuchlich lässt sich ein fiktiver Vertragspartner angelegt werden, als Basis für Scheinvorgänge oder umgeleitete Auszahlungen. Ohne unabhängige Stammdatenkontrolle bleibt dies unbemerkt.",
+    "threat": "(1) Täter legt in FPP1 einen fiktiven Vertragspartner an. (2) Vertragskonto und Vorgänge werden zugeordnet. (3) Scheinvorgänge oder Auszahlungen laufen darüber. (4) Ohne Stammdatenkontrolle bleibt dies unbemerkt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9535_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPP2 ändert bestehende Vertragspartnerdaten, einschließlich Adress- und Identifikationsangaben. Änderungen wirken auf Rechnungsversand, Mahnwesen und Zahlungsverkehr. Betroffen sind Integrität, Vertraulichkeit und die Assertions Accuracy und Existence. Missbräuchlich lassen sich Partnerdaten so geändert werden, dass Korrespondenz und Mahnungen den Kunden nicht mehr erreichen oder ein Partner nicht mehr eindeutig identifizierbar ist. Damit lassen sich Forderungsprozesse unterlaufen.",
+    "threat": "(1) Täter ändert in FPP2 Adress-/Identifikationsdaten. (2) Mahnungen und Korrespondenz erreichen den Kunden nicht. (3) Der Forderungsprozess läuft ins Leere. (4) Im großen Bestand fällt die Änderung nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9536_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPP3 zeigt Vertragspartnerdaten an, also Adress-, Zahlungs- und Identifikationsangaben. Die Daten sind personenbezogen und wirtschaftlich sensibel. Betroffen ist die Vertraulichkeit im Sinne der DSGVO. Missbräuchlich lassen sich Partnerdaten gesichtet und weitergegeben werden. Als Anzeigeberechtigung ist das unmittelbare Risiko begrenzt.",
+    "threat": "(1) Täter ruft Vertragspartnerdaten auf. (2) Er sichtet personenbezogene und Zahlungsdaten. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9537_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPPCDS führt die Abrechnung von Zahlkarten (PCARD) durch und verarbeitet damit die über Karten abgewickelten Zahlungsvorgänge. Der Lauf ist zahlungswirksam und verarbeitet Zahlungsmitteldaten. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness; zusätzlich besteht ein Datenschutz- und Compliance-Bezug hinsichtlich der Kartendaten. Missbräuchlich oder fehlerhaft lässt sich die Abrechnung so ausgeführt werden, dass Vorgänge falsch zugeordnet oder nicht abgerechnet werden. Neben dem finanziellen besteht ein Datenschutzrisiko.",
+    "threat": "(1) Täter führt die PCARD-Abrechnung abweichend aus. (2) Kartenvorgänge werden falsch zugeordnet bzw. nicht abgerechnet. (3) Forderungen entstehen fehlerhaft. (4) Zusätzlich besteht Zugriff auf sensible Kartendaten.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9538_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPR1 legt Ratenpläne an, stundet also offene Forderungen in Teilbeträgen. Der Ratenplan setzt die reguläre Fälligkeit außer Kraft und nimmt die Forderung aus dem Mahn- und Inkassoprozess heraus. Betroffen sind Integrität und die Assertions Completeness, Valuation und Cutoff. Missbräuchlich lässt sich für einen gesteuerten Kunden ein sehr langer oder niedrig dotierter Ratenplan angelegt werden, sodass die Forderung faktisch nicht beigetrieben wird. Da der Posten formal offen bleibt, fällt die fehlende Beitreibung nicht unmittelbar auf.",
+    "threat": "(1) Täter legt für einen Kunden einen sehr langen Ratenplan an. (2) Die Forderung wird gestundet. (3) Sie fällt aus dem Mahn-/Inkassoprozess. (4) Der Posten bleibt formal offen, wird aber nicht beigetrieben.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9539_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPR2 ändert bestehende Ratenpläne, etwa Ratenhöhe und Fälligkeiten. Änderungen verschieben die Fälligkeit weiter in die Zukunft und beeinflussen Liquidität und Mahnprozess. Betroffen sind Integrität und die Assertions Completeness, Valuation und Cutoff. Missbräuchlich lässt sich ein Ratenplan wiederholt verlängert werden, sodass eine Forderung dauerhaft dem Mahnwesen entzogen bleibt. Ohne Überwachung der Ratenplanänderungen bleibt die faktische Nichtbeitreibung unauffällig.",
+    "threat": "(1) Täter verlängert wiederholt einen Ratenplan. (2) Die Fälligkeit verschiebt sich weiter. (3) Die Forderung wird dauerhaft nicht eingezogen. (4) Ohne Überwachung der Änderungen fällt dies nicht auf.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9540_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPRECL bucht Umgliederungen im Vertragskontokorrent, verschiebt also Posten zwischen Konten, Hauptbuchpositionen oder Ausweiskategorien. Die Umgliederung verändert den Ausweis von Forderungen, ohne dass eine Zahlung stattfindet. Betroffen sind Integrität und die Assertions Classification, Presentation und Completeness. Missbräuchlich lässt sich eine zweifelhafte Forderung in eine unauffällige Kategorie umgegliedert werden, sodass Wertberichtigungsbedarf oder Altersstruktur verschleiert werden. Da kein Zahlungsfluss beteiligt ist, fehlt eine natürliche Gegenkontrolle.",
+    "threat": "(1) Täter gliedert eine zweifelhafte Forderung um. (2) Sie erscheint in einer unauffälligen Kategorie. (3) Wertberichtigungsbedarf/Altersstruktur werden verschleiert. (4) Ohne Zahlungsfluss fehlt die Gegenkontrolle.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9541_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPTCRPO bearbeitet Guthaben auf Kundenkonten und entscheidet über deren Verrechnung, Auszahlung oder Umbuchung. Die Guthabenbearbeitung kann unmittelbar zu einer Auszahlung an den Kunden führen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Guthaben zur Auszahlung an eine gesteuerte Bankverbindung gebracht werden, insbesondere in Verbindung mit einer zuvor geänderten Bankverbindung im Vertragskonto. Aufgrund der Auszahlungswirkung ist eine unabhängige Kontrolle erforderlich.",
+    "threat": "(1) Täter bearbeitet ein Kundenguthaben. (2) Er veranlasst die Auszahlung. (3) Der Betrag fließt an die hinterlegte (ggf. manipulierte) Bankverbindung. (4) Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9542_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPW1 führt die Fremdwährungsbewertung im Vertragskontokorrent durch und bewertet damit offene Posten in Fremdwährung zum Stichtagskurs neu. Die Bewertung bestimmt den Bilanzansatz der Forderungen und ist unmittelbar abschlussrelevant. Betroffen sind Integrität und die Assertions Valuation, Accuracy und Cutoff. Missbräuchlich oder fehlerhaft lässt sich die Bewertung mit manipulierten Kursen oder abweichenden Parametern durchgeführt werden, sodass Bewertungsgewinne oder -verluste und damit das Ergebnis gesteuert werden. In Verbindung mit der Kurspflege entsteht ein zusammenhängender Manipulationspfad.",
+    "threat": "(1) Täter führt FPW1 mit manipulierten Kursen/Parametern aus. (2) Fremdwährungsposten werden neu bewertet. (3) Bewertungsergebnis und Bilanzansatz verschieben sich. (4) In der Masse der Bewertungsbuchungen fällt dies nicht auf.",
+    "source": [
+      "https://expressgrc.com/streamline-sap-fraud-detection-step-by-step-guide-to-maintaining-exchange-rates-manually-in-tcurr-table/",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9543_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPW2 zeigt beziehungsweise bearbeitet die Protokollsätze der Fremdwährungsbewertung und dokumentiert damit die durchgeführten Bewertungsläufe. Die Protokolle sind das Nachweismittel für die ordnungsgemäße Bewertung. Betroffen sind Nachvollziehbarkeit und Vertraulichkeit sowie mittelbar die Assertion Valuation. Missbräuchlich lassen sich die Protokolle eingesehen werden, um zu prüfen, ob eine manipulierte Bewertung dokumentiert wurde, beziehungsweise Bewertungssätze zurückgenommen werden. Der Nutzen für einen Täter liegt vor allem in der Aufklärung über die Nachweislage.",
+    "threat": "(1) Täter ruft die Protokollsätze der Bewertung auf bzw. nimmt sie zurück. (2) Er prüft die Nachweislage der Bewertung. (3) Er passt sein Vorgehen an bzw. beseitigt Sätze. (4) Die Nachvollziehbarkeit der Bewertung leidet.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9544_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPW3 führt eventgesteuerte Umkehrbuchungen durch und nimmt damit automatisiert Buchungen zurück, die an bestimmte Ereignisse gekoppelt sind. Die Umkehrbuchung wirkt auf bereits gebuchte Sachverhalte und verändert Forderungsbestand und Ergebnis. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich der Vorgang so gesteuert werden, dass berechtigte Buchungen zurückgenommen werden, etwa zur Beseitigung belastender Vorgänge. Da die Umkehrung automatisiert erfolgt, wirkt sie unauffälliger als ein manueller Storno.",
+    "threat": "(1) Täter steuert eine eventgesteuerte Umkehrbuchung. (2) Berechtigte Buchungen werden automatisiert zurückgenommen. (3) Belastende Vorgänge verschwinden. (4) Die Automatik wirkt unauffälliger als ein manueller Storno.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9545_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "FPY1 führt den Zahlungs- beziehungsweise Lastschriftlauf im Vertragskontokorrent durch und erzeugt die Zahlungsdatei zur Übermittlung an die Bank. Der Lauf ist der unmittelbar zahlungswirksame Schritt und betrifft massenhaft Konten, sowohl beim Einzug offener Forderungen als auch bei Auszahlungen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich der Lauf so selektiert werden, dass bestimmte Konten vom Einzug ausgenommen werden, oder eine Auszahlung an eine zuvor manipulierte Bankverbindung ausgelöst werden. In Kombination mit der Vertragskontenpflege entsteht ein direkter Hebel für Mittelabfluss.",
+    "threat": "(1) Täter selektiert den Zahlungslauf so, dass Konten ausgenommen werden bzw. eine Auszahlung enthalten ist. (2) Die Zahlungsdatei wird erzeugt. (3) Einzug unterbleibt bzw. Mittel fließen an ein manipuliertes Konto. (4) Die Massenwirkung verdeckt den Einzelfall.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9546_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR01 erfasst Maklermeldungen, also die von Vermittlern gemeldeten Abrechnungsdaten zu Prämien und Provisionen. Die Maklermeldung ist die Grundlage für die Abrechnung mit dem Vermittler und wirkt damit auf Forderungen und Provisionsverbindlichkeiten. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine Meldung mit überhöhten Provisions- oder abweichenden Prämienbeträgen erfasst werden, sodass zugunsten eines gesteuerten Vermittlers abgerechnet wird. Ohne Abgleich mit den zugrunde liegenden Verträgen bleibt dies unauffällig.",
+    "threat": "(1) Täter erfasst in IBR01 eine Maklermeldung mit überhöhten Provisionsbeträgen. (2) Die Meldung geht in die Abrechnung. (3) Der gesteuerte Vermittler erhält eine überhöhte Vergütung. (4) Ohne Abgleich mit den Verträgen bleibt dies unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9547_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR03 öffnet den Maklerdesktop, der eine gebündelte Sicht auf Vermittler, deren Meldungen und Abrechnungsstände bietet. Die Zusammenführung ermöglicht einen umfassenden Überblick über die Geschäftsbeziehung zum Vermittler. Betroffen ist primär die Vertraulichkeit wirtschaftlich sensibler Vermittlerdaten. Missbräuchlich lassen sich Vermittler- und Abrechnungsdaten gesichtet und weitergegeben werden. In Verbindung mit Erfassungs- und Klärungsrechten dient die Sicht der gezielten Auswahl von Manipulationsobjekten.",
+    "threat": "(1) Täter öffnet den Maklerdesktop. (2) Er sichtet Vermittler-, Melde- und Abrechnungsdaten. (3) Er identifiziert Ansatzpunkte für Manipulationen. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9548_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR04 klärt Maklermeldungen, entscheidet also über die Behandlung von Meldungen, die nicht automatisch zugeordnet oder abgestimmt werden konnten. In der Klärung wird bestimmt, ob und in welcher Höhe eine gemeldete Position anerkannt wird. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine strittige Meldung zugunsten eines gesteuerten Vermittlers anerkannt werden, sodass eine unberechtigte Provision entsteht. Da Klärfälle definitionsgemäß Ermessensspielraum enthalten, ist die Entscheidung besonders kontrollbedürftig.",
+    "threat": "(1) Täter klärt eine strittige Maklermeldung. (2) Er erkennt die Position zugunsten des Vermittlers an. (3) Eine unberechtigte Provision entsteht. (4) Der Ermessensspielraum der Klärung verdeckt die Entscheidung.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9549_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR05 zeigt die Historie der Maklermeldungen an und dokumentiert damit die eingegangenen und verarbeiteten Meldungen je Vermittler. Die Historie dient der Nachvollziehbarkeit der Abrechnungsbeziehung. Betroffen ist die Vertraulichkeit; als Anzeigeberechtigung besteht keine unmittelbare Wertwirkung. Missbräuchlich lassen sich Abrechnungsdaten gesichtet oder geprüft werden, ob eigene Eingriffe dokumentiert sind. Das eigenständige Risiko ist begrenzt.",
+    "threat": "(1) Täter ruft die Maklermeldungshistorie auf. (2) Er sichtet die verarbeiteten Meldungen. (3) Er prüft, ob eigene Eingriffe dokumentiert sind. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9550_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR09 storniert Maklermeldungen und nimmt damit erfasste Abrechnungsdaten des Vermittlers zurück. Der Storno wirkt auf Forderungen und Provisionsverbindlichkeiten gegenüber dem Vermittler. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lässt sich eine korrekte Meldung storniert werden, um eine Rückforderung gegenüber dem Vermittler zu vermeiden, oder um eine manipulierte Neuerfassung zu ermöglichen. Ohne Begründungspflicht bleibt der Storno unauffällig.",
+    "threat": "(1) Täter storniert in IBR09 eine korrekte Maklermeldung. (2) Die erfassten Abrechnungsdaten entfallen. (3) Eine Rückforderung unterbleibt bzw. eine manipulierte Neuerfassung wird möglich. (4) Ohne Begründungspflicht bleibt der Storno unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9552_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR51 übernimmt Maklermeldungen, spielt also die von Vermittlern übermittelten Abrechnungsdaten massenhaft in das System ein. Die Übernahme erfolgt außerhalb der manuellen Erfassung und umgeht damit deren interaktive Kontrollen, während sie zugleich Provisions- und Prämienansprüche massenhaft begründet. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lassen sich manipulierte Meldungsdateien eingespielt werden, sodass überhöhte Provisionen oder abweichende Prämien massenhaft verbucht werden. Vermeintliche Diskrepanz: In der Nummernfolge fehlt der Eintrag 9551 zwischen 9550 und 9552; die Lücke sollte daraufhin geprüft werden, ob ein Filter versehentlich entfallen ist.",
+    "threat": "(1) Täter präpariert eine Maklermeldungsdatei mit überhöhten Provisionen. (2) Über IBR51 übernimmt er sie massenhaft. (3) Ansprüche entstehen ohne interaktive Kontrolle. (4) Die Massenwirkung verdeckt die einzelnen manipulierten Positionen.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9553_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR75 zeigt die Mahnstatus-Historie an und dokumentiert damit den Verlauf der Mahnstufen je Vertrag oder Vermittler. Die Historie belegt, ob und wie Forderungen angemahnt wurden. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit personenbezogener Bonitäts- und Zahlungsdaten. Missbräuchlich lassen sich Informationen über den Mahnverlauf gesichtet oder geprüft werden, ob eine unterlassene Mahnung dokumentiert ist.",
+    "threat": "(1) Täter ruft die Mahnstatus-Historie auf. (2) Er sichtet den Mahnverlauf. (3) Er prüft, ob eine unterlassene Mahnung dokumentiert ist. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9554_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR80 führt die automatische Nachbearbeitung von Maklermeldungen durch und verarbeitet damit massenhaft offene oder fehlerhafte Meldungen. Der Lauf begründet beziehungsweise korrigiert Provisions- und Prämienansprüche in großer Zahl. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich oder fehlerhaft lässt sich der Lauf so parametrisiert werden, dass Meldungen zugunsten bestimmter Vermittler verarbeitet oder ausgelassen werden. Die Massenwirkung erschwert die Einzelfallprüfung erheblich.",
+    "threat": "(1) Täter startet IBR80 mit abweichender Parametrisierung. (2) Meldungen werden massenhaft verarbeitet bzw. ausgelassen. (3) Ansprüche entstehen zugunsten bestimmter Vermittler. (4) Die Massenwirkung verdeckt den Einzelfall.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9555_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLCDC01 legt Schadenfälle im Expertenmodus an, erfasst also einen Versicherungsfall mit vollem Zugriff auf alle Falldaten. Der Schadenfall ist die Grundlage für Reservierung und Schadenzahlung und damit unmittelbar aufwands- und auszahlungsrelevant. Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich ein fiktiver Schadenfall angelegt werden, der anschließend zur Auszahlung an einen gesteuerten Anspruchsteller führt. In Kombination mit Zahlungsberechtigungen entsteht der zentrale Betrugsansatz im Schadenmanagement.",
+    "threat": "(1) Täter legt einen fiktiven Schadenfall an. (2) Reserven und Beteiligte werden erfasst. (3) Über die Regulierung erfolgt eine Auszahlung an einen gesteuerten Anspruchsteller. (4) Ohne Abgleich mit dem Vertrag bleibt dies unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9556_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLCDC02 ändert Schadenfälle im Expertenmodus, passt also Falldaten einschließlich Reserven, Beteiligter und Bewertungen an. Die Reserve bestimmt den bilanzierten Schadenaufwand, sodass ihre Änderung unmittelbar ergebniswirksam ist. Betroffen sind Integrität und die Assertions Valuation, Accuracy und Occurrence. Missbräuchlich lassen sich Reserven manipuliert werden, um Schadenaufwand zwischen Perioden zu verschieben, oder Falldaten so geändert werden, dass eine unberechtigte Zahlung möglich wird. Ohne unabhängige Kontrolle der Reserveänderungen bleibt die Ergebnissteuerung unauffällig.",
+    "threat": "(1) Täter ändert die Reserve eines Schadenfalls. (2) Der bilanzierte Schadenaufwand verschiebt sich. (3) Das Periodenergebnis wird gesteuert bzw. eine Zahlung ermöglicht. (4) Ohne Kontrolle der Reserveänderungen unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9557_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLCDC03 zeigt Schadenfälle im Expertenmodus an, also sämtliche Falldaten einschließlich Beteiligter, Reserven und Zahlungen. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit; Schadendaten enthalten regelmäßig personenbezogene Daten mit besonderem Schutzbedarf, etwa Gesundheitsangaben. Missbräuchlich lassen sich sensible Schadendaten gesichtet und weitergegeben werden, was neben dem Vertrauens- auch ein erhebliches Datenschutzrisiko begründet.",
+    "threat": "(1) Täter ruft Schadenfälle im Expertenmodus auf. (2) Er sichtet sensible Fall- und Gesundheitsdaten. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9558_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEBLKINV01 legt Sammelrechnungen an, bündelt also mehrere Einzelrechnungen zu einem Abrechnungsvorgang gegenüber einem Leistungserbringer. Die Sammelrechnung bestimmt, welche Positionen in welcher Höhe zur Zahlung gelangen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine Sammelrechnung mit überhöhten oder fingierten Positionen angelegt werden, wobei die Bündelung die Prüfung der Einzelposition erschwert. Ohne Stichprobenprüfung der Einzelpositionen bleibt dies unauffällig.",
+    "threat": "(1) Täter legt eine Sammelrechnung mit überhöhten Positionen an. (2) Die Bündelung erschwert die Einzelprüfung. (3) Die Auszahlung erfolgt in überhöhter Summe. (4) Ohne Stichprobenprüfung bleibt dies unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9559_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEBLKINV02 ändert bestehende Sammelrechnungen, passt also Positionen und Beträge an. Änderungen wirken unmittelbar auf die auszuzahlende Summe gegenüber dem Leistungserbringer. Betroffen sind Integrität und die Assertions Accuracy und Occurrence. Missbräuchlich lässt sich eine bereits geprüfte Sammelrechnung nachträglich erhöht werden, sodass die Prüfung wirkungslos wird. Greift keine erneute Freigabe nach Änderung, ist die vorgelagerte Kontrolle ausgehebelt.",
+    "threat": "(1) Täter erhöht eine bereits geprüfte Sammelrechnung. (2) Eine erneute Freigabe erfolgt nicht. (3) Die Auszahlung fällt höher aus als geprüft. (4) Die vorgelagerte Kontrolle ist wirkungslos.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9560_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEBLKINV03 zeigt Sammelrechnungen an, also die gebündelten Abrechnungsvorgänge mit Positionen und Beträgen. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit wirtschaftlich sensibler Abrechnungsdaten. Missbräuchlich lassen sich Abrechnungsdaten gesichtet und weitergegeben werden.",
+    "threat": "(1) Täter ruft Sammelrechnungen auf. (2) Er sichtet Positionen und Beträge. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9561_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEBLKSBR01 legt Sammelregresse an, bündelt also Regressforderungen gegenüber Dritten, die für einen Schaden haften. Der Regress ist ein Ertragsposten, der den Schadenaufwand mindert. Betroffen sind Integrität und die Assertions Existence, Completeness und Valuation. Missbräuchlich lässt sich ein Regress zu niedrig angelegt oder gar nicht erfasst werden, sodass eine berechtigte Forderung gegenüber einem Dritten nicht geltend gemacht wird. Da ein unterbliebener Regress keinen Beleg erzeugt, ist die Lücke besonders schwer erkennbar.",
+    "threat": "(1) Täter erfasst einen Regress zu niedrig bzw. gar nicht. (2) Die Forderung gegenüber dem Haftenden entsteht nicht. (3) Der Nettoschadenaufwand bleibt zu hoch. (4) Da kein Beleg entsteht, ist die Lücke schwer erkennbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9562_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEBLKSBR02 ändert bestehende Sammelregresse, passt also Forderungshöhe und Positionen an. Änderungen wirken auf den geltend gemachten Regressanspruch und damit auf den Nettoschadenaufwand. Betroffen sind Integrität und die Assertions Valuation, Accuracy und Completeness. Missbräuchlich lässt sich ein Regress zugunsten des Anspruchsgegners reduziert werden. Ohne unabhängige Kontrolle der Regressverfolgung bleibt der Ertragsverzicht unauffällig.",
+    "threat": "(1) Täter reduziert einen bestehenden Regress. (2) Der geltend gemachte Anspruch sinkt. (3) Der Anspruchsgegner wird begünstigt. (4) Ohne Kontrolle der Regressverfolgung unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9563_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEBLKSBR03 zeigt Sammelregresse an, also die gebündelten Regressforderungen mit Beteiligten und Beträgen. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit; Regressdaten enthalten Angaben zu Dritten und Haftungsverhältnissen. Missbräuchlich lassen sich Informationen über Regressverfahren gesichtet und weitergegeben werden.",
+    "threat": "(1) Täter ruft Sammelregresse auf. (2) Er sichtet Beteiligte und Haftungsverhältnisse. (3) Die Informationen werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9564_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLET01 legt Fallbündel an, fasst also mehrere Schadenfälle zu einer Verarbeitungseinheit zusammen, etwa bei Kumulereignissen. Das Bündel steuert die gemeinsame Bearbeitung und Bewertung der enthaltenen Fälle. Betroffen sind Integrität und die Assertions Classification, Completeness und Valuation. Missbräuchlich lässt sich die Bündelung so gestaltet werden, dass Schäden anders zugeordnet oder Kumulgrenzen und Rückversicherungsschwellen umgangen werden. Da die Zuordnung und nicht der Einzelfall verändert wird, ist die Manipulation schwer erkennbar.",
+    "threat": "(1) Täter bündelt Schadenfälle abweichend. (2) Die Zuordnung zu Ereignissen ändert sich. (3) Kumulgrenzen bzw. Rückversicherungsschwellen werden umgangen. (4) Da nur die Zuordnung geändert wird, ist dies schwer erkennbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9565_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLET02 ändert bestehende Fallbündel, passt also die Zusammensetzung der gebündelten Schadenfälle an. Änderungen wirken auf die gemeinsame Bewertung und die Zuordnung zu Ereignissen. Betroffen sind Integrität und die Assertions Classification, Completeness und Valuation. Missbräuchlich lässt sich ein Fall aus einem Bündel entfernt oder hinzugefügt werden, um Kumulbetrachtungen oder Rückversicherungsabrechnungen zu beeinflussen. Ohne Strukturvergleich bleibt die Änderung unauffällig.",
+    "threat": "(1) Täter entfernt einen Fall aus einem Bündel bzw. fügt einen hinzu. (2) Die gemeinsame Bewertung ändert sich. (3) Kumul- oder Rückversicherungsbetrachtungen verschieben sich. (4) Ohne Strukturvergleich bleibt dies unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9566_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLET03 zeigt Fallbündel an, also die Zusammenfassung von Schadenfällen zu Verarbeitungseinheiten. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit von Schaden- und Ereignisdaten. Missbräuchlich lassen sich Informationen über Kumulereignisse gesichtet und weitergegeben werden.",
+    "threat": "(1) Täter ruft Fallbündel auf. (2) Er sichtet Ereignis- und Schadendaten. (3) Die Informationen werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9567_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLEXPERT ermöglicht die Fallsuche im Schadenmanagement mit umfangreichen Selektionsmöglichkeiten über Schadenfälle und Beteiligte. Die Expertensuche erlaubt die gezielte und massenhafte Recherche über den gesamten Schadenbestand. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit; Schadendaten enthalten personenbezogene Daten mit besonderem Schutzbedarf. Missbräuchlich lassen sich umfangreiche Schadendatenbestände recherchiert und exportiert werden, was aufgrund der Aggregationsmöglichkeit datenschutzrechtlich besonders kritisch ist.",
+    "threat": "(1) Täter nutzt die Expertensuche über den Schadenbestand. (2) Er selektiert umfangreiche Datenmengen. (3) Sensible Schadendaten werden aggregiert und exportiert. (4) Die Aggregation verschärft das Datenschutzrisiko.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9568_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLINVNOT01 erfasst Einzelrechnungen im Schadenmanagement, also die von Leistungserbringern oder Anspruchstellern eingereichten Rechnungen zu einem Schadenfall. Die Rechnungserfassung begründet die Zahlungsverpflichtung aus dem Schaden. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich eine fingierte oder überhöhte Rechnung zu einem Schadenfall erfasst werden, die anschließend zur Auszahlung gelangt. In Kombination mit der Schadenanlage entsteht ein vollständig fingierter Leistungsfall.",
+    "threat": "(1) Täter erfasst eine fingierte/überhöhte Rechnung zu einem Schadenfall. (2) Die Zahlungsverpflichtung entsteht. (3) Die Auszahlung erfolgt an den gesteuerten Empfänger. (4) In Kombination mit der Schadenanlage entsteht ein vollständig fingierter Leistungsfall.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9569_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLNOT01 legt Schäden im Erfassungsmodus an, meldet also einen Versicherungsfall mit den grundlegenden Falldaten. Die Schadenanlage ist der Ausgangspunkt der gesamten Schadenbearbeitung und der späteren Leistungszahlung. Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich ein fiktiver Schaden gemeldet werden, der über die weitere Bearbeitung zur Auszahlung führt. Ohne Prüfung des Versicherungsfalls gegen den zugrunde liegenden Vertrag bleibt dies unentdeckt.",
+    "threat": "(1) Täter meldet einen fiktiven Schaden. (2) Der Fall durchläuft die Bearbeitung. (3) Eine Leistungszahlung wird ausgelöst. (4) Ohne Abgleich mit dem Vertrag bleibt dies unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9570_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLNOT02 ändert Schäden im Erfassungsmodus, passt also Falldaten wie Schadenhergang, Beteiligte oder Bewertungen an. Änderungen wirken auf die Beurteilung des Leistungsanspruchs und die Höhe der Reserve. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Occurrence. Missbräuchlich lassen sich Falldaten so geändert werden, dass ein eigentlich nicht gedeckter Schaden als leistungspflichtig erscheint. Ohne unabhängige Prüfung der Deckungsentscheidung bleibt dies unauffällig.",
+    "threat": "(1) Täter ändert Falldaten eines Schadens. (2) Ein nicht gedeckter Schaden erscheint leistungspflichtig. (3) Die Regulierung wird freigegeben. (4) Ohne unabhängige Deckungsprüfung unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9571_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLNOT03 zeigt Schäden im Erfassungsmodus an, also die gemeldeten Versicherungsfälle mit ihren Falldaten. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit; Schadendaten enthalten regelmäßig personenbezogene Daten mit besonderem Schutzbedarf, etwa Gesundheits- oder Unfalldaten. Missbräuchlich lassen sich sensible Schadendaten gesichtet und weitergegeben werden.",
+    "threat": "(1) Täter ruft Schadenfälle auf. (2) Er sichtet personenbezogene Schaden- und Gesundheitsdaten. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9572_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLPAYAUTH zeigt die Zahlungsberechtigungen im Schadenmanagement an, dokumentiert also, welche Bearbeiter bis zu welchen Betragsgrenzen Schadenzahlungen freigeben dürfen. Die Anzeige legt die Struktur der Freigabekontrollen offen. Betroffen ist die Vertraulichkeit sicherheitsrelevanter Kontrollinformationen. Missbräuchlich lassen sich die Betragsgrenzen ausgekundschaftet werden, um Zahlungen gezielt unterhalb der Freigabeschwelle zu stückeln und damit die Vier-Augen-Kontrolle zu umgehen. Der Aufklärungsnutzen für einen Täter ist daher erheblich, auch wenn es sich um eine reine Anzeigefunktion handelt.",
+    "threat": "(1) Täter ruft die Zahlungsberechtigungen auf. (2) Er ermittelt die Betragsgrenzen der Freigabestufen. (3) Er stückelt Zahlungen unterhalb der Schwelle. (4) Die Vier-Augen-Kontrolle wird gezielt umgangen.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9573_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLQCL01 legt Schnellschäden an, also Schadenfälle im vereinfachten Verfahren mit reduziertem Prüfumfang. Das Schnellverfahren ist auf zügige Regulierung kleinerer Schäden ausgelegt und verzichtet dabei auf Teile der regulären Prüfschritte. Betroffen sind Integrität und die Assertions Existence, Occurrence und Valuation. Missbräuchlich lässt sich das vereinfachte Verfahren genutzt werden, um fingierte Schäden mit geringerer Kontrolldichte zur Auszahlung zu bringen, gegebenenfalls wiederholt in kleinen Beträgen. Gerade die reduzierte Prüfung macht das Schnellverfahren für systematischen Missbrauch attraktiv.",
+    "threat": "(1) Täter legt einen Schnellschaden an. (2) Der reduzierte Prüfumfang greift. (3) Eine Auszahlung erfolgt mit geringer Kontrolldichte. (4) Wiederholte Kleinbeträge summieren sich unauffällig.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9574_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung ändert Schnellschäden, passt also die im vereinfachten Verfahren erfassten Schadenfälle an. Änderungen wirken auf Leistungsanspruch und Auszahlungshöhe bei reduziertem Prüfumfang. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Occurrence. Missbräuchlich lassen sich Beträge nachträglich erhöht werden, wobei die geringere Kontrolldichte des Schnellverfahrens die Entdeckung erschwert. Vermeintliche Diskrepanz: Für Anlegen (9573), Ändern (9574) und Anzeigen (9575) ist jeweils dieselbe Transaktion ICLQCL01 hinterlegt; die Unterscheidung ergibt sich nur über die Aktivität, weshalb die Transaktionszuordnung geprüft werden sollte.",
+    "threat": "(1) Täter erhöht nachträglich einen Schnellschaden. (2) Die Auszahlungshöhe steigt. (3) Der reduzierte Prüfumfang erschwert die Entdeckung. (4) Die Änderung bleibt unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9575_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung zeigt Schnellschäden an, also die im vereinfachten Verfahren erfassten Schadenfälle. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit personenbezogener Schadendaten. Missbräuchlich lassen sich Schadendaten gesichtet und weitergegeben werden. Vermeintliche Diskrepanz: Wie bei 9573 und 9574 ist auch hier ICLQCL01 hinterlegt; die Transaktionszuordnung der drei Einträge sollte geprüft werden.",
+    "threat": "(1) Täter ruft Schnellschäden auf. (2) Er sichtet die Falldaten. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9576_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLSALV01 legt Provenues an, erfasst also Verwertungserlöse aus beschädigten oder ersetzten Gegenständen, die den Schadenaufwand mindern. Der Provenue ist ein Ertragsposten des Schadenprozesses. Betroffen sind Integrität und die Assertions Existence, Completeness und Valuation. Missbräuchlich lässt sich ein Verwertungserlös zu niedrig oder gar nicht erfasst werden, sodass der tatsächliche Erlös nicht dem Versicherer zugutekommt und anderweitig verbleibt. Da ein nicht erfasster Provenue keinen Beleg erzeugt, ist die Lücke besonders schwer erkennbar.",
+    "threat": "(1) Täter erfasst einen Verwertungserlös zu niedrig bzw. gar nicht. (2) Der Erlös mindert den Schadenaufwand nicht. (3) Der tatsächliche Erlös verbleibt anderweitig. (4) Da kein Beleg entsteht, ist die Lücke schwer erkennbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9577_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLSCEXPERT ermöglicht die Suche im Leistungskatalog, also die Recherche über die hinterlegten Leistungspositionen und deren Bewertung. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit; der Leistungskatalog enthält die Kalkulationsgrundlagen der Schadenregulierung. Missbräuchlich lassen sich Katalogdaten recherchiert werden, um Ansatzpunkte für überhöhte Abrechnungen zu identifizieren.",
+    "threat": "(1) Täter recherchiert im Leistungskatalog. (2) Er sichtet Bewertungssätze. (3) Er identifiziert Ansatzpunkte für überhöhte Abrechnungen. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9578_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung legt Katalogpositionen an, also die Leistungspositionen mit ihren Bewertungssätzen, nach denen Schadenleistungen abgerechnet werden. Der Katalog wirkt als Vorlage auf alle darauf gestützten Abrechnungen und damit auf große Fallzahlen. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Completeness. Missbräuchlich lässt sich eine Position mit überhöhtem Bewertungssatz angelegt werden, sodass systematisch zu hohe Leistungen abgerechnet werden. Da die Wirkung über den Katalog entsteht, ist sie im Einzelfall nicht sichtbar.",
+    "threat": "(1) Täter legt eine Katalogposition mit überhöhtem Satz an. (2) Abrechnungen greifen darauf zu. (3) Leistungen werden systematisch zu hoch abgerechnet. (4) Im Einzelfall wirkt der Betrag katalogkonform.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9579_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung ändert Katalogpositionen und passt damit die Bewertungssätze der Leistungspositionen an. Eine Änderung wirkt auf alle künftigen Abrechnungen, die die Position heranziehen. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Bewertungssatz erhöht und nach der Abrechnung zurückgesetzt werden, sodass die dazwischen erstellten Abrechnungen überhöht ausfallen. Die zeitlich begrenzte Änderung ist ohne Historienvergleich kaum nachvollziehbar.",
+    "threat": "(1) Täter erhöht einen Bewertungssatz im Katalog. (2) In diesem Zeitraum erstellte Abrechnungen fallen zu hoch aus. (3) Anschließend wird der Satz zurückgesetzt. (4) Die zeitlich begrenzte Änderung ist ohne Historienvergleich kaum nachvollziehbar.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9580_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung zeigt Katalogpositionen an, also die Leistungspositionen mit ihren Bewertungssätzen. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit der Kalkulationsgrundlagen. Missbräuchlich lassen sich Bewertungssätze gesichtet und weitergegeben werden, etwa an Leistungserbringer zur Optimierung ihrer Abrechnung.",
+    "threat": "(1) Täter ruft Katalogpositionen auf. (2) Er sichtet die Bewertungssätze. (3) Die Kalkulationsgrundlagen werden weitergegeben. (4) Leistungserbringer können ihre Abrechnung darauf optimieren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9581_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "ICLWWW09 zeigt den Fallstatus in der Kundensicht an, stellt also den Bearbeitungsstand eines Schadenfalls in der für externe Beteiligte aufbereiteten Form dar. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit personenbezogener Schadendaten. Missbräuchlich lassen sich Fallinformationen gesichtet und weitergegeben werden; da es sich um die Kundensicht handelt, ist der Informationsumfang gegenüber der internen Sicht eingeschränkt.",
+    "threat": "(1) Täter ruft den Fallstatus in der Kundensicht auf. (2) Er sichtet den Bearbeitungsstand. (3) Die Informationen werden weitergegeben. (4) Der Informationsumfang ist gegenüber der internen Sicht eingeschränkt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9582_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "INSOCHANGE ändert Versicherungsobjekte, also die versicherten Risiken mit ihren Vertrags-, Deckungs- und Zuordnungsdaten. Das Versicherungsobjekt verbindet Vertrag, Versicherungsnehmer und Forderungen im Vertragskontokorrent und bestimmt den Deckungsumfang. Betroffen sind Integrität und die Assertions Accuracy, Existence und Valuation. Missbräuchlich lassen sich Deckungs- oder Zuordnungsdaten so geändert werden, dass ein eigentlich nicht versichertes Risiko als gedeckt erscheint oder Prämien zu niedrig ermittelt werden. In Kombination mit der Schadenbearbeitung lässt sich damit ein nicht gedeckter Schaden regulierbar machen.",
+    "threat": "(1) Täter ändert Deckungs-/Zuordnungsdaten eines Versicherungsobjekts. (2) Ein nicht gedecktes Risiko erscheint versichert bzw. die Prämienbasis sinkt. (3) Ein Schaden wird regulierbar bzw. Prämien entgehen. (4) Ohne Stammdatenkontrolle bleibt dies unbemerkt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9583_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "INSOCREATE legt Versicherungsobjekte an, definiert also das versicherte Risiko mit Deckungsumfang und Zuordnung zum Vertrag. Das Objekt ist Grundlage für Prämienermittlung und Leistungsprüfung. Betroffen sind Integrität und die Assertions Existence, Accuracy und Valuation. Missbräuchlich lässt sich ein Versicherungsobjekt mit unzutreffendem Deckungsumfang oder zu niedriger Prämienbasis angelegt werden. Ohne unabhängige Stammdatenkontrolle bleibt die Gestaltung unbemerkt.",
+    "threat": "(1) Täter legt ein Versicherungsobjekt mit unzutreffendem Deckungsumfang an. (2) Prämienermittlung und Leistungsprüfung setzen darauf auf. (3) Prämien fallen zu niedrig aus bzw. Leistungen werden zu Unrecht erbracht. (4) Ohne Stammdatenkontrolle unbemerkt.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9584_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "INSODISP zeigt Versicherungsobjekte an, also die versicherten Risiken mit Vertrags- und Zuordnungsdaten. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit; bei natürlichen Personen als Versicherungsnehmer handelt es sich um personenbezogene Daten. Missbräuchlich lassen sich Versicherungs- und Vertragsdaten gesichtet und weitergegeben werden. Vermeintliche Diskrepanz: Dieser Eintrag ist inhaltlich und technisch identisch mit 9500_FS-CD (gleiche Transaktion INSODISP); es liegt eine Dublette im Filterset vor, die konsolidiert werden sollte.",
+    "threat": "(1) Täter ruft Versicherungsobjekte auf. (2) Er sichtet Vertrags- und Personendaten. (3) Die Daten werden weitergegeben. (4) Der Anzeigezugriff hinterlässt kaum Spuren.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9585_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VAZE führt die Guthabenaufteilung über mehrere Zahlungen durch, verteilt also ein Guthaben auf verschiedene Zahlungsvorgänge oder Empfänger. Die Aufteilung bestimmt, wohin und in welcher Höhe Guthaben fließen. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich ein Guthaben so aufgeteilt werden, dass ein Teilbetrag an eine gesteuerte Stelle fließt, während der Rest regulär verwendet wird und der Vorgang dadurch unauffällig wirkt. Die Aufteilung auf mehrere Zahlungen erschwert zudem die Nachverfolgung.",
+    "threat": "(1) Täter teilt ein Guthaben auf mehrere Zahlungen auf. (2) Ein Teilbetrag fließt an eine gesteuerte Stelle. (3) Der übrige Teil wird regulär verwendet. (4) Die Aufteilung lässt den Vorgang unauffällig wirken und erschwert die Nachverfolgung.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9586_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VRCN bucht Mitversicherungsanteile, verteilt also Prämien und Schäden auf die beteiligten Mitversicherer entsprechend ihrer Quote. Die Buchung bestimmt, welcher Anteil beim führenden Versicherer verbleibt und welcher an die Partner weitergegeben wird. Betroffen sind Integrität und die Assertions Accuracy, Completeness und Valuation. Missbräuchlich lassen sich Anteile so gebucht werden, dass Schadenanteile nicht oder zu niedrig an Mitversicherer weitergegeben beziehungsweise Prämienanteile falsch verteilt werden. Da die Abstimmung mit externen Partnern zeitversetzt erfolgt, bleibt eine Fehlverteilung zunächst unentdeckt.",
+    "threat": "(1) Täter bucht Mitversicherungsanteile abweichend von der Quote. (2) Schadenanteile verbleiben beim führenden Versicherer bzw. Prämien werden falsch verteilt. (3) Die Partnerabrechnung stimmt nicht. (4) Da die Abstimmung zeitversetzt erfolgt, bleibt dies zunächst unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9587_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VRCNHIST zeigt die Mitversicherungshistorie an, dokumentiert also die Verteilung von Prämien und Schäden auf die beteiligten Mitversicherer. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit wirtschaftlich sensibler Daten zu Partnerbeziehungen und Quoten. Missbräuchlich lassen sich Informationen über Mitversicherungsverhältnisse gesichtet und weitergegeben werden, etwa an Wettbewerber.",
+    "threat": "(1) Täter ruft die Mitversicherungshistorie auf. (2) Er sichtet Quoten und Partnerbeziehungen. (3) Die Informationen werden weitergegeben. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9588_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VVO1 verwaltet saldenverzinste Verträge, steuert also die Verzinsung von Vertragssalden. Die Verzinsung wirkt auf Erträge beziehungsweise Aufwendungen aus den Vertragsguthaben und ist damit wertwirksam. Betroffen sind Integrität und die Assertions Accuracy, Valuation und Completeness. Missbräuchlich lassen sich Verzinsungsparameter so gesetzt werden, dass Guthaben eines gesteuerten Vertrags zu hoch verzinst oder Sollzinsen nicht berechnet werden. Da die Verzinsung automatisiert über viele Verträge wirkt, ist die Manipulation im Einzelfall kaum sichtbar.",
+    "threat": "(1) Täter ändert die Verzinsungsparameter eines Vertrags. (2) Guthaben werden zu hoch verzinst bzw. Sollzinsen entfallen. (3) Erträge entgehen bzw. Aufwendungen entstehen. (4) Die automatisierte Verzinsung verdeckt den Einzelfall.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9589_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VYM10 zeigt den Mahnstand eines Vertrags an, dokumentiert also die erreichte Mahnstufe und den Verlauf des Forderungseinzugs. Da es sich um einen reinen Anzeigezugriff handelt, steht die Vertraulichkeit im Vordergrund; eine Datenveränderung ist nicht möglich, weshalb das Risiko deutlich unter dem der Pflegeberechtigung liegt. Betroffen ist die Vertraulichkeit personenbezogener Bonitäts- und Zahlungsdaten. Missbräuchlich lassen sich Informationen über den Mahnstand gesichtet werden, etwa um zu prüfen, ob eine unterlassene Mahnung auffällig geworden ist.",
+    "threat": "(1) Täter ruft den Mahnstand eines Vertrags auf. (2) Er sichtet Mahnstufe und Verlauf. (3) Er prüft, ob eine unterlassene Mahnung auffällig ist. (4) Der Anzeigezugriff erscheint regulär.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "9590_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VYM10 in der Änderungsvariante ändert den Mahnstand eines Vertrags, setzt also die erreichte Mahnstufe zurück oder verändert sie. Die Mahnstufe steuert den weiteren Forderungseinzug bis hin zu Kündigung und Inkasso, sodass ihre Rücksetzung den Eskalationsprozess unterbricht. Betroffen sind Integrität und die Assertions Completeness, Valuation und Cutoff. Missbräuchlich lässt sich der Mahnstand eines gesteuerten Vertrags zurückgesetzt werden, sodass die Forderung dauerhaft nicht eskaliert und faktisch nicht beigetrieben wird. Da der Posten weiterhin als offen geführt wird, fällt die unterbliebene Eskalation ohne Altersstrukturanalyse nicht auf.",
+    "threat": "(1) Täter setzt den Mahnstand eines Vertrags zurück. (2) Die Eskalation beginnt von vorn bzw. unterbleibt. (3) Kündigung und Inkasso werden nicht ausgelöst. (4) Der Posten bleibt formal offen, wird aber nicht beigetrieben.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9591_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VYSP führt die parallelisierte Sollstellung durch und erzeugt damit massenhaft die Prämienforderungen der Versicherungsverträge. Die Sollstellung ist der zentrale erlöswirksame Lauf des Versicherungsgeschäfts und betrifft in einem Durchgang sehr große Vertragsbestände. Betroffen sind Integrität und die Assertions Occurrence, Completeness, Accuracy und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf mit eingeschränkter Selektion oder abweichender Periode ausgeführt werden, sodass Prämienforderungen ganz oder teilweise nicht entstehen. Die Massenwirkung macht sowohl den möglichen Erlösausfall als auch die Aufdeckungsschwierigkeit erheblich.",
+    "threat": "(1) Täter startet VYSP mit eingeschränkter Selektion/abweichender Periode. (2) Prämienforderungen entstehen nicht oder verschoben. (3) Erlöse fehlen bzw. fallen in die falsche Periode. (4) Die Massenwirkung verdeckt den Ausfall.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9592_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "VYSPA führt die Sollstellung im Versicherungsbereich durch und erzeugt die Prämienforderungen gegenüber den Versicherungsnehmern. Wie die parallelisierte Variante ist der Lauf erlöswirksam und wirkt über große Bestände. Betroffen sind Integrität und die Assertions Occurrence, Completeness, Accuracy und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf so gesteuert werden, dass einzelne Verträge oder Bestände nicht sollgestellt werden und die Prämie nicht gefordert wird. Ohne Abgleich zwischen Vertragsbestand und Sollstellung bleibt der Erlösausfall unentdeckt.",
+    "threat": "(1) Täter steuert die Sollstellung so, dass einzelne Verträge ausgenommen werden. (2) Die Prämie wird nicht gefordert. (3) Erlöse entgehen. (4) Ohne Abgleich Vertragsbestand/Sollstellung bleibt dies unentdeckt.",
+    "source": [
+      "https://www.safepaas.com/blog/sap-authorisation-best-practices-avoiding-segregation-of-duties-conflicts/",
+      "http://mydailyexecutive.blogspot.com/2016/05/critical-and-common-SAP-Segregation-of-Duties-Conflicts-SOX-User.html",
+      "https://mtcskopos.com/blog/sod-conflicts-sap/"
+    ],
+    "description": null
   },
   {
     "query": "9951_FS-CD",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "IBR50 erzeugt Maklermeldungen, generiert also die Abrechnungsdaten gegenüber Vermittlern aus dem Systembestand. Die erzeugte Meldung ist Grundlage der Provisionsabrechnung mit dem Vermittler. Betroffen sind Integrität und die Assertions Occurrence, Accuracy und Completeness. Missbräuchlich lässt sich die Erzeugung so parametrisiert werden, dass überhöhte Provisionsansprüche entstehen oder Rückforderungen nicht erfasst werden. Vermeintliche Diskrepanz: Die ID 9951 fällt aus der ansonsten fortlaufenden Nummernsystematik des FS-CD-Blocks (9500 bis 9592); die Vergabe sollte geprüft und gegebenenfalls in die Systematik eingeordnet werden.",
+    "threat": "(1) Täter parametrisiert die Erzeugung der Maklermeldung abweichend. (2) Überhöhte Provisionsansprüche entstehen bzw. Rückforderungen entfallen. (3) Die Abrechnung mit dem Vermittler erfolgt darauf. (4) Ohne Abgleich mit dem Vertragsbestand unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "A1000_BW-SEC",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "RSMON öffnet die Administration der Business Warehouse Workbench und ermöglicht damit die Überwachung und Steuerung der Datenladeprozesse. Über die Administration lassen sich Ladeläufe starten, abbrechen, wiederholen und Requests löschen, wodurch der Datenbestand des Berichtswesens unmittelbar beeinflusst wird. Betroffen sind Integrität, Verfügbarkeit und Nachvollziehbarkeit sowie über das Berichtswesen mittelbar die Assertions Completeness und Presentation. Missbräuchlich lässt sich ein Ladelauf unterdrückt oder ein Request gelöscht werden, sodass Berichte auf unvollständigen Daten beruhen und Auffälligkeiten im Reporting nicht sichtbar werden. Da das Data Warehouse regelmäßig Grundlage für Management- und Aufsichtsberichte ist, wirkt eine Manipulation auf die Entscheidungsgrundlage, ohne die operativen Systeme zu berühren.",
+    "threat": "(1) Täter öffnet die BW-Administration. (2) Er unterdrückt einen Ladelauf bzw. löscht einen Request. (3) Berichte beruhen auf unvollständigen Daten. (4) Auffälligkeiten im Reporting bleiben unsichtbar, ohne dass die operativen Systeme berührt wurden.",
+    "source": [
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd",
+      "https://xiting.com/en/the-difference-between-s_program-and-s_prognam-and-the-use-of-parameter-transactions/"
+    ],
+    "description": null
   },
   {
     "query": "REFX-PERIODISCHES_BUCHEN:_VERTRÄGE",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "RERAPP führt das periodische Buchen von Immobilienverträgen in RE-FX durch und erzeugt damit massenhaft die wiederkehrenden Forderungen und Aufwendungen aus Miet- und Immobilienverträgen. Der Lauf ist das zentrale erlöswirksame Element der Immobilienbewirtschaftung im flexiblen Immobilienmanagement und betrifft in einem Durchgang alle selektierten Verträge. Betroffen sind Integrität und die Assertions Occurrence, Completeness, Accuracy und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Lauf mit eingeschränkter Selektion oder abweichender Periode ausgeführt werden, sodass Sollstellungen nicht oder periodenverschoben entstehen und Mieterlöse fehlen. Vermeintliche Diskrepanz: Die Query-ID folgt nicht der ansonsten verwendeten numerischen Systematik mit Modulsuffix, und im Feld description steht lediglich der Transaktionscode RERAPP statt einer fachlichen Beschreibung; beides sollte an die Konventionen des Filtersets angeglichen werden.",
+    "threat": "(1) Täter startet RERAPP mit eingeschränkter Selektion bzw. abweichender Periode. (2) Sollstellungen entstehen nicht oder periodenverschoben. (3) Mieterlöse fehlen bzw. fallen in die falsche Periode. (4) Die Massenwirkung verdeckt den Ausfall.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "query": "REFX-VERTRAGSBUCHUNGEN_STORNIEREN",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "RERAPPRV storniert Vertragsbuchungen in RE-FX und nimmt damit die durch das periodische Buchen erzeugten Forderungen und Aufwendungen zurück. Der Storno wirkt massenhaft über die betroffenen Verträge und verändert Forderungsbestand und Periodenergebnis. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Occurrence, Completeness und Cutoff. Missbräuchlich lassen sich korrekte Sollstellungen storniert werden, sodass Forderungen gegenüber bestimmten Mietern entfallen, oder eine manipulierte Neubuchung vorbereitet werden. Vermeintliche Diskrepanz: Wie beim vorherigen Eintrag weicht die Query-ID von der numerischen Systematik ab und die description enthält nur den Transaktionscode RERAPPRV; beides sollte an die Konventionen angeglichen werden.",
+    "threat": "(1) Täter storniert über RERAPPRV korrekte Vertragsbuchungen. (2) Forderungen gegenüber Mietern entfallen. (3) Das Periodenergebnis verschiebt sich bzw. eine manipulierte Neubuchung wird möglich. (4) Ohne Begründungspflicht bleibt der Storno unauffällig.",
+    "source": [
+      "https://mtcskopos.com/blog/sod-conflicts-sap/",
+      "https://medium.com/@adarshmadrecha/critical-tcode-in-sap-for-itgc-and-sox-audit-2501650432fd"
+    ],
+    "description": null
   },
   {
     "alias": "BCX_005",
