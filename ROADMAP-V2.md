@@ -48,24 +48,28 @@ ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Ba
   Objekte prüft dieser TCode", aber nicht für Felder/Werte oder den Prüfstatus.
 
   **Datenmodell-Erweiterung (drei Bausteine):**
-  1. **`USOBT_C.FIELD/LOW/HIGH` nutzen** — diese Spalten sind in
-     [`extraktionsleitfaden.md`](docs/extraktionsleitfaden.md#10--usobt_c-su24-vorschlagswerte--checks)
-     bereits als optional dokumentiert, werden aber weder in `required_tables.json` verlangt noch
-     vom Lade-Skript verarbeitet. Erweitern: `required_tables.json`-Feldliste um `FIELD/LOW/HIGH`
-     als **optional** (Rückwärtskompatibilität — ältere Extrakte ohne diese Spalten dürfen nicht
-     brechen), `10_su24_checks.cypher` liest sie als Property-Liste an der `CHECKS`-Kante (mehrere
-     Felder je (TCode,Objekt)-Paar, plus dasselbe Objekt kann bei verschiedenen TCodes andere
-     Vorschlagswerte haben — passt zur Kante, da diese pro (TCode,Objekt) eindeutig ist).
+  1. **[x] `USOBT_C.FIELD/LOW/HIGH` nutzen** (erledigt 2026-09-08) — gegen den bereits vorliegenden
+     echten Extrakt geprüft: die Spalten sind **schon enthalten** (100% Feldbelegung, keine
+     zusätzliche SAP-seitige Extraktion nötig), waren aber ungenutzt. Umgesetzt: neue eigene Kante
+     `(:Transaction)-[:PROPOSES {field, low, high}]->(:AuthObject)` (eine je (TCode,Objekt,Feld)-
+     Zeile, `load/11_su24_proposals.cypher`, bewusst getrennt von `CHECKS` statt als dessen
+     Property — mehrere Felder je Objekt bzw. abweichende Werte je TCode sind der Normalfall,
+     mehrere Kanten zwischen denselben zwei Knoten sind dafür in Neo4j unproblematisch).
+     `required_tables.json` dokumentiert die Spalten jetzt mit; live gegen den echten Datensatz
+     verifiziert (265.309 Zeilen, 0 Fehler, TCode `ME11`-Vorschläge decken sich exakt mit der schon
+     bekannten Testquery `3003_MM-PUR`) — inkl. Fund, dass `LOW`/`HIGH` SAP-Parameter-ID-Platzhalter
+     (`$EKORG`, `$WERKS`, …) statt konkreter Werte tragen können, ein Signal für Org-Ebenen-Felder.
+     Details in [`extraktionsleitfaden.md`](docs/extraktionsleitfaden.md#10--usobt_c-su24-vorschlagswerte--checks--proposes).
   2. **`USOBX_C` neu (Prüfkennzeichen)** — separate Tabelle, beim jeweiligen Kunden noch **nicht**
      im Standard-Extrakt (bestätigt: weder in `required_tables.json` noch in der Praxis bisher
-     angefordert). Ohne sie schlägt der Builder auch objektiv nicht (mehr) geprüfte Objekte vor.
-     Vorbereitung JETZT (kein SAP-Zugriff nötig): `required_tables.json`-Eintrag samt Feldliste
-     (TCode, Objekt, Prüfkennzeichen-Spalte — **exakte SAP-Spalten-/Wertebedeutung von OKFLAG vor
-     dem Bauen an einer echten Extraktprobe verifizieren, nicht aus der Doku raten**),
-     `docs/extraktionsleitfaden.md`/`docs/datamodel.md` ergänzen, `CHECKS`-Kante um
-     `checkIndicator`/`suppressed`-Property erweitern. Die tatsächliche Extraktion bleibt ein
-     separater, späterer Schritt je Kunde/System — dieser Baustein macht die App nur *bereit*,
-     sobald die Daten kommen.
+     angefordert, und noch kein echter Extrakt zum Gegenprüfen vorhanden). Ohne sie schlägt der
+     Builder auch objektiv nicht (mehr) geprüfte Objekte vor. Vorbereitung als Platzhalter angelegt
+     (2026-09-08, `required_tables.json`-Doku-Eintrag mit Spaltenraten `NAME/OBJECT/OKFLAG` —
+     **bewusst noch NICHT** in `required`/`optional` aufgenommen, solange unverifiziert, s. offene
+     Detailfrage unten). Sobald verifiziert: `docs/extraktionsleitfaden.md`/`docs/datamodel.md`
+     ergänzen, `CHECKS`-Kante um `checkIndicator`/`suppressed`-Property erweitern. Die tatsächliche
+     Extraktion bleibt ein separater, späterer Schritt je Kunde/System — dieser Baustein macht die
+     App nur *bereit*, sobald die Daten kommen.
   3. **Reale Häufigkeitswerte** (Differenzierung ggü. reinem PFCG, Nutzer-Entscheid 2026-09-08):
      zusätzlich zum SAP-Standard-Vorschlag aus (1) die je (Objekt,Feld) **häufigsten real
      beobachteten Werte** aus den bereits importierten `Authorization`-Knoten dieses Datasets

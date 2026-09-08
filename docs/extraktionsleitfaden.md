@@ -229,19 +229,29 @@ eines `dataset`. Feldwerte als Properties am Knoten: pro Feld `f_<FELD>` als Lis
 | `TCODE` | Transaktionscode (fachliche `id`) |
 | `PGMNA` | Programmname (optional) |
 
-### 10 — USOBT_C (SU24: Vorschlagswerte) → `CHECKS`
+### 10 — USOBT_C (SU24: Vorschlagswerte) → `CHECKS` + `PROPOSES`
 | Spalte | Verwendung |
 | --- | --- |
 | `NAME` | Transaktionscode |
 | `OBJECT` | Berechtigungsobjekt (SU24-Vorschlag) |
-| `FIELD` | Berechtigungsfeld (optional, Vorschlagswert) |
-| `LOW` | Vorschlags-Von-Wert (optional) |
-| `HIGH` | Vorschlags-Bis-Wert (optional) |
+| `FIELD` | Berechtigungsfeld (Vorschlagswert) |
+| `LOW` | Vorschlags-Von-Wert (kann leer sein — dann ist nur das Feld selbst relevant, ohne Default) |
+| `HIGH` | Vorschlags-Bis-Wert (meist leer, außer bei echten Bereichen) |
 
-Kante `(:Transaction)-[:CHECKS]->(:AuthObject)` aus den eindeutigen (`NAME`, `OBJECT`)-Paaren.
-`USOBT_C` enthält die SU24-Vorschlagsobjekte einer Transaktion (mit Default-Feldwerten); das
-genügt für `CHECKS`. Die Unterscheidung „Prüfung aktiv/unterdrückt" (`USOBX_C.OKFLAG`) fehlt
-damit — bei Bedarf später über das optionale `USOBX_C` präzisieren.
+Kante `(:Transaction)-[:CHECKS]->(:AuthObject)` aus den eindeutigen (`NAME`, `OBJECT`)-Paaren
+(`load/10_su24_checks.cypher`). Zusätzlich (seit 2026-09-08, `load/11_su24_proposals.cypher`) eine
+`(:Transaction)-[:PROPOSES {field, low, high}]->(:AuthObject)`-Kante pro (`NAME`,`OBJECT`,`FIELD`)-
+Zeile — Grundlage für den USOBT-gestützten Query-Builder
+([ROADMAP-V2.md](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege)). `FIELD`/`LOW`/`HIGH`
+sind **bereits im bisherigen Extraktumfang enthalten** (2026-09-08 gegen einen echten Datensatz
+bestätigt, 100% Feldbelegung) — keine zusätzliche SAP-seitige Extraktion nötig, nur bisher
+ungenutzt. `LOW`/`HIGH` können SAP-Parameter-ID-Platzhalter enthalten (`$EKORG`, `$WERKS`, …statt
+eines konkreten Werts) — das markiert ein Org-Ebenen-Feld, analog zu den bereits bekannten
+Org-Feldern der Can-Do-Auswertung.
+
+Die Unterscheidung „Prüfung aktiv/unterdrückt" (`USOBX_C.OKFLAG`) fehlt weiterhin — bei Bedarf
+später über das optionale `USOBX_C` präzisieren (Spaltenname/Wertebedeutung vor Nutzung an einer
+echten Extraktprobe verifizieren, noch **kein** Extrakt vorhanden).
 
 ## Validierung (AE: Importvalidierung)
 

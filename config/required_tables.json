@@ -130,10 +130,22 @@
     "USOBT_C": {
       "fields": [
         "NAME",
-        "OBJECT"
+        "OBJECT",
+        "FIELD",
+        "LOW",
+        "HIGH"
       ],
       "where": null,
-      "notes": "Nicht Teil des CSI-Downloads (SAP-Standard SU24-Vorschlagswerte) -- separat zu exportieren."
+      "notes": "Nicht Teil des CSI-Downloads (SAP-Standard SU24-Vorschlagswerte) -- separat zu exportieren. FIELD/LOW/HIGH (Feld-/Wertvorschlaege je Objekt) sind im bereits vorliegenden Extrakt bestaetigt vorhanden (2026-09-08 gegen einen echten Datensatz geprueft, 100% Feldbelegung) und werden seit load/11_su24_proposals.cypher tatsaechlich geladen (PROPOSES-Kante, Grundlage fuer den USOBT-gestuetzten Query-Builder, s. ROADMAP-V2.md Phase 1) -- vorher nur dokumentiert, aber ungenutzt."
+    },
+    "USOBX_C": {
+      "fields": [
+        "NAME",
+        "OBJECT",
+        "OKFLAG"
+      ],
+      "where": null,
+      "notes": "UNVERIFIZIERT (2026-09-08 nur als Platzhalter angelegt, noch KEIN echter Extrakt vorhanden -- Spaltenname/Wertebedeutung von OKFLAG vor Nutzung an einer echten Extraktprobe pruefen, nicht aus SAP-Doku annehmen). SU24-Pruefkennzeichen (aktiv/unterdrueckt) je (TCode, Objekt) -- ohne diese Tabelle kann der USOBT-gestuetzte Query-Builder auch nicht (mehr) tatsaechlich geprueft Objekte vorschlagen. Absichtlich noch NICHT in 'required'/'optional' aufgenommen, solange die Spalten unverifiziert sind."
     },
     "UST10S": {
       "fields": [
