@@ -259,7 +259,7 @@ unerreichbar).
 **User-Detailseite.** Eigenständige Ansicht (kein Overlay) mit Stammsatz (Name, Typ, Benutzergruppe,
 Status/Sperrgrund, letzter Login, Sleeping, Gültigkeitszeitraum, Passwort-Historie/
 Initialkennwort-Hinweis), darunter ein **Kritikalitätsscore**: höchste vorkommende Stufe als Badge
-plus volle Verteilung darunter (z. B. „15× very critical · 26× critical · …", gezählt über
+plus volle Verteilung darunter (z. B. „N× very critical · M× critical · …", gezählt über
 Einzelfilter-Treffer **und** SoD-Findings zusammen — bewusst kein gewichteter Einzelwert, damit die
 Herleitung immer nachvollziehbar bleibt). Zwei Reiter darunter listen die **Einzelberechtigungen**
 bzw. **SoD**-Treffer dieses Users mit Kritikalitäts-Badge und je einem „Root-Cause"-Button, der

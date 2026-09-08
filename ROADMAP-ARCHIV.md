@@ -1114,7 +1114,7 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
     gezogen, da das Overlay dauerhaft offen bleiben soll, diese Seite aber eine eigenständige Ansicht
     ist.
   - **Kritikalitätsscore**: höchste vorkommende Stufe (aus Einzelfilter-Treffern **und**
-    SoD-Findings zusammen) als Badge, darunter die volle Verteilung („15× very critical · 26×
+    SoD-Findings zusammen) als Badge, darunter die volle Verteilung („N× very critical · M×
     critical · …") — Nutzer-Entscheidung per `AskUserQuestion`: kein gewichteter Einzelwert, um keine
     implizite, schwer nachvollziehbare Gewichtung vorzugeben; die Aufschlüsselung bleibt voll
     auditierbar.

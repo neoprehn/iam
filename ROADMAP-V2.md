@@ -56,7 +56,7 @@ ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Ba
      Property — mehrere Felder je Objekt bzw. abweichende Werte je TCode sind der Normalfall,
      mehrere Kanten zwischen denselben zwei Knoten sind dafür in Neo4j unproblematisch).
      `required_tables.json` dokumentiert die Spalten jetzt mit; live gegen den echten Datensatz
-     verifiziert (265.309 Zeilen, 0 Fehler, TCode `ME11`-Vorschläge decken sich exakt mit der schon
+     verifiziert (fehlerfrei durchgelaufen, TCode `ME11`-Vorschläge decken sich exakt mit der schon
      bekannten Testquery `3003_MM-PUR`) — inkl. Fund, dass `LOW`/`HIGH` SAP-Parameter-ID-Platzhalter
      (`$EKORG`, `$WERKS`, …) statt konkreter Werte tragen können, ein Signal für Org-Ebenen-Felder.
      Details in [`extraktionsleitfaden.md`](docs/extraktionsleitfaden.md#10--usobt_c-su24-vorschlagswerte--checks--proposes).
