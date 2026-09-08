@@ -509,6 +509,7 @@
     "legendProfile": "Profil",
     "legendTechnical": "technisch",
     "legendOrphaned": "verwaist",
+    "legendVia": "Treffer über generiertes Profil",
     "legendColorHint": "Klick auf den Farbpunkt ändert die Farbe",
     "kindQuery": "Einzelberechtigung(en)",
     "kindSod": "SoD-Regel(n)",

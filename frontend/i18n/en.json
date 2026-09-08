@@ -509,6 +509,7 @@
     "legendProfile": "Profile",
     "legendTechnical": "technical",
     "legendOrphaned": "orphaned",
+    "legendVia": "Match via generated profile",
     "legendColorHint": "Click the color dot to change it",
     "kindQuery": "single authorization(s)",
     "kindSod": "SoD rule(s)",

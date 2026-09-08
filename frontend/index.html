@@ -261,6 +261,10 @@
   .ft-legend-swatch { display:inline-block; width:11px; height:11px; border-radius:3px; }
   .ft-legend-swatch.dashed { background:transparent; border:2px dashed var(--muted); }
   .ft-legend-swatch.orphaned { background:transparent; border:2px solid var(--crit); }
+  /* "via generiertes Profil" ist ein Kanten-, kein Knoten-Modifier -- Swatch daher eine kurze
+     gestrichelte Linie statt eines Quadrats (s. rcCyStyle .rc-via, RC_LEGEND). */
+  .ft-legend-swatch.via { width:16px; height:0; border-radius:0; background:transparent;
+    border:none; border-top:2px dashed var(--crit); margin-top:5px; }
   /* Farbige Legenden-Punkte sind klickbar (natives <input type=color>, unsichtbar ueber dem
      Swatch liegend) -- Klick irgendwo im Label oeffnet den Systemfarbwaehler, s. legendChipHtml(). */
   .ft-legend-chip.clickable { cursor:pointer; }
@@ -3620,6 +3624,7 @@ const RC_LEGEND = [
   { cls: 'rc-profile', key: 'graph.legendProfile' },
   { modifier: 'dashed', key: 'graph.legendTechnical' },
   { modifier: 'orphaned', key: 'graph.legendOrphaned' },
+  { modifier: 'via', key: 'graph.legendVia' },
 ];
 function rcRenderLegend() {
   $('rcLegend').innerHTML = RC_LEGEND.map(legendChipHtml).join('');
