@@ -492,6 +492,8 @@
     "viaProfile": "über generiertes Profil {id}",
     "viaRole": "über enthaltene Rolle {id}",
     "ownDefinition": "eigene Definition",
+    "noGeneratedProfileMatch": "kein passendes generiertes Profil gefunden — evtl. nicht laufzeitaktiv (D4)",
+    "divergesFromProfile": "weicht vom generierten Profil ab (D4)",
     "coincidesProfile": "Definition = generiertes Profil {id}",
     "techGen": "technisch, generiert",
     "techGenOrphan": "technisch generiert — erzeugende Rolle nicht mehr im Bestand, laut UST04 trotzdem aktiv",

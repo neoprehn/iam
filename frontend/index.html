@@ -2354,11 +2354,29 @@ function rcActorDetail(a) {
    (eigene Definition / generiertes Profil / enthaltene Sammelrolle) -- Nutzer-Fund: die bisherige
    durchgezogen/gestrichelt-Unterscheidung war ohne Erklaerung nicht selbsterklaerend, vor allem
    wenn dieselbe (dedupte) Rolle manche Objekte "eigene Definition", andere "via Profil" abdeckt.
-   Ersetzt die Randstil-Unterscheidung durch einheitlichen Kantenstil + Hover-Text. */
-function rcContainsDetail(a) {
+   Ersetzt die Randstil-Unterscheidung durch einheitlichen Kantenstil + Hover-Text.
+   `siblings` = alle (auch nicht sichtbaren, s. rcVisibleActor) satisfiedBy-Eintraege desselben
+   Objekts VOR dem Sichtbarkeits-Filter (analog zu `collapsed` in renderRootCause) -- nur so laesst
+   sich pruefen, ob fuer eine bare "eigene Definition" (kein via, kein coincidesProfile) ueberhaupt
+   ein generiertes Profil mit einem Treffer existiert. Direkte Nachfrage des Nutzers: "wird diese
+   Rolle wirklich aktiv, wenn sie nicht ueber ein Profil kommt?" -- Antwort laut SAP-Mechanik: nur
+   wenn ihr generiertes Profil dieselbe Berechtigung tatsaechlich trägt (s. Konsistenzcheck D4,
+   stale_profile_generation.cypher); fehlt das komplett oder weicht es ab, ist die Berechtigung laut
+   Design zwar gepflegt, aber ggf. NICHT laufzeitwirksam -- bisher weder in Tabelle noch Graph
+   markiert, wenn das generierte Profil fuer dieses Objekt GAR KEINEN Treffer hat (nur die Werte-
+   Abweichung bei VORHANDENEM Profiltreffer wurde erkannt, s. divergenceLink in renderRootCause). */
+function rcContainsDetail(a, siblings) {
   if (a.via) return a.via.type === 'Role' ? I18N.t('graph.viaRole', { id: a.via.id }) : I18N.t('graph.viaProfile', { id: a.via.id });
   if (a.coincidesProfile) return I18N.t('graph.coincidesProfile', { id: a.coincidesProfile });
-  return I18N.t('graph.ownDefinition');
+  const base = I18N.t('graph.ownDefinition');
+  if (a.actorType !== 'Role' || !siblings) return base;
+  const viaSiblings = siblings.filter(x => x.actorType === 'Role' && x.actorId === a.actorId
+    && x.via && x.via.type === 'Profile');
+  const warn = t => `${base}<br><span style="color:var(--crit)">${t}</span>`;
+  if (!viaSiblings.length) return warn(I18N.t('graph.noGeneratedProfileMatch'));
+  const ownMap = authValuesMap(a.authValues);
+  const diverges = viaSiblings.every(s => !sameAuthValues(ownMap, authValuesMap(s.authValues)));
+  return diverges ? warn(I18N.t('graph.divergesFromProfile')) : base;
 }
 function rcBuildGraph(data, mode) {
   let seq = 0; const gid = p => `rc_${p}_${seq++}`;
@@ -2381,7 +2399,11 @@ function rcBuildGraph(data, mode) {
     N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, isTcode ? 'rc-obj-tcode' : 'rc-obj-bo', ring.object,
       `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">${I18N.t('graph.requirement', { req: reqText })}</span>` : ''}`);
     E(parentId, on, '', I18N.t('graph.and'));
-    const actors = rcCollapseActors(o.satisfiedBy || []).filter(rcVisibleActor);
+    // allActors (ungefiltert) fuer rcContainsDetail's Profil-Abgleich mitfuehren -- der
+    // Sichtbarkeits-Filter (rcVisibleActor, z. B. "ohne technische") darf die Pruefung "hat diese
+    // Rolle ueberhaupt ein passendes generiertes Profil" nicht verfaelschen.
+    const allActors = rcCollapseActors(o.satisfiedBy || []);
+    const actors = allActors.filter(rcVisibleActor);
     if (!actors.length) {
       const nn = gid('a'); N(nn, I18N.t('graph.noActorLabel'), 'rc-object', ring.actor,
         '<span style="color:var(--muted)">' + I18N.t('graph.noActorDetail') + '</span>'); E(on, nn); return;
@@ -2393,7 +2415,7 @@ function rcBuildGraph(data, mode) {
       // aber als "Rolle/Profil CONTAINS Objekt" (Nutzer-Fund: "ODER" war pro Einzelkante irrefuehrend,
       // die eigentliche Semantik ist die Kantenart CONTAINS aus AE-04 -- englisch, analog zu
       // ASSIGNED_TO/HAS_AUTH) -- daher 'rc-contains' fuer den optisch umgedrehten Pfeil.
-      if (actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains', 'CONTAINS', rcContainsDetail(a)); return; }
+      if (actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains', 'CONTAINS', rcContainsDetail(a, allActors)); return; }
       const an = gid('a'); const cls = ['rc-' + (a.actorType === 'Role' ? 'role' : 'profile')];
       if (a.technical) cls.push('rc-technical');
       if (a.orphaned) cls.push('rc-orphaned');
@@ -2403,7 +2425,7 @@ function rcBuildGraph(data, mode) {
         cls.join(' '), ring.actor, rcActorDetail(a),
         (a.actorType === 'Role' && rcReturnTo !== 'consistency') ? { roleId: a.actorId } : null);
       actorCache.set(key, an);
-      E(on, an, 'rc-contains', 'CONTAINS', rcContainsDetail(a));
+      E(on, an, 'rc-contains', 'CONTAINS', rcContainsDetail(a, allActors));
     });
   }
   const topIsRule = !!data.ruleId;
@@ -4565,12 +4587,20 @@ function renderRootCause(data) {
       // Weicht die eigene Rollendefinition (kein "via") fuer DASSELBE Objekt von dem ab, was ihr
       // generiertes Profil tatsaechlich traegt, ist das genau der Fall, den Konsistenzcheck D4
       // ("veraltete/nicht generierte Profile") behandelt -- direkter Sprung dorthin statt nur
-      // einer Erklaerung, da der Nutzer sich das sonst selbst zusammensuchen muesste.
+      // einer Erklaerung, da der Nutzer sich das sonst selbst zusammensuchen muesste. Zwei Faelle:
+      // (a) ein generiertes Profil existiert fuer dieses Objekt, hat aber ABWEICHENDE Werte, oder
+      // (b) es existiert ueberhaupt KEIN generiertes Profil mit einem Treffer fuer dieses Objekt
+      // (Nutzer-Fund: Fall (b) wurde bisher gar nicht geprueft/markiert, obwohl er der schwerer-
+      // wiegende ist -- die Berechtigung ist dann laut SAP-Profilgenerierung-Mechanik gar nicht
+      // laufzeitwirksam, nicht nur mit abweichenden Werten). Nur fuer Rollen relevant -- direkt
+      // zugewiesene Profile SIND bereits die Laufzeitquelle selbst, brauchen keine Generierung.
       const divergenceLink = a => {
-        if (a.via || a.coincidesProfile) return '';
+        if (a.via || a.coincidesProfile || a.actorType !== 'Role') return '';
         const viaSiblings = collapsed.filter(x => x.actorType === a.actorType
           && x.actorId === a.actorId && x.via && x.via.type === 'Profile');
-        if (!viaSiblings.length) return '';
+        if (!viaSiblings.length) {
+          return nowrap('<a href="#" class="rcD4Link" data-checkid="D4">kein passendes generiertes Profil gefunden &middot; D4</a>');
+        }
         const ownMap = authValuesMap(a.authValues);
         const diverges = viaSiblings.every(s => !sameAuthValues(ownMap, authValuesMap(s.authValues)));
         return diverges ? nowrap('<a href="#" class="rcD4Link" data-checkid="D4">weicht vom generierten Profil ab &middot; D4</a>') : '';

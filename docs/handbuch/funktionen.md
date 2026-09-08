@@ -288,14 +288,19 @@ Berechtigungsinstanzen bzw. eine Design-≠-Generiert-Divergenz:
 | **(über enthaltene Rolle X)** | Die angezeigte Rolle ist eine **Sammelrolle**, die Rolle X als Einzelrolle bündelt (`CONTAINS`); X selbst trägt die Berechtigung. |
 
 Fallen „eigene Definition" und „generiertes Profil" für **dasselbe** Berechtigungsobjekt
-**auseinander** (unterschiedliche Werte je Feld), erscheint zusätzlich ein roter Link
-**„weicht vom generierten Profil ab · D4"**, der direkt zur Detailansicht des Konsistenzchecks
-**D4** („veraltete/nicht generierte Profile") springt. Hintergrund: in SAP wird eine Rolle erst
-nach dem Generieren des Profils zur Laufzeit wirksam — weicht die gepflegte Definition vom
-generierten Profil ab, zeigt die „eigene Definition"-Zeile etwas, das ggf. **nicht** (mehr) aktiv
-ist. Diese Annahme (Rollendefinition ≈ generiertes Profil) ist keine Root-Cause-Eigenheit, sondern
-gilt für die gesamte Can-Do-/SoD-Auswertung der App (`materialize_matches_*.cypher`); D4 ist der
-dafür vorgesehene Konsistenzcheck.
+**auseinander**, erscheint zusätzlich ein roter Link, der direkt zur Detailansicht des
+Konsistenzchecks **D4** („veraltete/nicht generierte Profile") springt — in zwei Ausprägungen:
+**„weicht vom generierten Profil ab · D4"** (Profil existiert für dieses Objekt, hat aber
+unterschiedliche Werte je Feld) und **„kein passendes generiertes Profil gefunden · D4"** (das
+generierte Profil hat für dieses Objekt **gar keinen** Treffer — der schwerwiegendere Fall, ohne
+Werteabgleich). Hintergrund: in SAP wird eine Rolle erst nach dem Generieren des Profils zur
+Laufzeit wirksam — weicht die gepflegte Definition vom generierten Profil ab oder fehlt der
+Profiltreffer ganz, zeigt die „eigene Definition"-Zeile etwas, das ggf. **nicht** (mehr) aktiv ist.
+Diese Annahme (Rollendefinition ≈ generiertes Profil) ist keine Root-Cause-Eigenheit, sondern gilt
+für die gesamte Can-Do-/SoD-Auswertung der App (`materialize_matches_*.cypher`); D4 ist der dafür
+vorgesehene Konsistenzcheck. In den **Graph-Ansichten** steht dieselbe Prüfung (ohne klickbaren
+Link, da der Hover-Tooltip nicht interaktiv ist) als zusätzliche rote Zeile im Kanten-Tooltip der
+betroffenen Rolle.
 
 **Gruppierung + Werte-Filter.** Eine Rolle mit **mehreren Berechtigungsinstanzen** für dasselbe
 Objekt (in SAP zulässig; die Instanzen dürfen **nicht** aggregiert werden, s. AE-03) erscheint

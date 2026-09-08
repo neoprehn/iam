@@ -492,6 +492,8 @@
     "viaProfile": "via generated profile {id}",
     "viaRole": "via contained role {id}",
     "ownDefinition": "own definition",
+    "noGeneratedProfileMatch": "no matching generated profile found — may not be active at runtime (D4)",
+    "divergesFromProfile": "diverges from generated profile (D4)",
     "coincidesProfile": "definition = generated profile {id}",
     "techGen": "technical, generated",
     "techGenOrphan": "technically generated — generating role no longer in inventory, still active per UST04",

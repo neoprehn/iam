@@ -1162,6 +1162,30 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   CONTAINS-Kante hat ein sinnvolles `detail` („eigene Definition" bzw. „über generiertes Profil …"),
   simuliertes Kanten-`mouseover` zeigt den erwarteten Text im Tooltip-Element; Legende zeigt 10 statt
   11 Chips (kein „via" mehr); keine neuen Konsolenfehler.
+- [x] **D4-Divergenzpruefung um den Fall "kein generiertes Profil gefunden" erweitert** (2026-09-08,
+  direkte Rueckfrage des Nutzers zum vorigen Fund: "wird die Rolle wirklich aktiv, wenn sie nicht
+  ueber ein Profil kommt?"). Antwort per echtem Beispiel verifiziert (API-Antwort + `rcCollapseActors`/
+  `rcContainsDetail` live im Browser durchgerechnet, nicht nur behauptet): fuer die im Screenshot
+  gezeigte Rolle war eigene Definition und generiertes Profil tatsaechlich wertidentisch (kollabiert
+  zu **einer** Zeile "Definition = generiertes Profil X") -- also wirklich aktiv. Dabei aber eine
+  echte Lücke gefunden: der bisherige D4-Divergenzlink (`divergenceLink` in `renderRootCause`)
+  prüfte nur den Fall "generiertes Profil existiert, hat aber ABWEICHENDE Werte" -- den
+  schwerer wiegenden Fall "generiertes Profil hat für dieses Objekt GAR KEINEN Treffer" (Berechtigung
+  nur design-seitig gepflegt, nie generiert) prüfte er gar nicht, obwohl er nach SAP-Mechanik
+  (Profilgenerierung ist Voraussetzung für Laufzeitwirksamkeit) der kritischere ist. Auf
+  Nutzer-Bestätigung ergänzt: `divergenceLink` prüft jetzt zusätzlich auf fehlenden Profiltreffer
+  (roter Link „kein passendes generiertes Profil gefunden · D4"), nur für Rollen-Akteure (direkt
+  zugewiesene Profile brauchen keine Generierung). Dieselbe Prüfung auch im Graphen nachgezogen:
+  `rcContainsDetail(a, siblings)` bekommt jetzt die ungefilterte Geschwisterliste des Objekts
+  (`allActors` vor `rcVisibleActor`-Filter, sonst würde z. B. der „ohne technische"-Modus die Prüfung
+  verzerren) und hängt bei fehlendem/abweichendem Profiltreffer eine rote Zusatzzeile an den
+  Kanten-Hover (kein klickbarer Link möglich, `#rcTip` ist `pointer-events:none`).
+  Mit Playwright verifiziert: vier synthetische Testfälle (fehlender Treffer/abweichende Werte/
+  identische Werte/direkt zugewiesenes Profil) liefern exakt die erwarteten Texte; gegen echte Daten
+  lief das neu **tatsächlich an** — eine Rolle mit generiertem Profil, das für alle 4 benötigten
+  Objekte KEINEN Treffer hat, wurde vorher komplett unauffällig angezeigt, zeigt jetzt in Tabelle
+  UND Graph konsistent die neue Warnung; die zuvor schon geprüften, unauffälligen Rollen (werteidentisch
+  kollabiert) lösen weiterhin korrekt KEINE Warnung aus (kein Regressions-Fehlalarm).
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
