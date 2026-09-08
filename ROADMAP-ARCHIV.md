@@ -1057,6 +1057,17 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   korrektem Text statt Rohschlüssel; Farbwahl aktualisiert Swatch, Graph-Knotenfarbe **und**
   `localStorage` synchron; Profil-Filter „alle" zeigt zusätzlich den deduplizierten Profil-Knoten,
   weiterhin ohne Duplikate).
+- [x] **Vollbild-Phantomzustand nach Rollen-Klick** (2026-09-08, Nutzer-Fund direkt im Anschluss:
+  „Detaillierung erscheint okay, Zurück-Button ist aber außer Funktion im Vollbild"): Klick auf
+  einen Rollen-Knoten im Vollbild-Pfad-/Radialgraph öffnet die Rollen-Detailseite, die dafür
+  `#rootCauseView` (Vorfahr des Vollbild-Elements `#rcGraphWrap`) per `display:none` versteckt.
+  Der Browser bleibt dabei in einem Phantom-Vollbildzustand (`document.fullscreenElement` weiterhin
+  gesetzt, obwohl das Element unsichtbar ist) — `<html>` fängt danach jeden Klick im Dokument ab,
+  u. a. den „Zurück"-Button der Rollen-Detailseite (per Playwright reproduziert: Klick schlägt mit
+  „`<html>` intercepts pointer events" fehl). Fix: neue `rcHideView()` beendet ein aktives Vollbild
+  zuerst explizit (`document.exitFullscreen()`), bevor `#rootCauseView` versteckt wird; alle sieben
+  Stellen im Code, die das bisher direkt taten, rufen jetzt diese Funktion. Mit Playwright erneut
+  verifiziert: derselbe Klickpfad funktioniert fehlerfrei, Vollbild endet korrekt beim Rollen-Klick.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
