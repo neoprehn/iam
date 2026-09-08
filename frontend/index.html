@@ -659,6 +659,25 @@
       <div id="rdContent" style="margin-top:12px"></div>
     </div>
 
+    <!-- Nutzer-Detailseite (aus dem Root-Cause-Graph per Rechtsklick auf den User-Knoten,
+         s. rcNodeActions). Stammsatz + Kritikalitaetsscore immer sichtbar, Einzelberechtigungen/
+         SoD-Treffer darunter als Reiter -- Aufbau analog zur Rollen-Detailseite oben. -->
+    <div id="userDetailView" style="display:none">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:6px">
+        <h2 style="margin:0"><span data-i18n="userDetailPage.heading">User</span> <span class="muted" id="udpTitle" style="font-weight:400"></span></h2>
+        <button class="ghost" id="udpBackBtn" style="width:auto;display:inline-block;padding:4px 10px;font-size:12px" data-i18n="userDetailPage.back">&larr; zur&uuml;ck</button>
+      </div>
+      <div id="udpStamm" style="margin-bottom:12px"></div>
+      <div id="udpCrit" style="margin-bottom:16px"></div>
+      <div class="resultbar">
+        <div class="pillgroup" id="udpTabPills">
+          <button type="button" class="pill active" data-tab="queries" data-i18n="userDetailPage.tabQueries">Einzelberechtigungen</button>
+          <button type="button" class="pill" data-tab="sod" data-i18n="userDetailPage.tabSod">SoD</button>
+        </div>
+      </div>
+      <div id="udpContent" style="margin-top:12px"></div>
+    </div>
+
     <!-- Ergebnisse-Uebersicht: pro Query/Regel Anzahl Nutzer -- Klick filtert die normale
          Findings-/Matches-Ansicht (dieselbe Logik wie die "nach User filtern"-Zelle). -->
     <div id="summaryView" style="display:none">
@@ -2286,7 +2305,10 @@ function rcNodeActions(n) {
     { label: I18N.t('rc.ctxRuleMasterdata'), run: () => openRuleMasterdata(ruleId) },
   ];
   const uid = n.data('userId');
-  if (uid) return [{ label: I18N.t('rc.ctxUserResult'), run: () => jumpToUserFilter(uid) }];
+  if (uid) return [
+    { label: I18N.t('rc.ctxUserResult'), run: () => jumpToUserFilter(uid) },
+    { label: I18N.t('rc.ctxUserDetail'), run: () => openUserDetailPage(uid) },
+  ];
   return [];
 }
 function rcShowContextMenu(ev, actions) {
@@ -4016,6 +4038,119 @@ async function rdRenderTab(tab) {
 }
 document.querySelectorAll('#rdTabPills .pill').forEach(b => b.addEventListener('click', () => rdRenderTab(b.dataset.tab)));
 $('rdBackBtn').onclick = () => { $('roleDetailView').style.display = 'none'; showRootCauseView(); };
+
+/* ── Nutzer-Detailseite (aus dem Root-Cause-Graph per Rechtsklick auf den User-Knoten, s.
+   rcNodeActions/openUserDetailPage) -- Stammsatz (dieselben Felder wie die kompakte
+   openUserDetailOverlay der Baum-Vollansicht) + Kritikalitaetsscore + Einzelberechtigungen-/SoD-
+   Reiter, Aufbau analog zur Rollen-Detailseite oben. Beide Reiter greifen bewusst auf die
+   ohnehin vorhandenen /matches bzw. /findings-Endpunkte zurueck (kein neuer Endpunkt nötig) --
+   Kritikalitaet der Einzelfilter kommt aus queriesCache (bereits fuer den aktiven Lauf geladen). */
+let udpUserId = null, udpData = null, udpMatches = null, udpFindings = null, udpTab = 'queries';
+function showUserDetailPageView() {
+  $('resultContext').style.display = 'none';
+  $('kpis').style.display = 'none';
+  $('causingActors').style.display = 'none';
+  $('consistencyView').style.display = 'none';
+  $('consistencyResultView').style.display = 'none';
+  document.querySelector('main .cols').style.display = '';
+  $('colsRight').style.display = 'none';
+  $('colsLeft').style.display = rcReturnTo === 'results' ? '' : 'none';
+  rcHideView();   // beendet ein aktives Vollbild zuerst explizit, s. Kommentar an rcHideView
+  $('roleDetailView').style.display = 'none';
+  $('summaryView').style.display = 'none';
+  $('userListView').style.display = 'none';
+  if ($('assistentView')) $('assistentView').style.display = 'none';
+  $('userDetailView').style.display = '';
+}
+async function openUserDetailPage(userId) {
+  // Nur aus dem lauf-basierten Root-Cause -- dort ist das Dataset ueber activeRunId eindeutig
+  // (analog zur Guard-Klausel in openRoleDetail).
+  if (!activeRunId || rcReturnTo === 'consistency') return;
+  udpUserId = userId; udpData = null; udpMatches = null; udpFindings = null; udpTab = 'queries';
+  $('udpTitle').textContent = userId;
+  $('udpStamm').innerHTML = `<div class="muted">${I18N.t('common.loadingDots')}</div>`;
+  $('udpCrit').innerHTML = '';
+  $('udpContent').innerHTML = '';
+  document.querySelectorAll('#udpTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === 'queries'));
+  showUserDetailPageView();
+  try {
+    const [detail, matches, findings] = await Promise.all([
+      api('/users/' + encodeURIComponent(userId) + '/detail?runId=' + encodeURIComponent(activeRunId)),
+      api('/matches?runId=' + encodeURIComponent(activeRunId) + '&user=' + encodeURIComponent(userId)),
+      api('/findings?runId=' + encodeURIComponent(activeRunId) + '&user=' + encodeURIComponent(userId) + '&limit=500'),
+    ]);
+    udpData = detail; udpMatches = matches; udpFindings = findings;
+    udpRenderStammdaten();
+    udpRenderCrit();
+    udpRenderTab('queries');
+  } catch (err) {
+    $('udpStamm').innerHTML = `<div class="muted">${esc(I18N.t('msg.error', { detail: err.detail || JSON.stringify(err) }))}</div>`;
+  }
+}
+// Dieselben Felder/Zeilen wie die kompakte openUserDetailOverlay (Baum-Vollansicht) -- bewusst
+// nicht in eine gemeinsame Funktion gezogen, da die Overlay-Variante staendig offen bleiben soll
+// (siehe deren Kommentar), waehrend diese Seite eine eigenstaendige Ansicht ist.
+function udpRenderStammdaten() {
+  const d = udpData; if (!d) { $('udpStamm').innerHTML = ''; return; }
+  $('udpStamm').innerHTML = '<table style="border-collapse:collapse;font-size:13px">'
+    + rdRow(I18N.t('userList.colName'), esc(d.name) || '–')
+    + rdRow(I18N.t('userDetail.type'), esc(d.userType))
+    + rdRow(I18N.t('userList.colUserGroup'), esc(d.userGroup) || '–')
+    + rdRow(I18N.t('userDetail.status'), d.locked ? I18N.t('userDetail.locked') + (d.lockReasons.length ? ' (' + d.lockReasons.map(esc).join(', ') + ')' : '') : I18N.t('userDetail.active'))
+    + rdRow(I18N.t('userList.colLastLogon'), rdFmtDate(d.lastLogon))
+    + rdRow(I18N.t('userDetail.sleeping'), d.sleeping ? I18N.t('userDetail.yes') : (d.lastLogonKnown === false ? I18N.t('userDetail.unknownNoLogon') : I18N.t('userDetail.no')))
+    + rdRow(I18N.t('userDetail.validRange'), `${rdFmtDate(d.validFrom)} &ndash; ${rdFmtDate(d.validTo)}`)
+    + rdRow(I18N.t('userDetail.pwdChanged'), rdFmtDate(d.pwdChgDate))
+    + rdRow(I18N.t('userDetail.pwdSet'), rdFmtDate(d.pwdSetDate))
+    + rdRow(I18N.t('userDetail.pwdInitialLabel'), d.pwdInitial === '1' ? I18N.t('userDetail.yes') : d.pwdInitial === '2' ? I18N.t('userDetail.pwdInitialMaybe') : I18N.t('userDetail.no'))
+    + '</table>';
+}
+// Kritikalitaetsscore = hoechste vorkommende Stufe + Verteilung (Nutzer-Entscheid: kein
+// gewichteter Einzelwert, um keine implizite, schwer nachvollziehbare Gewichtung vorzugeben --
+// die Aufschluesselung ist selbsterklaerend und bleibt voll auditierbar).
+function udpRenderCrit() {
+  const dist = {};
+  (udpMatches || []).forEach(m => {
+    const q = queriesCache.find(x => x.id === m.query);
+    if (q && q.criticality) dist[q.criticality] = (dist[q.criticality] || 0) + 1;
+  });
+  (udpFindings || []).forEach(f => { if (f.criticality) dist[f.criticality] = (dist[f.criticality] || 0) + 1; });
+  const levels = Object.keys(dist).sort((a, b) => (CRIT_RANK[b] || 0) - (CRIT_RANK[a] || 0));
+  if (!levels.length) {
+    $('udpCrit').innerHTML = `<b>${I18N.t('userDetailPage.critLabel')}</b> <span class="muted">${I18N.t('common.none')}</span>`;
+    return;
+  }
+  const breakdown = levels.map(l => `${dist[l]}&times; ${critTag(l)}`).join(' &middot; ');
+  $('udpCrit').innerHTML = `<div><b>${I18N.t('userDetailPage.critLabel')}</b> ${critTag(levels[0])}</div>`
+    + `<div class="sub" style="margin-top:4px">${breakdown}</div>`;
+}
+function udpRenderTab(tab) {
+  udpTab = tab;
+  document.querySelectorAll('#udpTabPills .pill').forEach(x => x.classList.toggle('active', x.dataset.tab === tab));
+  const box = $('udpContent');
+  if (tab === 'queries') {
+    const rows = (udpMatches || []).map(m => {
+      const q = queriesCache.find(x => x.id === m.query) || {};
+      return { id: m.query, name: q.shortDescription || q.description || '', criticality: q.criticality };
+    });
+    box.innerHTML = `<div class="sub">${I18N.t('userDetailPage.queriesSub', { count: rows.length })}</div>`
+      + (rows.length ? rdList(rows.map(x => `<b>${esc(x.id)}</b>${x.name ? ' &middot; ' + esc(x.name) : ''}`
+          + `${x.criticality ? ' ' + critTag(x.criticality) : ''}`
+          + `<button type="button" class="ghost" style="float:right;padding:2px 8px;font-size:11px" data-q="${esc(x.id)}">${I18N.t('table.rootCause')}</button>`))
+          : `<div class="muted">${I18N.t('common.none')}</div>`);
+    box.querySelectorAll('[data-q]').forEach(b => b.onclick = () => openRootCause(udpUserId, { query: b.dataset.q }));
+  } else {
+    const rows = udpFindings || [];
+    box.innerHTML = `<div class="sub">${I18N.t('userDetailPage.sodSub', { count: rows.length })}</div>`
+      + (rows.length ? rdList(rows.map(x => `<b>${esc(x.rule)}</b>${sodRuleNames[x.rule] ? ' &middot; ' + esc(sodRuleNames[x.rule]) : ''}`
+          + `${x.criticality ? ' ' + critTag(x.criticality) : ''}`
+          + `<button type="button" class="ghost" style="float:right;padding:2px 8px;font-size:11px" data-r="${esc(x.rule)}">${I18N.t('table.rootCause')}</button>`))
+          : `<div class="muted">${I18N.t('common.none')}</div>`);
+    box.querySelectorAll('[data-r]').forEach(b => b.onclick = () => openRootCause(udpUserId, { rule: b.dataset.r }));
+  }
+}
+document.querySelectorAll('#udpTabPills .pill').forEach(b => b.addEventListener('click', () => udpRenderTab(b.dataset.tab)));
+$('udpBackBtn').onclick = () => { $('userDetailView').style.display = 'none'; showRootCauseView(); };
 
 /* ── Generische Sortierbarkeit fuer Ergebnistabellen: Klick auf eine <th data-sort-key> sortiert
    die zugrundeliegende Zeilenliste (in-place) und rendert per Callback neu. Drei-Stufen-Zyklus je

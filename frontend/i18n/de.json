@@ -201,6 +201,7 @@
     "ctxRuleResult": "SoD-Ergebnis anzeigen",
     "ctxRuleMasterdata": "SoD-Regel-Details (Masterdata)",
     "ctxUserResult": "User-Auswertung anzeigen",
+    "ctxUserDetail": "User-Detail",
     "userPrefix": "Nutzer: {user}",
     "targetQuery": "· Query {query}",
     "targetRule": "· Regel {rule}",
@@ -674,6 +675,15 @@
     "pwdSet": "Passwort gesetzt",
     "pwdInitialLabel": "Initialkennwort (nie geändert)",
     "pwdInitialMaybe": "vermutlich (unsicher)"
+  },
+  "userDetailPage": {
+    "heading": "User",
+    "back": "← zurück",
+    "tabQueries": "Einzelberechtigungen",
+    "tabSod": "SoD",
+    "critLabel": "Kritikalität:",
+    "queriesSub": "{count} identifizierte Einzelberechtigung(en)",
+    "sodSub": "{count} SoD-Verstoß/Verstöße"
   },
   "errorLog": {
     "none": "Keine Fehler aufgezeichnet."

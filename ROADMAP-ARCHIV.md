@@ -1101,6 +1101,36 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   (nach dem Options-Fix); Rechtsklick auf Query zeigt Kontextmenü mit beiden Einträgen, zweiter
   Eintrag öffnet `admin.html` im neuen Tab mit korrekt vorausgewähltem Ruleset+Query (`amTitle`
   zeigt den erwarteten Eintrag).
+- [x] **Nutzerzentrische Auswertung (neue User-Detail-Seite)** (2026-09-08, Nutzer-Wunsch: „den
+  Nutzer im Detail ein wenig tieferlegen" — Stammsatz, Kritikalitätsscore, Reiter für identifizierte
+  Einzelberechtigungen und SoDs). Erreichbar über den zweiten Kontextmenü-Eintrag beim Rechtsklick
+  auf einen User-Knoten im Root-Cause-Graphen (`rcNodeActions` → `openUserDetailPage(uid)`, neben
+  dem bereits vorhandenen „User-Auswertung anzeigen"). Kein Backend-Aufwand nötig — greift auf drei
+  ohnehin vorhandene Endpunkte parallel zurück (`/users/{id}/detail`, `/matches`, `/findings`,
+  jeweils mit `runId`/`user`-Filter).
+  - **Stammsatz**: dieselben Felder wie die kompakte Baum-Vollansichts-Übersicht (Name, Typ,
+    Benutzergruppe, Status/Sperrgrund, letzter Login, Sleeping, Gültigkeitszeitraum,
+    Passwort-Historie/Initialkennwort-Hinweis) — bewusst keine gemeinsame Funktion mit dem Overlay
+    gezogen, da das Overlay dauerhaft offen bleiben soll, diese Seite aber eine eigenständige Ansicht
+    ist.
+  - **Kritikalitätsscore**: höchste vorkommende Stufe (aus Einzelfilter-Treffern **und**
+    SoD-Findings zusammen) als Badge, darunter die volle Verteilung („15× very critical · 26×
+    critical · …") — Nutzer-Entscheidung per `AskUserQuestion`: kein gewichteter Einzelwert, um keine
+    implizite, schwer nachvollziehbare Gewichtung vorzugeben; die Aufschlüsselung bleibt voll
+    auditierbar.
+  - **Zwei Reiter** („Einzelberechtigungen"/„SoD"): Liste der jeweiligen Treffer mit Kritikalitäts-
+    Badge, pro Zeile ein „Root-Cause"-Knopf, der direkt in den bekannten Root-Cause-Graphen zum
+    jeweiligen Query/Regel-Paar springt (`openRootCause(userId, { query })`
+    bzw. `{ rule }`).
+  - **Rückweg**: eigene `showUserDetailPageView()` (analog zur Rollen-Detailseite) blendet alle
+    anderen Ansichten aus und ruft vorher `rcHideView()` auf, damit ein aktives Vollbild zuerst
+    zuverlässig beendet wird — sonst griffe hier derselbe Vollbild-Phantomzustand-Bug wie beim
+    Rollen-Detail-Zurück-Button oben.
+  Mit Playwright gegen den laufenden Container verifiziert: Rechtsklick auf den User-Knoten (Pfad-
+  Ansicht) zeigt beide Kontextmenü-Einträge, zweiter Eintrag öffnet die neue Seite mit korrektem
+  Titel, Stammsatz, Kritikalitäts-Badge+Verteilung und beiden Reitern (Einzelberechtigungen/SoD)
+  inkl. funktionierendem Root-Cause-Sprung aus beiden Reitern heraus; „Zurück" verlässt die Seite
+  korrekt und zeigt den Root-Cause-Graphen wieder an; keine neuen Konsolenfehler.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem

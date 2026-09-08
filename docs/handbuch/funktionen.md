@@ -244,10 +244,22 @@ hervorzuheben: **User** → auf diesen User gefilterte Ergebnisliste, **Query** 
 Klausel, Objekt-/TCode-Kästchen) bleibt es beim Pfad-Hervorheben (Rest ausgegraut). **Rechtsklick**
 auf einen Knoten mit mehr als einer sinnvollen Aktion öffnet stattdessen ein Kontextmenü — bei Query
 und SoD-Regel z. B. sowohl „Ergebnis anzeigen" als auch „Details (Masterdata)"; Letzteres öffnet das
-Query Management in einem neuen Tab mit bereits ausgewähltem Ruleset und Eintrag. „Einpassen"
+Query Management in einem neuen Tab mit bereits ausgewähltem Ruleset und Eintrag. Beim **User**-Knoten
+bietet das Kontextmenü zusätzlich zu „User-Auswertung anzeigen" (gefilterte Ergebnisliste) den Eintrag
+**„User-Detail"** — öffnet die Nutzer-Detailseite (s. u.). „Einpassen"
 zentriert die Ansicht, auch bei aktivem Vollbild klickbar (Fit-/Vollbild-Knopf liegen dafür
 innerhalb des Graph-Canvas, nicht in der Werkzeugleiste darüber — sonst wären sie im Vollbild
 unerreichbar).
+
+**User-Detailseite.** Eigenständige Ansicht (kein Overlay) mit Stammsatz (Name, Typ, Benutzergruppe,
+Status/Sperrgrund, letzter Login, Sleeping, Gültigkeitszeitraum, Passwort-Historie/
+Initialkennwort-Hinweis), darunter ein **Kritikalitätsscore**: höchste vorkommende Stufe als Badge
+plus volle Verteilung darunter (z. B. „15× very critical · 26× critical · …", gezählt über
+Einzelfilter-Treffer **und** SoD-Findings zusammen — bewusst kein gewichteter Einzelwert, damit die
+Herleitung immer nachvollziehbar bleibt). Zwei Reiter darunter listen die **Einzelberechtigungen**
+bzw. **SoD**-Treffer dieses Users mit Kritikalitäts-Badge und je einem „Root-Cause"-Button, der
+direkt zum passenden Query- bzw. Regel-Root-Cause springt. „Zurück" führt zum Root-Cause-Graphen
+zurück (beendet zuvor sauber ein aktives Vollbild, falls offen).
 
 **Legende + eigene Farben.** Unter dem Graphen zeigt eine Legende alle vorkommenden Knotentypen
 samt Rand-Modifiern (technisch/verwaist). Ein Klick auf einen Farbpunkt öffnet den nativen
