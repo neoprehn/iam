@@ -293,6 +293,9 @@
   .ctx-menu button { display:block; width:100%; text-align:left; background:none; border:0;
     color:var(--fg); padding:7px 10px; font-size:13px; cursor:pointer; border-radius:5px; }
   .ctx-menu button:hover { background:color-mix(in srgb, var(--accent) 15%, transparent); }
+  /* Nutzer-Fund: Titelzeile im Hover-Tooltip (#rcTip, <b> um z. B. "Rolle: X"/"Query Y") wirkte im
+     vollen Browser-Fett (700) zu dick/aufdringlich -- auf ein dezenteres Semibold reduziert. */
+  #rcTip b { font-weight:600; }
   #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
   #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
@@ -2193,7 +2196,7 @@ function rcTipEl() {
     t = document.createElement('div'); t.id = 'rcTip';
     t.style.cssText = 'position:fixed;z-index:60;pointer-events:none;display:none;max-width:300px;'
       + 'background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;'
-      + 'font-size:12px;color:var(--fg);box-shadow:0 6px 20px rgba(0,0,0,.4)';
+      + 'font-size:11.5px;font-weight:400;color:var(--fg);box-shadow:0 6px 20px rgba(0,0,0,.4)';
     document.body.appendChild(t);
   }
   return t;
