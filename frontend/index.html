@@ -258,13 +258,20 @@
   #ftfvGraphWrap.ft-fv-graph-box:fullscreen { background:var(--bg); padding:16px; height:calc(100vh - 32px); }
   .ft-fv-graph-box { height:50vh; min-height:340px; position:relative; }
   .ft-legend-chip { display:inline-flex; align-items:center; gap:6px; }
-  .ft-legend-swatch { display:inline-block; width:11px; height:11px; border-radius:3px; }
+  /* box-sizing:border-box ist hier Pflicht: die Rand-Modifier (.dashed/.orphaned) setzen einen
+     2px-Border auf dieselbe 11x11-Box -- mit dem Default content-box waeren sie 15x15 (Border kommt
+     dazu) und dadurch sichtbar groesser/tiefer als die reinen Farbpunkte (Nutzer-Fund: "letzten drei
+     Punkte nicht korrekt ausgerichtet"). */
+  .ft-legend-swatch { display:inline-block; box-sizing:border-box; width:11px; height:11px; border-radius:3px; }
   .ft-legend-swatch.dashed { background:transparent; border:2px dashed var(--muted); }
   .ft-legend-swatch.orphaned { background:transparent; border:2px solid var(--crit); }
   /* "via generiertes Profil" ist ein Kanten-, kein Knoten-Modifier -- Swatch daher eine kurze
-     gestrichelte Linie statt eines Quadrats (s. rcCyStyle .rc-via, RC_LEGEND). */
-  .ft-legend-swatch.via { width:16px; height:0; border-radius:0; background:transparent;
-    border:none; border-top:2px dashed var(--crit); margin-top:5px; }
+     gestrichelte Linie statt eines Quadrats (s. rcCyStyle .rc-via, RC_LEGEND). Gleiche 11px-Box wie
+     die anderen Swatches (statt frueher height:0 + margin-top, das je nach Zeilenhoehe versetzt
+     stand) mit der Linie per Pseudo-Element exakt mittig platziert. */
+  .ft-legend-swatch.via { width:16px; height:11px; border-radius:0; background:transparent; border:none; position:relative; }
+  .ft-legend-swatch.via::before { content:''; position:absolute; left:0; right:0; top:50%;
+    border-top:2px dashed var(--crit); }
   /* Farbige Legenden-Punkte sind klickbar (natives <input type=color>, unsichtbar ueber dem
      Swatch liegend) -- Klick irgendwo im Label oeffnet den Systemfarbwaehler, s. legendChipHtml(). */
   .ft-legend-chip.clickable { cursor:pointer; }
@@ -2227,8 +2234,7 @@ function rcTipEl() {
 function rcCyStyle() {
   const css = getComputedStyle(document.documentElement);
   const v = n => css.getPropertyValue(n).trim();
-  const panel = v('--panel'), line = v('--line'), muted = v('--muted'),
-        accent = v('--accent'), crit = v('--crit'), ok = v('--ok');
+  const panel = v('--panel'), line = v('--line'), muted = v('--muted'), crit = v('--crit');
   // WICHTIG: Groessen-/Text-Werte als ZAHLEN (px), nicht als '…px'-Strings -- sonst kann
   // Cytoscape 'width: label' die Label-Box nicht messen und die Knoten kollabieren zu Linien.
   return [
@@ -2236,24 +2242,26 @@ function rcCyStyle() {
         'font-size': 11, 'color': '#fff', 'text-valign': 'center', 'text-halign': 'center',
         'background-color': '#3a4152', 'shape': 'round-rectangle', 'width': 160, 'height': 'label',
         'padding': 10, 'border-width': 1.5, 'border-color': line, 'text-outline-width': 0 } },
-    { selector: '.rc-user', style: { 'background-color': ok, 'border-color': ok } },
-    { selector: '.rc-rule', style: { 'background-color': crit, 'border-color': crit, 'font-weight': 'bold' } },
-    { selector: '.rc-clause', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
-    { selector: '.rc-query', style: { 'background-color': '#2f9e97', 'border-color': '#2f9e97' } },
-    // "keine erfuellende Rolle/Profil"-Fuellknoten (kein echtes Objekt, daher neutral/grau statt
-    // einer der beiden Bubble-Farben) -- die eigentlichen Objekt-/TCode-Bubbles s. u.
+    // Farbe je Typ IMMER per graphNodeColor() (per-Klasse ueberschreibbar ueber die Legende, s.
+    // rcSetColorOverride) -- vorher waren nur die beiden Objekt-Bubbles darueber eingefaerbt, alle
+    // anderen Klassen hier hart verdrahtet (accent/crit/ok/Literal), wodurch ein Farbwechsel in der
+    // Legende fuer sie wirkungslos blieb (Nutzer-Fund).
+    { selector: '.rc-user', style: { 'background-color': graphNodeColor('rc-user'), 'border-color': graphNodeColor('rc-user') } },
+    { selector: '.rc-rule', style: { 'background-color': graphNodeColor('rc-rule'), 'border-color': graphNodeColor('rc-rule'), 'font-weight': 'bold' } },
+    { selector: '.rc-clause', style: { 'background-color': graphNodeColor('rc-clause'), 'border-color': graphNodeColor('rc-clause') } },
+    { selector: '.rc-query', style: { 'background-color': graphNodeColor('rc-query'), 'border-color': graphNodeColor('rc-query') } },
+    // "keine erfuellende Rolle/Profil"-Fuellknoten (kein echtes Objekt, kein Legenden-Eintrag,
+    // daher bewusst NICHT ueberschreibbar/neutral/grau) -- die eigentlichen Objekt-/TCode-Bubbles s. u.
     { selector: '.rc-object', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
     // Objekt-/TCode-Kaestchen: eigene Farbe je Typ (Nutzer-Fund "4 statt 2 Rollen" kam vom
     // fehlenden Akteur-Dedup, s. attachObject/actorCache, NICHT von der Knotenform -- Label zeigt
     // daher weiterhin Objekt/TCode-Bezeichnung UND die konkreten Anforderungswerte, s. attachObject).
-    // Farbe je Typ per graphNodeColor() (per-Klasse ueberschreibbar ueber die Legende, s.
-    // rcSetColorOverride).
     { selector: '.rc-obj-tcode', style: { 'background-color': graphNodeColor('rc-obj-tcode'),
         'border-color': graphNodeColor('rc-obj-tcode') } },
     { selector: '.rc-obj-bo', style: { 'background-color': graphNodeColor('rc-obj-bo'),
         'border-color': graphNodeColor('rc-obj-bo') } },
-    { selector: '.rc-role', style: { 'background-color': accent, 'border-color': accent } },
-    { selector: '.rc-profile', style: { 'background-color': '#8a5cf6', 'border-color': '#8a5cf6' } },
+    { selector: '.rc-role', style: { 'background-color': graphNodeColor('rc-role'), 'border-color': graphNodeColor('rc-role') } },
+    { selector: '.rc-profile', style: { 'background-color': graphNodeColor('rc-profile'), 'border-color': graphNodeColor('rc-profile') } },
     { selector: '.rc-technical', style: { 'border-style': 'dashed', 'border-width': 2.5, 'opacity': 0.78 } },
     { selector: '.rc-orphaned', style: { 'border-color': crit, 'border-width': 3 } },
     { selector: 'edge', style: { 'width': 1.5, 'line-color': line, 'target-arrow-color': line,
@@ -3586,7 +3594,10 @@ function graphNodeColor(cls) {
     'rc-user': v('--ok'), 'rc-rule': v('--crit'),
     'rc-clause': '#5a6478', 'rc-query': '#2f9e97',
     'rc-obj-tcode': '#3a7bd5', 'rc-obj-bo': '#b98900',
-    'rc-role': v('--accent'), 'rc-profile': '#8a5cf6',
+    // Rolle vorher auf --accent (Blau) -- praktisch identisch zur TCode-Pruefungs-Bubble
+    // (#3a7bd5, ebenfalls Blau) und dadurch im Graphen kaum unterscheidbar (Nutzer-Fund).
+    // Jetzt eigenes Magenta/Pink, klar getrennt von Blau (TCode) und Violett (Profil).
+    'rc-role': '#d6409f', 'rc-profile': '#8a5cf6',
   }[cls];
 }
 /* Live-Umfaerbung ohne Graph-Neuaufbau: nur das Stylesheet der aktiven Cytoscape-Instanz(en)
