@@ -230,13 +230,18 @@ denselben Akteur-Knoten), statt eine Rolle je Objekt zu wiederholen und dadurch 
 vorzutäuschen, als es tatsächlich gibt. Berechtigungsobjekte und die TCode-Prüfung erscheinen dabei
 als eigene, farblich unterschiedene Kästchen, weiterhin **mit** Objekt-/TCode-Bezeichnung und den
 konkreten Anforderungswerten im Label (z. B. `TCD=SU01,SU10,…`) — Farben unterscheiden Regel/Klausel/
-Query/TCode-Prüfung/Berechtigungsobjekt/Rolle/Profil; **technische/generierte** Profile sind
-gestrichelt und blasser, **verwaiste** rot umrandet, ein Treffer **„über generiertes Profil"** als
-rote gestrichelte Kante; **UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine*
-Voraussetzung). Der „ohne technische"-Filter wirkt auch hier. Hover zeigt Details (technisch/„via"/
-konkrete Feldwerte). Die Graph-Ansicht ergänzt die Tabelle für den Überblick — für den lückenlosen
-Wert-für-Wert-Abgleich (grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die
-Detailsicht.
+Query/TCode-Prüfung/Berechtigungsobjekt/Rolle/Profil (Rolle und TCode-Prüfung bewusst deutlich
+verschieden, Magenta vs. Blau); **technische/generierte** Profile sind gestrichelt und blasser,
+**verwaiste** rot umrandet; **UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine*
+Voraussetzung). Der „ohne technische"-Filter wirkt auch hier. Alle Objekt→Rolle/Profil-Kanten
+(„CONTAINS") sehen **einheitlich** aus — ob eine Rolle das Objekt über ihre eigene Definition oder
+über ihr generiertes Profil (bzw. eine enthaltene Sammelrolle) erfüllt, steht **nur** im
+Hover-Tooltip der jeweiligen Kante, nicht mehr als eigener Kantenstil: eine frühere rote gestrichelte
+Extra-Kante dafür wirkte bei mehrfach zutreffenden (dedupten) Rollen wie ein unübersichtliches
+Kantengewirr, ohne dass der Unterschied selbsterklärend war (Nutzer-Fund). Hover zeigt auf Knoten
+wie auf Kanten Details (technisch/eigene Definition/via Profil/via Rolle/konkrete Feldwerte). Die
+Graph-Ansicht ergänzt die Tabelle für den Überblick — für den lückenlosen Wert-für-Wert-Abgleich
+(grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die Detailsicht.
 
 **Klick auf einen Knoten** führt — je nach Typ — direkt zur passenden Ansicht statt nur den Pfad
 hervorzuheben: **User** → auf diesen User gefilterte Ergebnisliste, **Query** → Ergebnisliste

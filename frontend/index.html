@@ -265,13 +265,6 @@
   .ft-legend-swatch { display:inline-block; box-sizing:border-box; width:11px; height:11px; border-radius:3px; }
   .ft-legend-swatch.dashed { background:transparent; border:2px dashed var(--muted); }
   .ft-legend-swatch.orphaned { background:transparent; border:2px solid var(--crit); }
-  /* "via generiertes Profil" ist ein Kanten-, kein Knoten-Modifier -- Swatch daher eine kurze
-     gestrichelte Linie statt eines Quadrats (s. rcCyStyle .rc-via, RC_LEGEND). Gleiche 11px-Box wie
-     die anderen Swatches (statt frueher height:0 + margin-top, das je nach Zeilenhoehe versetzt
-     stand) mit der Linie per Pseudo-Element exakt mittig platziert. */
-  .ft-legend-swatch.via { width:16px; height:11px; border-radius:0; background:transparent; border:none; position:relative; }
-  .ft-legend-swatch.via::before { content:''; position:absolute; left:0; right:0; top:50%;
-    border-top:2px dashed var(--crit); }
   /* Farbige Legenden-Punkte sind klickbar (natives <input type=color>, unsichtbar ueber dem
      Swatch liegend) -- Klick irgendwo im Label oeffnet den Systemfarbwaehler, s. legendChipHtml(). */
   .ft-legend-chip.clickable { cursor:pointer; }
@@ -2268,7 +2261,6 @@ function rcCyStyle() {
         'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.85,
         'label': 'data(elabel)', 'font-size': 9, 'color': muted, 'text-background-color': panel,
         'text-background-opacity': 0.9, 'text-background-padding': 2 } },
-    { selector: '.rc-via', style: { 'line-color': crit, 'target-arrow-color': crit, 'source-arrow-color': crit, 'line-style': 'dashed', 'width': 2 } },
     // Rolle/Profil "enthaelt" (CONTAINS) das Objekt/S_TCode -- Pfeilspitze deshalb am Objekt-Ende
     // (source = Objekt, aber source-arrow statt target-arrow), Baum-Layout bleibt unveraendert,
     // da source/target fuer die breadthfirst-Kindbeziehung gleich bleiben (s. rcBuildGraph).
@@ -2278,9 +2270,12 @@ function rcCyStyle() {
 }
 function rcAttachHandlers(cy) {
   const tip = rcTipEl();
-  cy.on('mouseover', 'node', e => { const d = e.target.data('detail'); if (d) { tip.innerHTML = d; tip.style.display = 'block'; } });
-  cy.on('mousemove', 'node', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
-  cy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
+  // 'node, edge' statt nur 'node' -- CONTAINS-Kanten tragen seit der Vereinheitlichung des
+  // Kantenstils (kein gestricheltes "via" mehr, s. rcContainsDetail) ihre Pfadinfo (eigene
+  // Definition/generiertes Profil/enthaltene Rolle) nur noch im Hover-Tooltip, nicht mehr optisch.
+  cy.on('mouseover', 'node, edge', e => { const d = e.target.data('detail'); if (d) { tip.innerHTML = d; tip.style.display = 'block'; } });
+  cy.on('mousemove', 'node, edge', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
+  cy.on('mouseout', 'node, edge', () => { tip.style.display = 'none'; });
   cy.on('tap', 'node', e => {
     const n = e.target; const actions = rcNodeActions(n);
     if (actions.length) { actions[0].run(); return; }   // primaere Aktion statt Pfad-Highlight
@@ -2340,24 +2335,37 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') $('rcCtxMenu
 /* Tooltip fuer Rollen-/Profil-Knoten: seit dem Immer-Dedup (s. rcBuildGraph/actorCache) kann ein
    Knoten fuer MEHRERE Objekte stehen, daher keine objektspezifischen Auth-Werte mehr hier -- die
    stehen bereits im Tooltip der jeweiligen Objekt-/TCode-Bubble (attachObject), Auflistung an
-   zwei Stellen war laut Nutzer-Fund redundant. */
+   zwei Stellen war laut Nutzer-Fund redundant. Aus demselben Grund seit dem Dedup auch KEIN
+   via/coincidesProfile-Hinweis mehr hier (waere nur der Stand des ERSTEN verbundenen Objekts,
+   da der Knoten pro Objekt wiederverwendet wird) -- dieser Pfad-Hinweis steht jetzt praezise pro
+   Kante im Kanten-Tooltip, s. rcContainsDetail/attachObject.
+   "technisch generiert"/"verwaist" bleiben hier richtig, da Eigenschaften des Akteurs selbst sind
+   (nicht objektspezifisch). */
 function rcActorDetail(a) {
   const n = [];
   if (a.technical && a.orphaned) n.push(I18N.t('graph.techGenOrphan'));
   else if (a.technical) n.push(I18N.t('graph.techGen'));
-  if (a.via) n.push(I18N.t('graph.viaProfile', { id: a.via.id }));
-  if (a.coincidesProfile) n.push(I18N.t('graph.coincidesProfile', { id: a.coincidesProfile }));
   if (a.actorType === 'Role') n.push('<b style="color:var(--accent)">' + I18N.t('graph.clickRoleDetails') + '</b>');
   const actorLabel = a.actorType === 'Role' ? I18N.t('graph.role') : I18N.t('graph.profile');
   return `<b>${actorLabel}: ${a.actorId}</b>`
     + (n.length ? `<br><span style="color:var(--muted)">${n.join('<br>')}</span>` : '');
+}
+/* Kante Objekt->Akteur: erklaert PRO KANTE, ueber welchen Pfad genau DIESES Objekt erfuellt wird
+   (eigene Definition / generiertes Profil / enthaltene Sammelrolle) -- Nutzer-Fund: die bisherige
+   durchgezogen/gestrichelt-Unterscheidung war ohne Erklaerung nicht selbsterklaerend, vor allem
+   wenn dieselbe (dedupte) Rolle manche Objekte "eigene Definition", andere "via Profil" abdeckt.
+   Ersetzt die Randstil-Unterscheidung durch einheitlichen Kantenstil + Hover-Text. */
+function rcContainsDetail(a) {
+  if (a.via) return a.via.type === 'Role' ? I18N.t('graph.viaRole', { id: a.via.id }) : I18N.t('graph.viaProfile', { id: a.via.id });
+  if (a.coincidesProfile) return I18N.t('graph.coincidesProfile', { id: a.coincidesProfile });
+  return I18N.t('graph.ownDefinition');
 }
 function rcBuildGraph(data, mode) {
   let seq = 0; const gid = p => `rc_${p}_${seq++}`;
   const els = []; const ring = { user: 6, rule: 5, clause: 4, query: 3, object: 2, actor: 1 };
   const trunc = s => !s ? '' : (s.length > 44 ? s.slice(0, 42) + '…' : s);
   const N = (id, label, cls, r, detail, extra) => els.push({ data: { id, label, ring: r, detail: detail || '', ...(extra || {}) }, classes: cls });
-  const E = (s, t, cls, elabel) => els.push({ data: { id: gid('e'), source: s, target: t, elabel: elabel || '' }, classes: cls || '' });
+  const E = (s, t, cls, elabel, detail) => els.push({ data: { id: gid('e'), source: s, target: t, elabel: elabel || '', detail: detail || '' }, classes: cls || '' });
   // Jeder Akteur (Rolle/Profil) nur EINMAL im Graph, unabhaengig davon, ueber wie viele Objekte er
   // den User traegt -- Nutzer-Fund: ohne Dedup erschien z. B. eine Rolle, die sowohl den TCode- als
   // auch einen Berechtigungsobjekt-Anteil einer Query deckt, als ZWEI separate Rollen-Knoten (einer
@@ -2385,7 +2393,7 @@ function rcBuildGraph(data, mode) {
       // aber als "Rolle/Profil CONTAINS Objekt" (Nutzer-Fund: "ODER" war pro Einzelkante irrefuehrend,
       // die eigentliche Semantik ist die Kantenart CONTAINS aus AE-04 -- englisch, analog zu
       // ASSIGNED_TO/HAS_AUTH) -- daher 'rc-contains' fuer den optisch umgedrehten Pfeil.
-      if (actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS'); return; }
+      if (actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains', 'CONTAINS', rcContainsDetail(a)); return; }
       const an = gid('a'); const cls = ['rc-' + (a.actorType === 'Role' ? 'role' : 'profile')];
       if (a.technical) cls.push('rc-technical');
       if (a.orphaned) cls.push('rc-orphaned');
@@ -2395,7 +2403,7 @@ function rcBuildGraph(data, mode) {
         cls.join(' '), ring.actor, rcActorDetail(a),
         (a.actorType === 'Role' && rcReturnTo !== 'consistency') ? { roleId: a.actorId } : null);
       actorCache.set(key, an);
-      E(on, an, 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS');
+      E(on, an, 'rc-contains', 'CONTAINS', rcContainsDetail(a));
     });
   }
   const topIsRule = !!data.ruleId;
@@ -3645,7 +3653,11 @@ function ftRenderLegend() {
    (2 eigene Farben statt der frueheren, gemeinsamen "Objekt"-Klasse -- Nutzer-Fund: mehrere
    Objekte je Rolle liessen die Rolle im Graph mehrfach statt einmal erscheinen, s. rcBuildGraph/
    attachObject) und die beiden Rand-Modifier technisch/verwaist (s. rcCyStyle: .rc-technical
-   gestrichelter Rand, .rc-orphaned roter Rand). */
+   gestrichelter Rand, .rc-orphaned roter Rand). Der fruehere dritte Modifier "via generiertes
+   Profil" (rot gestrichelte Kante) wurde entfernt -- Nutzer-Fund: nicht selbsterklaerend, vor allem
+   wenn dieselbe (dedupte) Rolle manche Objekte "eigene Definition", andere "via Profil" abdeckt,
+   das erzeugte ein verwirrendes Kantengewirr aus durchgezogen/gestrichelt. Dieselbe Info steht
+   jetzt praezise pro Kante im Hover-Tooltip, s. rcContainsDetail. */
 const RC_LEGEND = [
   { cls: 'rc-user', key: 'graph.legendUser' },
   { cls: 'rc-rule', key: 'graph.legendSodRule' },
@@ -3657,7 +3669,6 @@ const RC_LEGEND = [
   { cls: 'rc-profile', key: 'graph.legendProfile' },
   { modifier: 'dashed', key: 'graph.legendTechnical' },
   { modifier: 'orphaned', key: 'graph.legendOrphaned' },
-  { modifier: 'via', key: 'graph.legendVia' },
 ];
 function rcRenderLegend() {
   $('rcLegend').innerHTML = RC_LEGEND.map(legendChipHtml).join('');

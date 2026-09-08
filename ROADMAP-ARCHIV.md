@@ -1131,6 +1131,37 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Titel, Stammsatz, Kritikalitäts-Badge+Verteilung und beiden Reitern (Einzelberechtigungen/SoD)
   inkl. funktionierendem Root-Cause-Sprung aus beiden Reitern heraus; „Zurück" verlässt die Seite
   korrekt und zeigt den Root-Cause-Graphen wieder an; keine neuen Konsolenfehler.
+- [x] **Legenden-Farbwechsel wirkt jetzt im Graphen + Rolle/TCode farblich getrennt + Kantengewirr
+  entschärft** (2026-09-08, drei Nutzer-Funde in einer Nachricht anhand eines Screenshots):
+  - **Farb-Override wirkungslos** — nur die Objekt-/TCode-Bubbles lasen ihre Farbe aus
+    `graphNodeColor()`, alle anderen Knotenklassen (User, SoD-Regel, Klausel, Query, Rolle, Profil)
+    waren in `rcCyStyle()` weiterhin hart auf `--accent`/`--crit`/`--ok`/Literal verdrahtet — ein
+    Klick auf den Legenden-Farbpunkt änderte nur den Chip, nicht den Graphen. Fix: alle Klassen
+    laufen jetzt einheitlich über `graphNodeColor()`.
+  - **Rolle vs. TCode-Prüfung kaum unterscheidbar** — Rolle nutzte `--accent` (Blau), praktisch
+    identisch zur TCode-Bubble (`#3a7bd5`, ebenfalls Blau). Fix: eigenes Magenta (`#d6409f`) für
+    Rolle.
+  - **Kantengewirr durch durchgezogen/gestrichelt-Mix** — die rote gestrichelte „via generiertes
+    Profil"-Kante (aus dem vorigen 9.2-Fund) erzeugte bei mehrfach zutreffenden, gededuplizierten
+    Rollen (dieselbe Rolle erfüllt mehrere Objekte, teils eigene Definition, teils via Profil) ein
+    unübersichtliches Gewirr aus sich kreuzenden Linien in zwei Stilen, ohne dass der Unterschied
+    selbsterklärend war. Nutzer-Entscheidung: auf einen einheitlichen Kantenstil reduzieren, der
+    Pfad-Unterschied reicht als Hover-Info. Fix: `.rc-via`-Kantenstil entfernt, alle CONTAINS-Kanten
+    einheitlich; stattdessen trägt jede Kante jetzt ein `detail`-Feld (`rcContainsDetail()`:
+    „eigene Definition" / „über generiertes Profil X" / „über enthaltene Rolle X"), Hover-Handler
+    von `'node'` auf `'node, edge'` erweitert. Nebenbei entdeckter Bug dabei behoben: das
+    Rollen-Tooltip (`rcActorDetail`) zeigte den via-Hinweis nur vom ERSTEN verbundenen Objekt (der
+    Knoten wird ja pro Objekt wiederverwendet) und labelte „über enthaltene Rolle" fälschlich immer
+    als „über generiertes Profil" — beides jetzt korrekt pro Kante statt einmalig am Knoten.
+    Legenden-Eintrag „via" (3. Modifier) dadurch überflüssig und entfernt — behebt nebenbei auch die
+    Ausrichtungs-Reparatur vom vorigen Fund für genau diesen Eintrag, da er schlicht nicht mehr
+    existiert.
+  Mit Playwright verifiziert: Legenden-Farbwechsel (`input[type=color]` → `input`-Event) ändert die
+  `background-color` des laufenden Cytoscape-Knotens sofort; Default-Farben von Rolle/TCode/
+  Berechtigungsobjekt/Profil paarweise verschieden; keine Kante trägt mehr `rc-via`, jede
+  CONTAINS-Kante hat ein sinnvolles `detail` („eigene Definition" bzw. „über generiertes Profil …"),
+  simuliertes Kanten-`mouseover` zeigt den erwarteten Text im Tooltip-Element; Legende zeigt 10 statt
+  11 Chips (kein „via" mehr); keine neuen Konsolenfehler.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
