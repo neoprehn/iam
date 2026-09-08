@@ -261,6 +261,13 @@
   .ft-legend-swatch { display:inline-block; width:11px; height:11px; border-radius:3px; }
   .ft-legend-swatch.dashed { background:transparent; border:2px dashed var(--muted); }
   .ft-legend-swatch.orphaned { background:transparent; border:2px solid var(--crit); }
+  /* Farbige Legenden-Punkte sind klickbar (natives <input type=color>, unsichtbar ueber dem
+     Swatch liegend) -- Klick irgendwo im Label oeffnet den Systemfarbwaehler, s. legendChipHtml(). */
+  .ft-legend-chip.clickable { cursor:pointer; }
+  .ft-legend-chip.clickable:hover .ft-legend-swatch { filter:brightness(1.25); box-shadow:0 0 0 2px var(--line); }
+  .ft-legend-swatch-wrap { position:relative; display:inline-flex; }
+  .ft-legend-color-input { position:absolute; inset:0; width:11px; height:11px; opacity:0; border:0;
+    padding:0; cursor:pointer; }
   /* Vertikaler Zoom-Slider am rechten Graph-Rand (schnelles Rein-/Rauszoomen) */
   #rcZoom { position:absolute; right:12px; top:50%; transform:translateY(-50%); z-index:5;
     writing-mode:vertical-lr; direction:rtl; -webkit-appearance:slider-vertical; appearance:slider-vertical;
@@ -2172,7 +2179,20 @@ function rcCyStyle() {
     { selector: '.rc-rule', style: { 'background-color': crit, 'border-color': crit, 'font-weight': 'bold' } },
     { selector: '.rc-clause', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
     { selector: '.rc-query', style: { 'background-color': '#2f9e97', 'border-color': '#2f9e97' } },
-    { selector: '.rc-object', style: { 'background-color': '#b98900', 'border-color': '#b98900' } },
+    // "keine erfuellende Rolle/Profil"-Fuellknoten (kein echtes Objekt, daher neutral/grau statt
+    // einer der beiden Bubble-Farben) -- die eigentlichen Objekt-/TCode-Bubbles s. u.
+    { selector: '.rc-object', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
+    // Objekt-/TCode-Bubbles: bewusst klein+rund statt der grossen Text-Box, da die konkreten
+    // Anforderungswerte bereits im Tooltip (detail) stehen -- Nutzer-Fund: pro Objekt ein grosser
+    // Textknoten liess bei mehreren Objekten je Rolle wie mehrere Rollen aussehen (s. attachObject/
+    // actorCache-Dedup). Farbe je Bubble-Typ per graphNodeColor() (per-Klasse ueberschreibbar
+    // ueber die Legende, s. rcSetColorOverride).
+    { selector: '.rc-obj-tcode', style: { 'background-color': graphNodeColor('rc-obj-tcode'),
+        'border-color': graphNodeColor('rc-obj-tcode'), 'shape': 'ellipse', 'width': 88, 'height': 44,
+        'font-size': 9.5, 'text-max-width': 76 } },
+    { selector: '.rc-obj-bo', style: { 'background-color': graphNodeColor('rc-obj-bo'),
+        'border-color': graphNodeColor('rc-obj-bo'), 'shape': 'ellipse', 'width': 88, 'height': 44,
+        'font-size': 9.5, 'text-max-width': 76 } },
     { selector: '.rc-role', style: { 'background-color': accent, 'border-color': accent } },
     { selector: '.rc-profile', style: { 'background-color': '#8a5cf6', 'border-color': '#8a5cf6' } },
     { selector: '.rc-technical', style: { 'border-style': 'dashed', 'border-width': 2.5, 'opacity': 0.78 } },
@@ -2202,33 +2222,19 @@ function rcAttachHandlers(cy) {
   cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('rcfade'); });
   cy.on('zoom', rcZoomToSlider);   // Slider folgt Maus-/Pinch-Zoom
 }
-/* Graph-Pendant zu highlightAuthValues() (Tabellen-Pfad): dieselbe "nur Treffer"-Reduktion
-   (rcHitMode), aber als Klartext-Array statt HTML-String -- fuer Knoten-Label (Cytoscape zeigt
-   kein HTML) und Tooltip. Ohne Anforderungsbezug (reqValuesByField fehlt) unveraendert. */
-function rcHitFilteredAuthValues(authValues, reqValuesByField) {
-  if (rcHitMode !== 'hits' || !reqValuesByField) return authValues || [];
-  const parts = (authValues || []).map(av => {
-    const eq = av.indexOf('=');
-    if (eq < 0) return null;
-    const field = av.slice(0, eq), vals = av.slice(eq + 1).split(',');
-    const reqVals = reqValuesByField.get(field);
-    if (!reqVals) return null;
-    const hit = vals.filter(v => actorValueHits(v, reqVals));
-    return hit.length ? `${field}=${hit.join(',')}` : null;
-  }).filter(x => x != null);
-  return parts.length ? parts : (authValues || []);
-}
-function rcActorDetail(a, reqValuesByField) {
+/* Tooltip fuer Rollen-/Profil-Knoten: seit dem Immer-Dedup (s. rcBuildGraph/actorCache) kann ein
+   Knoten fuer MEHRERE Objekte stehen, daher keine objektspezifischen Auth-Werte mehr hier -- die
+   stehen bereits im Tooltip der jeweiligen Objekt-/TCode-Bubble (attachObject), Auflistung an
+   zwei Stellen war laut Nutzer-Fund redundant. */
+function rcActorDetail(a) {
   const n = [];
   if (a.technical && a.orphaned) n.push(I18N.t('graph.techGenOrphan'));
   else if (a.technical) n.push(I18N.t('graph.techGen'));
   if (a.via) n.push(I18N.t('graph.viaProfile', { id: a.via.id }));
   if (a.coincidesProfile) n.push(I18N.t('graph.coincidesProfile', { id: a.coincidesProfile }));
   if (a.actorType === 'Role') n.push('<b style="color:var(--accent)">' + I18N.t('graph.clickRoleDetails') + '</b>');
-  const vals = rcHitFilteredAuthValues(a.authValues, reqValuesByField).join(' &middot; ');
   const actorLabel = a.actorType === 'Role' ? I18N.t('graph.role') : I18N.t('graph.profile');
   return `<b>${actorLabel}: ${a.actorId}</b>`
-    + (vals ? `<br><span style="color:var(--muted)">${I18N.t('graph.carries', { vals })}</span>` : '')
     + (n.length ? `<br><span style="color:var(--muted)">${n.join('<br>')}</span>` : '');
 }
 function rcBuildGraph(data, mode) {
@@ -2237,14 +2243,23 @@ function rcBuildGraph(data, mode) {
   const trunc = s => !s ? '' : (s.length > 44 ? s.slice(0, 42) + '…' : s);
   const N = (id, label, cls, r, detail, extra) => els.push({ data: { id, label, ring: r, detail: detail || '', ...(extra || {}) }, classes: cls });
   const E = (s, t, cls, elabel) => els.push({ data: { id: gid('e'), source: s, target: t, elabel: elabel || '' }, classes: cls || '' });
-  // Im Modus 'nur generierte Rollen' jeden Akteur nur EINMAL: Knoten je actorId cachen und aus
-  // mehreren Objekten heraus wiederverwenden (Graph wird zum DAG statt Baum -> viel schmaler).
-  const actorCache = rcTechMode === 'generated' ? new Map() : null;
+  // Jeder Akteur (Rolle/Profil) nur EINMAL im Graph, unabhaengig davon, ueber wie viele Objekte er
+  // den User traegt -- Nutzer-Fund: ohne Dedup erschien z. B. eine Rolle, die sowohl den TCode- als
+  // auch einen Berechtigungsobjekt-Anteil einer Query deckt, als ZWEI separate Rollen-Knoten (einer
+  // je Objekt-Pfad), was den Eindruck "4 statt 2 verantwortliche Rollen" erzeugte. Der Graph wird
+  // dadurch zum DAG statt Baum (mehrere Objekt-/TCode-Bubbles zeigen auf denselben Akteur-Knoten).
+  const actorCache = new Map();
   function attachObject(parentId, o) {
     const on = gid('o');
+    // TCode-Pseudo-Objekt kommt vom Backend als literaler String "S_TCODE (TCode-Pruefung)"
+    // (s. backend/app.py _query_objects) -- alles andere ist ein echtes Berechtigungsobjekt (BO).
+    const isTcode = /^S_TCODE\b/.test(o.object);
     const reqText = (o.requirement || []).map(r => `${r.field}=${(r.values || []).join(',')}`).join(' · ');
-    const reqValuesByField = new Map((o.requirement || []).map(r => [r.field, r.values]));
-    N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, 'rc-object', ring.object,
+    // Bubble-Label bewusst OHNE die Anforderungswerte (frueher 2. Zeile im Knoten) -- die stehen
+    // bereits vollstaendig im Tooltip; Ziel ist ein kleiner, rund gestalteter Marker statt einer
+    // grossen Text-Box (Nutzer-Fund, s. rcCyStyle .rc-obj-tcode/.rc-obj-bo).
+    const bubbleLabel = isTcode ? I18N.t('graph.legendTcode') : o.object;
+    N(on, bubbleLabel, isTcode ? 'rc-obj-tcode' : 'rc-obj-bo', ring.object,
       `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">${I18N.t('graph.requirement', { req: reqText })}</span>` : ''}`);
     E(parentId, on, '', I18N.t('graph.and'));
     const actors = rcCollapseActors(o.satisfiedBy || []).filter(rcVisibleActor);
@@ -2259,16 +2274,16 @@ function rcBuildGraph(data, mode) {
       // aber als "Rolle/Profil CONTAINS Objekt" (Nutzer-Fund: "ODER" war pro Einzelkante irrefuehrend,
       // die eigentliche Semantik ist die Kantenart CONTAINS aus AE-04 -- englisch, analog zu
       // ASSIGNED_TO/HAS_AUTH) -- daher 'rc-contains' fuer den optisch umgedrehten Pfeil.
-      if (actorCache && actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS'); return; }
+      if (actorCache.has(key)) { E(on, actorCache.get(key), 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS'); return; }
       const an = gid('a'); const cls = ['rc-' + (a.actorType === 'Role' ? 'role' : 'profile')];
       if (a.technical) cls.push('rc-technical');
       if (a.orphaned) cls.push('rc-orphaned');
-      // Dedup-Knoten spannt ueber mehrere Objekte -> keine objektspezifischen Werte im Label.
-      const vals = actorCache ? '' : rcHitFilteredAuthValues(a.authValues, reqValuesByField).join(' · ');
-      N(an, `${a.actorType === 'Role' ? I18N.t('graph.role') : I18N.t('graph.profile')}: ${a.actorId}${vals ? `\n${vals}` : ''}`,
-        cls.join(' '), ring.actor, rcActorDetail(a, reqValuesByField),
+      // Knoten spannt ggf. ueber mehrere Objekte -> keine objektspezifischen Werte im Label
+      // (stehen im Tooltip der jeweiligen Objekt-/TCode-Bubble, s. attachObject oben).
+      N(an, `${a.actorType === 'Role' ? I18N.t('graph.role') : I18N.t('graph.profile')}: ${a.actorId}`,
+        cls.join(' '), ring.actor, rcActorDetail(a),
         (a.actorType === 'Role' && rcReturnTo !== 'consistency') ? { roleId: a.actorId } : null);
-      if (actorCache) actorCache.set(key, an);
+      actorCache.set(key, an);
       E(on, an, 'rc-contains' + (a.via ? ' rc-via' : ''), 'CONTAINS');
     });
   }
@@ -3427,18 +3442,73 @@ document.addEventListener('fullscreenchange', () => {
 });
 /* Gemeinsame Node-Farbzuordnung fuer alle Cytoscape-Graphansichten (Root-Cause, Baum-Vollansicht) --
    deckt sich 1:1 mit den Klassen aus rcCyStyle(), damit Legende und tatsaechliche Knotenfarbe nie
-   auseinanderlaufen. */
+   auseinanderlaufen. Nutzer-Wunsch: Klick auf einen Legenden-Punkt aendert die Farbe dauerhaft --
+   Overrides liegen browserlokal (kein Server-Config, rein UI-Praeferenz je Nutzer/GeraetX). */
+const RC_COLOR_LS_KEY = 'iam.graphColorOverrides';
+let rcColorOverridesCache = null;
+function rcColorOverrides() {
+  if (!rcColorOverridesCache) {
+    try { rcColorOverridesCache = JSON.parse(localStorage.getItem(RC_COLOR_LS_KEY) || '{}') || {}; }
+    catch { rcColorOverridesCache = {}; }
+  }
+  return rcColorOverridesCache;
+}
+function rcSetColorOverride(cls, hex) {
+  const o = rcColorOverrides(); o[cls] = hex;
+  try { localStorage.setItem(RC_COLOR_LS_KEY, JSON.stringify(o)); } catch {}
+}
+/* <input type=color> akzeptiert als value NUR exaktes '#rrggbb' (sonst faellt es auf Schwarz
+   zurueck) -- unsere Palette ist bereits Hex, aber CSS-Custom-Properties koennten theoretisch
+   auch anders formatiert sein, daher ueber ein Wegwerf-Element zuverlaessig normalisieren. */
+function rcToHexColor(c) {
+  if (/^#[0-9a-fA-F]{6}$/.test(c)) return c.toLowerCase();
+  const el = document.createElement('div');
+  el.style.color = c; document.body.appendChild(el);
+  const rgb = getComputedStyle(el).color; document.body.removeChild(el);
+  const m = rgb.match(/\d+/g) || [0, 0, 0];
+  return '#' + m.slice(0, 3).map(n => (+n).toString(16).padStart(2, '0')).join('');
+}
 function graphNodeColor(cls) {
+  const override = rcColorOverrides()[cls];
+  if (override) return override;
   const css = getComputedStyle(document.documentElement);
+  const v = n => css.getPropertyValue(n).trim();
   return {
-    'rc-user': css.getPropertyValue('--ok'), 'rc-rule': css.getPropertyValue('--crit'),
-    'rc-clause': '#5a6478', 'rc-query': '#2f9e97', 'rc-object': '#b98900',
-    'rc-role': css.getPropertyValue('--accent'), 'rc-profile': '#8a5cf6',
+    'rc-user': v('--ok'), 'rc-rule': v('--crit'),
+    'rc-clause': '#5a6478', 'rc-query': '#2f9e97',
+    'rc-obj-tcode': '#3a7bd5', 'rc-obj-bo': '#b98900',
+    'rc-role': v('--accent'), 'rc-profile': '#8a5cf6',
   }[cls];
 }
+/* Live-Umfaerbung ohne Graph-Neuaufbau: nur das Stylesheet der aktiven Cytoscape-Instanz(en)
+   ersetzen (Pan/Zoom/Fade-Zustand bleibt erhalten). */
+function rcApplyColorOverridesToOpenGraphs() {
+  if (rcCy) rcCy.style(rcCyStyle());
+  if (ftfvCy) ftfvCy.style(rcCyStyle());
+}
+/* cls-Eintraege sind klickbar: <label> umschliesst Swatch + unsichtbares <input type=color>,
+   Klick irgendwo im Chip oeffnet daher den nativen Systemfarbwaehler (kein eigenes Popup nötig).
+   Modifier-Eintraege (Randstil technisch/verwaist) bleiben nicht-interaktiv -- sie faerben keinen
+   Knoten-Hintergrund, sondern nur den Rand einer bereits andersfarbigen Klasse. */
 function legendChipHtml(l) {
   if (l.modifier) return `<span class="ft-legend-chip"><span class="ft-legend-swatch ${l.modifier}"></span>${esc(I18N.t(l.key))}</span>`;
-  return `<span class="ft-legend-chip"><span class="ft-legend-swatch" style="background:${graphNodeColor(l.cls)}"></span>${esc(I18N.t(l.key))}</span>`;
+  const color = graphNodeColor(l.cls);
+  return `<label class="ft-legend-chip clickable" title="${esc(I18N.t('graph.legendColorHint'))}">`
+    + `<span class="ft-legend-swatch-wrap"><span class="ft-legend-swatch" style="background:${color}"></span>`
+    + `<input type="color" class="ft-legend-color-input" data-cls="${esc(l.cls)}" value="${rcToHexColor(color)}"></span>`
+    + `${esc(I18N.t(l.key))}</label>`;
+}
+/* Nach jeder Farbaenderung: Swatch-Farbe im Chip selbst aktualisieren (ohne die ganze Legende neu
+   zu rendern -- sonst verliert das gerade offene <input type=color> seinen Picker-Fokus) + alle
+   offenen Graphen live umfaerben. */
+function attachLegendColorHandlers(container) {
+  container.querySelectorAll('.ft-legend-color-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      rcSetColorOverride(inp.dataset.cls, inp.value);
+      inp.previousElementSibling.style.background = inp.value;
+      rcApplyColorOverridesToOpenGraphs();
+    });
+  });
 }
 const FT_LEGEND = [
   { cls: 'rc-user', key: 'graph.legendUser' },
@@ -3449,16 +3519,20 @@ const FT_LEGEND = [
 ];
 function ftRenderLegend() {
   $('ftfvLegend').innerHTML = FT_LEGEND.map(legendChipHtml).join('');
+  attachLegendColorHandlers($('ftfvLegend'));
 }
-/* Root-Cause-Seite (Pfad-/Radial-Ansicht) zeigt zusaetzlich Klausel/Objekt sowie die beiden
-   Rand-Modifier technisch/verwaist (s. rcCyStyle: .rc-technical gestrichelter Rand, .rc-orphaned
-   roter Rand) -- 9.2-Nachtrag zur bereits erledigten Legende der listenweiten Baum-Vollansicht. */
+/* Root-Cause-Seite (Pfad-/Radial-Ansicht) zeigt zusaetzlich Klausel sowie TCode-/Objekt-Bubble
+   (2 eigene Farben statt der frueheren, gemeinsamen "Objekt"-Klasse -- Nutzer-Fund: mehrere
+   Objekte je Rolle liessen die Rolle im Graph mehrfach statt einmal erscheinen, s. rcBuildGraph/
+   attachObject) und die beiden Rand-Modifier technisch/verwaist (s. rcCyStyle: .rc-technical
+   gestrichelter Rand, .rc-orphaned roter Rand). */
 const RC_LEGEND = [
   { cls: 'rc-user', key: 'graph.legendUser' },
   { cls: 'rc-rule', key: 'graph.legendSodRule' },
   { cls: 'rc-clause', key: 'graph.legendClause' },
   { cls: 'rc-query', key: 'graph.legendQuery' },
-  { cls: 'rc-object', key: 'graph.legendObject' },
+  { cls: 'rc-obj-tcode', key: 'graph.legendTcode' },
+  { cls: 'rc-obj-bo', key: 'graph.legendBo' },
   { cls: 'rc-role', key: 'graph.legendRole' },
   { cls: 'rc-profile', key: 'graph.legendProfile' },
   { modifier: 'dashed', key: 'graph.legendTechnical' },
@@ -3466,6 +3540,7 @@ const RC_LEGEND = [
 ];
 function rcRenderLegend() {
   $('rcLegend').innerHTML = RC_LEGEND.map(legendChipHtml).join('');
+  attachLegendColorHandlers($('rcLegend'));
 }
 function openTreeFullview() {
   if (!ftfvState) return;

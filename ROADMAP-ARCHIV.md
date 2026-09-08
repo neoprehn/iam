@@ -1028,6 +1028,35 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   `risks.json`, `queries.custom.json` bleibt byte-identisch; Wurzelknoten-Klasse korrekt je Modus;
   `CONTAINS`-Kanten mit korrekter Klasse/Quelle/Ziel). Testartefakt (testweise geänderter
   `riskLevel` bei `1005_BC-SEC`) danach zurückgesetzt.
+- [x] **Objekt-Bubbles + Immer-Dedup + eigene Legenden-Farben** (2026-09-08, Nutzer-Fund beim
+  Auswerten): trägt eine Rolle/Profil sowohl den TCode- als auch einen Berechtigungsobjekt-Anteil
+  einer Query, erschien sie in Pfad-/Radial-Ansicht als **zwei separate Knoten** (einer je Objekt),
+  weil der Akteur-Dedup (`actorCache` in `rcBuildGraph`) bis dahin nur im Profil-Filter „nur
+  generierte Rollen" aktiv war — wirkte wie „4 statt 2 verantwortliche Rollen". Fix in drei
+  Teilen, per `AskUserQuestion` zwei Entscheidungen vorab geklärt (Bubble-Granularität: eine Bubble
+  je Objekt statt einer zusammengefassten je Typ, um die objektweise AND-Semantik nicht zu
+  verschleiern; Legenden-Wortlaut: „TCode-Prüfung"/„Berechtigungsobjekt"):
+  - **Akteur-Dedup jetzt immer aktiv** (unabhängig vom Profil-Filter-Modus) — mehrere Objekt-/
+    TCode-Bubbles zeigen auf denselben Akteur-Knoten (DAG statt Baum), Rolle/Profil-Tooltip zeigt
+    dafür keine objektspezifischen Auth-Werte mehr (stehen im Tooltip der jeweiligen Bubble —
+    Auflistung an zwei Stellen war ohnehin redundant).
+  - **Objekt-/TCode-Knoten als kleine, runde „Bubble"** (`rc-obj-tcode`/`rc-obj-bo`, `shape:ellipse`,
+    ohne Anforderungswerte im Label) statt der bisherigen großen Text-Box mit Parameterliste;
+    TCode-Pseudo-Objekt (`S_TCODE (TCode-Prüfung)`) und echte Berechtigungsobjekte farblich
+    unterschieden.
+  - **Legende komplett neu beschriftet + interaktiv einfärbbar**: dabei einen bestehenden Bug
+    gefunden — sämtliche Legenden-Texte außer „User" fehlten in `de.json`/`en.json` und zeigten den
+    rohen i18n-Key (`graph.legendSodRule` etc.); ergänzt plus zwei neue Keys für die TCode-/BO-
+    Aufteilung. Klick auf einen Farbpunkt öffnet den nativen Systemfarbwähler (`<input type=color>`,
+    unsichtbar über dem Swatch, kein eigenes Popup), Auswahl greift sofort auf allen offenen
+    Cytoscape-Instanzen (`cy.style()`-Refresh statt Neuaufbau, erhält Pan/Zoom) und wird
+    browserlokal in `localStorage` gemerkt (`graphNodeColor()` prüft Overrides zuerst).
+  Mit Playwright gegen den laufenden Container verifiziert (echter Root-Cause-Fall mit TCode- **und**
+  BO-Anteil derselben Rolle: Knotenzahl vorher 4, nachher 2 + 2 Bubbles bestätigt per
+  `rcCy.nodes()`-Auszählung nach Klasse; Legende in DE **und** EN zeigt alle 10 Einträge mit
+  korrektem Text statt Rohschlüssel; Farbwahl aktualisiert Swatch, Graph-Knotenfarbe **und**
+  `localStorage` synchron; Profil-Filter „alle" zeigt zusätzlich den deduplizierten Profil-Knoten,
+  weiterhin ohne Duplikate).
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem

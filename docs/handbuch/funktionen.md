@@ -214,9 +214,7 @@ Profile, deren erzeugende Rolle im Extrakt nicht mehr existiert — die Berechti
 **Laufzeitsicht**: nur Rollen, die über ihr **generiertes Profil** tatsächlich aktiv sind (das, was
 in `UST04` zieht) — reine Design-Zeilen ohne Profil-Deckung (D4-Divergenz) fallen weg —, **plus**
 direkt zugewiesene Profile (z. B. `SAP_ALL`), damit kein kritischer Direktzugriff aus dem Bild
-fällt. In den **Graph-Ansichten** wird in diesem Modus zusätzlich jeder Akteur nur **einmal**
-gezeigt (Dedup über alle Objekte), was den Graphen deutlich verschlankt. Ein Zähler bzw. Hinweis
-zeigt, wie viele Zeilen aktuell ausgeblendet sind.
+fällt. Ein Zähler bzw. Hinweis zeigt, wie viele Zeilen aktuell ausgeblendet sind.
 
 Die Graph-Ansichten haben außerdem einen **Vollbild**-Button und einen **Zoom-Regler** am rechten
 Rand für schnelles Rein-/Rauszoomen.
@@ -225,14 +223,26 @@ Rand für schnelles Rein-/Rauszoomen.
 zwischen der **Tabelle** (Default, mit allen Anmerkungen unten) und zwei **Graph-Darstellungen
 derselben Daten** um. Der **Pfadgraph** zeigt den Weg **User → Regel → Klausel → Query →
 Berechtigungsobjekt → Rolle/Profil** als Baum von oben nach unten; die **Radiale** Ansicht setzt
-den User ins Zentrum und legt die Ursachen ringförmig nach außen. Farben unterscheiden
-Regel/Klausel/Query/Objekt/Rolle/Profil; **technische/generierte** Profile sind gestrichelt und
-blasser, **verwaiste** rot umrandet, ein Treffer **„über generiertes Profil"** als rote gestrichelte
-Kante; **UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine* Voraussetzung). Der
-„ohne technische"-Filter wirkt auch hier. Ein Klick auf einen Knoten hebt seinen Pfad hervor (Rest
+den User ins Zentrum und legt die Ursachen ringförmig nach außen. Jeder Akteur (Rolle/Profil) wird
+dabei **unabhängig vom Profil-Filter nur einmal** gezeigt, auch wenn er mehrere Objekte/TCode-
+Prüfungen einer Query trägt — der Graph wird dadurch zum DAG (mehrere Objekt-Knoten zeigen auf
+denselben Akteur-Knoten), statt eine Rolle je Objekt zu wiederholen und dadurch mehr Verantwortliche
+vorzutäuschen, als es tatsächlich gibt. Berechtigungsobjekte und die TCode-Prüfung erscheinen dabei
+bewusst als kleine, farblich unterschiedene **Bubbles** ohne die konkreten Anforderungswerte im
+Label (die stehen im Hover-Tooltip) — Farben unterscheiden Regel/Klausel/Query/TCode-Prüfung/
+Berechtigungsobjekt/Rolle/Profil; **technische/generierte** Profile sind gestrichelt und blasser,
+**verwaiste** rot umrandet, ein Treffer **„über generiertes Profil"** als rote gestrichelte Kante;
+**UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine* Voraussetzung). Der „ohne
+technische"-Filter wirkt auch hier. Ein Klick auf einen Knoten hebt seinen Pfad hervor (Rest
 ausgegraut), Hover zeigt Details (technisch/„via"/konkrete Feldwerte), „Einpassen" zentriert die
 Ansicht. Die Graph-Ansicht ergänzt die Tabelle für den Überblick — für den lückenlosen Wert-für-Wert-
 Abgleich (grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die Detailsicht.
+
+**Legende + eigene Farben.** Unter dem Graphen zeigt eine Legende alle vorkommenden Knotentypen
+samt Rand-Modifiern (technisch/verwaist). Ein Klick auf einen Farbpunkt öffnet den nativen
+Systemfarbwähler; die gewählte Farbe wirkt sofort auf alle offenen Graphen (Pfad/Radial/
+Baum-Vollansicht) und bleibt browserlokal gespeichert (kein Server-Konfig, rein persönliche
+Einstellung je Gerät/Browser).
 
 **Quellenkennzeichnung.** Derselbe Akteur kann einen Treffer über **mehrere Quellen** erreichen —
 das wird je Zeile als kurze Anmerkung kenntlich gemacht. Wertidentische Paare aus eigener Definition
