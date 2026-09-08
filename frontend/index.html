@@ -2014,13 +2014,13 @@ function showConsistencyView(area) {
   $('causingActors').style.display = 'none';
   document.querySelector('main .cols').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   $('consistencyView').style.display = '';
 }
 function _showResultsLayout() {
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   // Diese drei wurden bisher nicht ausgeblendet -- z. B. blieb die Ergebnisse-Uebersicht nach
   // einem Klick auf eine Zeile (jumpToQueryFilter/jumpToRuleFilter -> showResultsView) unter der
   // Findings-Tabelle stehen (zwei Ansichten gleichzeitig sichtbar).
@@ -2061,6 +2061,17 @@ function rcVisibleActor(a) {
   }
   return !a.technical;     // 'hide'
 }
+/* Verlassen der Root-Cause-Ansicht (egal wohin) MUSS zuerst ein aktives Vollbild auf #rcGraphWrap
+   beenden -- Nutzer-Fund: einfaches display:none auf #rootCauseView (Vorfahr des Vollbild-Elements)
+   laesst den Browser in einem Phantom-Vollbild-Zustand zurueck (document.fullscreenElement bleibt
+   gesetzt, das jetzt unsichtbare Element haengt aber weiter im "Top Layer"), wodurch <html>
+   anschliessend JEDEN Klick im gesamten Dokument abfaengt -- u. a. der "Zurueck"-Button der
+   Rollen-Detailseite (rdBackBtn) wirkte dadurch tot. Alle Stellen, die #rootCauseView verstecken,
+   rufen deshalb ausschliesslich diese Funktion statt direkt display='none' zu setzen. */
+function rcHideView() {
+  if (document.fullscreenElement === $('rcGraphWrap')) document.exitFullscreen();
+  $('rootCauseView').style.display = 'none';
+}
 function showRootCauseView() {
   $('resultContext').style.display = 'none';
   $('kpis').style.display = 'none';
@@ -2076,7 +2087,7 @@ function showRootCauseView() {
 }
 $('rcBackBtn').onclick = () => {
   if (asst.active) { goToAsstStep(5); return; }
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   $('colsLeft').style.display = '';
   $('colsRight').style.display = '';
   if (rcReturnTo === 'consistency') { $('consistencyResultView').style.display = ''; }
@@ -3774,7 +3785,7 @@ async function openCheckById(checkId, area) {
   $('kpis').style.display = 'none';
   $('causingActors').style.display = 'none';
   document.querySelector('main .cols').style.display = 'none';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   $('consistencyView').style.display = 'none';
   openConsistencyDetail(c);
 }
@@ -3806,7 +3817,7 @@ function showRoleDetailView() {
   document.querySelector('main .cols').style.display = '';
   $('colsRight').style.display = 'none';
   $('colsLeft').style.display = rcReturnTo === 'results' ? '' : 'none';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   if ($('assistentView')) $('assistentView').style.display = 'none';
   $('userListView').style.display = 'none';
   $('roleDetailView').style.display = '';
@@ -3979,7 +3990,7 @@ function showSummaryView() {
   document.querySelector('main .cols').style.display = '';
   $('colsRight').style.display = 'none';
   $('colsLeft').style.display = '';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   $('roleDetailView').style.display = 'none';
   $('userListView').style.display = 'none';
   if ($('assistentView')) $('assistentView').style.display = 'none';
@@ -4120,7 +4131,7 @@ function showUserListView() {
   document.querySelector('main .cols').style.display = '';
   $('colsRight').style.display = 'none';
   $('colsLeft').style.display = ulReturnTo === 'role' ? '' : 'none';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   $('roleDetailView').style.display = 'none';
   $('summaryView').style.display = 'none';
   if ($('assistentView')) $('assistentView').style.display = 'none';
@@ -4973,7 +4984,7 @@ function _asstAllViews(hide = true) {
   document.querySelector('main .cols').style.display = 'none';
   $('consistencyView').style.display = 'none';
   $('consistencyResultView').style.display = 'none';
-  $('rootCauseView').style.display = 'none';
+  rcHideView();
   $('assistentView').style.display = hide ? 'none' : '';
 }
 
