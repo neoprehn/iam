@@ -28,13 +28,77 @@ nachvollziehbar.
 
 ## Phase 1 — Admin-Editor V2 und Regelpflege
 
+**Status:** Phase 1 offiziell gestartet am 2026-09-08 (bewusstes Startsignal des Nutzers, ausgelöst
+durch den Wunsch nach dem USOBT-gestützten Query-Builder unten). Konzept für diesen einen Punkt
+ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Backlog-Stubs.
+
 **Ziel:** Query-/SoD-Pflege von Metadaten zu vollständiger, kontrollierter Filterpflege ausbauen.
 
 - [ ] **Authorizations/TCodes im Editor bearbeitbar** — der heutige Aufbau-Tab ist read-only;
-  V2 ergänzt Bearbeitung für verschachtelte Objekt/Feld/Wert-Listen sowie Transaktionen.
-- [ ] **USOBT-gestützter Query-Builder** — Transaktion auswählen und daraus relevante
-  Berechtigungsobjekte/Felder ableiten, statt Objekt/Feld/Wert-Strukturen vollständig als Freitext
-  anzulegen.
+  V2 ergänzt Bearbeitung für verschachtelte Objekt/Feld/Wert-Listen sowie Transaktionen. **Hängt
+  am USOBT-Builder unten** (s. Speicherweg) — beide teilen sich denselben Ziel-Datentyp
+  (`authorizations[]`/`transactions[]` einer Query), der Builder ist im Grunde ein spezialisierter,
+  vorausgefüllter Editor-Modus statt eines rein leeren Formulars.
+- [ ] **USOBT-gestützter Query-Builder** (Konzept 2026-09-08) — Transaktion auswählen, das System
+  schlägt wie PFCG „Berechtigungsdaten pflegen" automatisch die relevanten Berechtigungsobjekte samt
+  Feldern/Wertevorschlägen vor, statt alles als Freitext anzulegen.
+
+  **Ausgangslage (bereits vorhanden):** `(:Transaction)-[:CHECKS]->(:AuthObject)` ist aus
+  `USOBT_C.NAME/OBJECT` bereits im Graphen (`load/10_su24_checks.cypher`). Das reicht für „welche
+  Objekte prüft dieser TCode", aber nicht für Felder/Werte oder den Prüfstatus.
+
+  **Datenmodell-Erweiterung (drei Bausteine):**
+  1. **`USOBT_C.FIELD/LOW/HIGH` nutzen** — diese Spalten sind in
+     [`extraktionsleitfaden.md`](docs/extraktionsleitfaden.md#10--usobt_c-su24-vorschlagswerte--checks)
+     bereits als optional dokumentiert, werden aber weder in `required_tables.json` verlangt noch
+     vom Lade-Skript verarbeitet. Erweitern: `required_tables.json`-Feldliste um `FIELD/LOW/HIGH`
+     als **optional** (Rückwärtskompatibilität — ältere Extrakte ohne diese Spalten dürfen nicht
+     brechen), `10_su24_checks.cypher` liest sie als Property-Liste an der `CHECKS`-Kante (mehrere
+     Felder je (TCode,Objekt)-Paar, plus dasselbe Objekt kann bei verschiedenen TCodes andere
+     Vorschlagswerte haben — passt zur Kante, da diese pro (TCode,Objekt) eindeutig ist).
+  2. **`USOBX_C` neu (Prüfkennzeichen)** — separate Tabelle, beim jeweiligen Kunden noch **nicht**
+     im Standard-Extrakt (bestätigt: weder in `required_tables.json` noch in der Praxis bisher
+     angefordert). Ohne sie schlägt der Builder auch objektiv nicht (mehr) geprüfte Objekte vor.
+     Vorbereitung JETZT (kein SAP-Zugriff nötig): `required_tables.json`-Eintrag samt Feldliste
+     (TCode, Objekt, Prüfkennzeichen-Spalte — **exakte SAP-Spalten-/Wertebedeutung von OKFLAG vor
+     dem Bauen an einer echten Extraktprobe verifizieren, nicht aus der Doku raten**),
+     `docs/extraktionsleitfaden.md`/`docs/datamodel.md` ergänzen, `CHECKS`-Kante um
+     `checkIndicator`/`suppressed`-Property erweitern. Die tatsächliche Extraktion bleibt ein
+     separater, späterer Schritt je Kunde/System — dieser Baustein macht die App nur *bereit*,
+     sobald die Daten kommen.
+  3. **Reale Häufigkeitswerte** (Differenzierung ggü. reinem PFCG, Nutzer-Entscheid 2026-09-08):
+     zusätzlich zum SAP-Standard-Vorschlag aus (1) die je (Objekt,Feld) **häufigsten real
+     beobachteten Werte** aus den bereits importierten `Authorization`-Knoten dieses Datasets
+     aggregieren, mit Trefferzahl/Anteil als Vertrauenshinweis. Nur je aktuellem `dataset`
+     rechnen (Werte wie `EKORG`/`WERKS` sind mandantenspezifisch — ein Wert aus einem anderen
+     Datensatz wäre irreführend); Rolle+ihr generiertes Profil nicht doppelt zählen (gleiche
+     Dedup-Frage wie im Root-Cause, s. `rcCollapseActors`).
+
+  **UX-Flow (Skizze):** Neuer Button in der Query-Management-Ribbon-Gruppe → Dialog mit
+  TCode-Eingabe (Autocomplete gegen `:Transaction`) → Liste der über `CHECKS` gefundenen Objekte,
+  je Feld SAP-Vorschlag **und** realer Häufigkeitswert nebeneinander, Freitext-Override, Objekt
+  einzeln ausschließbar → Speichern legt eine neue Query an.
+
+  **Speicherweg (bereits tragfähig, kein neuer Persistenzmechanismus nötig):** Query-Einträge in
+  `queries.custom.json` sind strukturell identisch zu `queries.json`
+  (`authorizations: [{object, field, andLogic, values, audit}]`, `transactions: [{tcode, audit,
+  stad}]`, s. `rules/KPMG_R3/queries.json`) — genau wie `POST
+  /admin/rulesets/{ruleset}/queries/derive` bereits eine komplette Struktur in dieses Overlay
+  schreibt (dort kopiert von einer Quell-Query). Der Builder braucht nur einen neuen,
+  analogen Endpoint, der die Struktur aus dem Vorschlag statt aus einer Quell-Query zusammenbaut —
+  keine Schema-/Lademechanismus-Änderung.
+
+  **Offene Detailfragen (bewusst nicht vorentschieden):** exakte `OKFLAG`-Wertebedeutung je
+  SAP-Release (R/3 vs. S/4) vor dem Bauen an echter Extraktprobe prüfen; Konfliktauflösung bei
+  Queries mit **mehreren** TCodes (ein Objekt kann von verschiedenen TCodes unterschiedliche
+  Vorschlagswerte bekommen); Umgang mit Objekten, die laut `USOBX_C` "kein Check" sind, aber
+  trotzdem in `CHECKS` auftauchen (ausblenden vs. nur abgeschwächt anzeigen).
+
+  **Umsetzungsschritte:** (1) Datenmodell/Doku/Lade-Skript für (1)+(2) oben, ohne SAP-Zugriff
+  machbar; (2) Backend-Endpoint für den Vorschlag (TCode → Objekte/Felder/SAP-Wert/realer
+  Häufigkeitswert) + neuer Save-Endpoint (analog `derive`); (3) Frontend-Dialog in `admin.html`;
+  (4) Test gegen den vorhandenen Extrakt (zunächst ohne echte `USOBX_C`-Daten, da die separat
+  nachgezogen werden), danach `funktionen.md` + dieser Roadmap-Eintrag abschließen.
 - [ ] **Query → System-Typ-Zuordnung** — Zuordnung zu R/3, S/4HANA usw. als Stammdatenblatt;
   Filter und Katalogansichten sollen systemtypabhängig einschränkbar sein.
 - [ ] **Filterset-/Konnektor-Import weitere Systeme** — S/4HANA, Azure AD/Entra, Microsoft
