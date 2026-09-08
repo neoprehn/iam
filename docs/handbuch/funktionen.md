@@ -228,15 +228,26 @@ dabei **unabhängig vom Profil-Filter nur einmal** gezeigt, auch wenn er mehrere
 Prüfungen einer Query trägt — der Graph wird dadurch zum DAG (mehrere Objekt-Knoten zeigen auf
 denselben Akteur-Knoten), statt eine Rolle je Objekt zu wiederholen und dadurch mehr Verantwortliche
 vorzutäuschen, als es tatsächlich gibt. Berechtigungsobjekte und die TCode-Prüfung erscheinen dabei
-bewusst als kleine, farblich unterschiedene **Bubbles** ohne die konkreten Anforderungswerte im
-Label (die stehen im Hover-Tooltip) — Farben unterscheiden Regel/Klausel/Query/TCode-Prüfung/
-Berechtigungsobjekt/Rolle/Profil; **technische/generierte** Profile sind gestrichelt und blasser,
-**verwaiste** rot umrandet, ein Treffer **„über generiertes Profil"** als rote gestrichelte Kante;
-**UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine* Voraussetzung). Der „ohne
-technische"-Filter wirkt auch hier. Ein Klick auf einen Knoten hebt seinen Pfad hervor (Rest
-ausgegraut), Hover zeigt Details (technisch/„via"/konkrete Feldwerte), „Einpassen" zentriert die
-Ansicht. Die Graph-Ansicht ergänzt die Tabelle für den Überblick — für den lückenlosen Wert-für-Wert-
-Abgleich (grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die Detailsicht.
+als eigene, farblich unterschiedene Kästchen, weiterhin **mit** Objekt-/TCode-Bezeichnung und den
+konkreten Anforderungswerten im Label (z. B. `TCD=SU01,SU10,…`) — Farben unterscheiden Regel/Klausel/
+Query/TCode-Prüfung/Berechtigungsobjekt/Rolle/Profil; **technische/generierte** Profile sind
+gestrichelt und blasser, **verwaiste** rot umrandet, ein Treffer **„über generiertes Profil"** als
+rote gestrichelte Kante; **UND/ODER** stehen an den Kanten (braucht der User *alle* oder *eine*
+Voraussetzung). Der „ohne technische"-Filter wirkt auch hier. Hover zeigt Details (technisch/„via"/
+konkrete Feldwerte). Die Graph-Ansicht ergänzt die Tabelle für den Überblick — für den lückenlosen
+Wert-für-Wert-Abgleich (grün hervorgehobene Treffer, D4-Divergenz-Link) bleibt die Tabelle die
+Detailsicht.
+
+**Klick auf einen Knoten** führt — je nach Typ — direkt zur passenden Ansicht statt nur den Pfad
+hervorzuheben: **User** → auf diesen User gefilterte Ergebnisliste, **Query** → Ergebnisliste
+„wer matcht" dieser Query, **Rolle** → Rollen-Detailseite; bei allen anderen Knotentypen (Regel,
+Klausel, Objekt-/TCode-Kästchen) bleibt es beim Pfad-Hervorheben (Rest ausgegraut). **Rechtsklick**
+auf einen Knoten mit mehr als einer sinnvollen Aktion öffnet stattdessen ein Kontextmenü — bei Query
+und SoD-Regel z. B. sowohl „Ergebnis anzeigen" als auch „Details (Masterdata)"; Letzteres öffnet das
+Query Management in einem neuen Tab mit bereits ausgewähltem Ruleset und Eintrag. „Einpassen"
+zentriert die Ansicht, auch bei aktivem Vollbild klickbar (Fit-/Vollbild-Knopf liegen dafür
+innerhalb des Graph-Canvas, nicht in der Werkzeugleiste darüber — sonst wären sie im Vollbild
+unerreichbar).
 
 **Legende + eigene Farben.** Unter dem Graphen zeigt eine Legende alle vorkommenden Knotentypen
 samt Rand-Modifiern (technisch/verwaist). Ein Klick auf einen Farbpunkt öffnet den nativen

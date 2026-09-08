@@ -1068,6 +1068,39 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   zuerst explizit (`document.exitFullscreen()`), bevor `#rootCauseView` versteckt wird; alle sieben
   Stellen im Code, die das bisher direkt taten, rufen jetzt diese Funktion. Mit Playwright erneut
   verifiziert: derselbe Klickpfad funktioniert fehlerfrei, Vollbild endet korrekt beim Rollen-Klick.
+- [x] **Bubble-Korrektur + Fit-im-Vollbild-Fix + Klickaktionen + Kontextmenü** (2026-09-08, direkt
+  im Anschluss, mehrere Nutzer-Funde in einer Nachricht): Missverständnis aus dem vorigen Punkt
+  richtiggestellt — die Objekt-/TCode-Kästchen sollen weiterhin **mit** Bezeichnung und konkreten
+  Anforderungswerten im Label erscheinen (nur die Rollen-Vervielfachung war der eigentliche Fehler,
+  nicht die Textmenge); Shape zurück auf `round-rectangle`, Label wieder mit `reqText`. Dabei drei
+  weitere Funde behoben:
+  - **„Einpassen" reagierte im Vollbild nicht** — dieselbe Ursache wie beim vorigen Vollbild-Fund,
+    nur umgekehrt: `#rcFitBtn`/`#rcFullscreenBtn` lagen in `.resultbar`, einem **Geschwister** von
+    `#rcGraphWrap` (dem Vollbild-Element) statt einem Nachfahren — die native Fullscreen-API zeigt
+    nur Element+Nachfahren, ein Geschwister-Button ist dann unsichtbar/unklickbar (Klicks landen auf
+    dem Canvas darunter, per Playwright reproduziert). Fix: beide Buttons als schwebende
+    `.graph-toolbar` (oben rechts) in `#rcGraphWrap` verschoben, analog zur bereits verschobenen
+    Legende/zum Zoom-Regler. Nebeneffekt: auch der Vollbild-Umschalter selbst ist jetzt im Vollbild
+    per Klick bedienbar (vorher nur ESC) — `ftfvFullscreenBtn`/`ccdGraphFullscreen` haben denselben
+    Aufbaufehler, wurden aber (noch) nicht angefasst, da nicht gemeldet.
+  - **Klick auf User-/Query-Knoten** springt jetzt (wie bereits bei Rolle → Rollen-Detail) direkt in
+    die passend gefilterte Ergebnisliste (`jumpToUserFilter()` neu, `jumpToQueryFilter()`
+    wiederverwendet) statt nur den Pfad hervorzuheben. Stolperstein: `$('filterUser').value = id`
+    auf einen im `<select>` noch nicht vorhandenen Wert setzt der Browser stillschweigend auf `""`
+    zurueck (die Options-Liste stammt aus dem SoD-Findings-Kontext und kennt einen reinen
+    Query-Treffer ggf. nicht) — Fix: fehlende `<option>` vor dem Setzen anlegen.
+  - **Rechtsklick-Kontextmenü** (`rcShowContextMenu`, neuer Knoten `#rcCtxMenu`, ebenfalls
+    Nachfahre von `#rcGraphWrap`) bietet je Knotentyp alle sinnvollen Aktionen statt nur der einen
+    Linksklick-Aktion — bei Query/SoD-Regel zusätzlich „Details (Masterdata)": öffnet `admin.html`
+    in neuem Tab mit `?ruleset=…&query=…` bzw. `&sod=…`, dort per neuer `applyDeepLinkFromUrl()`
+    Ruleset/Modus/Eintrag automatisch vorausgewählt.
+  Mit Playwright gegen den laufenden Container verifiziert: Kästchen-Label zeigt Objekt+Werte,
+  `shape:round-rectangle`; Klick auf „Einpassen" **und** auf den Vollbild-Umschalter funktioniert
+  waehrend aktivem Vollbild (vorher Timeout, da `<canvas>` die Klicks abfing); Klick auf Query-Knoten
+  setzt `filterQuery` und zeigt die Ergebnisliste; Klick auf User-Knoten setzt `filterUser` korrekt
+  (nach dem Options-Fix); Rechtsklick auf Query zeigt Kontextmenü mit beiden Einträgen, zweiter
+  Eintrag öffnet `admin.html` im neuen Tab mit korrekt vorausgewähltem Ruleset+Query (`amTitle`
+  zeigt den erwarteten Eintrag).
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem

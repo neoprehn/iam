@@ -282,6 +282,17 @@
   .graph-legend-bar { position:absolute; left:12px; bottom:10px; z-index:5; display:flex;
     flex-wrap:wrap; gap:6px 14px; max-width:calc(100% - 100px); padding:6px 10px; border-radius:8px;
     background:color-mix(in srgb, var(--panel) 88%, transparent); border:1px solid var(--line); }
+  /* Fit/Vollbild als schwebende Leiste oben rechts im Graph-Canvas (muss Nachfahre des
+     Vollbild-Elements sein, s. Kommentar an #rcGraphWrap). */
+  .graph-toolbar { position:absolute; right:12px; top:10px; z-index:5; display:flex; gap:6px; }
+  /* Rechtsklick-Kontextmenue auf Graph-Knoten (rcShowContextMenu) -- position:fixed, da per JS auf
+     Maus-Koordinaten gesetzt; liegt trotzdem als Nachfahre von #rcGraphWrap im DOM, damit es auch
+     im Vollbild sichtbar bleibt (s. Kommentar an #rcGraphWrap). */
+  .ctx-menu { position:fixed; z-index:80; background:var(--panel); border:1px solid var(--line);
+    border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.4); padding:4px; min-width:190px; }
+  .ctx-menu button { display:block; width:100%; text-align:left; background:none; border:0;
+    color:var(--fg); padding:7px 10px; font-size:13px; cursor:pointer; border-radius:5px; }
+  .ctx-menu button:hover { background:color-mix(in srgb, var(--accent) 15%, transparent); }
   #filterActive { display:none; align-items:center; gap:8px; margin-bottom:10px; }
   #filterActive.show { display:flex; }
   .runs { list-style:none; padding:0; margin:0; }
@@ -599,14 +610,24 @@
           <button type="button" class="pill" data-value="all" data-i18n="rc.valAll">alle</button>
           <button type="button" class="pill active" data-value="hits" title="Nur die zur Anforderung passenden (grünen) Werte zeigen — hilfreich bei Rollen mit sehr vielen TCodes/Werten" data-i18n="rc.valHits" data-i18n-attr="title:rc.valHitsTitle">nur Treffer</button>
         </div>
-        <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px" data-i18n="rc.fit">Einpassen</button>
-        <button type="button" class="pill graph-fsbtn" id="rcFullscreenBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px" title="Vollbild an-/ausschalten (ESC zum Verlassen)" data-i18n-attr="title:rc.fullscreenTitle">&#9974; <span data-i18n="rc.fullscreen">Vollbild</span></button>
       </div>
       <div id="rcObjects"></div>
       <div id="rcGraphWrap" style="display:none;position:relative">
         <div id="rcGraph" class="rc-graph-box" style="border:1px solid var(--line);border-radius:8px;background:var(--panel)"></div>
+        <!-- Fit/Vollbild-Knoepfe liegen INNERHALB von #rcGraphWrap (nicht in .resultbar) --
+             Nutzer-Fund "Einpassen haengt im Vollbild": die native Fullscreen-API zeigt nur das
+             Vollbild-Element + Nachfahren, ein Geschwister-Button ist dann unsichtbar/unklickbar
+             (Klicks landen auf dem darunterliegenden Cytoscape-Canvas), analog zum frueheren
+             Legende-im-Vollbild-Fund. -->
+        <div class="graph-toolbar">
+          <button class="ghost" id="rcFitBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px" data-i18n="rc.fit">Einpassen</button>
+          <button type="button" class="pill graph-fsbtn" id="rcFullscreenBtn" style="display:none;width:auto;padding:4px 10px;font-size:12px" title="Vollbild an-/ausschalten (ESC zum Verlassen)" data-i18n-attr="title:rc.fullscreenTitle">&#9974; <span data-i18n="rc.fullscreen">Vollbild</span></button>
+        </div>
         <input type="range" id="rcZoom" min="0" max="100" value="50" title="Zoom" />
         <div id="rcLegend" class="graph-legend-bar" style="display:none"></div>
+        <!-- Rechtsklick-Kontextmenue fuer Graph-Knoten (rcShowContextMenu) -- ebenfalls Nachfahre
+             von #rcGraphWrap, aus demselben Vollbild-Sichtbarkeitsgrund wie die Toolbar oben. -->
+        <div id="rcCtxMenu" class="ctx-menu" style="display:none"></div>
       </div>
     </div>
 
@@ -2109,6 +2130,9 @@ document.querySelectorAll('#rcViewPills .pill').forEach(b => b.addEventListener(
   rcRender();
 }));
 $('rcFitBtn').addEventListener('click', () => { if (rcCy) rcCy.fit(undefined, 25); });
+// Browser-eigenes Kontextmenue auf dem Graph-Canvas unterdruecken -- Rechtsklick zeigt stattdessen
+// rcShowContextMenu() (per Cytoscape-'cxttap', s. rcAttachHandlers).
+$('rcGraph').addEventListener('contextmenu', e => e.preventDefault());
 
 /* Root-Cause: Tabelle vs. Graph (Pfad/Radial) -- dieselben /root-cause-Daten (blocks),
    nur andere Darstellung. Der Umschalter zeigt/versteckt Tabelle bzw. Cytoscape-Container. */
@@ -2193,17 +2217,15 @@ function rcCyStyle() {
     // "keine erfuellende Rolle/Profil"-Fuellknoten (kein echtes Objekt, daher neutral/grau statt
     // einer der beiden Bubble-Farben) -- die eigentlichen Objekt-/TCode-Bubbles s. u.
     { selector: '.rc-object', style: { 'background-color': '#5a6478', 'border-color': '#5a6478' } },
-    // Objekt-/TCode-Bubbles: bewusst klein+rund statt der grossen Text-Box, da die konkreten
-    // Anforderungswerte bereits im Tooltip (detail) stehen -- Nutzer-Fund: pro Objekt ein grosser
-    // Textknoten liess bei mehreren Objekten je Rolle wie mehrere Rollen aussehen (s. attachObject/
-    // actorCache-Dedup). Farbe je Bubble-Typ per graphNodeColor() (per-Klasse ueberschreibbar
-    // ueber die Legende, s. rcSetColorOverride).
+    // Objekt-/TCode-Kaestchen: eigene Farbe je Typ (Nutzer-Fund "4 statt 2 Rollen" kam vom
+    // fehlenden Akteur-Dedup, s. attachObject/actorCache, NICHT von der Knotenform -- Label zeigt
+    // daher weiterhin Objekt/TCode-Bezeichnung UND die konkreten Anforderungswerte, s. attachObject).
+    // Farbe je Typ per graphNodeColor() (per-Klasse ueberschreibbar ueber die Legende, s.
+    // rcSetColorOverride).
     { selector: '.rc-obj-tcode', style: { 'background-color': graphNodeColor('rc-obj-tcode'),
-        'border-color': graphNodeColor('rc-obj-tcode'), 'shape': 'ellipse', 'width': 88, 'height': 44,
-        'font-size': 9.5, 'text-max-width': 76 } },
+        'border-color': graphNodeColor('rc-obj-tcode') } },
     { selector: '.rc-obj-bo', style: { 'background-color': graphNodeColor('rc-obj-bo'),
-        'border-color': graphNodeColor('rc-obj-bo'), 'shape': 'ellipse', 'width': 88, 'height': 44,
-        'font-size': 9.5, 'text-max-width': 76 } },
+        'border-color': graphNodeColor('rc-obj-bo') } },
     { selector: '.rc-role', style: { 'background-color': accent, 'border-color': accent } },
     { selector: '.rc-profile', style: { 'background-color': '#8a5cf6', 'border-color': '#8a5cf6' } },
     { selector: '.rc-technical', style: { 'border-style': 'dashed', 'border-width': 2.5, 'opacity': 0.78 } },
@@ -2226,13 +2248,58 @@ function rcAttachHandlers(cy) {
   cy.on('mousemove', 'node', e => { const ev = e.originalEvent; tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; });
   cy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
   cy.on('tap', 'node', e => {
-    const n = e.target; const rid = n.data('roleId');
-    if (rid) { openRoleDetail(rid); return; }   // Rollen-Knoten -> Detailseite statt Pfad-Highlight
+    const n = e.target; const actions = rcNodeActions(n);
+    if (actions.length) { actions[0].run(); return; }   // primaere Aktion statt Pfad-Highlight
     cy.elements().addClass('rcfade');
     n.predecessors().union(n.successors()).union(n).removeClass('rcfade'); });
   cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('rcfade'); });
+  // Rechtsklick: alle verfuegbaren Aktionen als Kontextmenue (z. B. bei Query sowohl "Ergebnis"
+  // als auch "Details/Masterdata" -- Nutzer-Wunsch statt nur der einen fest verdrahteten Aktion).
+  cy.on('cxttap', 'node', e => {
+    const actions = rcNodeActions(e.target);
+    if (actions.length) rcShowContextMenu(e.originalEvent, actions);
+  });
   cy.on('zoom', rcZoomToSlider);   // Slider folgt Maus-/Pinch-Zoom
 }
+/* Primaere Aktion(en) je Knotentyp: erste Aktion = Linksklick (statt reinem Pfad-Highlight), alle
+   Aktionen zusammen = Rechtsklick-Kontextmenue (rcShowContextMenu). Datenattribute roleId/queryId/
+   ruleId/userId werden in rcBuildGraph gesetzt (nur ausserhalb des Konsistenzcheck-Root-Cause,
+   dort ist activeRunId fuer die Zielfilter nicht garantiert das richtige Dataset). */
+function rcNodeActions(n) {
+  const rid = n.data('roleId');
+  if (rid) return [{ label: I18N.t('rc.ctxRoleDetail'), run: () => openRoleDetail(rid) }];
+  const qid = n.data('queryId');
+  if (qid) return [
+    { label: I18N.t('rc.ctxQueryResult'), run: () => jumpToQueryFilter(qid) },
+    { label: I18N.t('rc.ctxQueryMasterdata'), run: () => openQueryMasterdata(qid) },
+  ];
+  const ruleId = n.data('ruleId');
+  if (ruleId) return [
+    { label: I18N.t('rc.ctxRuleResult'), run: () => jumpToRuleFilter(ruleId) },
+    { label: I18N.t('rc.ctxRuleMasterdata'), run: () => openRuleMasterdata(ruleId) },
+  ];
+  const uid = n.data('userId');
+  if (uid) return [{ label: I18N.t('rc.ctxUserResult'), run: () => jumpToUserFilter(uid) }];
+  return [];
+}
+function rcShowContextMenu(ev, actions) {
+  if (ev && ev.preventDefault) ev.preventDefault();
+  const menu = $('rcCtxMenu');
+  menu.innerHTML = actions.map((a, i) => `<button type="button" data-i="${i}">${esc(a.label)}</button>`).join('');
+  const x = ev ? ev.clientX : 0, y = ev ? ev.clientY : 0;
+  menu.style.left = x + 'px'; menu.style.top = y + 'px'; menu.style.display = 'block';
+  // Nach rechts/unten aus dem Viewport gerutscht? Zurueckklappen, statt abgeschnitten anzuzeigen.
+  requestAnimationFrame(() => {
+    const r = menu.getBoundingClientRect();
+    if (r.right > window.innerWidth) menu.style.left = Math.max(4, window.innerWidth - r.width - 4) + 'px';
+    if (r.bottom > window.innerHeight) menu.style.top = Math.max(4, window.innerHeight - r.height - 4) + 'px';
+  });
+  menu.querySelectorAll('button').forEach(b => {
+    b.onclick = () => { menu.style.display = 'none'; actions[+b.dataset.i].run(); };
+  });
+}
+document.addEventListener('click', e => { if (!$('rcCtxMenu').contains(e.target)) $('rcCtxMenu').style.display = 'none'; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('rcCtxMenu').style.display = 'none'; });
 /* Tooltip fuer Rollen-/Profil-Knoten: seit dem Immer-Dedup (s. rcBuildGraph/actorCache) kann ein
    Knoten fuer MEHRERE Objekte stehen, daher keine objektspezifischen Auth-Werte mehr hier -- die
    stehen bereits im Tooltip der jeweiligen Objekt-/TCode-Bubble (attachObject), Auflistung an
@@ -2266,11 +2333,7 @@ function rcBuildGraph(data, mode) {
     // (s. backend/app.py _query_objects) -- alles andere ist ein echtes Berechtigungsobjekt (BO).
     const isTcode = /^S_TCODE\b/.test(o.object);
     const reqText = (o.requirement || []).map(r => `${r.field}=${(r.values || []).join(',')}`).join(' · ');
-    // Bubble-Label bewusst OHNE die Anforderungswerte (frueher 2. Zeile im Knoten) -- die stehen
-    // bereits vollstaendig im Tooltip; Ziel ist ein kleiner, rund gestalteter Marker statt einer
-    // grossen Text-Box (Nutzer-Fund, s. rcCyStyle .rc-obj-tcode/.rc-obj-bo).
-    const bubbleLabel = isTcode ? I18N.t('graph.legendTcode') : o.object;
-    N(on, bubbleLabel, isTcode ? 'rc-obj-tcode' : 'rc-obj-bo', ring.object,
+    N(on, `${o.object}${reqText ? `\n${reqText}` : ''}`, isTcode ? 'rc-obj-tcode' : 'rc-obj-bo', ring.object,
       `<b>${o.object}</b>${reqText ? `<br><span style="color:var(--muted)">${I18N.t('graph.requirement', { req: reqText })}</span>` : ''}`);
     E(parentId, on, '', I18N.t('graph.and'));
     const actors = rcCollapseActors(o.satisfiedBy || []).filter(rcVisibleActor);
@@ -2305,8 +2368,13 @@ function rcBuildGraph(data, mode) {
   const topDetail = topIsRule
     ? `<b>${I18N.t('graph.rulePrefix')} ${data.ruleId}</b>${sodRuleNames[data.ruleId] ? `<br><span style="color:var(--muted)">${sodRuleNames[data.ruleId]}</span>` : ''}`
     : `<b>Query ${data.queryId || ''}</b>`;
-  if (userId) N('rc_user', `User\n${userId}`, 'rc-user', ring.user, `<b>${userId}</b>`);
-  N('rc_top', topLabel, topIsRule ? 'rc-rule' : 'rc-query', ring.rule, topDetail);
+  // Klick auf User-/Query-/Regel-Knoten springt in die passend gefilterte Ergebnisliste (analog
+  // zum bereits bestehenden Klick auf einen Rollen-Knoten -> Rollen-Detail); nur aus dem
+  // lauf-basierten Root-Cause (activeRunId eindeutig), nicht aus dem Konsistenzcheck-Root-Cause.
+  const rcNav = rcReturnTo !== 'consistency';
+  if (userId) N('rc_user', `User\n${userId}`, 'rc-user', ring.user, `<b>${userId}</b>`, rcNav ? { userId } : null);
+  N('rc_top', topLabel, topIsRule ? 'rc-rule' : 'rc-query', ring.rule, topDetail,
+    rcNav ? (topIsRule ? { ruleId: data.ruleId } : { queryId: data.queryId }) : null);
   if (userId) E('rc_user', 'rc_top', '', topIsRule ? I18N.t('graph.violates') : I18N.t('graph.matches'));
 
   if (!topIsRule) {
@@ -2337,7 +2405,8 @@ function rcBuildGraph(data, mode) {
         const qn = gid('q'); const qd = queriesCache.find(q => q.id === qid) || {};
         const qlab = qd.shortDescription || qd.description;
         N(qn, `Query ${qid}${qlab ? `\n${trunc(qlab)}` : ''}`, 'rc-query', ring.query,
-          `<b>Query ${qid}</b>${qlab ? `<br><span style="color:var(--muted)">${qlab}</span>` : ''}`);
+          `<b>Query ${qid}</b>${qlab ? `<br><span style="color:var(--muted)">${qlab}</span>` : ''}`,
+          rcNav ? { queryId: qid } : null);
         E(parent, qn, '', clauseNum != null ? I18N.t('graph.or') : ''); qnode = qn;
       } else if (befund != null) {
         const bn = gid('q'); N(bn, befund, 'rc-query', ring.query, `<b>${befund}</b>`); E('rc_top', bn); qnode = bn;
@@ -4064,6 +4133,33 @@ function jumpToRuleFilter(ruleId) {
   lockedValue = ''; renderLockedPills();
   resultTypeValue = 'sod'; renderResultTypePills();
   renderRuleSelect(); $('filterRule').value = ruleId;
+  applyFilters();
+}
+// Deep-Link ins Query Management (admin.html) fuer eine bestimmte Query/SoD-Regel -- Ruleset des
+// aktiven Laufs wird mitgegeben, da Query-/Regel-IDs nur je Ruleset eindeutig sind. Oeffnet in
+// einem neuen Tab statt zu navigieren, damit der Root-Cause-Kontext hier erhalten bleibt.
+function rcAdminUrl(params) {
+  const run = activeRunId && runsById[activeRunId];
+  const qs = new URLSearchParams(run && run.ruleset ? { ruleset: run.ruleset, ...params } : params);
+  return '/admin.html?' + qs.toString();
+}
+function openQueryMasterdata(qid) { window.open(rcAdminUrl({ query: qid }), '_blank'); }
+function openRuleMasterdata(ruleId) { window.open(rcAdminUrl({ sod: ruleId }), '_blank'); }
+// Analog jumpToQueryFilter/jumpToRuleFilter, aber fuer den User -- Klick auf den User-Knoten im
+// Root-Cause-Graph (rcBuildGraph) springt in die auf diesen User gefilterte Ergebnisliste.
+function jumpToUserFilter(userId) {
+  pushFilterHistory();
+  showResultsView(true);
+  $('filterQuery').value = ''; ruleCritValue = ''; renderRuleCritPills(); renderRuleSelect(); $('filterRule').value = '';
+  sleepingValue = ''; renderSleepingPills(); lockedValue = ''; renderLockedPills();
+  const sel = $('filterUser');
+  // <select>.value auf einen nicht vorhandenen <option>-Wert zu setzen wird vom Browser stillschweigend
+  // auf "" zurueckgesetzt -- die Optionsliste stammt hier aus einem SoD-Findings-Kontext, der einen
+  // Query-only-User wie diesen (kommt gerade aus dem Root-Cause-Graph einer Query) ggf. gar nicht
+  // enthaelt. Fehlende Option deshalb vorab anlegen; populateFilterSelects()/applyFilters() bauen die
+  // Liste danach ohnehin aus dem tatsaechlichen Treffer-Ergebnis neu auf.
+  if (![...sel.options].some(o => o.value === userId)) opt(sel, userId, userId);
+  sel.value = userId;
   applyFilters();
 }
 $('summaryBackBtn').onclick = () => { $('summaryView').style.display = 'none'; showResultsView(); };

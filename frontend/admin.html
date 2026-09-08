@@ -1247,7 +1247,32 @@ function jumpToHashTarget() {
 
 window.addEventListener('hashchange', jumpToHashTarget);
 
-loadRulesets().then(applyMode).catch(e => setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + JSON.stringify(e), true));
+/* Deep-Link aus dem Root-Cause-Graph (Rechtsklick "Query-/SoD-Regel-Details (Masterdata)",
+   s. index.html openQueryMasterdata/openRuleMasterdata): ?ruleset=X&query=Y bzw. &sod=Y waehlt
+   Ruleset + Modus + Eintrag automatisch. Ruleset-Wechsel nur, wenn abweichend und tatsaechlich in
+   der geladenen Liste vorhanden (sonst bliebe der Dropdown auf einer nicht existierenden Option
+   stehen). */
+async function applyDeepLinkFromUrl() {
+  const p = new URLSearchParams(location.search);
+  const rs = p.get('ruleset'), qid = p.get('query'), sodId = p.get('sod');
+  if (!qid && !sodId) return;
+  const sel = $('amRuleset');
+  if (rs && sel.value !== rs && [...sel.options].some(o => o.value === rs)) {
+    sel.value = rs;
+    await loadAll();
+  }
+  const wantMode = qid ? 'query' : 'sod';
+  if (mode !== wantMode) {
+    mode = wantMode;
+    document.querySelectorAll('#modePills .pill').forEach(x => x.classList.toggle('active', x.dataset.mode === wantMode));
+    applyMode();
+  }
+  if (qid) await selectQuery(qid);
+  else await selectSodRule(sodId);
+}
+
+loadRulesets().then(applyMode).then(applyDeepLinkFromUrl)
+  .catch(e => setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + JSON.stringify(e), true));
 setTimeout(jumpToHashTarget, 0);
 </script>
 </body>
