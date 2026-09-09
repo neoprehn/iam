@@ -201,6 +201,10 @@
     </div>
     <div class="lbl" data-i18n="admin.ribbon.editGrp">Bearbeiten</div>
   </div>
+  <div class="group">
+    <div class="cmds"><button class="cmd" id="cmdOnePager"><span class="ico">&#128196;</span><span data-i18n="admin.ribbon.onePager">One-Pager (PDF)</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.onePagerGrp">Export</div>
+  </div>
   <div class="group" id="pfcgRibbonGroup">
     <div class="cmds"><button class="cmd" id="cmdPfcgBuilder"><span class="ico">&#128172;</span><span data-i18n="admin.ribbon.pfcg">Aus TCode ableiten</span></button></div>
     <div class="lbl" data-i18n="admin.ribbon.pfcgGrp">PFCG-Vorschlag</div>
@@ -1296,6 +1300,21 @@ $('cmdDownloadOverlay').onclick = () => {
   const rs = $('amRuleset').value; if (!rs) return;
   const path = isQueryMode() ? '/overlay/download' : '/sodrules/overlay/download';
   window.location.href = '/admin/rulesets/' + encodeURIComponent(rs) + path;
+};
+
+// One-Pager-PDF-Export: wirkt auf das jeweils links ausgewaehlte Element (Query im Modus
+// Einzelfilter, SoD-Regel im Modus SoD) -- direkte Navigation wie bei "Overlay sichern" loest den
+// Browser-Download aus, kein eigener Dialog nötig.
+$('cmdOnePager').onclick = () => {
+  const rs = $('amRuleset').value;
+  const id = isQueryMode() ? selectedId : selectedSodId;
+  if (!rs || !id) {
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ${I18N.t('admin.onePager.needSelection')}`, true);
+    return;
+  }
+  const path = isQueryMode() ? '/queries/' : '/sodrules/';
+  window.location.href = '/admin/rulesets/' + encodeURIComponent(rs) + path
+    + encodeURIComponent(id) + '/export/pdf';
 };
 
 /* ── USOBT-gestuetzter Query-Builder (PFCG-Vorschlag) ─────────────────────────────────────

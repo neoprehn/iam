@@ -789,6 +789,8 @@
       "editGrp": "Bearbeiten",
       "downloadOverlay": "Overlay sichern",
       "downloadGrp": "Backup",
+      "onePager": "One-Pager (PDF)",
+      "onePagerGrp": "Export",
       "pfcg": "Aus TCode ableiten",
       "pfcgGrp": "PFCG-Vorschlag",
       "back": "Zur Auswertung",
@@ -843,6 +845,9 @@
       "needNewId": "Neue Query-ID angeben",
       "needAuth": "mindestens ein Feld mit Wert ausw\u00e4hlen",
       "saved": "Query \u201e{newId}\u201c angelegt."
+    },
+    "onePager": {
+      "needSelection": "Bitte zuerst eine Query bzw. SoD-Regel ausw\u00e4hlen"
     },
     "sodCreate": {
       "heading": "Neue SoD-Regel",

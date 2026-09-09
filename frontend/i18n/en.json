@@ -789,6 +789,8 @@
       "editGrp": "Edit",
       "downloadOverlay": "Save overlay",
       "downloadGrp": "Backup",
+      "onePager": "One-pager (PDF)",
+      "onePagerGrp": "Export",
       "pfcg": "Derive from TCode",
       "pfcgGrp": "PFCG proposal",
       "back": "To analysis",
@@ -843,6 +845,9 @@
       "needNewId": "provide a new query ID",
       "needAuth": "select at least one field with a value",
       "saved": "Query \u201c{newId}\u201d created."
+    },
+    "onePager": {
+      "needSelection": "Please select a query or SoD rule first"
     },
     "sodCreate": {
       "heading": "New SoD rule",

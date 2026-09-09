@@ -167,9 +167,16 @@ Backend-API), Dropdowns statt Freitext, neue SoD-Filter als Ableitung bestehende
   lokal validierter Kontrollumgebung.
 - [ ] **Kritikalität prominent an Einzelfilter/SoD** — Badge-Logik aus Findings in Katalog,
   Auswahl und Ergebniszeilen übernehmen.
-- **Ausgelagert nach V2:** Mehrsprachigkeit, bearbeitbare Authorizations/TCodes,
-  USOBT-gestützter Query-Builder, System-Typ-Zuordnung und Konnektoren für weitere Systeme stehen
-  in [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege).
+- [x] **One-Pager (PDF)-Export je Query/SoD-Regel** (2026-09-09) — Ribbon-Gruppe „Export" im
+  Query Management (beide Modi): exportiert die ausgewählte Query bzw. SoD-Regel als einseitiges
+  PDF (Hochformat A4, fpdf2) mit Stammdaten, Kritikalitäts-Badge, Risiko/Threat/Quellen, Controls
+  und Aufbau (Berechtigungstabelle bzw. aufgelöste Klausel-Struktur samt Query-Kurzbezeichnungen).
+  Details/Verifikation im [Archiv](ROADMAP-ARCHIV.md#96-export-2026-07-15).
+- **Ausgelagert nach V2:** Mehrsprachigkeit, bearbeitbare Authorizations/TCodes, System-Typ-
+  Zuordnung und Konnektoren für weitere Systeme stehen in
+  [`ROADMAP-V2.md`](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege). Der dortige
+  USOBT-gestützte Query-Builder ist inzwischen fertig (Phase 1 wurde am 2026-09-08 bewusst
+  gestartet, s. dort).
 
 #### 9.5 Threat Modeling (ausgelagert nach V2)
 Threat Modeling wird in v1 nicht begonnen. Der vollständige Übergabestand steht in

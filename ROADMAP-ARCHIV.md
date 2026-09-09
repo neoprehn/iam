@@ -1449,9 +1449,48 @@ System-/Mandant-Vergleich und Interview-Ergebnisse bleiben V2, s. [`ROADMAP-V2.m
   ankommende (nicht notwendigerweise der zweite) die Tabelle füllte. Fix: `showResultsView(skipApply)`
   mit Parameter, die drei Aufrufer unterdrücken den internen Auto-Apply und rufen `applyFilters()`
   danach selbst genau einmal auf.
+- [x] **One-Pager (PDF)-Export je Query/SoD-Regel** (2026-09-09, Nutzerwunsch) — neue Ribbon-Gruppe
+  „Export" im Query Management (beide Modi: Einzelfilter/SoD), Button „One-Pager (PDF)" exportiert
+  die links ausgewählte Query bzw. SoD-Regel als einseitiges PDF (Hochformat A4, fpdf2 — gleiche
+  Bibliothek/Farbschema wie der bestehende Konsistenz-Report, aber Hochformat statt Querformat und
+  ein einzelnes Element statt einer Liste). Neue Backend-Funktion `_build_onepager_pdf()` (kind
+  `query`/`sod`) plus `GET .../queries/{id}/export/pdf` und `.../sodrules/{id}/export/pdf`, beide
+  ohne neuen Datenzugriff (nutzen dieselben gemergten Daten wie die bestehenden Detail-Endpunkte).
+  Inhalt je nach Vorhandensein: Stammdaten, Kritikalitäts-Badge (Farbe aus der
+  Masterdata-Kritikalitätsliste, `_criticality_color_map()` neu), Risiko (Art/Stufe/Status,
+  Risikobeschreibung, Threat-Walkthrough, Quellen), Controls, Aufbau (Berechtigungstabelle bzw. bei
+  SoD die aufgelöste Klausel-Struktur — Query-IDs werden dabei um ihre Kurzbezeichnung ergänzt,
+  sonst wäre der Abschnitt nur eine Liste kryptischer IDs; Rulesets ohne `clauses` zeigen ersatzweise
+  Ausdruck + Variablen-Zuordnung, ebenfalls mit Kurzbezeichnung). Leere Abschnitte werden ausgelassen
+  statt leer angezeigt; Freitextfelder sind auf eine Zeichenobergrenze gekappt, damit der typische
+  Fall garantiert auf ein Blatt passt, die Berechtigungs-/Klausel-Tabelle bleibt ungekappt und läuft
+  bei ungewöhnlich vielen Zeilen auf eine zweite Seite über (`auto_page_break`), statt Inhalt
+  abzuschneiden.
+  - **Drei echte Bugs beim Live-Test gefunden und behoben** (nicht nur Kosmetik): (1) `multi_cell()`
+    ohne explizite `new_x`/`new_y` verhält sich bei EINZEILIGEM (nicht umbrechendem) Text wie
+    `cell()` -- der Cursor rutschte weit über den Seitenrand statt in die nächste Zeile, mit fpdf2
+    2.8.7 empirisch reproduziert und verifiziert (isolierter Test: `get_x()` nach der Schleife lag
+    bei >370 statt ~14); Fix über einen `mc()`-Helper mit fest gesetzten `XPos.LMARGIN`/`YPos.NEXT`.
+    (2) einzeilige `cell()`-Aufrufe (Titel, Stammdaten-Zeilen, Tabellenzellen) wurden bisher anhand
+    einer festen Zeichenzahl gekappt -- bei langen Bezeichnungen in großer/fetter Schrift (v. a. der
+    15pt-Titel) reichte das nicht, der Text lief sichtbar über den Zellenrand hinaus, da `cell()`
+    selbst nicht umbricht/kappt; Fix über neue `fit()`-Funktion, die anhand der tatsächlich
+    gerenderten Breite (`pdf.get_string_width()`) im aktuell gesetzten Font kappt, nicht anhand einer
+    Zeichenzahl. (3) der eigens für "…" angehängte Kappungs-Suffix in `fit()` crashte den Export mit
+    `FPDFUnicodeEncodingException` (Helvetica-Kernschrift kennt nur Latin-1, kein "…") -- der
+    bestehende `_pdf_safe()`-Ersetzungsmechanismus griff hier nicht, weil das Suffix NACH dem
+    `safe()`-Aufruf angehängt wurde; Fix: "..." (drei Punkte) statt des Unicode-Zeichens.
+  - **Playwright-Verifikation:** beide Endpunkte gegen mehrere echte Rulesets/Einträge getestet --
+    Query mit vollständigen Risikodaten, Query mit nur teilweise gepflegtem Risiko, Query mit
+    ungewöhnlich vielen Berechtigungszeilen (korrekter Umbruch auf Seite 2), SoD-Regel mit
+    Klausel-Struktur UND SoD-Regel mit Ausdruck/Variablen-Fallback (Ruleset ohne `clauses`); Ribbon
+    getestet über echten Klick inkl. „nichts ausgewählt"-Fehlermeldung, Download-Dateiname und
+    PDF-Byte-Header. Gerenderte Vorschau je PDF per Chromium-eigenem PDF-Viewer (Playwright)
+    geprüft, nicht nur Byte-Validität.
 
 **DoD ✓:** Einzelfilter-/SoD-Übersicht als CSV oder Excel (kompakt/ausführlich mit Rollen-
-Aufschlüsselung) exportierbar, ohne dass ein Export länger als ~20s dauert.
+Aufschlüsselung) exportierbar, ohne dass ein Export länger als ~20s dauert; zusätzlich jede
+einzelne Query/SoD-Regel als einseitiges PDF mit allen vorhandenen Stammdaten/Risiko/Aufbau-Infos.
 
 ## Phase X — erledigt
 

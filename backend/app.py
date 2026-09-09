@@ -1199,6 +1199,12 @@ def _criticality_label_map() -> dict[str, str]:
     return {c["id"]: c["label"] for c in _load_criticalities()}
 
 
+def _criticality_color_map() -> dict[str, str]:
+    """Hex-Farbe je Kritikalitaetsstufe (Masterdata) -- fuer den PDF-Einpager wiederverwendet,
+    damit dessen Badge-Farben mit den Tags im Frontend uebereinstimmen (ein Source of Truth)."""
+    return {c["id"]: c.get("color", "#888888") for c in _load_criticalities()}
+
+
 def _validate_catalog_criticality(value: str | None, field_name: str) -> None:
     if value is None:
         return
@@ -2912,6 +2918,285 @@ def admin_get_sodrule(ruleset: str, ruleId: str):
     if not r:
         raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
     return {**r, "custom": ruleId in custom_ids}
+
+
+def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    h = (hex_color or "#888888").lstrip("#")
+    if len(h) != 6:
+        return (136, 136, 136)
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+def _ruleset_display_name(ruleset: str) -> str:
+    return next((r["name"] for r in list_rulesets() if r["id"] == ruleset), ruleset)
+
+
+def _build_onepager_pdf(kind: str, ruleset: str, item_id: str, item: dict,
+                         queries_lookup: dict[str, dict] | None = None) -> bytes:
+    """One-Pager-PDF (Portrait A4) fuer EINE Query ('query') oder SoD-Regel ('sod') -- Nutzer-
+    Wunsch: alle vorhandenen Infos (Stammdaten/Risiko/Controls/Aufbau) kompakt auf einer Seite,
+    zum Ausdrucken/Weitergeben je Katalogeintrag. Gleiche fpdf2-Bibliothek/Farbschema wie
+    _build_consistency_pdf, aber Hochformat und ein einzelnes Element statt einer Liste.
+
+    Bewusste Design-Entscheidung: Freitextfelder (Risikobeschreibung/Threat/Controls) werden auf
+    eine Zeichenobergrenze gekappt (mit "..."), damit der TYPISCHE Fall (die meisten Queries/SoD-
+    Regeln haben kurze Texte und wenige Aufbau-Zeilen) garantiert auf ein Blatt passt. Die
+    Aufbau-Tabelle (Berechtigungen bzw. Klauseln) bleibt dagegen ungekappt -- bei ungewoehnlich
+    vielen Zeilen springt `auto_page_break` (wie beim bestehenden Konsistenz-Report) auf eine
+    zweite Seite, statt Inhalt stillschweigend abzuschneiden. "Moeglichst" ein Blatt statt einer
+    harten Garantie -- ein voll dynamisches Schrumpf-Layout waere fuer den ersten Wurf
+    unverhaeltnismaessig aufwendig.
+
+    `queries_lookup` (nur fuer kind='sod'): gemergte Queries desselben Rulesets, um in der
+    Klausel-Struktur neben der Query-ID auch die Kurzbezeichnung zu zeigen -- sonst waere der
+    Aufbau-Abschnitt einer SoD-Regel nur eine Liste kryptischer IDs, nicht eigenstaendig lesbar."""
+    from fpdf import FPDF  # optional dep -- erst beim ersten PDF-Aufruf importiert
+    from fpdf.enums import XPos, YPos
+
+    # multi_cell() OHNE explizite new_x/new_y faellt bei einzeiligem (nicht umbrechendem) Text auf
+    # ein cell()-artiges Verhalten zurueck (X ruesst weit ueber den Rand, Y bleibt stehen) --
+    # empirisch mit fpdf2 2.8.7 verifiziert, kein Tippfehler. Deshalb hier immer explizit auf
+    # "naechste Zeile, linker Rand" fixiert statt sich auf den (versionsabhaengigen) Default zu
+    # verlassen.
+    def mc(h: float, text: str):
+        pdf.multi_cell(W, h, text, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    NAVY = (28, 40, 82)
+    LIGHT = (240, 242, 248)
+    crit_id = item.get("criticality") or ""
+    crit_label = _criticality_label_map().get(crit_id, crit_id or "–")
+    crit_rgb = _hex_to_rgb(_criticality_color_map().get(crit_id, "#888888"))
+    ruleset_name = _ruleset_display_name(ruleset)
+
+    def safe(s) -> str:
+        return _pdf_safe(str(s if s is not None else ""))
+
+    def clip(s, n: int) -> str:
+        s = str(s or "")
+        return safe(s if len(s) <= n else s[:n - 1].rstrip() + "…")
+
+    class _PDF(FPDF):
+        def footer(self):
+            self.set_y(-11)
+            self.set_font("Helvetica", "I", 7)
+            self.set_text_color(150, 150, 150)
+            self.cell(0, 5,
+                      f"Vertraulich \xb7 Seite {self.page_no()}/{{nb}} \xb7 Erstellt mit "
+                      "IAM-Analysetool \xb7 Mandantendaten verbleiben in der lokalen Umgebung",
+                      align="C")
+
+    pdf = _PDF(orientation="P", format="A4")
+    pdf.alias_nb_pages()
+    pdf.set_margins(14, 12, 14)
+    pdf.set_auto_page_break(True, margin=15)
+    pdf.add_page()
+    W = pdf.w - 28   # nutzbare Breite (A4 210mm - 2x14mm Rand)
+
+    def fit(text, max_w: float) -> str:
+        """Fuer EINZEILIGE cell()-Zellen (die NICHT umbrechen -- anders als multi_cell): kappt
+        anhand der tatsaechlich gerenderten Breite im AKTUELL gesetzten Font/Groesse, nicht anhand
+        einer festen Zeichenzahl. Nutzer-Fund beim Test: ein char-basiertes Limit reichte bei
+        langen Bezeichnungen (v. a. Titel in 15pt Bold) nicht, der Text lief ueber den Zellenrand
+        hinaus, statt sauber gekappt zu werden -- cell() umbricht/kappt selbst NICHT automatisch."""
+        s = safe(text)
+        if pdf.get_string_width(s) <= max_w:
+            return s
+        while s and pdf.get_string_width(s + "...") > max_w:
+            s = s[:-1]
+        return (s + "...") if s else "..."
+
+    def section_heading(text: str):
+        pdf.ln(3)
+        pdf.set_text_color(*NAVY)
+        pdf.set_font("Helvetica", "B", 11)
+        pdf.cell(W, 7, safe(text), ln=True)
+        pdf.set_draw_color(*NAVY)
+        pdf.set_line_width(0.4)
+        pdf.line(pdf.get_x(), pdf.get_y(), pdf.get_x() + W, pdf.get_y())
+        pdf.ln(2)
+
+    def meta_row(label: str, value: str, w_label: float = 46):
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_fill_color(*LIGHT); pdf.set_text_color(40, 50, 90)
+        pdf.cell(w_label, 6.5, safe(label), fill=True)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_fill_color(252, 252, 255); pdf.set_text_color(0, 0, 0)
+        pdf.cell(W - w_label, 6.5, fit(value, W - w_label - 3), fill=True, ln=True)
+
+    def text_block(label: str, text: str, max_chars: int = 420):
+        if not str(text or "").strip():
+            return
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(40, 50, 90)
+        pdf.cell(W, 5.5, safe(label), ln=True)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_text_color(0, 0, 0)
+        mc(5, clip(text, max_chars))
+        pdf.ln(1)
+
+    # ── Titelblock ───────────────────────────────────────────────────────────
+    kind_label = "Einzelfilter" if kind == "query" else "SoD-Regel"
+    title = item.get("shortDescription") or item.get("description") or item_id
+    pdf.set_fill_color(*NAVY); pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 15)
+    pdf.cell(W, 10, fit(f"{kind_label}: {title}", W - 3), fill=True, ln=True)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.cell(W, 6.5, safe(f"ID {item_id}  \xb7  Ruleset {ruleset_name}"), fill=True, ln=True)
+    pdf.ln(3)
+
+    # Kritikalitaets-Badge (eigene farbige Zeile, Farbe aus der Masterdata-Kritikalitaetsliste --
+    # dieselbe Quelle wie die Tags im Frontend)
+    pdf.set_fill_color(*crit_rgb); pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(70, 7, safe(f"Kritikalit\xe4t: {crit_label}"), fill=True)
+    pdf.set_text_color(0, 0, 0)
+    pdf.ln(10)
+
+    # ── Stammdaten ───────────────────────────────────────────────────────────
+    section_heading("Stammdaten")
+    if item.get("description") and item.get("description") != item.get("shortDescription"):
+        meta_row("Beschreibung", item.get("description"))
+    if kind == "query":
+        meta_row("Modul", item.get("module") or "–")
+        meta_row("Query-Typ", item.get("queryType") or "–")
+        meta_row("TCode ignorieren", "ja" if item.get("disregardTcode") else "nein")
+        if item.get("datenschutz"):
+            meta_row("Datenschutz-Klassifizierung", item.get("datenschutz"))
+    else:
+        if item.get("reasonCode"):
+            meta_row("Reason-Code", item.get("reasonCode"))
+
+    # ── Risiko ───────────────────────────────────────────────────────────────
+    has_risk = any(item.get(k) for k in ("riskType", "riskLevel", "riskStatus", "risk", "threat")) \
+        or item.get("source")
+    if has_risk:
+        section_heading("Risiko")
+        if item.get("riskType") or item.get("riskLevel") or item.get("riskStatus"):
+            meta_row("Risikoart", item.get("riskType") or "–", 60)
+            meta_row("Risikostufe", item.get("riskLevel") or "–", 60)
+            meta_row("Risikostatus", item.get("riskStatus") or "–", 60)
+            pdf.ln(1)
+        text_block("Potenzielles Risiko", item.get("risk"))
+        text_block("Threat-Walkthrough", item.get("threat"))
+        sources = [x for x in (item.get("source") or []) if str(x).strip()]
+        if sources:
+            pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(40, 50, 90)
+            pdf.cell(W, 5.5, "Quellen", ln=True)
+            pdf.set_font("Helvetica", "", 8.5); pdf.set_text_color(0, 0, 0)
+            for src in sources[:4]:
+                # Aufzaehlungspunkt als EIGENE, feste Zelle statt Teil des umbrechenden Texts --
+                # sonst kann sich der Punkt bei einer sehr langen (unteilbaren) URL vom eigentlichen
+                # Text loesen und alleine auf einer Zeile landen (Nutzer-Fund beim Test).
+                pdf.cell(4, 4.6, "\xb7", new_x=XPos.RIGHT, new_y=YPos.TOP)
+                pdf.multi_cell(W - 4, 4.6, clip(src, 128), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.ln(1)
+
+    # ── Controls ─────────────────────────────────────────────────────────────
+    if item.get("controls"):
+        section_heading("Controls")
+        pdf.set_font("Helvetica", "", 9); pdf.set_text_color(0, 0, 0)
+        mc(5, clip(item.get("controls"), 420))
+
+    # ── Aufbau ───────────────────────────────────────────────────────────────
+    section_heading("Aufbau")
+    if kind == "query":
+        tcodes = [t.get("tcode", "") for t in (item.get("transactions") or []) if t.get("tcode")]
+        meta_row("Transaktion(en)", ", ".join(tcodes) if tcodes else "–")
+        pdf.ln(1)
+        auths = item.get("authorizations") or []
+        if auths:
+            COL_W = [W * 0.28, W * 0.16, W * 0.12, W * 0.44]
+            pdf.set_fill_color(*NAVY); pdf.set_text_color(255, 255, 255)
+            pdf.set_font("Helvetica", "B", 8.5)
+            for w, h in zip(COL_W, ["Objekt", "Feld", "UND/ODER", "Werte"]):
+                pdf.cell(w, 6.5, h, fill=True)
+            pdf.ln(6.5)
+            pdf.set_font("Helvetica", "", 8.5)
+            for i, a in enumerate(auths):
+                bg = (244, 244, 248) if i % 2 else (252, 252, 255)
+                pdf.set_fill_color(*bg); pdf.set_text_color(0, 0, 0)
+                vals = ", ".join(str(v) for v in (a.get("values") or []))
+                pdf.cell(COL_W[0], 6, fit(a.get("object"), COL_W[0] - 3), fill=True)
+                pdf.cell(COL_W[1], 6, fit(a.get("field"), COL_W[1] - 3), fill=True)
+                pdf.cell(COL_W[2], 6, "UND" if a.get("andLogic") else "ODER", fill=True)
+                pdf.cell(COL_W[3], 6, fit(vals, COL_W[3] - 3), fill=True, ln=True)
+        else:
+            pdf.set_font("Helvetica", "I", 9); pdf.set_text_color(120, 120, 120)
+            pdf.cell(W, 6, "keine Berechtigungsanforderungen hinterlegt", ln=True)
+    else:
+        clauses = item.get("clauses") or []
+        if clauses:
+            pdf.set_font("Helvetica", "", 8.5)
+            pdf.set_text_color(80, 80, 80)
+            mc(4.8, "Alle Klauseln m\xfcssen erf\xfcllt sein (UND); je Klausel "
+               "reicht eine gematchte Query (ODER).")
+            pdf.ln(1)
+            for i, clause in enumerate(clauses, 1):
+                pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(*NAVY)
+                pdf.cell(W, 5.5, safe(f"Klausel {i}"), ln=True)
+                pdf.set_font("Helvetica", "", 8.5); pdf.set_text_color(0, 0, 0)
+                for qid in clause:
+                    qdesc = (queries_lookup or {}).get(qid, {})
+                    label = qdesc.get("shortDescription") or qdesc.get("description") or ""
+                    line = f"  \xb7 {qid}" + (f" — {label}" if label else "")
+                    mc(4.8, clip(line, 110))
+                pdf.ln(0.5)
+        elif item.get("expression"):
+            meta_row("Ausdruck", item.get("expression"))
+            variables = item.get("variables") or {}
+            if variables:
+                pdf.ln(1)
+                pdf.set_font("Helvetica", "B", 9); pdf.set_text_color(40, 50, 90)
+                pdf.cell(W, 5.5, "Variablen-Zuordnung", ln=True)
+                pdf.set_font("Helvetica", "", 8.5); pdf.set_text_color(0, 0, 0)
+                for var, qid in variables.items():
+                    qdesc = (queries_lookup or {}).get(qid, {})
+                    label = qdesc.get("shortDescription") or qdesc.get("description") or ""
+                    line = f"  {var} = {qid}" + (f" — {label}" if label else "")
+                    mc(4.8, clip(line, 110))
+        else:
+            pdf.set_font("Helvetica", "I", 9); pdf.set_text_color(120, 120, 120)
+            pdf.cell(W, 6, "keine Klausel-/Ausdrucksstruktur hinterlegt", ln=True)
+
+    pdf.set_text_color(0, 0, 0)
+    return bytes(pdf.output())
+
+
+@app.get("/admin/rulesets/{ruleset}/queries/{queryId}/export/pdf")
+def export_query_onepager_pdf(ruleset: str, queryId: str):
+    """One-Pager-PDF einer einzelnen Query (Ribbon "One-Pager (PDF)" im Query Management,
+    Modus Einzelfilter) -- alle vorhandenen Stammdaten/Risiko/Controls/Aufbau-Infos auf einem
+    Blatt, zum Ausdrucken/Weitergeben je Katalogeintrag."""
+    merged, _ = _merged_queries(ruleset)
+    q = merged.get(queryId)
+    if not q:
+        raise HTTPException(404, f"Query '{queryId}' nicht gefunden")
+    try:
+        pdf_bytes = _build_onepager_pdf("query", ruleset, queryId, q)
+    except ImportError:
+        raise HTTPException(500, "fpdf2 nicht installiert — Image neu bauen: docker compose build backend")
+    fname = f"onepager_{ruleset}_{queryId}.pdf"
+    return Response(content=pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
+
+
+@app.get("/admin/rulesets/{ruleset}/sodrules/{ruleId}/export/pdf")
+def export_sodrule_onepager_pdf(ruleset: str, ruleId: str):
+    """One-Pager-PDF einer einzelnen SoD-Regel (Ribbon "One-Pager (PDF)" im Query Management,
+    Modus SoD) -- inkl. aufgeloester Klausel-Struktur (Query-IDs samt Kurzbezeichnung, s.
+    _build_onepager_pdf)."""
+    merged, _ = _merged_sodrules(ruleset)
+    r = merged.get(ruleId)
+    if not r:
+        raise HTTPException(404, f"SoD-Regel '{ruleId}' nicht gefunden")
+    queries_lookup, _ = _merged_queries(ruleset)
+    try:
+        pdf_bytes = _build_onepager_pdf("sod", ruleset, ruleId, r, queries_lookup)
+    except ImportError:
+        raise HTTPException(500, "fpdf2 nicht installiert — Image neu bauen: docker compose build backend")
+    fname = f"onepager_{ruleset}_{ruleId}.pdf"
+    return Response(content=pdf_bytes, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{fname}"'})
 
 
 @app.get("/admin/rulesets/{ruleset}/sodrules/overlay/download")

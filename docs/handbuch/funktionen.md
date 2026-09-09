@@ -508,6 +508,17 @@ angegebenen SoD-ID an und speichert sie im Overlay. Speichern/Abbrechen (Ribbon 
 Detailbereich) sowie „Overlay sichern" (Ribbon **Backup**) wirken im jeweils aktiven Modus auf den
 passenden Overlay (`queries.custom.json` bzw. `sod_rules.custom.json`).
 
+**One-Pager (PDF)** (Ribbon-Gruppe „Export", in beiden Modi) — exportiert die links ausgew&auml;hlte
+Query bzw. SoD-Regel als einseitiges PDF (Hochformat A4) mit allen vorhandenen Informationen:
+Stammdaten, Kritikalit&auml;ts-Badge (Farbe wie im Frontend), Risiko (Art/Stufe/Status,
+Risikobeschreibung, Threat-Walkthrough, Quellen), Controls sowie den Aufbau — bei einer Query die
+Transaktion(en) und die Berechtigungsobjekte-Tabelle, bei einer SoD-Regel die aufgel&ouml;ste
+Klausel-Struktur (bzw. Ausdruck + Variablen-Zuordnung, falls keine `clauses` hinterlegt sind) samt
+Kurzbezeichnung der referenzierten Queries. Leere Abschnitte (z. B. kein Risiko erfasst) werden
+ausgelassen statt leer angezeigt. Layout ist auf ein Blatt ausgelegt und passt das bei den
+&uuml;blichen Datenmengen auch zuverl&auml;ssig; ungew&ouml;hnlich viele Berechtigungszeilen laufen
+auf eine zweite Seite &uuml;ber, statt Inhalt abzuschneiden.
+
 &Auml;nderungen schreiben **nie** in die Vendor-Datei (`queries.json`), sondern in ein separates
 Overlay (`queries.custom.json`) je Ruleset — Vendor-Updates &uuml;berschreiben eigene Anpassungen
 dadurch nicht. Speichern/Ableiten wirkt **sofort** (kein extra Reload-Schritt n&ouml;tig).
