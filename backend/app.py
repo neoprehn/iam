@@ -1819,6 +1819,84 @@ def admin_org_field_values(dataset: str, field: str):
         return [r["v"] for r in rows]
 
 
+def _pfcg_real_values(s, dataset: str, obj: str, field: str, limit: int = 8) -> list[dict]:
+    """Je Feld die haeufigsten real beobachteten Werte aus den im Dataset bereits importierten
+    Rollen (Baustein 3 des USOBT-Query-Builder-Konzepts, ROADMAP-V2.md Phase 1 -- Mehrwert
+    gegenueber reinem PFCG/SU24). Rolle + ihr generiertes Profil zaehlen dabei zusammen als EIN
+    Treffer, nicht doppelt (Nutzer-Entscheid) -- Pattern-Comprehensions statt sequenzieller
+    OPTIONAL MATCHes, sonst wuerde eine Rolle mit sowohl eigener Definition als auch generiertem
+    Profil (oder mehreren Berechtigungsinstanzen je AE-03) als Cross-Product mehrfach gezaehlt.
+    Direkt zugewiesene Profile (ohne Rolle, z. B. SAP_ALL) fliessen bewusst noch NICHT ein --
+    Erweiterung fuer spaeter, kein Blocker fuers MVP. 'share' ist ein grober Vertrauenshinweis
+    (Nenner = Summe aller Treffer, nicht Anzahl eindeutiger Rollen -- im (seltenen) Fall, dass
+    dieselbe Rolle mehrere unterschiedliche Werte fuer dasselbe Feld/Objekt trägt, dadurch leicht
+    ungenau; für eine reine UI-Orientierungshilfe bewusst in Kauf genommen)."""
+    rows = s.run(
+        "MATCH (r:Role {dataset:$dataset}) "
+        "WITH r, "
+        "  [a IN [(r)-[:HAS_AUTH]->(a1:Authorization {object:$object}) | a1] "
+        "     WHERE apoc.any.property(a,'f_'+$field) IS NOT NULL | a] "
+        "  + [a IN [(r)-[:HAS_PROFILE]->(:Profile)-[:HAS_AUTH]->(a2:Authorization {object:$object}) | a2] "
+        "     WHERE apoc.any.property(a,'f_'+$field) IS NOT NULL | a] AS auths "
+        "WHERE size(auths) > 0 "
+        "UNWIND auths AS a "
+        "UNWIND apoc.any.property(a,'f_'+$field) AS v "
+        "WITH DISTINCT r, v WHERE v <> '*' "
+        "WITH v, count(r) AS count "
+        "WITH collect({value: v, count: count}) AS grouped, sum(count) AS totalHits "
+        "UNWIND grouped AS g "
+        "RETURN g.value AS value, g.count AS count, totalHits "
+        "ORDER BY g.count DESC LIMIT $limit",
+        dataset=dataset, object=obj, field=field, limit=limit)
+    return [{"value": r["value"], "count": r["count"],
+             "share": round(r["count"] / r["totalHits"], 3) if r["totalHits"] else 0.0}
+            for r in rows]
+
+
+@app.get("/admin/pfcg-proposal")
+def admin_pfcg_proposal(dataset: str, tcode: str):
+    """PFCG-artiger Query-Builder-Vorschlag (ROADMAP-V2.md Phase 1, Umsetzungsschritt 2): fuer
+    einen TCode alle laut SU24 (USOBT_C) geprueften Berechtigungsobjekte samt Feld-Vorschlagswerten
+    (load/11_su24_proposals.cypher, PROPOSES-Kante), ergaenzt um die je Feld tatsaechlich am
+    haeufigsten beobachteten Werte aus den bereits importierten Rollen (s. _pfcg_real_values).
+    isOrgField nutzt dieselbe OrgField-Registry wie /admin/org-profiles/org-fields (aus USORG),
+    nicht das SU24-'$FELDNAME'-Muster -- letzteres ist nur ein zusaetzliches Signal im Rohwert
+    (suProposal), keine eigenstaendige Quelle. Reine Vorschau, kein Speichern -- s.
+    POST .../queries/from-proposal fuer den Speicherweg."""
+    with driver.session() as s:
+        tx = s.run("MATCH (t:Transaction {key:$k}) RETURN t.id AS id",
+                    k=f"{dataset}|{tcode}").single()
+        if not tx:
+            raise HTTPException(404, f"Transaktion '{tcode}' im Dataset '{dataset}' nicht gefunden")
+
+        org_fields = {r["field"] for r in s.run(
+            "MATCH (of:OrgField {dataset:$d}) RETURN of.field AS field", d=dataset)}
+
+        rows = s.run(
+            "MATCH (t:Transaction {key:$k})-[:CHECKS]->(o:AuthObject) "
+            "OPTIONAL MATCH (t)-[p:PROPOSES]->(o) "
+            "RETURN o.id AS object, "
+            "  [x IN collect(DISTINCT [p.field, p.low, p.high]) WHERE x[0] IS NOT NULL] AS proposals "
+            "ORDER BY object", k=f"{dataset}|{tcode}")
+
+        objects = []
+        for r in rows:
+            by_field: dict[str, dict] = {}
+            for field, low, high in r["proposals"]:
+                by_field.setdefault(field, {"low": low or "", "high": high or ""})
+            fields = [
+                {
+                    "field": field,
+                    "suProposal": su,
+                    "isOrgField": field in org_fields,
+                    "realValues": _pfcg_real_values(s, dataset, r["object"], field),
+                }
+                for field, su in sorted(by_field.items())
+            ]
+            objects.append({"object": r["object"], "fields": fields})
+        return {"tcode": tcode, "dataset": dataset, "objects": objects}
+
+
 @app.post("/admin/org-profiles")
 def admin_create_org_profile(req: OrgProfileCreateReq):
     name = req.name
@@ -2672,6 +2750,70 @@ def admin_derive_query(ruleset: str, req: QueryDeriveReq):
     _save_ruleset_risk(ruleset, "query", req.newId, risk_fields)
     reload_ruleset(ruleset)
     return {"query": req.newId, "derivedFrom": req.fromId}
+
+
+class PfcgAuthField(BaseModel):
+    object: str
+    field: str
+    andLogic: bool
+    values: list[str]
+
+
+class PfcgBuildReq(BaseModel):
+    newId: str
+    tcodes: list[str]
+    authorizations: list[PfcgAuthField]
+    description: str | None = None
+    shortDescription: str | None = None
+    criticality: str | None = None
+    module: str | None = None
+    queryType: str | None = None
+    disregardTcode: bool = False
+
+
+@app.post("/admin/rulesets/{ruleset}/queries/from-proposal")
+def admin_build_query_from_proposal(ruleset: str, req: PfcgBuildReq):
+    """Speicherweg des USOBT-gestuetzten Query-Builders (ROADMAP-V2.md Phase 1, Umsetzungsschritt
+    2): legt eine NEUE Query direkt aus einem (vom Client bereits aufgeloesten -- Freitext-
+    Override/Objekt-Ausschluss sind Frontend-Sache, s. Konzept) PFCG-Vorschlag an. Analog zu
+    POST .../queries/derive, nur dass die authorizations/transactions-Struktur hier aus dem
+    Vorschlag zusammengebaut statt von einer Quell-Query kopiert wird -- kein neuer
+    Persistenzmechanismus, landet wie jede andere neue Query im ruleset-eigenen Overlay
+    (queries.custom.json), das load_ruleset.cypher ohnehin schon zusaetzlich zur Vendor-Datei
+    einliest (s. dortige Feldliste: audit/stad an authorizations/transactions werden aktuell
+    NICHT ausgewertet, hier trotzdem strukturkonform mitgegeben)."""
+    if not _SAFE_NAME.match(req.newId):
+        raise HTTPException(400, "ungueltige Query-ID (erlaubt: Buchstaben/Ziffern/._-)")
+    if not req.authorizations:
+        raise HTTPException(400, "mindestens eine Berechtigungsanforderung erforderlich")
+    if not req.tcodes:
+        raise HTTPException(400, "mindestens ein TCode erforderlich")
+    merged, _ = _merged_queries(ruleset)
+    if req.newId in merged:
+        raise HTTPException(409, f"Query-ID '{req.newId}' existiert bereits")
+    _validate_catalog_criticality(req.criticality, "criticality")
+    _validate_catalog_named(req.module, "module", "modules")
+    _validate_catalog_named(req.queryType, "queryType", "queryTypes")
+
+    new_q = {
+        "query": req.newId,
+        "description": req.description or req.newId,
+        "shortDescription": req.shortDescription or "",
+        "criticality": req.criticality or "",
+        "module": req.module or "",
+        "queryType": req.queryType or "",
+        "disregardTcode": req.disregardTcode,
+        "authorizations": [{"object": a.object, "field": a.field, "andLogic": a.andLogic,
+                             "values": a.values, "audit": False} for a in req.authorizations],
+        "transactions": [{"tcode": t, "audit": False, "stad": False} for t in req.tcodes],
+        "builtFromPfcgProposal": True,
+    }
+    custom_path = ensure_custom_queries_file(ruleset)
+    custom = _load_json_list(custom_path)
+    custom.append(new_q)
+    custom_path.write_text(json.dumps(custom, ensure_ascii=False, indent=2), encoding="utf-8")
+    reload_ruleset(ruleset)
+    return {"query": req.newId, "saved": True}
 
 
 # --- SoD-Regel-Editor (Query Management, Modus "SoD") ----------------------------------

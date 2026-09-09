@@ -83,14 +83,28 @@ ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Ba
   je Feld SAP-Vorschlag **und** realer Häufigkeitswert nebeneinander, Freitext-Override, Objekt
   einzeln ausschließbar → Speichern legt eine neue Query an.
 
-  **Speicherweg (bereits tragfähig, kein neuer Persistenzmechanismus nötig):** Query-Einträge in
-  `queries.custom.json` sind strukturell identisch zu `queries.json`
+  **Speicherweg [x]** (erledigt 2026-09-09, bereits tragfähig, kein neuer Persistenzmechanismus
+  nötig): Query-Einträge in `queries.custom.json` sind strukturell identisch zu `queries.json`
   (`authorizations: [{object, field, andLogic, values, audit}]`, `transactions: [{tcode, audit,
   stad}]`, s. `rules/KPMG_R3/queries.json`) — genau wie `POST
   /admin/rulesets/{ruleset}/queries/derive` bereits eine komplette Struktur in dieses Overlay
-  schreibt (dort kopiert von einer Quell-Query). Der Builder braucht nur einen neuen,
-  analogen Endpoint, der die Struktur aus dem Vorschlag statt aus einer Quell-Query zusammenbaut —
-  keine Schema-/Lademechanismus-Änderung.
+  schreibt (dort kopiert von einer Quell-Query). Umgesetzt als neuer, analoger Endpoint `POST
+  /admin/rulesets/{ruleset}/queries/from-proposal` (`PfcgBuildReq`) — baut die Struktur aus dem
+  vom Client aufgelösten Vorschlag zusammen statt sie von einer Quell-Query zu kopieren, sonst
+  identisches Validierungs-/Overlay-Muster (ID-Format, Duplikatsprüfung, Katalogwerte). `audit`/
+  `stad` werden dabei nur strukturkonform mitgegeben (bestätigt: vom Loader aktuell nirgends
+  ausgewertet). Live getestet (Speichern → Struktur in Neo4j korrekt, Duplikat-ID → 409, leere
+  Anforderungsliste/ungültige ID → 400) und wieder vollständig zurückgenommen (Overlay-Datei +
+  Graph-Knoten) — kein Rückstand im Ruleset.
+
+  **Vorschlags-Endpoint [x]** (erledigt 2026-09-09): `GET /admin/pfcg-proposal?dataset=X&tcode=Y`
+  liefert je vom TCode geprüftem Objekt die Felder mit SU24-Vorschlag (`PROPOSES`-Kante) **und**
+  den realen Häufigkeitswerten aus `_pfcg_real_values()` (Baustein 3, s. oben) samt `isOrgField`
+  (aus der bestehenden `OrgField`-Registry, nicht aus dem SU24-„$FELD"-Muster). Live gegen den
+  echten Datensatz getestet (TCode `ME11`: alle vier bekannten Objekte samt Feldern korrekt,
+  Org-Felder richtig erkannt, Häufigkeitswerte plausibel verteilt). Bewusst noch **nicht**
+  einbezogen: direkt zugewiesene Profile (ohne Rolle) in der Häufigkeitszählung — Erweiterung für
+  später, kein Blocker.
 
   **Offene Detailfragen (bewusst nicht vorentschieden):** exakte `OKFLAG`-Wertebedeutung je
   SAP-Release (R/3 vs. S/4) vor dem Bauen an echter Extraktprobe prüfen; Konfliktauflösung bei
@@ -98,11 +112,14 @@ ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Ba
   Vorschlagswerte bekommen); Umgang mit Objekten, die laut `USOBX_C` "kein Check" sind, aber
   trotzdem in `CHECKS` auftauchen (ausblenden vs. nur abgeschwächt anzeigen).
 
-  **Umsetzungsschritte:** (1) Datenmodell/Doku/Lade-Skript für (1)+(2) oben, ohne SAP-Zugriff
-  machbar; (2) Backend-Endpoint für den Vorschlag (TCode → Objekte/Felder/SAP-Wert/realer
-  Häufigkeitswert) + neuer Save-Endpoint (analog `derive`); (3) Frontend-Dialog in `admin.html`;
-  (4) Test gegen den vorhandenen Extrakt (zunächst ohne echte `USOBX_C`-Daten, da die separat
-  nachgezogen werden), danach `funktionen.md` + dieser Roadmap-Eintrag abschließen.
+  **Umsetzungsschritte:** (1) **[x]** Datenmodell/Doku/Lade-Skript für (1)+(2) oben, ohne
+  SAP-Zugriff machbar; (2) **[x]** Backend-Endpoints für Vorschlag + Speichern (s. oben, beide
+  live gegen den echten Datensatz getestet); (3) **offen** — Frontend-Dialog in `admin.html`
+  (Ribbon-Button, TCode-Eingabe, Objekt-/Feldliste mit SAP-Vorschlag+realem Häufigkeitswert
+  nebeneinander, Freitext-Override, Objekt ausschließbar, ruft die beiden Endpoints aus (2) auf —
+  braucht dabei einen eigenen Dataset-Auswahlmechanismus, den `admin.html` bisher nicht kennt, da
+  die Query-Katalogpflege sonst rein rulesetbasiert/datasetunabhängig ist); (4) danach
+  `funktionen.md` + dieser Roadmap-Eintrag final abschließen.
 - [ ] **Query → System-Typ-Zuordnung** — Zuordnung zu R/3, S/4HANA usw. als Stammdatenblatt;
   Filter und Katalogansichten sollen systemtypabhängig einschränkbar sein.
 - [ ] **Filterset-/Konnektor-Import weitere Systeme** — S/4HANA, Azure AD/Entra, Microsoft
