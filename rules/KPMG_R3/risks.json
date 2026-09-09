@@ -1090,7 +1090,11 @@
     "riskStatus": null,
     "risk": "(a) Prozessadministration (SM50, S_ADMI_FCD=PADM) – Anzeige und Eingriff in die Arbeitsprozesse einer Instanz, inkl. Abbrechen laufender Prozesse (mit/ohne Core). (b) Das Abbrechen kann laufende (Buchungs-)Vorgänge unterbrechen und zu Inkonsistenzen oder Ausfällen führen; betroffen sind Verfügbarkeit und Integrität. Über die Prozessanzeige sind zudem laufende Aktivitäten/Selektionen anderer Nutzer einsehbar (Vertraulichkeit). (c) Fraud-/Fehler-Bezug: Gezieltes Abbrechen eines Prozesses (z. B. eines Kontroll-/Abstimmungslaufs) oder Ausspähen laufender Verarbeitungen als Vorbereitung weiterer Handlungen. Hoch.",
     "threat": "(1) Täter beobachtet in SM50 laufende Prozesse. (2) Er bricht einen kritischen Arbeitsprozess ab. (3) Der zugehörige Vorgang wird unterbrochen (mögliche Inkonsistenz/Ausfall). (4) Die Störung erscheint als technisches Problem.",
-    "source": []
+    "source": [
+      "https://help.sap.com/doc/saphelp_nw75/7.5.5/en-US/2e/66645e0ccd4c64b187e239f5807b44/content.htm",
+      "http://basissap.blogspot.com/2009/03/critical-basis-object-sadmifcd.html",
+      "SAP-Hinweis 3682044 (S_SEC_SESS als Alternative zu S_ADMI_FCD PADM)"
+    ]
   },
   {
     "query": "1407_BC-SRV",
@@ -1145,7 +1149,11 @@
     "riskStatus": null,
     "risk": "(a) Anzeige der Profilparameter-Historie (TU02) – Nachvollziehen, welche Profilparameter wann geändert wurden; die zugeordneten weiten Werte (S_ADMI_FCD/S_SPO_* = *) deuten auf ein zu breit geschnittenes Berechtigungsbündel hin. (b) Für sich vor allem Vertraulichkeit (Kenntnis von Konfigurationsänderungen); die uneingeschränkten Sammelwerte sind jedoch ein Hinweis auf überschüssige Systemrechte. Geringes Einzelrisiko. (c) Fraud-Bezug: Einsicht in Parameteränderungen als Reconnaissance; die weiten Zusatzwerte könnten missbräuchlich für Spool-/Systemfunktionen genutzt werden. Low.",
     "threat": "(1) Täter sieht in TU02 die Historie der Profilparameter ein. (2) Er erkennt sicherheitsrelevante Änderungen/Schwächen. (3) Die weiten Zusatzberechtigungen (S_ADMI_FCD=*) erlauben ggf. weitergehende Systemaktionen. (4) Der Anzeigezugriff bleibt unauffällig.",
-    "source": []
+    "source": [
+      "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/configuring-sap-systems-via-profile-parameters",
+      "https://www.saptechnicalguru.com/sap-profile-parameters/",
+      "SAP-KBA 3400114 (Parameter modification date in TU02)"
+    ]
   },
   {
     "query": "1420_BC-SRV",
@@ -3472,181 +3480,363 @@
     "query": "5006_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "OKP1 setzt die Periodensperre im Controlling, sperrt also Geschäftsvorgänge (Plan/Ist) für bestimmte Perioden. Wer die Sperre setzen und aufheben kann, kann geschlossene CO-Perioden wieder öffnen, nachträglich verrechnen oder umbuchen und anschließend wieder schließen, wodurch Periodenabgrenzung und Abschlusskontrollen im Controlling ausgehebelt werden. Betroffen sind Integrität und die Assertions Cutoff und Completeness. Missbräuchlich lässt sich eine gesperrte Periode öffnen, um Kosten nachträglich zu verschieben, und danach wieder sperren, sodass der Abschluss unverändert wirkt. Vermeintliche Diskrepanz: Die Query prüft ausschließlich S_TABU_DIS mit DICBERCLS=KC, also generische Tabellenpflege, und nicht die CO-spezifischen Objekte (K_VRGNG/K_CSKS); dadurch trifft der Filter potenziell jede Pflege von Tabellen der Gruppe KC und nicht nur OKP1.",
+    "threat": "(1) Täter hebt über OKP1 die Periodensperre einer geschlossenen CO-Periode auf. (2) Er bucht bzw. verrechnet nachträglich in diese Periode. (3) Kosten werden periodenübergreifend verschoben. (4) Die Sperre wird wieder gesetzt, sodass der Abschluss unverändert wirkt.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5007_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt die Pflege der Zuschlagsermittlung im Plan (K_VRGNG mit Vorgang KZPI) über den Report S_ALR_87005104. Zuschlagsschemata steuern, mit welchen Sätzen Gemeinkosten auf Kostenträger aufgeschlagen werden, sodass eine Manipulation die Kostenverteilung über sämtliche betroffenen Objekte hinweg verändert. Betroffen sind Integrität und die Assertions Accuracy und Valuation, da veränderte Zuschlagssätze in die Kalkulation und damit in Bestandsbewertung und Ergebnisrechnung einfließen. Missbräuchlich lassen sich Zuschlagssätze so setzen, dass Kosten in gewünschte Bereiche gelenkt oder Kalkulationsergebnisse geschönt werden. Vermeintliche Diskrepanz: Die Beschreibung spricht von \"Kalkulationsschema\", der geprüfte Vorgang KZPI bezieht sich jedoch auf die Zuschlagsermittlung im Plan; die Bezeichnung sollte an den tatsächlich geprüften Vorgang angeglichen werden.",
+    "threat": "(1) Täter ändert die Zuschlagssätze im Plan. (2) Die Zuschlagsermittlung verwendet die manipulierten Sätze. (3) Gemeinkosten werden anders auf Kostenträger verteilt. (4) Die Wirkung liegt im Schema, nicht in der Einzelbuchung.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5008_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Die Berechtigung erlaubt die Pflege von Planungsversionen im Controlling. Versionen trennen verschiedene Plan- und Istdatenstände voneinander und steuern, welche Werte in Auswertungen und Verrechnungen herangezogen werden; ihre Pflege bestimmt damit die Vergleichsgrundlage der gesamten Planung. Betroffen sind Integrität und die Assertions Accuracy und Presentation. Missbräuchlich lässt sich eine Version so anpassen, dass Plan-Ist-Vergleiche verzerrt werden oder unerwünschte Abweichungen nicht mehr sichtbar sind. Vermeintliche Diskrepanz: Wie bei 5006 prüft die Query nur S_TABU_DIS mit DICBERCLS=KC und kein CO-spezifisches Objekt, sodass der Filter faktisch auf generische Tabellenpflege der Gruppe KC abzielt.",
+    "threat": "(1) Täter ändert eine Planungsversion. (2) Auswertungen und Verrechnungen greifen auf die geänderten Werte zu. (3) Plan-Ist-Vergleiche werden verzerrt. (4) Abweichungen erscheinen kleiner als sie sind.",
+    "source": [
+      "https://help.sap.com/docs/r/fd3c83ed48684640a18ac05c8ae4d016/7.2.04/en-US/e50e0edcd9c54144b5b614c4ba27204d.html",
+      "https://www.daniel-berlin.de/security/sap-sec/table-authorizations/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5009_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "Diese Berechtigung erlaubt das Definieren der indirekten Leistungsverrechnung (K_VRGNG mit Vorgang RKIL, Aktivität 01), also das Anlegen der Zyklen und Segmente, nach denen Leistungen automatisch zwischen Kostenstellen verrechnet werden. Der Zyklus legt Sender, Empfänger und Bezugsbasen fest und steuert damit, wie Kosten regelmäßig und massenhaft verteilt werden. Betroffen sind Integrität und die Assertions Accuracy, Classification und Completeness. Missbräuchlich lässt sich ein Zyklus so definieren, dass Kosten systematisch in Bereiche verlagert werden, in denen sie weniger auffallen oder eine Budgetüberschreitung verdecken. Da die Definition automatisiert und wiederkehrend wirkt, ist die Breitenwirkung deutlich größer als bei einer Einzelbuchung.",
+    "threat": "(1) Täter definiert einen Verrechnungszyklus mit gewählten Sendern/Empfängern und Bezugsbasen. (2) Der Zyklus wird periodisch ausgeführt. (3) Kosten fließen systematisch in die gewünschten Bereiche. (4) Die Ursache liegt in der Zyklusdefinition und ist ohne deren Prüfung nicht sichtbar.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5010_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KL01 legt Leistungsarten an, also die Einheiten, über die eine Kostenstelle ihre Leistungen (etwa Maschinen- oder Personalstunden) an Empfänger verrechnet. Die Leistungsart bestimmt zusammen mit dem Tarif, mit welchem Wert Leistungen verrechnet werden, und ist damit Grundlage der innerbetrieblichen Leistungsverrechnung. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich eine Leistungsart mit unzutreffender Verrechnungslogik oder Zuordnung anlegen, sodass Kosten falsch verteilt werden. Da Leistungsarten in Kalkulation und Bestandsbewertung einfließen, wirkt die Manipulation über die reine Kostenrechnung hinaus.",
+    "threat": "(1) Täter legt in KL01 eine Leistungsart mit gewählter Verrechnungslogik an. (2) Leistungen werden darüber verrechnet. (3) Kosten werden entsprechend verteilt. (4) Ohne Stammdatenkontrolle bleibt die Gestaltung unbemerkt.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5011_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KL02 ändert bestehende Leistungsarten, etwa Verrechnungskostenart, Tarifkennzeichen oder Zuordnungen. Änderungen wirken auf alle künftigen Verrechnungen, die diese Leistungsart nutzen, und damit auf zahlreiche Kostenobjekte gleichzeitig. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich die Verrechnungslogik einer genutzten Leistungsart so ändern, dass Kosten anders oder in geringerem Umfang weiterverrechnet werden. Ohne unabhängige Stammdatenkontrolle bleibt die Verschiebung unauffällig.",
+    "threat": "(1) Täter ändert in KL02 die Verrechnungskostenart/Zuordnung. (2) Künftige Verrechnungen folgen der neuen Logik. (3) Kosten werden anders oder geringer weiterverrechnet. (4) Die Ursache liegt im Stammsatz.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5012_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KL04/KL14 löschen Leistungsarten, wobei KL14 die Massenlöschung erlaubt. Das Löschen einer produktiv genutzten Leistungsart unterbricht die darauf aufsetzenden Verrechnungen und kann die Nachvollziehbarkeit bereits verrechneter Leistungen beeinträchtigen. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Completeness und Existence. Missbräuchlich lässt sich eine für Manipulationen genutzte Leistungsart entfernen, um Spuren zu verwischen, oder eine benötigte Leistungsart löschen und damit die Kostenverrechnung stören. Die Massenlöschung erhöht das Schadenspotenzial erheblich.",
+    "threat": "(1) Täter nutzt eine Leistungsart für manipulative Verrechnungen. (2) Über KL04/KL14 löscht er sie. (3) Die Verrechnungsgrundlage entfällt, Spuren werden erschwert. (4) Die Massenlöschung verstärkt die Wirkung.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://www.tutorialkart.com/sap-co/cost-center-in-sap-create-cost-cost-centers/"
+    ]
   },
   {
     "query": "5013_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KLH1 legt Leistungsartengruppen an, also die Zusammenfassung von Leistungsarten für Planung, Verrechnung und Auswertung. Gruppen werden in Verrechnungszyklen und Reports als Selektionsmenge verwendet, sodass ihre Zusammensetzung bestimmt, welche Leistungsarten überhaupt einbezogen werden. Betroffen sind Integrität und die Assertions Completeness und Presentation. Missbräuchlich lässt sich eine Gruppe so zusammenstellen, dass bestimmte Leistungsarten aus Verrechnungen oder Auswertungen herausfallen. Die Wirkung ist indirekt, aber breit, da Gruppen an vielen Stellen referenziert werden.",
+    "threat": "(1) Täter legt eine Leistungsartengruppe mit selektivem Inhalt an. (2) Zyklen/Reports verwenden die Gruppe. (3) Bestimmte Leistungsarten bleiben unberücksichtigt. (4) Die Auswahl ist ohne Strukturprüfung nicht erkennbar.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://www.aierp2.com/sap-cost-allocation/"
+    ]
   },
   {
     "query": "5014_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KLH2 ändert bestehende Leistungsartengruppen. Da Gruppen in Zyklen und Auswertungen referenziert werden, wirkt eine Änderung der Zusammensetzung unmittelbar auf alle Stellen, die diese Gruppe verwenden. Betroffen sind Integrität und die Assertions Completeness und Presentation. Missbräuchlich lässt sich eine Leistungsart aus einer Gruppe entfernen, sodass sie in Verrechnungen oder Berichten nicht mehr erscheint. Ohne Strukturvergleich ist die Änderung schwer erkennbar.",
+    "threat": "(1) Täter entfernt in KLH2 eine Leistungsart aus einer Gruppe. (2) Zyklen/Reports berücksichtigen sie nicht mehr. (3) Verrechnungen oder Auswertungen werden unvollständig. (4) Ohne Strukturvergleich bleibt dies verborgen.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://www.aierp2.com/sap-cost-allocation/"
+    ]
   },
   {
     "query": "5015_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KP06 plant Kostenarten und Leistungsaufnahmen auf Kostenstellen, legt also die Plankosten der Verantwortungsbereiche fest. Die Planwerte sind Grundlage für Tarifermittlung, Budgetüberwachung und Plan-Ist-Vergleiche, sodass ihre Manipulation die Steuerungs- und Kontrollwirkung des Controllings untergräbt. Betroffen sind Integrität und die Assertions Accuracy und Presentation. Missbräuchlich lassen sich Planwerte so setzen, dass tatsächliche Überschreitungen nicht als Abweichung sichtbar werden oder Tarife in eine gewünschte Richtung beeinflusst werden. Da die Planung die Vergleichsbasis bildet, ist die Manipulation ohne Historienvergleich kaum erkennbar.",
+    "threat": "(1) Täter erhöht in KP06 die Plankosten einer Kostenstelle. (2) Der Plan-Ist-Vergleich zeigt keine Überschreitung mehr. (3) Tatsächliche Mehrkosten fallen nicht auf. (4) Ohne Planhistorie ist die Anpassung schwer erkennbar.",
+    "source": [
+      "https://www.espresso-tutorials.com/blog/master-data-in-sap-cost-center-accounting-2",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5016_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KP26 plant Leistungserbringung und Tarife, also Menge und Preis der innerbetrieblichen Leistungsverrechnung. Der Tarif bestimmt unmittelbar, mit welchem Wert Leistungen an Empfänger verrechnet werden, und fließt über die Kalkulation in Bestandsbewertung und Ergebnis ein. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich lässt sich ein Tarif so setzen, dass Kosten in Empfängerbereiche verschoben oder Kalkulationsergebnisse geschönt werden, etwa durch zu niedrige Verrechnungssätze zur Entlastung eines Bereichs. Die Wirkung erstreckt sich auf alle mit diesem Tarif verrechneten Leistungen.",
+    "threat": "(1) Täter setzt in KP26 einen abweichenden Tarif. (2) Leistungen werden zu diesem Satz verrechnet. (3) Kosten verschieben sich zwischen Sender und Empfänger bzw. die Kalkulation ändert sich. (4) Die Wirkung erstreckt sich auf alle Verrechnungen mit diesem Tarif.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://www.espresso-tutorials.com/blog/master-data-in-sap-cost-center-accounting-2"
+    ]
   },
   {
     "query": "5017_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KP46 plant statistische Kennzahlen, also Bezugsgrößen wie Mitarbeiterzahl oder Quadratmeter, die als Verteilungsschlüssel in Umlagen und Verteilungen dienen. Wer die Bezugsgrößen setzt, steuert mittelbar, wie Kosten zwischen Kostenstellen aufgeteilt werden, ohne selbst zu buchen. Betroffen sind Integrität und die Assertions Accuracy und Classification. Missbräuchlich lassen sich Kennzahlen so planen, dass Umlagen zugunsten oder zulasten bestimmter Bereiche ausfallen. Da nur der Verteilungsschlüssel und nicht die Buchung verändert wird, ist die Manipulation besonders schwer erkennbar.",
+    "threat": "(1) Täter plant in KP46 abweichende statistische Kennzahlen. (2) Umlagen/Verteilungen nutzen sie als Bezugsgröße. (3) Kosten werden zugunsten bestimmter Bereiche verteilt. (4) Da keine Buchung verändert wird, ist die Manipulation kaum erkennbar.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5018_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KO01/KO04 legen Innenaufträge an, also Kostensammler für abgegrenzte Maßnahmen, Projekte oder Investitionen. Der Innenauftrag bestimmt über Auftragsart, Abrechnungsvorschrift und Verantwortungsbereich, wie gesammelte Kosten später abgerechnet und ausgewiesen werden. Betroffen sind Integrität und die Assertions Existence, Classification und Accuracy. Missbräuchlich lässt sich ein Auftrag anlegen, auf dem Kosten außerhalb der regulären Verantwortungsstruktur gesammelt und über eine passende Abrechnungsvorschrift in gewünschte Ziele geleitet werden, etwa zur unzulässigen Aktivierung von Aufwand. Ohne unabhängige Stammdatenkontrolle bleibt die Zweckgestaltung unbemerkt.",
+    "threat": "(1) Täter legt in KO01 einen Innenauftrag mit passender Auftragsart/Abrechnungsvorschrift an. (2) Kosten werden dort gesammelt. (3) Über die Abrechnung fließen sie in das gewünschte Ziel (z. B. Aktivierung statt Aufwand). (4) Ohne Stammdatenkontrolle bleibt die Gestaltung unbemerkt.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://blog.sap-press.com/what-are-cost-centers-in-sap-s4hana"
+    ]
   },
   {
     "query": "5019_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KO02/KO04 ändern bestehende Innenaufträge, insbesondere Abrechnungsvorschrift, Status und Verantwortungszuordnung. Die Abrechnungsvorschrift bestimmt, wohin die auf dem Auftrag gesammelten Kosten abfließen, sodass ihre Änderung den Kostenfluss nachträglich umlenken kann. Betroffen sind Integrität und die Assertions Classification, Accuracy und Presentation. Missbräuchlich lässt sich die Abrechnungsvorschrift eines Auftrags so ändern, dass Kosten auf eine Anlage aktiviert statt als Aufwand gebucht werden oder in einen anderen Verantwortungsbereich fließen. Ohne unabhängige Kontrolle bleibt die Umlenkung unauffällig.",
+    "threat": "(1) Täter ändert in KO02 die Abrechnungsvorschrift eines Auftrags. (2) Die Abrechnung leitet die Kosten in ein anderes Ziel. (3) Aufwand wird aktiviert bzw. in einen anderen Bereich verlagert. (4) Die Umlenkung liegt im Stammsatz und fällt in der Buchung nicht auf.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://blog.sap-press.com/what-are-cost-centers-in-sap-s4hana"
+    ]
   },
   {
     "query": "5020_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KO12 ändert die Gesamtplanung, also die Kostenplanwerte eines Innenauftrags. Die Planwerte sind Grundlage für Budgetprüfung und Verfügbarkeitskontrolle, sodass eine Erhöhung faktisch den Rahmen erweitert, innerhalb dessen Kosten gebucht werden dürfen. Betroffen sind Integrität und die Assertions Accuracy und Presentation. Missbräuchlich lassen sich Planwerte so erhöhen, dass eine Budgetüberschreitung nicht mehr als Abweichung sichtbar wird oder eine Verfügbarkeitskontrolle nicht mehr greift. In Kombination mit Buchungsrechten auf dem Auftrag entfällt die budgetseitige Gegenkontrolle.",
+    "threat": "(1) Täter erhöht in KO12 die Kostenplanwerte des Auftrags. (2) Die Verfügbarkeitskontrolle greift nicht mehr. (3) Weitere Kosten können ohne Warnung gebucht werden. (4) Die Überschreitung erscheint nicht als Abweichung.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://www.espresso-tutorials.com/blog/master-data-in-sap-cost-center-accounting-2"
+    ]
   },
   {
     "query": "5021_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KPZ2 plant Kostenstellenetats, also die Budgetwerte der Kostenstellen. Das Etat bildet die verbindliche Obergrenze für Kostenstellenausgaben und ist Grundlage der Budgetüberwachung. Betroffen sind Integrität und die Assertions Accuracy und Presentation. Missbräuchlich lässt sich das Etat einer Kostenstelle erhöhen, sodass tatsächliche Überschreitungen nicht mehr auffallen oder eine Budgetkontrolle nicht mehr greift. Da nur der Sollwert und nicht die Buchung verändert wird, bleibt die Manipulation ohne Historienvergleich verborgen.",
+    "threat": "(1) Täter erhöht in KPZ2 das Etat einer Kostenstelle. (2) Die Budgetüberwachung meldet keine Überschreitung. (3) Tatsächliche Mehrausgaben bleiben unauffällig. (4) Nur der Sollwert wurde verändert, nicht die Buchung.",
+    "source": [
+      "https://www.espresso-tutorials.com/blog/master-data-in-sap-cost-center-accounting-2",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5022_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KSPI führt die Tarifermittlung durch, berechnet also die Verrechnungstarife aus geplanten Kosten und Leistungsmengen. Der ermittelte Tarif bestimmt, mit welchem Wert Leistungen verrechnet und in die Kalkulation übernommen werden, und der Lauf wirkt über alle einbezogenen Kostenstellen und Leistungsarten hinweg. Betroffen sind Integrität und die Assertions Accuracy und Valuation. Missbräuchlich oder fehlerhaft lässt sich der Lauf mit abweichenden Parametern oder auf Basis manipulierter Planwerte ausführen, sodass systematisch falsche Tarife entstehen. Die Massenwirkung erschwert die Einzelfallprüfung.",
+    "threat": "(1) Täter startet KSPI auf Basis manipulierter Planwerte bzw. mit abweichenden Parametern. (2) Es werden falsche Tarife ermittelt. (3) Alle Folgeverrechnungen nutzen diese Tarife. (4) Die Massenwirkung verdeckt die Ursache.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://www.espresso-tutorials.com/blog/master-data-in-sap-cost-center-accounting-2"
+    ]
   },
   {
     "query": "5023_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KB11/KB11N buchen manuelle Umbuchungen von Kosten, verschieben also gebuchte Primärkosten von einem Kostenobjekt auf ein anderes unter Beibehaltung der Kostenart. Prüfungsrelevant ist dabei, dass die Umbuchung ausschließlich im Controlling wirkt und in der Finanzbuchhaltung keinen Beleg erzeugt; zudem besteht bei KB11N anders als bei der belegbezogenen Umbuchung KB61 keine Verknüpfung zum ursprünglichen FI-Beleg, da Kostenart, Betrag und Objekt frei eingegeben werden. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Classification, Accuracy und Presentation. Missbräuchlich lassen sich Kosten aus einem überschrittenen Budgetbereich in einen unauffälligen verschoben werden, ohne dass in FI eine Spur entsteht; KB14/KB14N erlauben zusätzlich das Stornieren solcher Umbuchungen. Aufgrund der fehlenden FI-Verknüpfung ist die Nachverfolgung erschwert.",
+    "threat": "(1) Täter bucht in KB11N Kosten von einem überschrittenen Bereich auf ein unauffälliges Objekt um. (2) Kostenart, Betrag und Objekt werden frei eingegeben, ohne Bezug zum FI-Beleg. (3) In FI entsteht kein Beleg, nur die CO-Sicht ändert sich. (4) Die fehlende FI-Verknüpfung erschwert die Rückverfolgung erheblich.",
+    "source": [
+      "https://erproof.com/co/sap-co-training/sap-adjustment-postings/",
+      "https://www.erplingo.com/sap-transaction-code/en/KB11N",
+      "https://www.aierp2.com/sap-cost-allocation/"
+    ]
   },
   {
     "query": "5024_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KB41/KB41N buchen manuelle Umbuchungen von Erlösen zwischen Kostenobjekten. Wie bei der Kostenumbuchung wirkt der Vorgang nur im Controlling und verschiebt die Zuordnung von Erlösen zwischen Verantwortungsbereichen. Betroffen sind Integrität und die Assertions Classification, Accuracy und Presentation. Missbräuchlich lassen sich Erlöse einem anderen Bereich zugeordnet werden, etwa um Zielerreichung oder Deckungsbeiträge zu beeinflussen. KB44/KB44N erlauben zusätzlich das Stornieren solcher Umbuchungen, sodass Verschiebungen mehrfach vorgenommen und rückgängig gemacht werden können.",
+    "threat": "(1) Täter bucht in KB41N Erlöse auf ein anderes Objekt um. (2) Die Erlöszuordnung im CO verschiebt sich. (3) Deckungsbeiträge/Zielerreichung eines Bereichs verbessern sich. (4) Über KB44N lässt sich die Umbuchung bei Bedarf wieder zurücknehmen.",
+    "source": [
+      "https://erproof.com/co/sap-co-training/sap-adjustment-postings/",
+      "https://www.erplingo.com/sap-transaction-code/en/KB11N"
+    ]
   },
   {
     "query": "5025_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KB61/KB64 buchen die Umbuchung von Einzelposten, also die belegbezogene Verschiebung einer konkreten Buchung auf ein anderes Kostenobjekt. Anders als bei der freien Umbuchung besteht hier eine Verknüpfung zum ursprünglichen FI-Beleg und Kostenart sowie Betrag werden übernommen, sodass die Nachvollziehbarkeit deutlich besser ist. Betroffen sind Integrität und die Assertions Classification und Accuracy. Missbräuchlich lassen sich Kosten dennoch gezielt in unauffällige Bereiche verschieben, wenn auch mit Belegbezug; KB64 erlaubt das Stornieren solcher Umbuchungen. Aus Prüfungssicht ist diese Variante der freien Umbuchung (5023) vorzuziehen, weshalb ein hoher Anteil an KB11N-Buchungen gegenüber KB61 ein Auffälligkeitsindikator ist.",
+    "threat": "(1) Täter bucht in KB61 einen Einzelposten auf ein anderes Kostenobjekt um. (2) Der Belegbezug bleibt erhalten. (3) Kosten werden dennoch in einen unauffälligen Bereich verschoben. (4) Über KB64 lässt sich die Umbuchung stornieren.",
+    "source": [
+      "https://erproof.com/co/sap-co-training/sap-adjustment-postings/",
+      "https://www.aierp2.com/sap-cost-allocation/"
+    ]
   },
   {
     "query": "5026_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KB21/KB21N buchen die direkte Leistungsverrechnung, verrechnen also erbrachte Leistungsmengen einer Kostenstelle zum hinterlegten Tarif an Empfängerobjekte. Da Menge und Empfänger manuell erfasst werden, bestimmt der Bearbeiter unmittelbar, welche Kosten wohin fließen. Betroffen sind Integrität und die Assertions Accuracy, Classification und Occurrence. Missbräuchlich lassen sich Leistungsmengen erfassen, die nicht erbracht wurden, oder Empfänger so wählen, dass Kosten in gewünschte Bereiche verlagert werden. Da die Verrechnung mit dem Tarif multipliziert wird, wirkt bereits eine geringe Mengenmanipulation wertmäßig deutlich.",
+    "threat": "(1) Täter erfasst in KB21N Leistungsmengen an ein Empfängerobjekt. (2) Die Menge wird mit dem Tarif bewertet. (3) Kosten fließen in den gewählten Bereich, ggf. ohne reale Leistungserbringung. (4) Bereits kleine Mengenabweichungen wirken wertmäßig deutlich.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://www.erplingo.com/sap-transaction-code/en/KB11N"
+    ]
   },
   {
     "query": "5027_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KB65 bucht die Umbuchung von Leistungsverrechnungen, korrigiert also bereits verrechnete Leistungen zwischen Objekten. Der Vorgang verschiebt bereits verrechnete Werte und wirkt wie die Leistungsverrechnung selbst auf die Kostenverteilung. Betroffen sind Integrität und die Assertions Accuracy und Classification. Missbräuchlich lässt sich eine korrekte Leistungsverrechnung nachträglich auf ein anderes Empfängerobjekt umgebucht werden, um Kosten zu verlagern. Ohne unabhängige Kontrolle bleibt die Verschiebung unauffällig.",
+    "threat": "(1) Täter bucht in KB65 eine bereits erfolgte Leistungsverrechnung um. (2) Der Empfänger der Kosten wechselt. (3) Kosten werden nachträglich verlagert. (4) Ohne unabhängige Kontrolle bleibt dies unauffällig.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://erproof.com/co/sap-co-training/sap-adjustment-postings/"
+    ]
   },
   {
     "query": "5028_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KB15/KB15N buchen die manuelle Kostenverrechnung (Vorgang KAMV), verrechnen also Kosten unter einer frei gewählten Verrechnungskostenart zwischen Objekten. Da sowohl Kostenart als auch Beträge und Empfänger manuell bestimmt werden, ist der Gestaltungsspielraum größer als bei der belegbezogenen Umbuchung. Betroffen sind Integrität, Nachvollziehbarkeit und die Assertions Accuracy, Classification und Occurrence. Missbräuchlich lassen sich Kosten unter einer unauffälligen Verrechnungskostenart in gewünschte Bereiche geleitet werden, ohne dass ein FI-Beleg entsteht. Aufgrund der freien Gestaltbarkeit ist das Risiko kritisch.",
+    "threat": "(1) Täter bucht in KB15N eine manuelle Kostenverrechnung unter frei gewählter Verrechnungskostenart. (2) Betrag und Empfänger bestimmt er selbst. (3) Kosten fließen unauffällig in das gewünschte Ziel, ohne FI-Beleg. (4) Die freie Gestaltbarkeit erschwert die Aufdeckung.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://www.erplingo.com/sap-transaction-code/en/KB11N"
+    ]
   },
   {
     "query": "5029_CO-OM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "SCMA steuert den Schedule Manager, mit dem Ablaufpläne für periodische Controlling-Arbeiten (Verrechnungen, Abgrenzungen, Abschlussschritte) definiert und ausgeführt werden. Der Ablaufplan bestimmt, welche Periodenarbeiten in welcher Reihenfolge und mit welchen Varianten laufen, sodass eine Manipulation ganze Abschlussschritte verschieben oder unterdrücken kann. Betroffen sind Integrität und die Assertions Completeness und Cutoff. Missbräuchlich oder fehlerhaft lässt sich ein Schritt aus dem Ablaufplan entfernen, sodass eine erforderliche Verrechnung oder Abgrenzung unterbleibt und der Abschluss unvollständig ist. Die Wirkung liegt in der Steuerung, nicht in der Einzelbuchung, und ist daher schwer erkennbar.",
+    "threat": "(1) Täter ändert in SCMA den Ablaufplan der Periodenarbeiten. (2) Ein Verrechnungs-/Abgrenzungsschritt entfällt oder läuft mit anderer Variante. (3) Der Abschluss ist unvollständig bzw. verschoben. (4) Die Ursache liegt in der Ablaufsteuerung.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5030_CO-OM",
     "riskType": null,
     "riskLevel": "medium",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KALC führt die Abstimmung des Abstimmledgers mit der Finanzbuchhaltung durch und bucht die dabei ermittelten Differenzen nach FI. Die Abstimmung stellt sicher, dass CO-interne Verrechnungen, die Buchungskreis-, Funktionsbereichs- oder Geschäftsbereichsgrenzen überschreiten, korrekt in der Finanzbuchhaltung abgebildet werden. Betroffen sind Integrität und die Assertions Completeness und Accuracy sowie die Abstimmbarkeit zwischen CO und FI. Missbräuchlich oder fehlerhaft lässt sich der Lauf unterlassen oder mit abweichenden Parametern ausführen, sodass CO und FI dauerhaft auseinanderlaufen. Vermeintliche Diskrepanz: Das klassische Abstimmledger und damit KALC ist mit dem neuen Hauptbuch beziehungsweise S/4HANA abgelöst worden (Echtzeitintegration CO-FI); der Filter sollte für neuere Releases auf die Nachfolgefunktionalität geprüft werden.",
+    "threat": "(1) Täter unterlässt den KALC-Lauf bzw. führt ihn mit abweichenden Parametern aus. (2) Modulübergreifende CO-Vorgänge werden nicht nach FI überführt. (3) CO und FI laufen auseinander. (4) Ohne Abstimmung bleibt die Inkonsistenz zunächst unentdeckt.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5031_CO-OM",
     "riskType": null,
     "riskLevel": "high",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KAL1 bucht Abstimmledger-Buchungen nach, ergänzt also nachträglich Abstimmbuchungen zwischen Controlling und Finanzbuchhaltung. Da hier die Überleitung zwischen den Modulen manuell nachgezogen wird, kann eine fehlerhafte oder missbräuchliche Nachbuchung die Abstimmung zwischen CO und FI verfälschen. Betroffen sind Integrität und die Assertions Completeness und Accuracy. Missbräuchlich lässt sich eine Abstimmdifferenz so nachgebucht werden, dass eine tatsächlich bestehende Inkonsistenz rechnerisch verschwindet. Vermeintliche Diskrepanz: Wie bei 5030 betrifft die Funktion das klassische Abstimmledger, das in neueren Releases abgelöst ist.",
+    "threat": "(1) Täter bucht in KAL1 eine Abstimmdifferenz nach. (2) Die Überleitung CO/FI wird rechnerisch geglättet. (3) Eine tatsächlich bestehende Inkonsistenz verschwindet. (4) Ohne Prüfung der Nachbuchung bleibt dies unauffällig.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5032_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KSW5 führt die periodische Umbuchung auf Kostenstellen durch, verteilt also gesammelte Kosten nach hinterlegten Zyklen automatisch auf Empfängerobjekte. Der Lauf wirkt massenhaft über alle im Zyklus enthaltenen Sender und Empfänger, sodass die Kostenverteilung eines gesamten Bereichs in einem Schritt erfolgt. Betroffen sind Integrität und die Assertions Accuracy, Classification und Completeness. Missbräuchlich oder fehlerhaft lässt sich der Lauf auf Basis manipulierter Zyklen oder Bezugsgrößen ausführen, sodass Kosten systematisch in gewünschte Bereiche gelenkt werden. Die Massenwirkung erschwert die Einzelfallprüfung erheblich.",
+    "threat": "(1) Täter startet KSW5 auf Basis eines manipulierten Zyklus. (2) Kosten werden massenhaft nach dessen Logik verteilt. (3) Bereiche werden systematisch ent- oder belastet. (4) Die Massenwirkung erschwert die Einzelfallprüfung.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5033_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KSC5 führt die indirekte Leistungsverrechnung durch und verrechnet Leistungen automatisch nach den zuvor definierten Zyklen (vgl. 5009). Da der Lauf die im Zyklus hinterlegte Logik massenhaft umsetzt, schlägt eine manipulierte Definition unmittelbar auf viele Kostenobjekte durch. Betroffen sind Integrität und die Assertions Accuracy, Classification und Completeness. Missbräuchlich lässt sich der Lauf auf Basis eines manipulierten Zyklus ausführen, sodass Kosten systematisch verlagert werden. Definition (5009) und Durchführung (5033) in einer Hand heben die Kontrolle über die automatisierte Verrechnung vollständig auf und sollten als Konfliktpaar geführt werden.",
+    "threat": "(1) Täter definiert bzw. nutzt einen manipulierten Verrechnungszyklus. (2) Über KSC5 führt er die indirekte Leistungsverrechnung aus. (3) Kosten werden massenhaft in gewünschte Bereiche verlagert. (4) Definition und Ausführung in einer Hand lassen keine Gegenkontrolle zu.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5034_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KSCF führt den Obligovortrag für Kostenstellen durch, überträgt also offene Obligos (etwa aus Bestellungen) in das neue Geschäftsjahr. Der Vortrag bestimmt, welche Mittelbindungen im Folgejahr weiterhin das Budget belasten, und wirkt damit auf die Budgetverfügbarkeit des neuen Jahres. Betroffen sind Integrität und die Assertions Completeness und Cutoff. Missbräuchlich oder fehlerhaft lässt sich der Vortrag unterlassen oder selektiv ausgeführt werden, sodass Obligos verschwinden und im neuen Jahr mehr Budget verfügbar erscheint. Da der Lauf jahresübergreifend wirkt, ist die Abweichung ohne Vorjahresvergleich schwer erkennbar.",
+    "threat": "(1) Täter führt KSCF selektiv aus bzw. unterlässt den Vortrag. (2) Offene Obligos werden nicht ins neue Jahr übernommen. (3) Im Folgejahr erscheint mehr Budget verfügbar. (4) Ohne Vorjahresvergleich fällt die Lücke nicht auf.",
+    "source": [
+      "https://thecostelement.com/sap-cost-center-transactions-codes/",
+      "https://www.espresso-tutorials.com/blog/master-data-in-sap-cost-center-accounting-2"
+    ]
   },
   {
     "query": "5035_CO-OM",
     "riskType": null,
     "riskLevel": "critical",
-    "riskStatus": null
+    "riskStatus": null,
+    "risk": "KON1/KON2 führen die Nachbewertung zu Isttarifen für Innenaufträge durch, bewerten also bereits verrechnete Leistungen nachträglich mit den tatsächlich ermittelten Tarifen. Die Nachbewertung verändert rückwirkend die Wertansätze bereits gebuchter Verrechnungen und wirkt damit auf Auftragskosten und deren spätere Abrechnung. Betroffen sind Integrität und die Assertions Valuation, Accuracy und Cutoff. Missbräuchlich oder fehlerhaft lässt sich die Nachbewertung auf Basis manipulierter Isttarife durchführen, sodass Auftragskosten in eine gewünschte Richtung korrigiert werden. Da sie bereits gebuchte Sachverhalte betrifft, ist die Kontrolle besonders wichtig.",
+    "threat": "(1) Täter führt KON1/KON2 auf Basis manipulierter Isttarife aus. (2) Bereits verrechnete Leistungen werden neu bewertet. (3) Auftragskosten verschieben sich rückwirkend. (4) Da bereits gebuchte Sachverhalte betroffen sind, wirkt die Korrektur breit.",
+    "source": [
+      "https://www.aierp2.com/sap-cost-allocation/",
+      "https://thecostelement.com/sap-cost-center-transactions-codes/"
+    ]
   },
   {
     "query": "5036_CO-OM",
