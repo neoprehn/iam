@@ -76,6 +76,35 @@
   .pill:hover { border-color:var(--accent); }
   .pill.active { color:var(--fg); border-color:var(--accent); background:rgba(76,139,245,.10); }
 
+  /* Dialoge (bisher nicht in admin.html benoetigt -- 1:1 aus index.html uebernommen fuer den
+     PFCG-Vorschlags-Dialog, s. ROADMAP-V2.md Phase 1) */
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+    align-items:flex-start; justify-content:center; padding:48px 16px; z-index:50; overflow:auto; }
+  .overlay.open { display:flex; }
+  .dialog { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    width:460px; max-width:100%; padding:20px 22px; }
+  .dialog h3 { margin:0 0 4px; font-size:16px; }
+  .dialog .sub { color:var(--muted); font-size:12px; margin-bottom:14px; }
+  .dialog .x { float:right; cursor:pointer; color:var(--muted); font-size:18px; line-height:1; }
+  .sep { border-top:1px solid var(--line); margin:18px 0 4px; padding-top:14px; }
+
+  /* PFCG-Vorschlag: je Objekt ein Block mit Feldtabelle (SU24-Vorschlag + reale Haeufigkeitswerte
+     als klickbare Chips) -- bewusst scoped statt globaler table/th/td-Regeln. */
+  .pfcg-object { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-bottom:10px; }
+  .pfcg-object.excluded { opacity:.45; }
+  .pfcg-fields { width:100%; border-collapse:collapse; margin-top:8px; font-size:12.5px; }
+  .pfcg-fields th { text-align:left; color:var(--muted); font-weight:400; font-size:11px;
+    text-transform:uppercase; letter-spacing:.04em; padding:4px 6px; border-bottom:1px solid var(--line); }
+  .pfcg-fields td { padding:5px 6px; vertical-align:top; border-bottom:1px solid var(--line); }
+  .pfcg-fields tr:last-child td { border-bottom:0; }
+  .pfcg-fields input[type=text] { padding:4px 6px; font-size:12.5px; }
+  .pfcg-chip { display:inline-block; background:var(--bg); border:1px solid var(--line);
+    border-radius:14px; padding:2px 9px; font-size:11px; margin:1px 3px 1px 0; cursor:pointer;
+    white-space:nowrap; }
+  .pfcg-chip:hover { border-color:var(--accent); color:var(--accent); }
+  .pfcg-org-badge { font-size:10px; color:var(--accent); border:1px solid var(--accent);
+    border-radius:10px; padding:0 6px; margin-left:6px; white-space:nowrap; }
+
   .runs { list-style:none; padding:0; margin:0; max-height:55vh; overflow:auto; }
   .runs li { padding:8px 10px; border-radius:6px; margin-bottom:5px; cursor:pointer;
     border:1px solid var(--line); background:var(--bg); font-size:13px; }
@@ -171,6 +200,10 @@
       <button class="cmd" id="cmdCancel" disabled><span class="ico">&#9099;</span><span data-i18n="admin.ribbon.cancel">Abbrechen</span></button>
     </div>
     <div class="lbl" data-i18n="admin.ribbon.editGrp">Bearbeiten</div>
+  </div>
+  <div class="group" id="pfcgRibbonGroup">
+    <div class="cmds"><button class="cmd" id="cmdPfcgBuilder"><span class="ico">&#128172;</span><span data-i18n="admin.ribbon.pfcg">Aus TCode ableiten</span></button></div>
+    <div class="lbl" data-i18n="admin.ribbon.pfcgGrp">PFCG-Vorschlag</div>
   </div>
   <div class="group">
     <div class="cmds"><button class="cmd" id="cmdDownloadOverlay"><span class="ico">&#8595;</span><span data-i18n="admin.ribbon.downloadOverlay">Overlay sichern</span></button></div>
@@ -426,6 +459,44 @@ Q4 | Q5"></textarea>
   </div>
 </main>
 
+<!-- USOBT-gestuetzter Query-Builder (ROADMAP-V2.md Phase 1, Umsetzungsschritt 3) -- eigener,
+     breiter Dialog statt der schmalen linken "Ableiten"-Sektion, da die Objekt-/Feldliste
+     (SU24-Vorschlag + reale Haeufigkeitswerte nebeneinander) deutlich mehr Breite braucht. -->
+<div class="overlay" id="dlg-pfcg"><div class="dialog" style="width:min(980px,96vw)">
+  <span class="x" data-close>&times;</span>
+  <h3 data-i18n="admin.pfcg.heading">Neue Query aus TCode (PFCG-Vorschlag)</h3>
+  <div class="sub" data-i18n="admin.pfcg.sub">Wie in PFCG &bdquo;Berechtigungsdaten pflegen&ldquo;: TCode w&auml;hlen,
+    das System schl&auml;gt die gepr&uuml;ften Objekte/Felder inkl. SU24- und real beobachteten Werten vor.</div>
+
+  <div class="row">
+    <div>
+      <label for="pfcgDataset" data-i18n="admin.pfcg.datasetLabel">Dataset</label>
+      <select id="pfcgDataset"></select>
+    </div>
+    <div>
+      <label for="pfcgTcode" data-i18n="admin.pfcg.tcodeLabel">Transaktion (TCode)</label>
+      <input id="pfcgTcode" data-i18n-attr="placeholder:admin.pfcg.tcodePlaceholder" placeholder="z.&nbsp;B. ME11" />
+    </div>
+  </div>
+  <button class="ghost" id="pfcgLoadBtn" style="width:100%;margin-top:8px" data-i18n="admin.pfcg.loadBtn">Vorschlag laden</button>
+
+  <div id="pfcgResult" style="margin-top:16px"></div>
+
+  <div class="sep" id="pfcgSaveSection" style="display:none">
+    <div class="row">
+      <div>
+        <label for="pfcgNewId" data-i18n="admin.pfcg.newIdLabel">Neue Query-ID</label>
+        <input id="pfcgNewId" data-i18n-attr="placeholder:admin.pfcg.newIdPlaceholder" placeholder="z.&nbsp;B. BC_EIGENE_02" />
+      </div>
+      <div>
+        <label for="pfcgDescription" data-i18n="admin.pfcg.descLabel">Bezeichnung</label>
+        <input id="pfcgDescription" />
+      </div>
+    </div>
+    <button class="primary" id="pfcgSaveBtn" data-i18n="admin.pfcg.saveBtn">Speichern &amp; &uuml;bernehmen</button>
+  </div>
+</div></div>
+
 <script>
 const $ = id => document.getElementById(id);
 const api = (p, o) => fetch(p, o).then(r => r.ok ? r.json() : r.json().then(e => Promise.reject(e)));
@@ -564,6 +635,10 @@ function applyMode() {
   $('amDetail').style.display = q && selectedId ? '' : 'none';
   $('srEmpty').style.display = !q && !selectedSodId ? '' : 'none';
   $('srDetail').style.display = !q && selectedSodId ? '' : 'none';
+  // PFCG-Vorschlag baut ausschliesslich Einzelfilter-Queries (authorizations/transactions) --
+  // SoD-Regeln haben keine eigenen Berechtigungen (s. Kommentar am Aufbau-Tab oben), Button daher
+  // nur im Einzelfilter-Modus sichtbar.
+  $('pfcgRibbonGroup').style.display = q ? '' : 'none';
   updateSodAufbauMode();
 }
 document.querySelectorAll('#modePills .pill').forEach(b => b.addEventListener('click', () => {
@@ -1221,6 +1296,142 @@ $('cmdDownloadOverlay').onclick = () => {
   const rs = $('amRuleset').value; if (!rs) return;
   const path = isQueryMode() ? '/overlay/download' : '/sodrules/overlay/download';
   window.location.href = '/admin/rulesets/' + encodeURIComponent(rs) + path;
+};
+
+/* ── USOBT-gestuetzter Query-Builder (PFCG-Vorschlag) ─────────────────────────────────────
+   ROADMAP-V2.md Phase 1, Umsetzungsschritt 3. openDlg/closeDlg gibt es in admin.html bisher
+   nicht (anders als index.html) -- hier neu, 1:1 dasselbe Muster (Klick auf Overlay-Hintergrund
+   oder [data-close] schliesst, Escape schliesst global). */
+function openDlg(id) { $(id).classList.add('open'); }
+function closeDlg() { document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open')); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeDlg(); }));
+document.querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', closeDlg));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDlg(); });
+
+let pfcgData = null;   // letzte /admin/pfcg-proposal-Antwort, Basis fuer den Speichern-Klick
+
+async function openPfcgDialog() {
+  pfcgData = null;
+  $('pfcgResult').innerHTML = '';
+  $('pfcgSaveSection').style.display = 'none';
+  $('pfcgTcode').value = '';
+  $('pfcgNewId').value = '';
+  $('pfcgDescription').value = '';
+  const sel = $('pfcgDataset');
+  if (!sel.dataset.loaded) {
+    try {
+      const datasets = await api('/datasets');
+      sel.innerHTML = datasets.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
+      sel.dataset.loaded = '1';
+    } catch { /* Dataset-Liste ist optional -- Feld bleibt dann leer, TCode-Suche schlaegt sichtbar fehl */ }
+  }
+  openDlg('dlg-pfcg');
+}
+$('cmdPfcgBuilder').onclick = openPfcgDialog;
+
+/* Reale Haeufigkeitswerte als klickbare Chips (Klick setzt/erweitert das Werte-Feld dieser
+   Zeile) -- Prozent aus 'share' (Server liefert 0..1). Bis zu 5 Chips, Server liefert ohnehin nur
+   Top 8, mehr waere hier zu unruhig. */
+function pfcgChipsHtml(realValues) {
+  return (realValues || []).slice(0, 5).map(v =>
+    `<span class="pfcg-chip" data-value="${escapeHtml(v.value)}">${escapeHtml(v.value)} (${Math.round(v.share * 100)}%)</span>`
+  ).join('');
+}
+function pfcgFieldRowHtml(object, f) {
+  const su = f.suProposal || {};
+  const suText = [su.low, su.high].filter(Boolean).join(' – ') || '–';
+  const defaultValue = f.isOrgField ? '*' : (su.low || '');
+  return `<tr data-field="${escapeHtml(f.field)}">
+    <td><b>${escapeHtml(f.field)}</b>${f.isOrgField ? `<span class="pfcg-org-badge" data-i18n="admin.pfcg.orgBadge">Org</span>` : ''}</td>
+    <td class="muted">${escapeHtml(suText)}</td>
+    <td>${pfcgChipsHtml(f.realValues) || '<span class="muted">–</span>'}</td>
+    <td class="check" style="margin:0"><input type="checkbox" class="pfcg-and" title="${escapeHtml(I18N.t('admin.pfcg.andTitle'))}"></td>
+    <td><input type="text" class="pfcg-values" value="${escapeHtml(defaultValue)}"></td>
+  </tr>`;
+}
+function pfcgObjectHtml(o) {
+  const rows = (o.fields || []).map(f => pfcgFieldRowHtml(o.object, f)).join('');
+  return `<div class="pfcg-object" data-object="${escapeHtml(o.object)}">
+    <label class="check" style="margin-top:0">
+      <input type="checkbox" class="pfcg-obj-include" checked>
+      <b>${escapeHtml(o.object)}</b>
+    </label>
+    <table class="pfcg-fields">
+      <thead><tr>
+        <th data-i18n="admin.pfcg.colField">Feld</th>
+        <th data-i18n="admin.pfcg.colSu">SU24-Vorschlag</th>
+        <th data-i18n="admin.pfcg.colReal">Reale Werte</th>
+        <th data-i18n="admin.pfcg.colAnd">UND</th>
+        <th data-i18n="admin.pfcg.colValues">Wert(e)</th>
+      </tr></thead>
+      <tbody>${rows || `<tr><td colspan="5" class="muted" data-i18n="admin.pfcg.noFields">keine Feldvorschl&auml;ge</td></tr>`}</tbody>
+    </table>
+  </div>`;
+}
+$('pfcgLoadBtn').onclick = async () => {
+  const dataset = $('pfcgDataset').value, tcode = $('pfcgTcode').value.trim();
+  if (!dataset || !tcode) { setStatus(`<b>${I18N.t('common.errorLabel')}</b> ${I18N.t('admin.pfcg.needDatasetTcode')}`, true); return; }
+  $('pfcgResult').innerHTML = `<div class="muted">${I18N.t('common.loadingDots')}</div>`;
+  $('pfcgSaveSection').style.display = 'none';
+  try {
+    pfcgData = await api('/admin/pfcg-proposal?dataset=' + encodeURIComponent(dataset) + '&tcode=' + encodeURIComponent(tcode));
+    if (!pfcgData.objects.length) {
+      $('pfcgResult').innerHTML = `<div class="muted">${I18N.t('admin.pfcg.noObjects')}</div>`;
+      return;
+    }
+    $('pfcgResult').innerHTML = pfcgData.objects.map(pfcgObjectHtml).join('');
+    I18N.applyTo($('pfcgResult'));
+    $('pfcgNewId').value = '';
+    $('pfcgDescription').value = tcode;
+    $('pfcgSaveSection').style.display = '';
+  } catch (err) {
+    $('pfcgResult').innerHTML = `<div class="muted">${escapeHtml(I18N.t('msg.error', { detail: err.detail || JSON.stringify(err) }))}</div>`;
+  }
+};
+// Chip-Klick: Wert der Zeile setzen (einzelner Klick = ersetzen) bzw. per Klick auf einen
+// zweiten Chip erweitern (Komma-getrennt, dedupliziert) -- ermoeglicht Mehrfachwerte ohne
+// eigenes Multi-Select-Widget.
+$('pfcgResult').addEventListener('click', e => {
+  const chip = e.target.closest('.pfcg-chip'); if (!chip) return;
+  const input = chip.closest('tr').querySelector('.pfcg-values');
+  const existing = input.value.split(',').map(v => v.trim()).filter(Boolean);
+  const v = chip.dataset.value;
+  input.value = existing.includes(v) ? existing.filter(x => x !== v).join(', ') : [...existing, v].join(', ');
+});
+$('pfcgResult').addEventListener('change', e => {
+  if (!e.target.classList.contains('pfcg-obj-include')) return;
+  e.target.closest('.pfcg-object').classList.toggle('excluded', !e.target.checked);
+});
+$('pfcgSaveBtn').onclick = async () => {
+  const newId = $('pfcgNewId').value.trim();
+  if (!newId) { setStatus(`<b>${I18N.t('common.errorLabel')}</b> ${I18N.t('admin.pfcg.needNewId')}`, true); return; }
+  const authorizations = [];
+  document.querySelectorAll('#pfcgResult .pfcg-object').forEach(box => {
+    if (!box.querySelector('.pfcg-obj-include').checked) return;
+    const object = box.dataset.object;
+    box.querySelectorAll('tbody tr[data-field]').forEach(row => {
+      const values = row.querySelector('.pfcg-values').value.split(',').map(v => v.trim()).filter(Boolean);
+      if (!values.length) return;   // Feld ohne Wert -- bewusst nicht mit in die Query aufnehmen
+      authorizations.push({ object, field: row.dataset.field,
+        andLogic: row.querySelector('.pfcg-and').checked, values });
+    });
+  });
+  if (!authorizations.length) { setStatus(`<b>${I18N.t('common.errorLabel')}</b> ${I18N.t('admin.pfcg.needAuth')}`, true); return; }
+  try {
+    await api('/admin/rulesets/' + encodeURIComponent($('amRuleset').value) + '/queries/from-proposal', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        newId, tcodes: [$('pfcgTcode').value.trim()], authorizations,
+        description: $('pfcgDescription').value.trim() || newId,
+      }),
+    });
+    closeDlg();
+    setStatus(`${doneTag} ` + I18N.t('admin.pfcg.saved', { newId }));
+    await loadAll();
+    await selectQuery(newId);
+  } catch (err) {
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || err.message || JSON.stringify(err)), true);
+  }
 };
 
 /* Tab-Klicks pro Detail-Bereich (#amDetail/#srDetail) scopen, sonst wuerde ein Klick auf einen

@@ -1823,23 +1823,30 @@ def _pfcg_real_values(s, dataset: str, obj: str, field: str, limit: int = 8) -> 
     """Je Feld die haeufigsten real beobachteten Werte aus den im Dataset bereits importierten
     Rollen (Baustein 3 des USOBT-Query-Builder-Konzepts, ROADMAP-V2.md Phase 1 -- Mehrwert
     gegenueber reinem PFCG/SU24). Rolle + ihr generiertes Profil zaehlen dabei zusammen als EIN
-    Treffer, nicht doppelt (Nutzer-Entscheid) -- Pattern-Comprehensions statt sequenzieller
-    OPTIONAL MATCHes, sonst wuerde eine Rolle mit sowohl eigener Definition als auch generiertem
-    Profil (oder mehreren Berechtigungsinstanzen je AE-03) als Cross-Product mehrfach gezaehlt.
-    Direkt zugewiesene Profile (ohne Rolle, z. B. SAP_ALL) fliessen bewusst noch NICHT ein --
-    Erweiterung fuer spaeter, kein Blocker fuers MVP. 'share' ist ein grober Vertrauenshinweis
-    (Nenner = Summe aller Treffer, nicht Anzahl eindeutiger Rollen -- im (seltenen) Fall, dass
-    dieselbe Rolle mehrere unterschiedliche Werte fuer dasselbe Feld/Objekt trägt, dadurch leicht
-    ungenau; für eine reine UI-Orientierungshilfe bewusst in Kauf genommen)."""
+    Treffer, nicht doppelt (Nutzer-Entscheid).
+
+    Nutzer-Fund (2026-09-09, Playwright-Test gegen den echten Datensatz): die erste Fassung
+    startete von JEDER Rolle und pruefte per Pattern-Comprehension, ob sie dieses Objekt/Feld
+    ueberhaupt trägt -- bei einem grossen Datensatz stand dem eine um Groessenordnungen kleinere
+    Menge an Authorization-Knoten fuer ein einzelnes Objekt gegenueber, ein einzelner Feld-Aufruf
+    brauchte dadurch mehrere Sekunden, was den PFCG-Vorschlagsdialog fuer ein TCode mit 8-10
+    Feldern (>20s gesamt) praktisch unbenutzbar machte.
+    Fix: Traversierung UMGEDREHT -- startet vom (viel kleineren) objekt-/feldgefilterten
+    Authorization-Set und findet die Rolle(n) dahinter, statt von allen Rollen aus zu pruefen, ob
+    sie ueberhaupt betroffen sind. Neuer Composite-Index (V005) auf Authorization(dataset,object)
+    zusaetzlich fuer den Objekt-Filter selbst. Direkt zugewiesene Profile (ohne Rolle, z. B.
+    SAP_ALL) fliessen bewusst noch NICHT ein -- Erweiterung fuer spaeter, kein Blocker fuers MVP.
+    'share' ist ein grober Vertrauenshinweis (Nenner = Summe aller Treffer, nicht Anzahl
+    eindeutiger Rollen -- im seltenen Fall, dass dieselbe Rolle mehrere unterschiedliche Werte
+    fuer dasselbe Feld/Objekt trägt, dadurch leicht ungenau; fuer eine reine UI-Orientierungshilfe
+    bewusst in Kauf genommen)."""
     rows = s.run(
-        "MATCH (r:Role {dataset:$dataset}) "
-        "WITH r, "
-        "  [a IN [(r)-[:HAS_AUTH]->(a1:Authorization {object:$object}) | a1] "
-        "     WHERE apoc.any.property(a,'f_'+$field) IS NOT NULL | a] "
-        "  + [a IN [(r)-[:HAS_PROFILE]->(:Profile)-[:HAS_AUTH]->(a2:Authorization {object:$object}) | a2] "
-        "     WHERE apoc.any.property(a,'f_'+$field) IS NOT NULL | a] AS auths "
-        "WHERE size(auths) > 0 "
-        "UNWIND auths AS a "
+        "MATCH (a:Authorization {dataset:$dataset, object:$object}) "
+        "WHERE apoc.any.property(a,'f_'+$field) IS NOT NULL "
+        "WITH a, [x IN [(ownRole:Role)-[:HAS_AUTH]->(a) | ownRole] "
+        "         + [(viaRole:Role)-[:HAS_PROFILE]->(:Profile)-[:HAS_AUTH]->(a) | viaRole] | x] AS roles "
+        "UNWIND roles AS r "
+        "WITH DISTINCT a, r "
         "UNWIND apoc.any.property(a,'f_'+$field) AS v "
         "WITH DISTINCT r, v WHERE v <> '*' "
         "WITH v, count(r) AS count "

@@ -453,8 +453,8 @@ Beide Aktionen fragen vor dem Ausführen nach.
 Erreichbar &uuml;ber das Men&uuml; „Admin" (Gruppe „7 &middot; Admin") &rarr; „Query Management".
 Eigene Ribbon-Gruppen: **Anzeige**
 (Aktualisieren), **Bearbeiten** (Aendern/Speichern/Abbrechen; Speichern/Abbrechen aktiv sobald etwas ge&auml;ndert wurde),
-**Backup** (Overlay-Datei des gew&auml;hlten Rulesets herunterladen) und **Zur&uuml;ck** (zur
-Auswertung).
+**PFCG-Vorschlag** (nur im Modus Einzelfilter, s. u.), **Backup** (Overlay-Datei des gew&auml;hlten
+Rulesets herunterladen) und **Zur&uuml;ck** (zur Auswertung).
 
 Das fr&uuml;her eingebettete Masterdata-Panel ist aus Query Management entfernt; die Pflege der
 Kataloge erfolgt zentral auf der eigenen Seite **Masterdata** (`/admin-masterdata.html`).
@@ -480,6 +480,18 @@ darunter drei **Tabs**:
 
 Unten links: eine **neue Query aus der gew&auml;hlten ableiten** (Berechtigungen/TCodes 1:1
 &uuml;bernommen, Stammdaten/Risiko/Controls oben vorher anpassen) — nur im Modus Einzelfilter.
+
+**PFCG-Vorschlag** (Ribbon-Button „Aus TCode ableiten", nur Modus Einzelfilter) — baut eine
+komplett **neue** Query, statt eine bestehende zu kopieren: Dataset und Transaktion (TCode)
+w&auml;hlen, „Vorschlag laden" zeigt je vom TCode gepr&uuml;ftem Berechtigungsobjekt die Felder mit
+**SU24-Vorschlag** (aus USOBT_C) **und** den **real h&auml;ufigsten beobachteten Werten** aus den
+bereits importierten Rollen dieses Datasets (mit Trefferanteil, z. B. „01 (32&nbsp;%)") — Klick auf
+einen realen Wert-Chip &uuml;bernimmt ihn ins Wertefeld der Zeile. Org-Felder sind mit einem
+**„Org"**-Badge markiert und standardm&auml;&szlig;ig auf `*` vorbelegt (die eigentliche
+Org-Einschr&auml;nkung l&auml;uft &uuml;ber Org-Profile, nicht &uuml;ber die Query selbst). Je
+Objekt abw&auml;hlbar (Checkbox), je Feld **UND**/ODER f&uuml;r mehrere Werte umschaltbar. Neue
+Query-ID + Bezeichnung vergeben, „Speichern &amp; &uuml;bernehmen" legt die Query im selben Overlay
+(`queries.custom.json`) an wie „Ableiten" — Felder ohne Wert werden nicht &uuml;bernommen.
 
 **Modus SoD** — rechts nach Auswahl einer Regel: Stammdaten (Kurz-/Langbezeichnung,
 Kritikalit&auml;t, Reason-Code), darunter drei **Tabs**:

@@ -39,9 +39,9 @@ ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Ba
   am USOBT-Builder unten** (s. Speicherweg) — beide teilen sich denselben Ziel-Datentyp
   (`authorizations[]`/`transactions[]` einer Query), der Builder ist im Grunde ein spezialisierter,
   vorausgefüllter Editor-Modus statt eines rein leeren Formulars.
-- [ ] **USOBT-gestützter Query-Builder** (Konzept 2026-09-08) — Transaktion auswählen, das System
-  schlägt wie PFCG „Berechtigungsdaten pflegen" automatisch die relevanten Berechtigungsobjekte samt
-  Feldern/Wertevorschlägen vor, statt alles als Freitext anzulegen.
+- [x] **USOBT-gestützter Query-Builder** (Konzept 2026-09-08, fertig 2026-09-09) — Transaktion
+  auswählen, das System schlägt wie PFCG „Berechtigungsdaten pflegen" automatisch die relevanten
+  Berechtigungsobjekte samt Feldern/Wertevorschlägen vor, statt alles als Freitext anzulegen.
 
   **Ausgangslage (bereits vorhanden):** `(:Transaction)-[:CHECKS]->(:AuthObject)` ist aus
   `USOBT_C.NAME/OBJECT` bereits im Graphen (`load/10_su24_checks.cypher`). Das reicht für „welche
@@ -114,12 +114,41 @@ ist unten ausgearbeitet; die übrigen Phase-1-Punkte bleiben bis auf Weiteres Ba
 
   **Umsetzungsschritte:** (1) **[x]** Datenmodell/Doku/Lade-Skript für (1)+(2) oben, ohne
   SAP-Zugriff machbar; (2) **[x]** Backend-Endpoints für Vorschlag + Speichern (s. oben, beide
-  live gegen den echten Datensatz getestet); (3) **offen** — Frontend-Dialog in `admin.html`
-  (Ribbon-Button, TCode-Eingabe, Objekt-/Feldliste mit SAP-Vorschlag+realem Häufigkeitswert
-  nebeneinander, Freitext-Override, Objekt ausschließbar, ruft die beiden Endpoints aus (2) auf —
-  braucht dabei einen eigenen Dataset-Auswahlmechanismus, den `admin.html` bisher nicht kennt, da
-  die Query-Katalogpflege sonst rein rulesetbasiert/datasetunabhängig ist); (4) danach
-  `funktionen.md` + dieser Roadmap-Eintrag final abschließen.
+  live gegen den echten Datensatz getestet); (3) **[x]** Frontend-Dialog in `admin.html`
+  (erledigt 2026-09-09); (4) **[x]** `funktionen.md` + dieser Roadmap-Eintrag final abgeschlossen.
+
+  **Frontend-Dialog [x]** (erledigt 2026-09-09): neue Ribbon-Gruppe „PFCG-Vorschlag" (Button „Aus
+  TCode ableiten", nur Modus Einzelfilter) öffnet einen eigenen, breiten Dialog (`#dlg-pfcg`,
+  `min(980px,96vw)` statt der schmalen 460px-Standardbreite — die Objekt-/Feldliste braucht mehr
+  Platz). `.overlay`/`.dialog`-Muster (Klick auf Hintergrund/„×"/ESC schließt) gab es in
+  `admin.html` bisher nicht, 1:1 aus `index.html` übernommen. Dataset-Auswahl über ein neues
+  `<select>` (aus `GET /datasets`) — löst die vorher offene Frage, `admin.html` kannte bisher
+  keinen Dataset-Kontext. Je Objekt Checkbox zum Ausschließen, je Feld SAP-Vorschlag + bis zu 5
+  reale Wert-Chips (Klick übernimmt/entfernt den Wert im Textfeld, mehrere Werte kommagetrennt) +
+  UND/ODER-Checkbox + Org-Badge. Speichern ruft den neuen `from-proposal`-Endpoint auf, lädt die
+  Query-Liste neu und wählt die neue Query direkt an.
+
+  **Performance-Fund beim Live-Test (2026-09-09, wichtig):** der reale Aufruf für einen TCode
+  brauchte über 20 Sekunden — praktisch unbenutzbar für einen interaktiven Dialog. Ursache:
+  `_pfcg_real_values()` startete von JEDER Rolle im Dataset und prüfte per Pattern-Comprehension,
+  ob sie das gefragte Objekt überhaupt trägt — bei einem großen Testdatensatz stand dem eine um
+  Größenordnungen kleinere Menge an Authorization-Knoten für ein einzelnes Objekt gegenüber, ein
+  massiver Fehlaufwand. Fix: Traversierung
+  umgedreht (startet vom objekt-/feldgefilterten Authorization-Set, findet die Rolle(n) dahinter),
+  plus neuer Composite-Index `authorization_object` auf `Authorization(dataset, object)`
+  (`migrations/V005__authorization_object_index.cypher` — nützt nebenbei auch
+  `_SATISFIED_BY_CYPHER` und `admin_org_field_values`, die dasselbe Zugriffsmuster nutzen). Ergebnis
+  gegen denselben echten Datensatz: von praktisch unbenutzbar auf klar interaktiv-taugliche
+  Antwortzeit, Werte dabei nachweislich unverändert (gleiche Zahlen wie vor dem Fix). Playwright-
+  Test mit echten Klicks (nicht nur direktem Funktionsaufruf!)
+  war hier entscheidend — ein direkter `api()`-Aufruf in der Konsole hätte das nicht zuverlässig
+  aufgedeckt, da erste Testläufe zufällig schnell genug durchliefen.
+
+  Mit Playwright gegen den laufenden Container voll durchgetestet (Dialog öffnen, Dataset+TCode
+  wählen, Vorschlag laden, Chip-Klick übernimmt Wert, Objekt-Ausschluss wirkt korrekt im
+  gespeicherten Ergebnis, Speichern legt die Query mit exakt der erwarteten `authorizations[]`-
+  Struktur an) — Testeintrag danach vollständig zurückgenommen (Overlay-Datei + Graph-Knoten),
+  kein Rückstand im Ruleset.
 - [ ] **Query → System-Typ-Zuordnung** — Zuordnung zu R/3, S/4HANA usw. als Stammdatenblatt;
   Filter und Katalogansichten sollen systemtypabhängig einschränkbar sein.
 - [ ] **Filterset-/Konnektor-Import weitere Systeme** — S/4HANA, Azure AD/Entra, Microsoft
