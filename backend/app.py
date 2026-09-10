@@ -4223,9 +4223,12 @@ def export_sod_rules_summary(runId: str, format: str = "csv"):
 
 @app.get("/matches")
 def matches(runId: str, query: str | None = None, user: str | None = None,
-            userType: list[str] = Query(default=[])):
+            userType: list[str] = Query(default=[]), limit: int = 200):
     """Wer matcht Query X (Einzelberechtigung) im Zwischenergebnis (:User)-[:MATCHES]->(:Query)
-    eines Laufs — optional auf einen User/Nutzertyp(en) eingeschraenkt (Drill-down 'Query -> wer matcht')."""
+    eines Laufs — optional auf einen User/Nutzertyp(en) eingeschraenkt (Drill-down 'Query -> wer
+    matcht'). limit (Default 200, analog zu /findings): schuetzt vor einem unbegrenzten Abruf,
+    wenn WEDER query NOCH user gesetzt sind (Nutzerwunsch, Einzelfilter/SoD-Umschalter auch in der
+    ungefilterten Einstiegsansicht -- dort werden ALLE Queries auf einmal abgefragt)."""
     with driver.session() as s:
         return _anon_rows([dict(r) for r in s.run(
             "MATCH (u:User)-[:MATCHES {runId:$runId}]->(q:Query) "
@@ -4236,7 +4239,8 @@ def matches(runId: str, query: str | None = None, user: str | None = None,
             "            WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Comm' ELSE '?' END AS typ, "
             "       CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status, "
             "       q.id AS query "
-            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType)], id_key="user")
+            "ORDER BY status, user LIMIT $limit", runId=runId, qid=query, user=user,
+            userTypes=userType, limit=limit)], id_key="user")
 
 
 _SATISFIED_BY_CYPHER = (

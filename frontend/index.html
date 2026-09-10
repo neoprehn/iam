@@ -3116,8 +3116,12 @@ function renderFindingsRows() {
 }
 
 function toggleEntryUi(isEntry) {
-  $('resultTypeLabel').style.display = isEntry ? 'none' : '';
-  $('resultTypePills').style.display = isEntry ? 'none' : '';
+  // Nutzer-Wunsch: der Einzelfilter/SoD-Umschalter soll auch in der ungefilterten Einstiegsansicht
+  // waehlbar sein (vorher nur sichtbar, sobald irgendein Filter aktiv war) -- daher hier bewusst
+  // NICHT mehr an isEntry gekoppelt, immer sichtbar. Das eigentliche Umschalten passiert weiterhin
+  // ueber resultTypeValue in applyFilters().
+  $('resultTypeLabel').style.display = '';
+  $('resultTypePills').style.display = '';
 }
 
 /* Regel-Chip oben + Stammdaten (User-Identitaet, ueber /users/{id}) fuer die KPI-Kachel —
@@ -3801,7 +3805,10 @@ async function applyFilters() {
   await updateQueryCascade(u);
   renderRuleSelect();
   if (q || resultTypeValue === 'query') {
-    let url = '/matches?runId=' + encodeURIComponent(activeRunId);
+    // limit=500: ohne konkrete Query/User (Einzelfilter-Umschalter jetzt auch in der ungefilterten
+    // Einstiegsansicht waehlbar) waeren sonst ALLE Matches ueber ALLE Queries auf einmal abgefragt
+    // -- Deckel analog zum "TOP 500" bei /findings, gleicher Schwellenwert fuer setFindingsMeta().
+    let url = '/matches?runId=' + encodeURIComponent(activeRunId) + '&limit=500';
     if (q) url += '&query=' + encodeURIComponent(q);
     if (u) url += '&user=' + encodeURIComponent(u);
     uts.forEach(t => url += '&userType=' + encodeURIComponent(t));

@@ -1198,6 +1198,20 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   würden sich Tooltip und Menü kurz überlappen). Mit Playwright verifiziert: Tooltip manuell
   sichtbar gemacht, dann per Kontextmenü-Aktion (User-Detail, User-Auswertung, Query-Ergebnis) auf
   eine andere Ansicht gewechselt — Tooltip in allen drei Fällen korrekt verschwunden.
+- [x] **Einzelfilter/SoD-Umschalter auch in der ungefilterten Einstiegsansicht** (2026-09-10,
+  Nutzerwunsch) — die Ergebnistyp-Pillzeile („alle"/„Einzelfilter"/„SoD") existierte bereits mit drei
+  Zuständen, wurde aber über `toggleEntryUi(isEntry)` komplett ausgeblendet, solange kein Filter aktiv
+  war. Die Filterlogik in `applyFilters()` (Zweig `if (q || resultTypeValue === 'query')`) verarbeitete
+  „Einzelfilter" schon korrekt für alle Queries eines Laufs gemeinsam — es fehlte nur die Sichtbarkeit
+  der Pillzeile im Einstiegszustand. Fix: `toggleEntryUi()` zeigt Label und Pillzeile jetzt immer.
+  Da ein Klick auf „Einzelfilter" ohne aktiven Filter alle Matches eines Laufs auf einmal abfragt
+  (bestätigt: 2601 Treffer bei einem Testlauf, `/matches` hatte bis dahin gar kein Limit), wurde
+  vorsorglich ein `limit`-Parameter (Default 200, analog zu `/findings`) im Backend ergänzt; das
+  Frontend hängt beim Einzelfilter-Aufruf explizit `&limit=500` an (TOP-500-Konsistenz mit Findings).
+  Mit Playwright verifiziert: Pillzeile im Einstiegszustand sichtbar, Wechsel „alle" → „Einzelfilter"
+  zeigt Matches-Tabelle mit 500 Zeilen und korrektem „(500+, TOP 500)"-Meta-Text, KPI-Kachel und
+  Filter-aktiv-Banner korrekt, Root-Cause-Buttons pro Zeile weiterhin vorhanden, Balken-Ansicht
+  (`/queries/summary`, unabhängig vom 500er-Tabellencap) korrekt im Einzelfilter-Modus.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem

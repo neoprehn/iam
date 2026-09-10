@@ -177,12 +177,19 @@ konkrete Einzelberechtigung in der Sidebar zu wählen — dann für alle Queries
 gewählte.
 
 **Einstiegstabelle.** Ist **kein** Filter aktiv (frisch geladener Lauf bzw. „Zurücksetzen"), zeigt
-die letzte Spalte **Sleeping** statt **Root-Cause** und die Ergebnistyp-Pillzeile ist ausgeblendet
-— bei (potenziell hunderten) ungefilterten Findings lohnt der Root-Cause-Absprung pro Zeile noch
-nicht. Sobald irgendein Filter greift (User, Regel, Kritikalität, Nutzertyp, Ergebnistyp), wechselt
-die letzte Spalte zu **Root-Cause** und die Ergebnistyp-Pillzeile erscheint.
+die letzte Spalte **Sleeping** statt **Root-Cause** — bei (potenziell hunderten) ungefilterten
+Findings lohnt der Root-Cause-Absprung pro Zeile noch nicht. Sobald irgendein Filter greift (User,
+Regel, Kritikalität, Nutzertyp), wechselt die letzte Spalte zu **Root-Cause**.
 „SoD"/„alle" zeigen die **Findings-Tabelle**. Ein aktiver Filter erscheint zusätzlich als Chip mit
 „zurücksetzen".
+
+Die **Ergebnistyp-Pillzeile** („alle"/„Einzelfilter"/„SoD") ist immer sichtbar, auch in der
+Einstiegstabelle — ein Klick auf „Einzelfilter" zeigt dann **alle** Einzelfilter-Treffer des Laufs
+über alle Queries hinweg (Matches-Tabelle), begrenzt auf die ersten 500 (analog zum „TOP 500" bei
+den Findings — bei mehreren tausend Treffern wäre eine ungekappte Abfrage sonst spürbar langsam).
+Für eine vollständige, ungekappte Übersicht ohne Root-Cause-Absprung je Zeile die **Balken**- oder
+**Baum**-Ansicht nutzen (nutzt `/queries/summary` bzw. `/sodrules/summary`, unabhängig von der
+500er-Grenze der Tabellenansicht).
 
 ### Nutzerzentrische Auswahl: KPI-Kacheln, verursachende Rollen
 
