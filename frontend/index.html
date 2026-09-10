@@ -2162,6 +2162,15 @@ function rcVisibleActor(a) {
 function rcHideView() {
   if (document.fullscreenElement === $('rcGraphWrap')) document.exitFullscreen();
   $('rootCauseView').style.display = 'none';
+  // Nutzer-Fund: der Hover-Tooltip (#rcTip) ist ein eigenstaendiges position:fixed-Element direkt
+  // unter <body>, nicht Teil von #rootCauseView -- er wird nur ueber Cytoscapes 'mouseout'
+  // ausgeblendet. Verlaesst man den Graphen ueber eine Kontextmenue-Aktion (Rechtsklick-Navigation
+  // zu Root-Cause/Query-Ergebnis/User-Detail etc.), hat die Maus den Knoten dabei nie im normalen
+  // Sinn "verlassen" -- der Tooltip blieb als "Geisterkaestchen" ueber der neuen Ansicht stehen.
+  // rcHideView() ist der zentrale Absprungpunkt fuer JEDE Art, den Root-Cause-Graphen zu
+  // verlassen -- hier also der richtige Ort, ihn zuverlaessig mit auszublenden.
+  const tip = document.getElementById('rcTip');
+  if (tip) tip.style.display = 'none';
 }
 function showRootCauseView() {
   $('resultContext').style.display = 'none';
@@ -2360,6 +2369,7 @@ function rcNodeActions(n) {
 }
 function rcShowContextMenu(ev, actions) {
   if (ev && ev.preventDefault) ev.preventDefault();
+  rcTipEl().style.display = 'none';   // Tooltip wuerde sich sonst mit dem Kontextmenue ueberlappen
   const menu = $('rcCtxMenu');
   menu.innerHTML = actions.map((a, i) => `<button type="button" data-i="${i}">${esc(a.label)}</button>`).join('');
   const x = ev ? ev.clientX : 0, y = ev ? ev.clientY : 0;

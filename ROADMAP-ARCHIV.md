@@ -1186,6 +1186,18 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   Objekte KEINEN Treffer hat, wurde vorher komplett unauffällig angezeigt, zeigt jetzt in Tabelle
   UND Graph konsistent die neue Warnung; die zuvor schon geprüften, unauffälligen Rollen (werteidentisch
   kollabiert) lösen weiterhin korrekt KEINE Warnung aus (kein Regressions-Fehlalarm).
+- [x] **„Geisterkästchen" nach Rechtsklick-Navigation behoben** (2026-09-10, Nutzer-Fund) — der
+  Hover-Tooltip (`#rcTip`) ist ein eigenständiges `position:fixed`-Element direkt unter `<body>`,
+  nicht Teil von `#rootCauseView`, und wurde bisher nur über Cytoscapes `mouseout`-Event
+  ausgeblendet. Verließ man den Graphen über eine Rechtsklick-Kontextmenü-Aktion (z. B. „User-Detail"
+  oder „User-Auswertung anzeigen"), hatte die Maus den Knoten dabei nie im normalen Sinn
+  „verlassen" — der Tooltip blieb als schwebendes Kästchen über der neu geöffneten Ansicht stehen.
+  Fix: `rcHideView()` (der zentrale Absprungpunkt für jede Art, den Root-Cause-Graphen zu
+  verlassen, bereits an neun Stellen im Code verwendet) blendet den Tooltip jetzt explizit mit aus;
+  `rcShowContextMenu()` blendet ihn zusätzlich schon beim Öffnen des Kontextmenüs aus (sonst
+  würden sich Tooltip und Menü kurz überlappen). Mit Playwright verifiziert: Tooltip manuell
+  sichtbar gemacht, dann per Kontextmenü-Aktion (User-Detail, User-Auswertung, Query-Ergebnis) auf
+  eine andere Ansicht gewechselt — Tooltip in allen drei Fällen korrekt verschwunden.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
