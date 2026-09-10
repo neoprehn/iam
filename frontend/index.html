@@ -4241,7 +4241,7 @@ function udpRenderTab(tab) {
     box.innerHTML = `<div class="sub">${I18N.t('userDetailPage.queriesSub', { count: rows.length })}</div>`
       + (rows.length ? rdList(rows.map(x => `<b>${esc(x.id)}</b>${x.name ? ' &middot; ' + esc(x.name) : ''}`
           + `${x.criticality ? ' ' + critTag(x.criticality) : ''}`
-          + `<button type="button" class="ghost" style="float:right;padding:2px 8px;font-size:11px" data-q="${esc(x.id)}">${I18N.t('table.rootCause')}</button>`))
+          + `<button type="button" class="ghost" style="width:auto;float:right;padding:2px 8px;font-size:11px" data-q="${esc(x.id)}">${I18N.t('table.rootCause')}</button>`))
           : `<div class="muted">${I18N.t('common.none')}</div>`);
     box.querySelectorAll('[data-q]').forEach(b => b.onclick = () => openRootCause(udpUserId, { query: b.dataset.q }));
   } else {
@@ -4249,7 +4249,7 @@ function udpRenderTab(tab) {
     box.innerHTML = `<div class="sub">${I18N.t('userDetailPage.sodSub', { count: rows.length })}</div>`
       + (rows.length ? rdList(rows.map(x => `<b>${esc(x.rule)}</b>${sodRuleNames[x.rule] ? ' &middot; ' + esc(sodRuleNames[x.rule]) : ''}`
           + `${x.criticality ? ' ' + critTag(x.criticality) : ''}`
-          + `<button type="button" class="ghost" style="float:right;padding:2px 8px;font-size:11px" data-r="${esc(x.rule)}">${I18N.t('table.rootCause')}</button>`))
+          + `<button type="button" class="ghost" style="width:auto;float:right;padding:2px 8px;font-size:11px" data-r="${esc(x.rule)}">${I18N.t('table.rootCause')}</button>`))
           : `<div class="muted">${I18N.t('common.none')}</div>`);
     box.querySelectorAll('[data-r]').forEach(b => b.onclick = () => openRootCause(udpUserId, { rule: b.dataset.r }));
   }

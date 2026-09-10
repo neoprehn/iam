@@ -1212,6 +1212,16 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   zeigt Matches-Tabelle mit 500 Zeilen und korrektem „(500+, TOP 500)"-Meta-Text, KPI-Kachel und
   Filter-aktiv-Banner korrekt, Root-Cause-Buttons pro Zeile weiterhin vorhanden, Balken-Ansicht
   (`/queries/summary`, unabhängig vom 500er-Tabellencap) korrekt im Einzelfilter-Modus.
+- [x] **Root-Cause-Button in der Nutzerdetailseite bricht bei Zeilenumbruch um** (2026-09-10,
+  Nutzer-Fund) — die Basis-CSS-Klasse `button.ghost` setzt `width:100%`; der Root-Cause-Button je
+  Zeile (Einzelberechtigungen- UND SoD-Reiter, `udpRenderTab()`) bekam per Inline-Style zusätzlich
+  `float:right`, ohne die Breite zu überschreiben. Solange der Zeilentext (Query-/Regel-Name +
+  Bezeichnung + Kritikalitäts-Badge) einzeilig blieb, fiel das nicht auf; sobald der Text auf zwei
+  Zeilen umbrach, rutschte der volle-Breite-Button auf eine eigene Zeile und erschien als leer
+  wirkender breiter Balken über der eigentlichen Zeile. Fix: `width:auto` ergänzt. Mit Playwright an
+  einem Nutzer mit vielen/langen Einzelberechtigungen (Umbruch gezielt provoziert) verifiziert:
+  Button jetzt kompakt und rechtsbündig auf der ersten Zeile, Klick löst weiterhin korrekt den
+  Root-Cause-Sprung aus.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
