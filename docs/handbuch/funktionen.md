@@ -5,9 +5,22 @@ Was macht welcher Befehl in der Ribbon-Bar — und was bedeuten die Auswahlmögl
 ## Banner
 
 Oben links die Wortmarke, oben rechts der **Hell/Dunkel-Umschalter** (merkt sich die Wahl im
-Browser), der Chip mit dem **aktiv angewendeten Ruleset** des gerade angezeigten Laufs sowie zwei
-weitere **Status-Chips**: Verbindung zur Datenbank und der Kontext **„N Datasets · M Läufe"**
-(aktualisiert sich nach jeder Aktion).
+Browser), der **Anonymisierungs-Schalter** (s. u.), der Chip mit dem **aktiv angewendeten Ruleset**
+des gerade angezeigten Laufs sowie zwei weitere **Status-Chips**: Verbindung zur Datenbank und der
+Kontext **„N Datasets · M Läufe"** (aktualisiert sich nach jeder Aktion).
+
+**Anonymisierung.** Ein einzelner, globaler Schalter (Chip „Namen sichtbar"/„Namen anonymisiert")
+ersetzt echte Nutzernamen (aus USR02/ADRP) überall durch ein stabiles Pseudonym
+(„Anonym-XXXXXX", je User-ID immer dasselbe) — die technische User-ID selbst bleibt unverändert,
+Filter/Drilldowns/Exporte funktionieren unverändert weiter. Wirkt **serverseitig und global**
+(anders als Sprache/Theme, die nur im Browser gemerkt werden): einmal umgeschaltet, zeigen alle
+Ansichten **und** alle Exporte (CSV/Excel, inkl. der ausführlichen Nutzer-Aufschlüsselung) bis zum
+nächsten Umschalten Pseudonyme — gedacht für Screenshots/Demos/Weitergabe, bei denen die Struktur
+der Auswertung sichtbar bleiben soll, aber keine echten Namen. Betroffen sind alle Stellen, an
+denen ein Nutzername angezeigt wird: Einzelfilter-Ergebnisliste (Spalte „Name"), Baum-Vollansicht,
+User-Detailseite, Rollen-Detailseite (zugewiesene User sowie Ersteller/Änderer der Rolle) und die
+entsprechenden Exporte. Die Findings-Tabelle (SoD-Ergebnisse) zeigt ohnehin nur die User-ID, keinen
+Namen — dort gibt es nichts zu anonymisieren.
 
 ## 1 · Daten
 

@@ -142,6 +142,12 @@ Schritt für Schritt befüllt wird (s. `new_chat_rule.md`).**
   gerendert werden. Verifiziert per Playwright gegen den laufenden Container (DE→EN-Umschalter je
   Seite, keine Konsolenfehler). **Offen (ausgelagert, s. [ROADMAP-V2](ROADMAP-V2.md#phase-1--admin-editor-v2-und-regelpflege)):**
   Backend-Fehlermeldungen und PDF/CSV-Reports laufen noch nur auf Deutsch.
+- **Nutzer-Anonymisierung (2026-09-10)** — globaler Header-Chip ersetzt echte Nutzernamen
+  (USR02/ADRP) in allen Ansichten **und** Exporten durch ein stabiles Pseudonym je User-ID
+  (technische ID bleibt unverändert, Filter/Drilldowns brechen nicht). Serverseitig persistiert
+  (`GET`/`PUT /settings/anonymize`), damit auch CSV-/Excel-Exporte davon erfasst werden — anders
+  als Sprache/Theme, die rein im Browser gemerkt werden.
+  [Archiv](ROADMAP-ARCHIV.md#nutzer-anonymisierung-2026-09-10-nutzerwunsch-außerhalb-der-9x-reihe-vorgezogen).
 
 #### 9.3 Org-Varianten & „Can-Do nach Org" — abgeschlossen (2026-07-17)
 - [x] Umsetzung vollständig abgeschlossen (Org-Varianten-Batch, Org-Vergleich, verschachtelte

@@ -14,6 +14,7 @@ import time
 import uuid
 import shutil
 import zipfile
+import hashlib
 import tempfile
 import datetime
 import threading
@@ -32,6 +33,7 @@ NEO4J_USER = os.environ.get("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 CONFIG_DIR = Path(os.environ.get("CONFIG_DIR", "/app/config"))
 MASTERDATA_PATH = CONFIG_DIR / "masterdata.json"
+ANONYMIZE_PATH = CONFIG_DIR / "anonymize.json"
 RULES_DIR = Path(os.environ.get("RULES_DIR", "/app/rules"))
 CHECKS_DIR = Path(os.environ.get("CHECKS_DIR", "/app/checks"))
 CHECK_AREAS = {"user": ["A", "B", "C", "D", "E"], "role": ["R"], "import": ["I"]}
@@ -69,6 +71,68 @@ def _log_job_error(job_id: str, message: str) -> None:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     except OSError:
         pass
+
+
+# --- Anonymisierung (Nutzerwunsch): globaler Schalter, verdeckt echte Nutzernamen (u.name aus
+# USR02/ADRP) in allen Auswertungsausgaben, ohne die technische User-ID (BNAME) anzufassen -- die
+# bleibt ueberall unveraendert, sonst wuerden Filter/Drilldowns/Exports brechen. Bewusst NICHT als
+# Query-Parameter je Aufruf umgesetzt (haette in JEDEM Frontend-Fetch nachgezogen werden muessen),
+# sondern als ein einziger, serverseitig persistierter Schalter (config/anonymize.json, analog zu
+# anderen einfachen Einstellungen) -- ein Klick wirkt dadurch sofort auf ALLE Endpunkte, die einen
+# Namen zurueckgeben (s. GET/PUT /settings/anonymize + _anon_name, verwendet an den neun Stellen,
+# an denen u.name/cu.name/chu.name tatsaechlich zurueckgegeben wird). Named-Konsistenz: derselbe
+# User bekommt IMMER dasselbe Pseudonym (deterministischer Hash der ID), damit sich ein Fall trotz
+# Anonymisierung ueber mehrere Ansichten hinweg nachvollziehen laesst, ohne den echten Namen zu
+# zeigen. Persistiert (nicht nur In-Memory), damit der Schalter einen Container-Neustart ueberlebt
+# -- sonst waere ein aus Versehen "aus" gestellter Schalter nach einem Neustart wieder scharf.
+def _load_anonymize() -> bool:
+    if ANONYMIZE_PATH.is_file():
+        try:
+            return bool(json.loads(ANONYMIZE_PATH.read_text(encoding="utf-8")).get("enabled", False))
+        except (OSError, json.JSONDecodeError):
+            return False
+    return False
+
+
+_anonymize_enabled = _load_anonymize()
+
+
+def _anon_name(user_id: str | None, real_name: str | None) -> str:
+    """Ersetzt einen echten Namen durch ein stabiles Pseudonym, wenn der globale Schalter aktiv
+    ist. Leere Namen bleiben leer (nichts zu verstecken, z. B. bei vielen System-/Service-Usern
+    ohne gepflegten Namen) -- ein erfundenes Pseudonym waere dort irrefuehrend."""
+    if not _anonymize_enabled or not real_name:
+        return real_name
+    digest = hashlib.sha256((user_id or real_name).encode("utf-8")).hexdigest()[:6].upper()
+    return f"Anonym-{digest}"
+
+
+def _anon_rows(rows: list[dict], id_key: str = "id", name_key: str = "name") -> list[dict]:
+    """Wendet _anon_name() auf eine Liste von Zeilen mit ID-/Namensfeld an (Rollen-/Query-Management-
+    Nutzerlisten) -- mutiert und gibt dieselbe Liste zurueck, praktisch fuer 'return _anon_rows(...)'."""
+    for row in rows:
+        row[name_key] = _anon_name(row.get(id_key), row.get(name_key))
+    return rows
+
+
+@app.get("/settings/anonymize")
+def get_anonymize_setting():
+    return {"enabled": _anonymize_enabled}
+
+
+class AnonymizeSettingReq(BaseModel):
+    enabled: bool
+
+
+@app.put("/settings/anonymize")
+def set_anonymize_setting(req: AnonymizeSettingReq):
+    global _anonymize_enabled
+    _anonymize_enabled = req.enabled
+    try:
+        ANONYMIZE_PATH.write_text(json.dumps({"enabled": req.enabled}), encoding="utf-8")
+    except OSError:
+        pass
+    return {"enabled": _anonymize_enabled}
 
 
 @app.middleware("http")
@@ -1522,7 +1586,9 @@ def user_detail(userId: str, runId: str):
             uid=userId, dataset=run["dataset"]).single()
         if not rec:
             raise HTTPException(404, f"User '{userId}' nicht gefunden")
-        return dict(rec)
+        out = dict(rec)
+        out["name"] = _anon_name(out["id"], out["name"])
+        return out
 
 
 @app.get("/users/{userId}/detail")
@@ -1553,7 +1619,9 @@ def user_detail_full(userId: str, runId: str):
             uid=userId, ds=ds, asOf=as_of, sleepDays=sleep_days).single()
         if not rec:
             raise HTTPException(404, f"User '{userId}' nicht gefunden")
-        return jsonable(dict(rec))
+        out = jsonable(dict(rec))
+        out["name"] = _anon_name(out["id"], out["name"])
+        return out
 
 
 @app.get("/roles/{roleId}")
@@ -1588,6 +1656,8 @@ def role_detail(roleId: str, runId: str, user: str | None = None):
         if not rec:
             raise HTTPException(404, f"Rolle '{roleId}' nicht gefunden")
         out = jsonable(dict(rec))
+        out["createUsrName"] = _anon_name(out["createUsr"], out["createUsrName"])
+        out["changeUsrName"] = _anon_name(out["changeUsr"], out["changeUsrName"])
         if user:
             v = s.run(
                 "MATCH (u:User {id:$u, dataset:$ds})-[g:ASSIGNED_TO]->(r:Role {id:$rid, dataset:$ds}) "
@@ -1596,7 +1666,7 @@ def role_detail(roleId: str, runId: str, user: str | None = None):
             out["userValidFrom"] = jsonable(v["validFrom"]) if v else None
             out["userValidTo"] = jsonable(v["validTo"]) if v else None
             out["forUser"] = user
-            out["forUserName"] = v["userName"] if v else ""
+            out["forUserName"] = _anon_name(user, v["userName"]) if v else ""
         out["menuTcodes"] = [r["t"] for r in s.run(
             "MATCH (r:Role {id:$rid, dataset:$ds})-[:HAS_MENU]->(t:Transaction) "
             "RETURN DISTINCT t.id AS t ORDER BY t", rid=roleId, ds=ds)]
@@ -1637,9 +1707,9 @@ def role_users(roleId: str, runId: str):
         ds = run["dataset"]
         as_of = _dataset_asof(s, ds)
         sleep_days = profiles()["sleeping"]["sleepDays"]
-        return [jsonable(dict(r)) for r in s.run(
+        return _anon_rows([jsonable(dict(r)) for r in s.run(
             "MATCH (u:User {dataset:$ds})-[:ASSIGNED_TO]->(:Role {id:$rid, dataset:$ds}) " + _USER_ENRICH_RETURN,
-            rid=roleId, ds=ds, asOf=as_of, sleepDays=sleep_days)]
+            rid=roleId, ds=ds, asOf=as_of, sleepDays=sleep_days)])
 
 
 class UsersListReq(BaseModel):
@@ -1655,9 +1725,9 @@ def users_list(req: UsersListReq):
     with driver.session() as s:
         as_of = _dataset_asof(s, req.dataset)
         sleep_days = profiles()["sleeping"]["sleepDays"]
-        return [jsonable(dict(r)) for r in s.run(
+        return _anon_rows([jsonable(dict(r)) for r in s.run(
             "MATCH (u:User {dataset:$ds}) WHERE u.id IN $ids " + _USER_ENRICH_RETURN,
-            ds=req.dataset, ids=req.ids, asOf=as_of, sleepDays=sleep_days)]
+            ds=req.dataset, ids=req.ids, asOf=as_of, sleepDays=sleep_days)])
 
 
 @app.get("/roles/{roleId}/can-do")
@@ -3932,7 +4002,11 @@ def _summary_export_rows(s, kind: str, run_id: str, detailed: bool):
             "  coalesce(rule.criticalityRank,0) AS criticalityRank, userCount" + (", users" if detailed else "") + " "
             "ORDER BY coalesce(rule.criticalityRank,0) DESC, userCount DESC"
         )
-    return [dict(r) for r in s.run(cypher, ruleset=ruleset, runId=run_id)]
+    rows = [dict(r) for r in s.run(cypher, ruleset=ruleset, runId=run_id)]
+    if detailed:
+        for row in rows:
+            _anon_rows(row.get("users") or [])
+    return rows
 
 
 def _query_req_blocks(s, ruleset: str, query_id: str) -> list[dict]:
@@ -4153,7 +4227,7 @@ def matches(runId: str, query: str | None = None, user: str | None = None,
     """Wer matcht Query X (Einzelberechtigung) im Zwischenergebnis (:User)-[:MATCHES]->(:Query)
     eines Laufs — optional auf einen User/Nutzertyp(en) eingeschraenkt (Drill-down 'Query -> wer matcht')."""
     with driver.session() as s:
-        return [dict(r) for r in s.run(
+        return _anon_rows([dict(r) for r in s.run(
             "MATCH (u:User)-[:MATCHES {runId:$runId}]->(q:Query) "
             "WHERE ($qid IS NULL OR q.id = $qid) AND ($user IS NULL OR u.id = $user) "
             "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
@@ -4162,7 +4236,7 @@ def matches(runId: str, query: str | None = None, user: str | None = None,
             "            WHEN 'Service' IN labels(u) THEN 'Service' WHEN 'Communication' IN labels(u) THEN 'Comm' ELSE '?' END AS typ, "
             "       CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status, "
             "       q.id AS query "
-            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType)]
+            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType)], id_key="user")
 
 
 _SATISFIED_BY_CYPHER = (
@@ -4353,7 +4427,7 @@ def export_matches(runId: str, query: str | None = None, user: str | None = None
     der Export zur aktuell angezeigten Tabelle passt (der Export-Button exportierte bisher IMMER
     die SoD-Findings, auch waehrend die Matches-Tabelle sichtbar war)."""
     with driver.session() as s:
-        rows = list(s.run(
+        rows = _anon_rows([dict(r) for r in s.run(
             "MATCH (u:User)-[:MATCHES {runId:$runId}]->(q:Query) "
             "WHERE ($qid IS NULL OR q.id = $qid) AND ($user IS NULL OR u.id = $user) "
             "  AND (size($userTypes) = 0 OR any(t IN $userTypes WHERE t IN labels(u))) "
@@ -4364,7 +4438,7 @@ def export_matches(runId: str, query: str | None = None, user: str | None = None
             "  CASE WHEN 'Locked' IN labels(u) THEN 'gesperrt' ELSE 'aktiv' END AS status, "
             "  q.id AS query, coalesce(q.shortDescription, q.description, '') AS queryName, "
             "  coalesce(q.criticality,'') AS criticality "
-            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType))
+            "ORDER BY status, user", runId=runId, qid=query, user=user, userTypes=userType)], id_key="user")
     buf = io.StringIO()
     w = csv.writer(buf, delimiter=";")
     w.writerow(["user", "name", "typ", "status", "query", "queryName", "criticality"])

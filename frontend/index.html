@@ -36,6 +36,10 @@
   .chip { font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
     border-radius:20px; padding:3px 11px; white-space:nowrap; }
   .chip .dot { color:var(--ok); }
+  /* Anonymisierungs-Schalter aktiv: deutlich hervorgehoben, damit der Zustand nie uebersehen wird
+     (weder "ich zeige gerade Pseudonyme und wundere mich" noch "ich habe vergessen abzuschalten") --
+     dieselbe Akzentfarbe wie andere aktive Umschalter (.pill.active, .graph-fsbtn.active). */
+  .chip.anon-active { color:#fff; background:var(--accent); border-color:var(--accent); font-weight:600; }
   .ribbon { display:flex; gap:0; padding:8px 12px 0; border-bottom:1px solid var(--line);
     background:var(--panel); margin-top:8px; overflow-x:auto; }
   .group { display:flex; flex-direction:column; align-items:center; padding:0 14px 4px;
@@ -368,6 +372,7 @@
   <div class="bctx">
     <button class="chip" id="langToggle" style="cursor:pointer" data-i18n-attr="title:lang.toggleTitle">DE</button>
     <button class="chip" id="themeToggle" style="cursor:pointer">&#127769; Dunkel</button>
+    <button class="chip" id="anonToggle" style="cursor:pointer" data-i18n-attr="title:header.anonymizeTitle">&#128374; <span data-i18n="header.anonymizeOff">Namen sichtbar</span></button>
     <span class="chip" id="chipRuleset" title="Aktiv angewendetes Ruleset" data-i18n-attr="title:header.rulesetTitle">&ndash;</span>
     <span class="chip" id="chipConn"><span class="dot">&#9679;</span> <span data-i18n="common.connected">verbunden</span></span>
     <span class="chip" id="chipData">&ndash;</span>
@@ -1304,9 +1309,48 @@ function renderLangToggle() {
 $('langToggle').onclick = () => {
   I18N.setLang(I18N.lang === 'de' ? 'en' : 'de');
 };
-I18N.ready.then(() => { renderThemeToggle(); renderLangToggle(); });
+/* Anonymisierung (Nutzerwunsch): globaler, serverseitig gemerkter Schalter -- verdeckt echte
+   Nutzernamen (USR02/ADRP) in allen Auswertungen inkl. Exporten, ohne die technische User-ID
+   anzufassen (Details/Pseudonym-Logik s. backend/app.py _anon_name). Bewusst NICHT in
+   localStorage wie Theme/Sprache: der Schalter muss serverseitig wirken (auch fuer CSV/Excel-
+   Exporte), daher lebt der eigentliche Zustand im Backend -- das Frontend fragt ihn beim Laden ab
+   und zeigt ihn nur an/loest ihn aus. */
+let anonymizeEnabled = false;
+function renderAnonToggle() {
+  const btn = $('anonToggle'); if (!btn) return;
+  btn.classList.toggle('anon-active', anonymizeEnabled);
+  const label = btn.querySelector('span[data-i18n]') || btn.querySelector('span');
+  if (label) {
+    label.textContent = I18N.t(anonymizeEnabled ? 'header.anonymizeOn' : 'header.anonymizeOff');
+    label.setAttribute('data-i18n', anonymizeEnabled ? 'header.anonymizeOn' : 'header.anonymizeOff');
+  }
+}
+async function loadAnonymizeState() {
+  try { const r = await api('/settings/anonymize'); anonymizeEnabled = !!r.enabled; } catch {}
+  renderAnonToggle();
+}
+if ($('anonToggle')) $('anonToggle').onclick = async () => {
+  const next = !anonymizeEnabled;
+  try {
+    const r = await api('/settings/anonymize', { method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: next }) });
+    anonymizeEnabled = !!r.enabled;
+  } catch (err) {
+    setStatus(`<b>${I18N.t('common.errorLabel')}</b> ` + (err.detail || JSON.stringify(err)), true);
+    return;
+  }
+  renderAnonToggle();
+  // Aktuell sichtbare Ergebnisansicht (Findings/Matches) mit dem neuen Zustand neu laden -- wie
+  // beim "Aktualisieren"-Knopf, Filterauswahl bleibt dabei erhalten (s. refreshActiveRunView).
+  if (typeof refreshActiveRunView === 'function' && activeRunId) {
+    await refreshActiveRunView().catch(() => {});
+  }
+};
+loadAnonymizeState();
+
+I18N.ready.then(() => { renderThemeToggle(); renderLangToggle(); renderAnonToggle(); });
 I18N.onChange(() => {
-  renderThemeToggle(); renderLangToggle();
+  renderThemeToggle(); renderLangToggle(); renderAnonToggle();
   // Re-Render dynamisch befüllter Bereiche auf Basis gecachter Daten (kein neuer Server-Request)
   try { if (typeof loadRuns === 'function') loadRuns(); } catch(e) {}
   try {

@@ -34,7 +34,10 @@
   "header": {
     "titleHtml": "<b>IAM</b> · SAP authorization &amp; SoD analysis",
     "subtitle": "Graph-based analysis · local · trust boundary preserved",
-    "rulesetTitle": "Currently applied ruleset"
+    "rulesetTitle": "Currently applied ruleset",
+    "anonymizeTitle": "Replace real user names with pseudonyms across all views/exports",
+    "anonymizeOn": "Names anonymized",
+    "anonymizeOff": "Names visible"
   },
   "ribbon": {
     "grpData": "1 · Data",

@@ -8,6 +8,12 @@
 # (z. B. Buchungskreise), anders als die generischen Query-/SoD-Metadaten-Overlays unter rules/
 config/analysis_profiles.custom.json
 
+# Anonymisierungs-Schalter (Header-Chip) — reiner Laufzeit-Anzeigezustand ohne Mandantenbezug
+# (nur {"enabled": bool}), aber haeufig hin- und hergeschaltet; als getrackte Datei wuerde das
+# staendig unnoetige lokale Aenderungen in git status erzeugen. Fehlt die Datei, startet die App
+# mit "aus" (s. backend/app.py _load_anonymize).
+config/anonymize.json
+
 # Übergabe-Pakete (Images/Archive) — lokal erzeugt, nicht versionieren
 /handoff/
 

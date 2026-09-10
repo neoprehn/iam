@@ -34,7 +34,10 @@
   "header": {
     "titleHtml": "<b>IAM</b> · SAP-Berechtigungs- &amp; SoD-Analyse",
     "subtitle": "Graphbasierte Auswertung · lokal · Vertrauensgrenze gewahrt",
-    "rulesetTitle": "Aktiv angewendetes Ruleset"
+    "rulesetTitle": "Aktiv angewendetes Ruleset",
+    "anonymizeTitle": "Echte Nutzernamen in allen Auswertungen/Exporten durch Pseudonyme ersetzen",
+    "anonymizeOn": "Namen anonymisiert",
+    "anonymizeOff": "Namen sichtbar"
   },
   "ribbon": {
     "grpData": "1 · Daten",

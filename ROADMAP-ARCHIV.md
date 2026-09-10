@@ -1492,6 +1492,45 @@ System-/Mandant-Vergleich und Interview-Ergebnisse bleiben V2, s. [`ROADMAP-V2.m
 Aufschlüsselung) exportierbar, ohne dass ein Export länger als ~20s dauert; zusätzlich jede
 einzelne Query/SoD-Regel als einseitiges PDF mit allen vorhandenen Stammdaten/Risiko/Aufbau-Infos.
 
+#### Nutzer-Anonymisierung (2026-09-10, Nutzerwunsch, außerhalb der 9.x-Reihe vorgezogen)
+Ein einzelner, globaler Header-Chip ersetzt echte Nutzernamen (USR02/ADRP) überall durch ein
+stabiles Pseudonym — Anlass: Screenshots/Demos/Weitergabe ohne echte Namen, bei denen die Struktur
+der Auswertung trotzdem sichtbar bleiben soll.
+
+- [x] **Backend-Layer statt Query-Parameter je Aufruf** — vor dem Bauen geprüft, an wie vielen
+  Stellen `u.name` überhaupt zurückgegeben wird: genau neun (`/users/{id}`, `/users/{id}/detail`,
+  `/roles/{id}` [Stammdaten-Ersteller/Änderer **und** `?user=`-Gültigkeitsabfrage],
+  `/roles/{id}/users`, `/users/list`, `/matches`, `/matches/export`, die `xlsx_detailed`-Zeilen der
+  Einzelfilter-/SoD-Übersicht) — überschaubar genug für einen echten, zentralen Layer statt eines
+  Parameters, den jeder Frontend-Fetch einzeln mitschicken müsste. Neuer globaler Schalter
+  (`GET`/`PUT /settings/anonymize`, persistiert in `config/anonymize.json` — bewusst **nicht**
+  versioniert, s. `.gitignore`-Kommentar: reiner haeufig getoggelter Laufzeitzustand ohne
+  Mandantenbezug, kein Konfigurationsinhalt) plus `_anon_name()`/`_anon_rows()` als gemeinsame
+  Helper, an allen neun Stellen angewendet. Technische User-ID bleibt überall unverändert (sonst
+  brächen Filter/Drilldowns) — nur das Namensfeld wird ersetzt, und nur wenn es überhaupt befüllt
+  war (leere Namen, z. B. bei vielen System-/Service-Usern, bleiben leer statt ein erfundenes
+  Pseudonym zu zeigen).
+- [x] **Stabiles Pseudonym je User-ID** (`Anonym-XXXXXX`, sha256-Hash der ID, erste 6 Hex-Zeichen) —
+  derselbe User bekommt in JEDER Ansicht/jedem Export dasselbe Pseudonym, damit sich ein Fall trotz
+  Anonymisierung über mehrere Ansichten hinweg nachvollziehen lässt, ohne den echten Namen zu
+  zeigen.
+- [x] **Header-Chip** (`index.html`, neben dem Hell/Dunkel-Umschalter) — fragt den Zustand beim
+  Laden vom Backend ab (bewusst NICHT wie Sprache/Theme in `localStorage`, da der Schalter
+  serverseitig auch für Exporte wirken muss), zeigt ihn deutlich hervorgehoben an
+  (`.chip.anon-active`, dieselbe Akzentfarbe wie andere aktive Umschalter) und löst beim Umschalten
+  `refreshActiveRunView()` aus (Filterauswahl bleibt erhalten, wie beim „Aktualisieren"-Knopf) —
+  andere Ansichten (Rollen-/User-Detail, Baum-Vollansicht) laden ohnehin bei jedem eigenen Öffnen
+  frisch und übernehmen den neuen Zustand automatisch.
+- [x] Mit Playwright gegen den laufenden Container end-to-end verifiziert: alle neun Endpunkte
+  einzeln getestet (u. a. `xlsx_detailed`-Export direkt im Zip-XML nach Pseudonym-Vorkommen
+  durchsucht), echter Klick auf den Header-Chip ändert live die angezeigten Namen in der
+  Einzelfilter-Ergebnistabelle und zurück, Backend-Zustand bestätigt jeweils gegengeprüft. Beim
+  Testen selbst zwei Lektionen: ein Test-Rollen-Klick zeigte kurz einen echten Personennamen im
+  Tool-Output (sofort danach nur noch über Muster statt Rohwert weiterverifiziert, nicht in den
+  Chat übernommen); die naheliegende Idee, nach dem Umschalten einfach `location.reload()` zu
+  machen, wurde verworfen, da die App den aktiven Lauf/Filter nicht über die URL persistiert — ein
+  Reload hätte den Nutzer aus seiner gerade betrachteten Ansicht geworfen.
+
 ## Phase X — erledigt
 
 - [x] **Intra-/Inter-Rollen-Evidenz (AE-11) v1.** `cypher/sod/explain_sod.cypher`: pro Finding die verursachenden Rollen/Profile (`(:SoDConflict)-[:VIA_ROLE]->(:Role)` / `-[:VIA_PROFILE]->(:Profile)`) und `conflictType` **intra** vs. **inter**; Hilfsrelation `(:Role|:Profile)-[:PROVIDES]->(:Query)`. Sichtbar in `/findings`, CSV-Export und UI. **Opt-in** (teuer). *(Perf-Optimierung offen → ROADMAP.)*
