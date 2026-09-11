@@ -1222,6 +1222,17 @@ des geladenen Berechtigungskonzepts selbst sichtbar machen. Katalog in [`KONSIST
   einem Nutzer mit vielen/langen Einzelberechtigungen (Umbruch gezielt provoziert) verifiziert:
   Button jetzt kompakt und rechtsbündig auf der ersten Zeile, Klick löst weiterhin korrekt den
   Root-Cause-Sprung aus.
+- [x] **Nachbesserung (2026-09-11):** `width:auto` allein reichte nicht — der `float:right`-Button
+  wurde vom Layout weiterhin unabhängig von der (durch Zeilenumbruch wachsenden) Zeilenhöhe
+  positioniert und ragte dadurch bei zweizeiligem Text unten leicht über den Zeilenrahmen der `<li>`
+  hinaus (Nutzer-Fund per Screenshot: „ist noch nicht perfekt"). Ursache: Floats richten sich nicht
+  zuverlässig an der tatsächlichen Höhe des umgebenden Inline-Inhalts aus. Fix: beide Zeilen (Text +
+  Button) statt Float jetzt als Flexbox (`display:flex;justify-content:space-between;
+  align-items:center`, Text-`<span>` mit `flex:1`, Button mit `flex:none`) — dadurch bestimmt die
+  Zeile ihre Höhe korrekt aus dem tatsächlich höchsten Inhalt, der Button bleibt vertikal zentriert
+  und komplett innerhalb der Zeile, unabhängig von Textlänge/Umbruch. Mit Playwright an denselben
+  zwei- und einzeiligen Fällen erneut verifiziert (Button-Bounding-Box jetzt vollständig innerhalb
+  der `<li>`-Grenzen), Klick weiterhin funktionsfähig.
 
 #### 9.3 „Can-Do nach Org" (2026-07-16)
 - [x] **„Can-Do nach Org"** — „wer kann *Funktion* in *Buchungskreis X*", aufbauend auf dem
