@@ -9,8 +9,10 @@
   Server als Windows-Dienst (Speicher-/APOC-/Import-Einstellungen 1:1 aus docker-compose.yml
   uebernommen) und richtet einen Scheduled Task fuer das Backend (uvicorn) ein, der bei jedem
   Systemstart automatisch laeuft, auch ohne Login. Zusaetzlich einen taeglichen Update-Task
-  (git pull + Neustart, s. update.ps1). Idempotent: mehrfaches Ausfuehren ueberspringt bereits
-  erledigte Schritte.
+  (git pull + Neustart, s. update.ps1) sowie eine Desktop-Verknuepfung "IAM verwalten" fuer ein
+  kleines GUI-Fenster (manage.ps1: Start/Stop/Neustart, Jetzt aktualisieren, Web-App oeffnen,
+  Logs ansehen, Ruleset-Junction verifizieren -- fuer Nutzer, die keine PowerShell bedienen
+  wollen). Idempotent: mehrfaches Ausfuehren ueberspringt bereits erledigte Schritte.
 
   WICHTIG (s. README.md, Abschnitt "Verifizieren" + "Troubleshooting"): Die Ruleset-JSON-Dateien
   unter rules/ werden von Neo4j selbst per apoc.load.json('file:///rules/...') gelesen (identischer
@@ -214,15 +216,18 @@ Start-Service -Name 'neo4j'
 Write-Host "Neo4j-Dienst gestartet (kann beim ersten Start 30-60s brauchen)."
 
 # ---------- 6. Backend als Scheduled Task ----------
-Write-Step "6/7 Backend-Scheduled-Task"
+Write-Step "6/8 Backend-Scheduled-Task"
 $startScript = Join-Path $PSScriptRoot 'start-backend.ps1'
 $taskName = 'IAM-Backend'
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' `
     -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$startScript`" -RepoDir `"$repo`""
 $trigger = New-ScheduledTaskTrigger -AtStartup
 $principal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
+# MultipleInstances IgnoreNew: verhindert einen zweiten parallelen uvicorn-Prozess, falls z.B. das
+# manage.ps1-Fenster "Start" klickt, waehrend der Task bereits laeuft.
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -RestartCount 3 `
-    -RestartInterval (New-TimeSpan -Minutes 1) -ExecutionTimeLimit ([TimeSpan]::Zero)
+    -RestartInterval (New-TimeSpan -Minutes 1) -ExecutionTimeLimit ([TimeSpan]::Zero) `
+    -MultipleInstances IgnoreNew
 if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
 }
@@ -232,19 +237,43 @@ Start-ScheduledTask -TaskName $taskName
 Write-Host "Scheduled Task '$taskName' angelegt und gestartet (laeuft bei jedem Systemstart automatisch, auch ohne Login)."
 
 # ---------- 7. Auto-Update-Task ----------
-Write-Step "7/7 Taeglicher Auto-Update-Task"
+Write-Step "7/8 Taeglicher Auto-Update-Task"
 $updateScript = Join-Path $PSScriptRoot 'update.ps1'
 $updTaskName = 'IAM-Update'
 $updAction = New-ScheduledTaskAction -Execute 'powershell.exe' `
     -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$updateScript`" -RepoDir `"$repo`""
 $updTrigger = New-ScheduledTaskTrigger -Daily -At 6am
 $updPrincipal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
+# IgnoreNew: verhindert, dass der taegliche Trigger und ein manueller "Jetzt aktualisieren"-Klick
+# in manage.ps1 sich ueberlappen (git-Operationen vertragen sich nicht mit Parallellauf).
+$updSettings = New-ScheduledTaskSettingsSet -StartWhenAvailable -MultipleInstances IgnoreNew
 if (Get-ScheduledTask -TaskName $updTaskName -ErrorAction SilentlyContinue) {
     Unregister-ScheduledTask -TaskName $updTaskName -Confirm:$false
 }
 Register-ScheduledTask -TaskName $updTaskName -Action $updAction -Trigger $updTrigger `
-    -Principal $updPrincipal | Out-Null
+    -Principal $updPrincipal -Settings $updSettings | Out-Null
 Write-Host "Taeglicher Update-Task '$updTaskName' (06:00 Uhr) angelegt -- manuell sofort ausloesen: Start-ScheduledTask -TaskName $updTaskName"
+
+# ---------- 8. Management-GUI: Zustand + Desktop-Verknuepfung ----------
+Write-Step "8/8 Management-Fenster (manage.ps1)"
+$stateFile = Join-Path $PSScriptRoot 'install-state.json'
+[PSCustomObject]@{
+    RepoDir      = $repo
+    Neo4jHome    = $neoHome
+    Neo4jVersion = $Neo4jVersion
+} | ConvertTo-Json | Set-Content -Path $stateFile -Encoding UTF8
+
+$manageScript = Join-Path $PSScriptRoot 'manage.ps1'
+$shortcutPath = Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) 'IAM verwalten.lnk'
+$wsh = New-Object -ComObject WScript.Shell
+$shortcut = $wsh.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = 'powershell.exe'
+$shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$manageScript`""
+$shortcut.WorkingDirectory = $PSScriptRoot
+$shortcut.IconLocation = 'shell32.dll,13'
+$shortcut.Description = 'IAM Backend/Neo4j starten, stoppen, aktualisieren'
+$shortcut.Save()
+Write-Host "Desktop-Verknuepfung 'IAM verwalten' angelegt (fuer alle Benutzer)."
 
 Write-Host "`nFertig. Web-App: http://localhost:8000/  |  Neo4j Browser: http://localhost:7474" -ForegroundColor Green
 Write-Host "Naechster Schritt: README.md in diesem Ordner lesen, Abschnitt 'Verifizieren' (Ruleset-Junction testen)." -ForegroundColor Yellow

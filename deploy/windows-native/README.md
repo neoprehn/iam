@@ -14,6 +14,9 @@ Was hier entsteht:
 - Ein **täglicher Update-Task**, der `git pull` macht, Python-Abhängigkeiten synchronisiert und
   das Backend neu startet — der "einfache Pull statt echtes CI/CD"-Ansatz (bewusst gewählt: kein
   Build-Server nötig, Code kommt unverändert aus dem Git-Repo).
+- Ein kleines **Management-Fenster** ("IAM verwalten", Desktop-Verknüpfung) für alle laufenden
+  Aktionen per Klick, ohne PowerShell bedienen zu müssen — s. Abschnitt "Management-Fenster"
+  unten. Die Tabelle in "Verwaltung / Troubleshooting" bleibt als CLI-Alternative erhalten.
 
 ## Installation
 
@@ -67,6 +70,27 @@ direkt gegentesten, bevor irgendetwas Fachliches (Ruleset laden, Lauf starten) v
 
   Neo4j-Dienst danach neu starten (`Restart-Service neo4j`) und den Test wiederholen.
 
+## Management-Fenster
+
+`install.ps1` legt eine Desktop-Verknüpfung **"IAM verwalten"** an (für alle Benutzer). Ein
+Doppelklick öffnet ein kleines Fenster (`manage.ps1`) mit:
+
+- **Status** (oben): Neo4j-Dienst und Backend-Task live (rot/grün), Zeitpunkt des letzten
+  Updates — aktualisiert sich automatisch alle paar Sekunden.
+- **Start / Stop / Neu starten** — steuert Neo4j-Dienst und Backend-Task zusammen als eine
+  Einheit.
+- **Web-App öffnen** — öffnet `http://localhost:8000/` im Standardbrowser.
+- **Jetzt aktualisieren** — löst denselben Ablauf wie der tägliche Update-Task manuell aus
+  (`update.ps1`), Fortschritt erscheint live im Textfeld darunter.
+- **Update-Log anzeigen** / **Neo4j-Log anzeigen** — letzte 300 Zeilen direkt im Fenster, ohne
+  Log-Dateien manuell zu suchen.
+- **Verifizieren (Rulesets)** — führt den `apoc.load.json`-Testbefehl aus dem Abschnitt
+  "Verifizieren" oben per Klick aus und meldet OK/fehlgeschlagen.
+
+Das Fenster fragt beim Öffnen per UAC-Dialog nach Administratorrechten (nötig für
+Dienst-/Task-Steuerung). Bricht mit einer Fehlermeldung ab, falls `install.ps1` noch nicht
+gelaufen ist (fehlende `install-state.json`).
+
 ## Bedienung
 
 Identisch zur Docker-Variante — die Web-App unter `http://localhost:8000/` deckt Import, SoD-Lauf,
@@ -96,6 +120,9 @@ Nutzungsrechner).
 
 ## Verwaltung / Troubleshooting
 
+Die meisten Zeilen hier deckt das Management-Fenster (s. o.) per Klick ab — diese Tabelle ist die
+CLI-Alternative bzw. für Fälle, die die GUI nicht abbildet (Speicher anpassen, Deinstallation).
+
 | Was | Wie |
 |---|---|
 | Backend-Status | `Get-ScheduledTask -TaskName IAM-Backend \| Get-ScheduledTaskInfo` |
@@ -120,5 +147,6 @@ Unregister-ScheduledTask -TaskName IAM-Update -Confirm:$false
 & "<NeoHome>\bin\neo4j.bat" uninstall-service
 Remove-Item -Recurse -Force <NeoHome>          # Neo4j-Installation
 Remove-Item <Laufwerk>:\rules                   # Junction (NICHT -Recurse -- sonst wird rules/ im Repo mitgeloescht!)
-Remove-Item -Recurse -Force <Repo-Pfad>         # Repo + venv
+Remove-Item "$env:PUBLIC\Desktop\IAM verwalten.lnk"
+Remove-Item -Recurse -Force <Repo-Pfad>         # Repo + venv (enthaelt install-state.json)
 ```

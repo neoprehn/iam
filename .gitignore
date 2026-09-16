@@ -14,6 +14,10 @@ config/analysis_profiles.custom.json
 # mit "aus" (s. backend/app.py _load_anonymize).
 config/anonymize.json
 
+# Native Windows-Installation (deploy/windows-native/): maschinenspezifischer Zustand
+# (Repo-/Neo4j-Installationspfad), von install.ps1 geschrieben, von manage.ps1 gelesen.
+deploy/windows-native/install-state.json
+
 # Übergabe-Pakete (Images/Archive) — lokal erzeugt, nicht versionieren
 /handoff/
 

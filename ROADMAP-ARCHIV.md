@@ -1620,6 +1620,23 @@ der Auswertung trotzdem sichtbar bleiben soll.
 - [x] Haupt-`README.md` (kurzer Verweis-Absatz + Repo-Struktur-Eintrag) und
   `docs/technik/architektur.md` (Abschnitt „Deployment") ergänzt, ohne den bestehenden
   container-only-Quickstart zu verändern.
+- [x] **Nachbesserung (`manage.ps1`, direkt im Anschluss):** Nutzer wollte zusätzlich eine kleine
+  App, die die Installation „per Klick des Users" verwaltet, statt PowerShell-Befehle tippen zu
+  müssen. Per `AskUserQuestion` zwei Entscheidungen geklärt: einfaches Fenster statt
+  Tray-Icon (kein dauerhaft laufender Hintergrundprozess), Kernset (Start/Stop/Neustart/Update/
+  Web-App) PLUS Logs/Diagnose (Update-/Neo4j-Log direkt im Fenster, Ruleset-Junction-Test per
+  Klick). Umgesetzt als reines PowerShell-WinForms-Skript (kein Compiler/Paketierung nötig,
+  bleibt beim „nur Bordmittel"-Prinzip des restigen Setups) — `install.ps1` schreibt dafür ein
+  neues, NICHT versioniertes `install-state.json` (Repo-/Neo4j-Pfad) und legt eine
+  Desktop-Verknüpfung „IAM verwalten" an (fordert per UAC-Dialog selbst Adminrechte an, da
+  Dienst-/Task-Steuerung das braucht). „Jetzt aktualisieren" startet `update.ps1` als
+  Hintergrund-Job und liest dessen Log-Datei live per Timer in die Fenster-Textbox nach (Write-Host
+  aus einem Job lässt sich nicht direkt abgreifen, die ohnehin vorhandene Log-Datei ist die
+  verlässlichere Quelle). Beide Scheduled Tasks bekamen dabei `MultipleInstances IgnoreNew`
+  nachgerüstet, damit ein GUI-Klick sich nicht mit einem parallel laufenden Trigger überschneidet.
+  Ebenfalls nur per PowerShell-Parser syntaxgeprüft, nicht in einer echten GUI-Sitzung
+  durchgeklickt (kein Display/keine Admin-Testumgebung in dieser Session) — bewusst keine
+  destruktive Testausführung (UAC-Prompt + Fensteröffnung) auf der Entwicklungsmaschine.
 
 ## Phase X — erledigt
 
