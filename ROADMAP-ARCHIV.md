@@ -1578,6 +1578,49 @@ der Auswertung trotzdem sichtbar bleiben soll.
   machen, wurde verworfen, da die App den aktiven Lauf/Filter nicht über die URL persistiert — ein
   Reload hätte den Nutzer aus seiner gerade betrachteten Ansicht geworfen.
 
+#### Native Windows-Installation ohne Docker (2026-09-16, Nutzerwunsch, außerhalb der 9.x-Reihe)
+
+- [x] **`deploy/windows-native/`** — Drittrechner ohne Docker-Desktop-Möglichkeit, aber mit
+  Python/Java/Neo4j nativ installierbar: eigenständiges, additives Setup (`install.ps1` +
+  `start-backend.ps1` + `update.ps1` + README), das den bestehenden container-only-Pfad NICHT
+  ersetzt, sondern gezielt für diesen einen Fall ergänzt. Vor dem Bauen `docker-compose.yml`/
+  `app.py`/`cypher/ruleset/load_ruleset.cypher`/`load/*.cypher` durchgesehen, um alle Env-Var-
+  Defaults, Neo4j-/APOC-Settings und `file:///`-Abhängigkeiten 1:1 zu übernehmen statt zu raten.
+- [x] **Neo4j als Windows-Dienst** (`neo4j.bat install-service`), Speicher-/APOC-/Import-
+  Einstellungen aus den `docker-compose.yml`-Environment-Variablen direkt in `neo4j.conf`
+  übersetzt (`server.memory.*`, `dbms.security.procedures.unrestricted=apoc.*`,
+  `apoc.import.file.*`, `server.directories.import` = `data/import`-Ordner des Repos).
+- [x] **Ruleset-Laden (`apoc.load.json('file:///rules/...')`) ohne Container gelöst:** derselbe
+  feste Pfad wie im Docker-Bind-Mount `./rules:/rules:ro` — ohne Laufwerksbuchstaben löst die JVM
+  ihn drive-relativ zum Arbeitsverzeichnis des Neo4j-Dienstes auf. Fix: NTFS-Junction
+  `<Laufwerk>:\rules → <Repo>\rules`, Neo4j-Installation bewusst auf dasselbe Laufwerk wie das
+  Repo gelegt. **Einzige nicht-triviale Annahme in diesem Setup** — da nicht auf einer echten
+  Zielmaschine gegentestbar war (dieser Rechner hat bereits eine andere Neo4j-Installation),
+  README bekommt dafür einen expliziten `cypher-shell`-Verifizieren-Schritt direkt nach der
+  Installation, mit Troubleshooting-Anleitung falls die Junction falsch aufgelöst wird.
+- [x] **Kein separates Migrations-Tool nötig:** anders als zunächst angenommen (das
+  `neo4j-migrations`-CLI aus `docker/neo4j-migrations.Dockerfile`, AE-02) wendet der Import-Job im
+  Backend selbst `migrations/*.cypher` bei jedem Lauf idempotent über den Treiber an
+  (`app.py`, `MIGRATIONS_DIR.glob("*.cypher")` vor dem eigentlichen Laden) — Java wird nur für
+  Neo4j Server selbst gebraucht, nicht zusätzlich für ein Migrations-CLI.
+- [x] **Backend als Scheduled Task** (`AtStartup`, `RunLevel Highest`, `LogonType ServiceAccount`
+  = läuft ohne Login, mit Restart-Policy) statt eines echten Windows-Dienstes — bewusst kein
+  NSSM/pywin32-Service-Wrapper, um keine zusätzliche Drittsoftware/Paketierung einzuführen; reine
+  Bordmittel (Task Scheduler) reichen für „übersteht Neustart, startet bei Absturz neu".
+- [x] **Update = einfaches Pull-Skript** (Nutzer-Entscheid gegen echtes CI/CD mit Build-Server):
+  täglicher Scheduled Task ruft `update.ps1` auf (`git fetch` + `merge --ff-only`, bricht bei
+  lokalen Änderungen bewusst ab statt zu überschreiben, synchronisiert `pip install -r
+  requirements.txt`, startet den Backend-Task neu). Läuft ohne `--reload` (anders als der
+  Docker-Dev-Container) — Codeänderungen wirken erst nach dem nächsten Update-Lauf.
+- [x] Alle drei `.ps1`-Skripte per `[System.Management.Automation.Language.Parser]::ParseFile()`
+  auf Syntaxfehler geprüft. **Nicht** end-to-end auf einer echten Zielmaschine getestet (kein
+  passender Drittrechner im Rahmen dieser Session verfügbar) — insbesondere die
+  Junction-Auflösung und die winget-Paket-IDs sollten beim ersten echten Lauf gegengeprüft werden
+  (README nennt dafür explizit Fallbacks/Fehlermeldungen statt stiller Annahmen).
+- [x] Haupt-`README.md` (kurzer Verweis-Absatz + Repo-Struktur-Eintrag) und
+  `docs/technik/architektur.md` (Abschnitt „Deployment") ergänzt, ohne den bestehenden
+  container-only-Quickstart zu verändern.
+
 ## Phase X — erledigt
 
 - [x] **Intra-/Inter-Rollen-Evidenz (AE-11) v1.** `cypher/sod/explain_sod.cypher`: pro Finding die verursachenden Rollen/Profile (`(:SoDConflict)-[:VIA_ROLE]->(:Role)` / `-[:VIA_PROFILE]->(:Profile)`) und `conflictType` **intra** vs. **inter**; Hilfsrelation `(:Role|:Profile)-[:PROVIDES]->(:Query)`. Sichtbar in `/findings`, CSV-Export und UI. **Opt-in** (teuer). *(Perf-Optimierung offen → ROADMAP.)*

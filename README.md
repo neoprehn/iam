@@ -36,6 +36,14 @@ docker compose run --rm migrations
 #    Neo4j Browser : http://localhost:7474
 ```
 
+## Alternative: native Windows-Installation ohne Docker
+
+Für Rechner, auf denen Docker Desktop nicht installiert werden kann (die einzelnen Komponenten
+Python/Java/Neo4j aber schon): [deploy/windows-native/](deploy/windows-native/README.md) —
+Neo4j als Windows-Dienst, Backend als Scheduled Task, täglicher Auto-Update-Task (`git pull` +
+Neustart). Ersetzt nicht den container-only-Standardpfad oben, sondern ergänzt ihn für genau
+diesen Fall.
+
 ## Bedienung über die App (empfohlen)
 
 Die **Web-App** unter <http://localhost:8000/> deckt den ganzen Lebenszyklus ohne JSON-Pflege ab
@@ -81,6 +89,7 @@ iam/
 │  ├─ ruleset/        # Ruleset-Loader (JSON → Graph)
 │  └─ admin/           # clear_dataset / reset_data
 ├─ run/                # run_import.ps1 / run_evaluate.ps1 (Host-Runner)
+├─ deploy/windows-native/  # Alternative: native Windows-Installation ohne Docker (s. o.)
 ├─ docs/               # Sphinx/MyST: Phasen, Datenmodell, Extraktionsleitfaden
 │  └─ legacy/          # Alte Importskripte (Referenz)
 ├─ data/              # GITIGNORED: SAP-CSV + DB-Volume + Import

@@ -71,3 +71,7 @@ Verteilungseinheit ist **Docker Compose**. Der Stack ist **Kubernetes-fähig** (
 abgesicherter Cluster): Neo4j als `StatefulSet` mit `PVC`, Backend als `Deployment` (vorerst eine
 Replica — Jobs liegen in-memory), Passwort als `Secret`, `data/import` + `backups` als `PVC`,
 Zugang nur clusterintern bzw. hinter Unternehmens-Auth. Details: Phase 10 in der ROADMAP.
+
+Für Rechner ohne Docker (Backend/Neo4j nativ als Windows-Dienst/Scheduled Task, `git pull` statt
+Container-Update) gibt es eine bewusste Ausnahme vom container-only-Prinzip:
+[deploy/windows-native/](https://github.com/neoprehn/iam/tree/main/deploy/windows-native).
