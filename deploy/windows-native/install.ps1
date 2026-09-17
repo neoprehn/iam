@@ -63,8 +63,30 @@ if (-not (Test-Admin)) {
     throw "Bitte als Administrator ausfuehren (Rechtsklick auf PowerShell -> 'Als Administrator ausfuehren')."
 }
 
+# ---------- 0. Zielordner waehlen (nur wenn -InstallDir nicht explizit angegeben wurde) ----------
+# $PSBoundParameters unterscheidet "Parameter-Default verwendet" von "Nutzer hat -InstallDir
+# gesetzt" -- fuer automatisierte/nicht-interaktive Laeufe (z.B. per Remote-Skript) bleibt der
+# stille Default C:\iam nutzbar, ohne dass ein Dialogfenster den Lauf blockiert.
+if (-not $PSBoundParameters.ContainsKey('InstallDir')) {
+    try {
+        Add-Type -AssemblyName System.Windows.Forms
+        $dlg = New-Object System.Windows.Forms.FolderBrowserDialog
+        $dlg.Description = "Zielordner fuer die iam-Installation waehlen`n(das Repo wird darin als Unterordner 'iam' angelegt -- Abbrechen = Standard $InstallDir verwenden)"
+        $dlg.ShowNewFolderButton = $true
+        if (Test-Path 'C:\') { $dlg.SelectedPath = 'C:\' }
+        if ($dlg.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $dlg.SelectedPath) {
+            $InstallDir = Join-Path $dlg.SelectedPath 'iam'
+            Write-Host "Zielordner gewaehlt: $InstallDir"
+        } else {
+            Write-Host "Kein Ordner gewaehlt, verwende Standard: $InstallDir"
+        }
+    } catch {
+        Write-Host "Ordnerauswahl-Dialog nicht verfuegbar ($($_.Exception.Message)), verwende Standard: $InstallDir"
+    }
+}
+
 # ---------- 1. Voraussetzungen (Git, Python, Java) ----------
-Write-Step "1/7 Voraussetzungen pruefen"
+Write-Step "1/8 Voraussetzungen pruefen"
 if (-not (Test-Cmd git)) {
     if (Test-Cmd winget) { winget install --id Git.Git -e --accept-source-agreements --accept-package-agreements }
     else { throw "git fehlt und winget ist nicht verfuegbar -- bitte manuell installieren: https://git-scm.com/download/win" }
@@ -88,7 +110,7 @@ foreach ($c in 'git', 'python', 'java') {
 }
 
 # ---------- 2. Repo klonen/aktualisieren ----------
-Write-Step "2/7 Repo unter $InstallDir"
+Write-Step "2/8 Repo unter $InstallDir"
 if (Test-Path (Join-Path $InstallDir '.git')) {
     Write-Host "Repo existiert bereits, pull statt clone."
     git -C $InstallDir pull --ff-only
@@ -98,7 +120,7 @@ if (Test-Path (Join-Path $InstallDir '.git')) {
 $repo = (Resolve-Path $InstallDir).Path
 
 # ---------- 3. .env ----------
-Write-Step "3/7 .env"
+Write-Step "3/8 .env"
 $envPath = Join-Path $repo '.env'
 if (-not (Test-Path $envPath)) {
     Copy-Item (Join-Path $repo '.env.example') $envPath
@@ -117,14 +139,14 @@ $neoPw = Get-EnvVal 'NEO4J_PASSWORD' $envPath
 if (-not $neoPw) { throw "NEO4J_PASSWORD fehlt in $envPath" }
 
 # ---------- 4. Python venv ----------
-Write-Step "4/7 Python-venv (.venv-win)"
+Write-Step "4/8 Python-venv (.venv-win)"
 $venv = Join-Path $repo '.venv-win'
 if (-not (Test-Path $venv)) { python -m venv $venv }
 & "$venv\Scripts\pip.exe" install --upgrade pip -q
 & "$venv\Scripts\pip.exe" install -r (Join-Path $repo 'backend\requirements.txt') -q
 
 # ---------- 5. Neo4j Community Server als Windows-Dienst ----------
-Write-Step "5/7 Neo4j Community $Neo4jVersion als Windows-Dienst"
+Write-Step "5/8 Neo4j Community $Neo4jVersion als Windows-Dienst"
 # Bewusst auf derselben Disk wie das Repo installiert -- s. Kommentar zur rules-Junction unten.
 $repoDrive = Split-Path $repo -Qualifier   # z.B. "D:"
 $neoRoot = Join-Path "$repoDrive\" 'neo4j'

@@ -1637,6 +1637,18 @@ der Auswertung trotzdem sichtbar bleiben soll.
   Ebenfalls nur per PowerShell-Parser syntaxgeprüft, nicht in einer echten GUI-Sitzung
   durchgeklickt (kein Display/keine Admin-Testumgebung in dieser Session) — bewusst keine
   destruktive Testausführung (UAC-Prompt + Fensteröffnung) auf der Entwicklungsmaschine.
+- [x] **Nachbesserung (Zielordner-Dialog):** Nutzer wollte statt eines stillen Default-Pfads
+  (`C:\iam`) bzw. eines Kommandozeilen-Parameters einen echten Auswahl-Dialog. `install.ps1`
+  öffnet jetzt (nur wenn `-InstallDir` NICHT explizit übergeben wurde, geprüft über
+  `$PSBoundParameters` — automatisierte Läufe bleiben dadurch dialogfrei) einen
+  `FolderBrowserDialog`, Abbrechen fällt auf den bisherigen Default zurück. Dabei auch erkannt:
+  der Ordner `deploy/windows-native/` war von Anfang an eigenständig lauffähig (er klont das
+  App-Repo selbst per `git clone`, braucht also keinen vorherigen vollständigen Checkout) — README
+  entsprechend präzisiert (die vier Skripte reichen als Paket).
+- [x] **Handoff-Paket:** `handoff/iam-windows-native-installer.zip` (gitignored, `/handoff/` ist
+  laut `.gitignore` extra für lokal erzeugte Übergabe-Pakete vorgesehen) gepackt aus genau den
+  vier eigenständigen Skripten + README — zum direkten Versenden/Übertragen auf den Drittrechner,
+  ohne dass dort vorher `git clone` verfügbar sein muss.
 
 ## Phase X — erledigt
 

@@ -20,19 +20,25 @@ Was hier entsteht:
 
 ## Installation
 
-1. PowerShell **als Administrator** öffnen.
-2. Repo an einen beliebigen Ort klonen (oder direkt per Skript klonen lassen, s. u.).
+Dieser Ordner (`install.ps1` + `manage.ps1` + `update.ps1` + `start-backend.ps1`) ist
+eigenständig lauffähig — er klont das eigentliche App-Repo selbst per `git clone`. Man muss also
+**nicht** vorher das ganze Repo auschecken; die vier Dateien reichen (z. B. als ZIP verschickt
+und auf dem Drittrechner entpackt).
+
+1. Diesen Ordner auf den Drittrechner bringen (Repo-Klon oder das ZIP entpacken).
+2. PowerShell **als Administrator** öffnen, in den Ordner wechseln.
 3. Ausführen:
 
    ```powershell
-   .\deploy\windows-native\install.ps1
+   .\install.ps1
    ```
 
-   Optional mit Parametern (z. B. anderes Laufwerk, mehr Speicher auf leistungsfähigerer
-   Hardware):
+   Ohne `-InstallDir` öffnet sich ein **Ordnerauswahl-Dialog**, um den Zielort zu wählen (das Repo
+   landet darin als Unterordner `iam`) — Abbrechen verwendet den Standard `C:\iam`. Für
+   automatisierte/nicht-interaktive Läufe `-InstallDir` explizit setzen, dann entfällt der Dialog:
 
    ```powershell
-   .\deploy\windows-native\install.ps1 -InstallDir D:\iam -HeapSizeGb 4 -PageCacheGb 4
+   .\install.ps1 -InstallDir D:\iam -HeapSizeGb 4 -PageCacheGb 4
    ```
 
    Das Skript ist **idempotent** — mehrfaches Ausführen (z. B. nach einem Fehler) überspringt
