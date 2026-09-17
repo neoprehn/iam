@@ -1649,6 +1649,21 @@ der Auswertung trotzdem sichtbar bleiben soll.
   laut `.gitignore` extra für lokal erzeugte Übergabe-Pakete vorgesehen) gepackt aus genau den
   vier eigenständigen Skripten + README — zum direkten Versenden/Übertragen auf den Drittrechner,
   ohne dass dort vorher `git clone` verfügbar sein muss.
+- [x] **RTD-Seite + OneDrive-Schutz:** Nutzer wollte die native Windows-Installation auch in der
+  RTD-Doku beschrieben haben (bisher nur ein Verweis-Absatz in `docs/technik/architektur.md`,
+  der auf GitHub zeigte — kein eigener Seiteninhalt im Sphinx-Build). Neue Seite
+  `docs/technik/windows-native.md` (in `docs/index.md`-Toctree eingehängt,
+  `architektur.md`-Verweis zeigt jetzt dorthin statt direkt zu GitHub) — Build lokal mit
+  `sphinx-build -W` gegengeprüft, keine neuen Warnungen. Zweite Nutzerfrage ("liegen die Daten
+  dann auch dort, wo ich installiere? am besten nicht auf OneDrive, korrekt?") traf einen echten
+  Punkt: `$InstallDir` enthält `data/import` (SAP-Extrakte) + `backups/` + `.env` — ein
+  OneDrive-Pfad würde das automatisch in die Microsoft-Cloud hochladen, das ist keine
+  Performance-Frage sondern eine echte Vertrauensgrenzen-Verletzung. `install.ps1` erkennt einen
+  OneDrive-Pfad jetzt automatisch (Namensmuster + `OneDrive`/`OneDriveCommercial`-Env-Vars) und
+  fragt per Dialog explizit nach (Default "Nein"), auch wenn `-InstallDir` explizit gesetzt wurde.
+  Dabei auch dokumentiert, dass die Neo4j-DB selbst schon vorher (aus dem rules-Junction-Grund)
+  bewusst außerhalb von `$InstallDir` liegt — ein zusätzlicher, vorher nicht explizit
+  kommunizierter Schutzeffekt.
 
 ## Phase X — erledigt
 

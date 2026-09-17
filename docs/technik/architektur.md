@@ -74,4 +74,4 @@ Zugang nur clusterintern bzw. hinter Unternehmens-Auth. Details: Phase 10 in der
 
 Für Rechner ohne Docker (Backend/Neo4j nativ als Windows-Dienst/Scheduled Task, `git pull` statt
 Container-Update) gibt es eine bewusste Ausnahme vom container-only-Prinzip:
-[deploy/windows-native/](https://github.com/neoprehn/iam/tree/main/deploy/windows-native).
+[Native Windows-Installation](windows-native.md).

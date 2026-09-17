@@ -44,8 +44,40 @@ und auf dem Drittrechner entpackt).
    Das Skript ist **idempotent** — mehrfaches Ausführen (z. B. nach einem Fehler) überspringt
    bereits erledigte Schritte, statt sie zu wiederholen.
 
+   **Wichtig bei der Ordnerwahl:** Liegt der gewählte Pfad erkennbar unter OneDrive, fragt das
+   Skript per Dialog explizit nach, bevor es fortfährt — Standard-Antwort ist "Nein" (s. Abschnitt
+   "Wo liegen die Daten?" unten). Diese Prüfung greift auch bei einem explizit gesetzten
+   `-InstallDir`.
+
 4. Nach Abschluss: <http://localhost:8000/> (Web-App) und <http://localhost:7474/> (Neo4j
    Browser) sollten erreichbar sein.
+
+## Wo liegen die Daten?
+
+Alles, was pro Installation lokal entsteht, hängt an **einem** Ort — dem bei der Installation
+gewählten Zielordner (`$InstallDir`, Standard `C:\iam`):
+
+| Was | Wo | Im Git? |
+|---|---|---|
+| SAP-Extrakte (Rohdaten) | `<InstallDir>\data\import` | Nein (gitignored) |
+| Backups (Dataset-/Lauf-Zips) | `<InstallDir>\backups` | Nein (gitignored) |
+| Zugangsdaten (`NEO4J_PASSWORD`) | `<InstallDir>\.env` | Nein (gitignored) |
+| App-Code (Backend/Frontend/Cypher/Regeln) | `<InstallDir>\...` | Ja |
+
+Die **Neo4j-Datenbank selbst** liegt bewusst **außerhalb** von `$InstallDir`, direkt unter der
+Laufwerkswurzel (`<Laufwerk>:\neo4j\neo4j-community-<Version>\data\...`, s. Schritt 5 in
+`install.ps1`) — technisch wegen der `rules`-Junction (s. "Verifizieren" unten), praktisch aber
+auch ein zusätzlicher Schutz: selbst wenn `$InstallDir` versehentlich in einem synchronisierten
+Ordner läge, bliebe die Datenbank selbst davon unberührt.
+
+**Zielordner nicht unter OneDrive wählen.** `$InstallDir` enthält SAP-Extrakte und Backups —
+also echte Mandantendaten. Ein OneDrive-synchronisierter Pfad würde diese automatisch in die
+Microsoft-Cloud hochladen. Das ist kein Performance-Detail, sondern verletzt die
+**Vertrauensgrenze** dieses Projekts (s. Haupt-README.md: "Das Repo enthält nur Logik ... SAP-
+Extrakte ... verlassen die Umgebung nie") — Mandantendaten dürfen die lokale Maschine grundsätzlich
+nicht verlassen. `install.ps1` erkennt einen OneDrive-Pfad automatisch (Namensmuster + die
+`OneDrive`/`OneDriveCommercial`-Umgebungsvariablen) und fragt vor der Installation explizit nach;
+Standard-Antwort ist "Nein". Empfehlung: ein einfacher lokaler Pfad wie `C:\iam` oder `D:\iam`.
 
 ## Verifizieren (wichtig — bitte nicht überspringen)
 

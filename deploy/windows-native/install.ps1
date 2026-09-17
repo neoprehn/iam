@@ -67,9 +67,9 @@ if (-not (Test-Admin)) {
 # $PSBoundParameters unterscheidet "Parameter-Default verwendet" von "Nutzer hat -InstallDir
 # gesetzt" -- fuer automatisierte/nicht-interaktive Laeufe (z.B. per Remote-Skript) bleibt der
 # stille Default C:\iam nutzbar, ohne dass ein Dialogfenster den Lauf blockiert.
+Add-Type -AssemblyName System.Windows.Forms
 if (-not $PSBoundParameters.ContainsKey('InstallDir')) {
     try {
-        Add-Type -AssemblyName System.Windows.Forms
         $dlg = New-Object System.Windows.Forms.FolderBrowserDialog
         $dlg.Description = "Zielordner fuer die iam-Installation waehlen`n(das Repo wird darin als Unterordner 'iam' angelegt -- Abbrechen = Standard $InstallDir verwenden)"
         $dlg.ShowNewFolderButton = $true
@@ -83,6 +83,32 @@ if (-not $PSBoundParameters.ContainsKey('InstallDir')) {
     } catch {
         Write-Host "Ordnerauswahl-Dialog nicht verfuegbar ($($_.Exception.Message)), verwende Standard: $InstallDir"
     }
+}
+
+# ---------- 0b. OneDrive-Warnung ----------
+# SAP-Extrakte (data/import), Backups und .env landen direkt unter $InstallDir -- ein
+# OneDrive-synchronisierter Pfad wuerde sie automatisch in die Microsoft-Cloud hochladen. Das
+# verletzt die Vertrauensgrenze dieses Projekts (Mandantendaten bleiben lokal, s. Haupt-README.md)
+# unabhaengig von der bekannten Performance-Problematik (haeufige fsync-Schreibzugriffe, s. auch
+# der Kommentar zum DB-Volume in docker-compose.yml). Neo4j selbst landet zwar ausserhalb davon
+# (Laufwerkswurzel, s. Schritt 5), aber $InstallDir ist der eigentliche Risikoort -- deshalb hart
+# nachfragen statt nur zu warnen, auch wenn -InstallDir explizit als Parameter gesetzt wurde.
+$oneDriveRoots = @($env:OneDrive, $env:OneDriveCommercial) | Where-Object { $_ }
+$looksLikeOneDrive = ($InstallDir -match '(?i)onedrive') -or
+    ($oneDriveRoots | Where-Object { $InstallDir -like "$_*" })
+if ($looksLikeOneDrive) {
+    $msg = "Der gewaehlte Zielordner`n`n  $InstallDir`n`nliegt vermutlich unter OneDrive. " +
+           "SAP-Extrakte, Backups und Zugangsdaten wuerden dann automatisch in die " +
+           "Microsoft-Cloud synchronisiert -- das verletzt die Vertrauensgrenze dieses Projekts " +
+           "(Mandantendaten bleiben lokal) und macht Schreibzugriffe zudem spuerbar langsamer." +
+           "`n`nTrotzdem an diesem Ort installieren?"
+    $res = [System.Windows.Forms.MessageBox]::Show($msg, 'Warnung: OneDrive-Pfad',
+        [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Warning,
+        [System.Windows.Forms.MessageBoxDefaultButton]::Button2)
+    if ($res -ne [System.Windows.Forms.DialogResult]::Yes) {
+        throw "Abgebrochen -- bitte einen lokalen, nicht synchronisierten Pfad waehlen (z. B. C:\iam)."
+    }
+    Write-Host "OneDrive-Warnung bestaetigt, fahre trotzdem fort." -ForegroundColor Yellow
 }
 
 # ---------- 1. Voraussetzungen (Git, Python, Java) ----------

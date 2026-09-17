@@ -31,6 +31,7 @@ handbuch/funktionen
 :caption: Technische Dokumentation
 
 technik/architektur
+technik/windows-native
 datamodel
 extraktionsleitfaden
 ```

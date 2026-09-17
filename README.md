@@ -39,8 +39,9 @@ docker compose run --rm migrations
 ## Alternative: native Windows-Installation ohne Docker
 
 Für Rechner, auf denen Docker Desktop nicht installiert werden kann (die einzelnen Komponenten
-Python/Java/Neo4j aber schon): [deploy/windows-native/](deploy/windows-native/README.md) —
-Neo4j als Windows-Dienst, Backend als Scheduled Task, täglicher Auto-Update-Task (`git pull` +
+Python/Java/Neo4j aber schon): [deploy/windows-native/](deploy/windows-native/README.md)
+(ausführlicher auch in der [RTD-Doku](https://iam-iam.readthedocs.io/de/latest/technik/windows-native.html))
+— Neo4j als Windows-Dienst, Backend als Scheduled Task, täglicher Auto-Update-Task (`git pull` +
 Neustart). Ersetzt nicht den container-only-Standardpfad oben, sondern ergänzt ihn für genau
 diesen Fall.
 
