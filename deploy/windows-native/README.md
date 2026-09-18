@@ -17,40 +17,57 @@ Was hier entsteht:
 - Ein kleines **Management-Fenster** ("IAM verwalten", Desktop-Verknüpfung) für alle laufenden
   Aktionen per Klick, ohne PowerShell bedienen zu müssen — s. Abschnitt "Management-Fenster"
   unten. Die Tabelle in "Verwaltung / Troubleshooting" bleibt als CLI-Alternative erhalten.
+- Beide Einstiegspunkte (`install`, `manage`) gibt es auch als eigenständige **`.exe`**
+  (per `ps2exe` aus den `.ps1`-Quellen gebaut, `-requireAdmin`-Manifest) — kein PowerShell-Fenster
+  manuell öffnen, keine Datei-Zuordnungs-/Ausführungsrichtlinien-Stolpersteine bei Doppelklick.
 
 ## Installation
 
-Dieser Ordner (`install.ps1` + `manage.ps1` + `update.ps1` + `start-backend.ps1`) ist
-eigenständig lauffähig — er klont das eigentliche App-Repo selbst per `git clone`. Man muss also
-**nicht** vorher das ganze Repo auschecken; die vier Dateien reichen (z. B. als ZIP verschickt
-und auf dem Drittrechner entpackt).
+Dieser Ordner ist eigenständig lauffähig — `install.ps1` klont das eigentliche App-Repo selbst per
+`git clone`. Man muss also **nicht** vorher das ganze Repo auschecken; der Ordner reicht als
+eigenes Paket (z. B. als ZIP verschickt und auf dem Drittrechner entpackt, s. `build-exe.ps1`
+unten für die `.exe`-Variante).
 
-1. Diesen Ordner auf den Drittrechner bringen (Repo-Klon oder das ZIP entpacken).
-2. PowerShell **als Administrator** öffnen, in den Ordner wechseln.
-3. Ausführen:
+**Empfohlen: `install.exe` doppelklicken.** Kein PowerShell-Fenster manuell öffnen, kein
+Rechtsklick "Als Administrator ausführen" nötig — die `.exe` fordert die nötigen Rechte beim Start
+automatisch per UAC-Dialog an (eingebettetes Manifest, `-requireAdmin`). Das umgeht zwei
+PowerShell-eigene Stolpersteine: `.ps1`-Dateien öffnen sich bei Doppelklick je nach
+Windows-Konfiguration im Editor statt auszuführen, und ein Start ohne Adminrechte führte früher zu
+einem Konsolenfenster, das sofort wieder verschwand, ohne die Fehlermeldung lesbar zu machen.
 
-   ```powershell
-   .\install.ps1
-   ```
-
-   Ohne `-InstallDir` öffnet sich ein **Ordnerauswahl-Dialog**, um den Zielort zu wählen (das Repo
-   landet darin als Unterordner `iam`) — Abbrechen verwendet den Standard `C:\iam`. Für
-   automatisierte/nicht-interaktive Läufe `-InstallDir` explizit setzen, dann entfällt der Dialog:
-
-   ```powershell
-   .\install.ps1 -InstallDir D:\iam -HeapSizeGb 4 -PageCacheGb 4
-   ```
-
-   Das Skript ist **idempotent** — mehrfaches Ausführen (z. B. nach einem Fehler) überspringt
-   bereits erledigte Schritte, statt sie zu wiederholen.
+1. Diesen Ordner auf den Drittrechner bringen (ZIP entpacken oder Repo-Klon).
+2. `install.exe` doppelklicken, UAC-Dialog bestätigen.
+3. Ohne Parameter öffnet sich ein **Ordnerauswahl-Dialog** für den Zielort (das Repo landet darin
+   als Unterordner `iam`) — Abbrechen verwendet den Standard `C:\iam`.
 
    **Wichtig bei der Ordnerwahl:** Liegt der gewählte Pfad erkennbar unter OneDrive, fragt das
-   Skript per Dialog explizit nach, bevor es fortfährt — Standard-Antwort ist "Nein" (s. Abschnitt
-   "Wo liegen die Daten?" unten). Diese Prüfung greift auch bei einem explizit gesetzten
-   `-InstallDir`.
+   Programm per Dialog explizit nach, bevor es fortfährt — Standard-Antwort ist "Nein" (s.
+   Abschnitt "Wo liegen die Daten?" unten).
 
-4. Nach Abschluss: <http://localhost:8000/> (Web-App) und <http://localhost:7474/> (Neo4j
-   Browser) sollten erreichbar sein.
+   Das Konsolenfenster bleibt am Ende (Erfolg **und** Fehlerfall) offen und wartet auf Enter, statt
+   sofort zu verschwinden — Fortschritt/Fehlermeldung sind also immer lesbar.
+
+Alternative für automatisierte/nicht-interaktive Läufe (kein Ordnerauswahl-Dialog, kein
+UAC-Umweg falls die aufrufende Sitzung bereits erhöht ist) oder wenn nur die `.ps1`-Dateien
+vorliegen: per PowerShell **als Administrator**,
+
+```powershell
+.\install.ps1 -InstallDir D:\iam -HeapSizeGb 4 -PageCacheGb 4
+```
+
+`install.ps1` selbst erhöht die Rechte ebenfalls automatisch per UAC, falls ohne Adminrechte
+gestartet — die `.exe` ist nur der zuverlässigere, direkte Weg dahin.
+
+Beide Varianten sind **idempotent** — mehrfaches Ausführen (z. B. nach einem Fehler) überspringt
+bereits erledigte Schritte, statt sie zu wiederholen.
+
+**`.exe` selbst bauen** (nicht nötig für die normale Installation, die fertigen `.exe` liegen im
+Handoff-Paket bei): `.\build-exe.ps1` — installiert bei Bedarf das `ps2exe`-Modul und kompiliert
+`install.ps1`/`manage.ps1` zu `install.exe`/`manage.exe`. Sinnvoll nach eigenen Änderungen an den
+`.ps1`-Quellen.
+
+Nach Abschluss: <http://localhost:8000/> (Web-App) und <http://localhost:7474/> (Neo4j
+Browser) sollten erreichbar sein.
 
 ## Wo liegen die Daten?
 
@@ -110,8 +127,9 @@ direkt gegentesten, bevor irgendetwas Fachliches (Ruleset laden, Lauf starten) v
 
 ## Management-Fenster
 
-`install.ps1` legt eine Desktop-Verknüpfung **"IAM verwalten"** an (für alle Benutzer). Ein
-Doppelklick öffnet ein kleines Fenster (`manage.ps1`) mit:
+`install.ps1`/`install.exe` legt eine Desktop-Verknüpfung **"IAM verwalten"** an (für alle
+Benutzer) — zeigt auf `manage.exe`, falls vorhanden (per UAC-Manifest, kein PowerShell-Umweg),
+sonst auf `manage.ps1`. Ein Doppelklick öffnet ein kleines Fenster mit:
 
 - **Status** (oben): Neo4j-Dienst und Backend-Task live (rot/grün), Zeitpunkt des letzten
   Updates — aktualisiert sich automatisch alle paar Sekunden.

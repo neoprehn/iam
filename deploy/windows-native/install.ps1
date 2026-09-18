@@ -59,9 +59,31 @@ function Test-Admin {
     $id = [Security.Principal.WindowsIdentity]::GetCurrent()
     (New-Object Security.Principal.WindowsPrincipal $id).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+# Fallback fuer den Fall, dass install.ps1 direkt (nicht ueber install.exe -- das erhoeht die
+# Rechte bereits per Manifest, s. build-exe.ps1) gestartet wird. Frueher ein harter throw hier -- bei
+# Start ohne vorhandene Adminrechte (z.B. Doppelklick) schloss sich das Konsolenfenster dadurch
+# sofort wieder, ohne dass die Fehlermeldung lesbar war (Nutzer-Fund: "Fenster geht auf und
+# wieder zu"). Jetzt: automatisch per UAC neu starten, inkl. aller urspruenglich uebergebenen
+# Parameter.
 if (-not (Test-Admin)) {
-    throw "Bitte als Administrator ausfuehren (Rechtsklick auf PowerShell -> 'Als Administrator ausfuehren')."
+    Write-Host "Administratorrechte fehlen -- fordere per UAC an und starte neu ..." -ForegroundColor Yellow
+    $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$PSCommandPath`"")
+    foreach ($key in $PSBoundParameters.Keys) {
+        $argList += "-$key"
+        $argList += "`"$($PSBoundParameters[$key])`""
+    }
+    try {
+        Start-Process powershell.exe -Verb RunAs -ArgumentList ($argList -join ' ') -ErrorAction Stop
+    } catch {
+        Write-Host "FEHLER: Adminrechte-Anfrage abgebrochen oder fehlgeschlagen: $($_.Exception.Message)" -ForegroundColor Red
+        Read-Host "Enter druecken zum Schliessen"
+    }
+    exit
 }
+
+# Ab hier alles in einem try/catch: ein Fehler soll immer sichtbar bleiben (Konsole offen mit
+# lesbarer Meldung), statt dass das Fenster beim Schliessen kommentarlos verschwindet.
+try {
 
 # ---------- 0. Zielordner waehlen (nur wenn -InstallDir nicht explizit angegeben wurde) ----------
 # $PSBoundParameters unterscheidet "Parameter-Default verwendet" von "Nutzer hat -InstallDir
@@ -311,12 +333,20 @@ $stateFile = Join-Path $PSScriptRoot 'install-state.json'
     Neo4jVersion = $Neo4jVersion
 } | ConvertTo-Json | Set-Content -Path $stateFile -Encoding UTF8
 
+$manageExe = Join-Path $PSScriptRoot 'manage.exe'
 $manageScript = Join-Path $PSScriptRoot 'manage.ps1'
 $shortcutPath = Join-Path ([Environment]::GetFolderPath('CommonDesktopDirectory')) 'IAM verwalten.lnk'
 $wsh = New-Object -ComObject WScript.Shell
 $shortcut = $wsh.CreateShortcut($shortcutPath)
-$shortcut.TargetPath = 'powershell.exe'
-$shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$manageScript`""
+if (Test-Path $manageExe) {
+    # manage.exe (per build-exe.ps1/ps2exe, -requireAdmin) direkt verlinken -- kein
+    # powershell.exe-Umweg noetig, kein Notepad-Risiko bei Doppelklick.
+    $shortcut.TargetPath = $manageExe
+    $shortcut.Arguments = ''
+} else {
+    $shortcut.TargetPath = 'powershell.exe'
+    $shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$manageScript`""
+}
 $shortcut.WorkingDirectory = $PSScriptRoot
 $shortcut.IconLocation = 'shell32.dll,13'
 $shortcut.Description = 'IAM Backend/Neo4j starten, stoppen, aktualisieren'
@@ -325,3 +355,12 @@ Write-Host "Desktop-Verknuepfung 'IAM verwalten' angelegt (fuer alle Benutzer)."
 
 Write-Host "`nFertig. Web-App: http://localhost:8000/  |  Neo4j Browser: http://localhost:7474" -ForegroundColor Green
 Write-Host "Naechster Schritt: README.md in diesem Ordner lesen, Abschnitt 'Verifizieren' (Ruleset-Junction testen)." -ForegroundColor Yellow
+
+Read-Host "`nErfolgreich beendet -- Enter druecken zum Schliessen"
+
+} catch {
+    Write-Host "`nFEHLER: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host $_.ScriptStackTrace -ForegroundColor DarkGray
+    Read-Host "Enter druecken zum Schliessen"
+    exit 1
+}

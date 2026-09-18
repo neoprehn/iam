@@ -1664,6 +1664,30 @@ der Auswertung trotzdem sichtbar bleiben soll.
   Dabei auch dokumentiert, dass die Neo4j-DB selbst schon vorher (aus dem rules-Junction-Grund)
   bewusst außerhalb von `$InstallDir` liegt — ein zusätzlicher, vorher nicht explizit
   kommunizierter Schutzeffekt.
+- [x] **`.exe` statt `.ps1`-Doppelklick (2026-09-18, Nutzer-Fund):** "die PowerShell gehen
+  irgendwie nicht ... Fenster geht auf und wieder zu, ich sehe nicht, ob überhaupt was passiert".
+  Per `AskUserQuestion` das genaue Fehlerbild geklärt (kein konkreter Laufzeitfehler, sondern
+  genau dieses Verschwinden) und die gewünschte Lösung (leichter `ps2exe`-Wrapper statt einer
+  vollständigen C#/.NET-Neuentwicklung). Root-Cause vermutlich gefunden: `install.ps1` brach bei
+  fehlenden Adminrechten bisher mit einem harten `throw` ab — ein Konsolenfenster ohne
+  `-NoExit` schließt sich nach einem beendeten Skript sofort, die Fehlermeldung war praktisch
+  nie lesbar. Fix in zwei Schichten: (1) `install.ps1`/`manage.ps1` erhöhen jetzt selbst per
+  UAC-Neustart die Rechte (gleiches Muster wie zuvor schon in `manage.ps1`, jetzt auch in
+  `install.ps1`), zusätzlich der komplette Skriptkörper in `try/catch` mit `Read-Host`-Pause am
+  Ende (Erfolg UND Fehlerfall) statt sofortigem Fensterschluss; (2) neues `build-exe.ps1`
+  (installiert bei Bedarf das `ps2exe`-Modul aus der PowerShell Gallery) kompiliert
+  `install.ps1`/`manage.ps1` zu `install.exe`/`manage.exe` mit eingebettetem
+  `-requireAdmin`-Manifest — Windows fragt die Adminrechte VOR dem Start per UAC an, zuverlässiger
+  als ein skriptinterner `Start-Process -Verb RunAs`, und behebt nebenbei das Risiko, dass
+  Doppelklick auf `.ps1` (je nach Dateizuordnung) im Editor statt der Ausführung landet. Beide
+  `.exe` tatsächlich gebaut und verifiziert (Parser-Check der `.ps1`-Quellen weiterhin grün,
+  `requireAdministrator`-String im kompilierten Binary nachgewiesen) — NICHT auf der
+  Entwicklungsmaschine ausgeführt (würde hier einen echten UAC-Prompt auslösen und versuchen,
+  Neo4j/Scheduled Tasks auf dem eigenen Rechner anzufassen, der bereits eine andere,
+  Docker-basierte Installation hat). Desktop-Verknüpfung zeigt jetzt auf `manage.exe`, falls
+  vorhanden, sonst auf `manage.ps1`. `.exe`-Dateien bewusst nicht versioniert (reproduzierbare
+  Build-Artefakte aus den `.ps1`-Quellen) — landen stattdessen im Handoff-Paket
+  (`handoff/iam-windows-native-installer.zip`, neu gepackt mit `build-exe.ps1` + beiden `.exe`).
 
 ## Phase X — erledigt
 

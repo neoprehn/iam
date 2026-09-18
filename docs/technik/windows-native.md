@@ -24,14 +24,19 @@ beschreibt Zweck, Ablauf und die Vertrauensgrenze dafür.
 - Ein kleines **Management-Fenster** ("IAM verwalten", Desktop-Verknüpfung) für Start/Stop/
   Neustart, "Jetzt aktualisieren", Web-App öffnen, Update-/Neo4j-Log ansehen und einen
   Verifizieren-Klick — ohne PowerShell bedienen zu müssen.
+- Beide Einstiegspunkte (Installer, Management-Fenster) gibt es auch als eigenständige `.exe`
+  (`ps2exe`, `-requireAdmin`-Manifest) — kein manuelles PowerShell-Fenster, keine Datei-
+  Zuordnungs-Stolpersteine bei Doppelklick.
 
-Das Paket (`install.ps1`, `manage.ps1`, `update.ps1`, `start-backend.ps1`) ist eigenständig
-lauffähig: `install.ps1` klont die App selbst per `git clone`. Ein vorheriger vollständiger
-Checkout ist nicht nötig — die vier Skripte reichen, z. B. als ZIP an den Drittrechner verschickt.
+Das Paket (`install.ps1`, `manage.ps1`, `update.ps1`, `start-backend.ps1`, `build-exe.ps1`) ist
+eigenständig lauffähig: `install.ps1` klont die App selbst per `git clone`. Ein vorheriger
+vollständiger Checkout ist nicht nötig — der Ordner reicht, z. B. als ZIP an den Drittrechner
+verschickt.
 
 ## Installation
 
-Als Administrator ausführen:
+**Empfohlen:** `install.exe` doppelklicken — fordert Adminrechte automatisch per UAC-Dialog an.
+Alternative für automatisierte Läufe oder wenn nur die `.ps1`-Dateien vorliegen, als Administrator:
 
 ```powershell
 .\install.ps1

@@ -19,16 +19,31 @@ function Test-Admin {
     $id = [Security.Principal.WindowsIdentity]::GetCurrent()
     (New-Object Security.Principal.WindowsPrincipal $id).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+# Fallback fuer den Fall, dass manage.ps1 direkt (nicht ueber manage.exe -- das erhoeht die
+# Rechte bereits per Manifest, s. build-exe.ps1) gestartet wird. Frueher wurde ein Abbruch der UAC-Abfrage (Klick
+# auf "Nein") NICHT abgefangen -- die Ausnahme flog bis ganz nach oben durch und das (wegen
+# -WindowStyle Hidden unsichtbare) Fenster verschwand kommentarlos. Jetzt sichtbar gemeldet.
 if (-not (Test-Admin)) {
-    Start-Process powershell.exe -Verb RunAs -ArgumentList `
-        "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`""
+    try {
+        Start-Process powershell.exe -Verb RunAs -ArgumentList `
+            "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`"" -ErrorAction Stop
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show(
+            "Ohne Administratorrechte kann dieses Fenster Dienste/Tasks nicht steuern.`n`n$($_.Exception.Message)",
+            'IAM verwalten -- Adminrechte noetig', 'OK', 'Error') | Out-Null
+    }
     exit
 }
+
+# Alles Weitere in einem try/catch: ein unerwarteter Fehler soll immer als sichtbare Meldung
+# enden, nie als kommentarloses Verschwinden des Fensters (Nutzer-Fund: "Fenster geht auf und
+# wieder zu, ich sehe nicht, ob ueberhaupt was passiert").
+try {
 
 $stateFile = Join-Path $PSScriptRoot 'install-state.json'
 if (-not (Test-Path $stateFile)) {
     [System.Windows.Forms.MessageBox]::Show(
-        "install-state.json fehlt neben manage.ps1.`nBitte zuerst install.ps1 ausfuehren.",
+        "install-state.json fehlt neben manage.ps1.`nBitte zuerst install.ps1 (bzw. install.exe) ausfuehren.",
         'IAM verwalten', 'OK', 'Error') | Out-Null
     exit 1
 }
@@ -249,3 +264,9 @@ $autoRefresh.Add_Tick({ Update-StatusLabels })
 $autoRefresh.Start()
 
 [void]$form.ShowDialog()
+
+} catch {
+    [System.Windows.Forms.MessageBox]::Show(
+        "Unerwarteter Fehler:`n`n$($_.Exception.Message)`n`n$($_.ScriptStackTrace)",
+        'IAM verwalten -- Fehler', 'OK', 'Error') | Out-Null
+}

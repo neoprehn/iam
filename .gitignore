@@ -18,6 +18,10 @@ config/anonymize.json
 # (Repo-/Neo4j-Installationspfad), von install.ps1 geschrieben, von manage.ps1 gelesen.
 deploy/windows-native/install-state.json
 
+# ... sowie die aus install.ps1/manage.ps1 gebauten .exe (build-exe.ps1, ps2exe) -- reproduzierbare
+# Build-Artefakte, gehoeren wie install-state.json ins Handoff-Paket statt ins Repo.
+deploy/windows-native/*.exe
+
 # Übergabe-Pakete (Images/Archive) — lokal erzeugt, nicht versionieren
 /handoff/
 
